@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ONLINE
+  OFFLINE
+  INMATCH
+}
+
+model User {
+  id            String       @id @default(uuid())
+  username      String
+  email         String
+  avatar        String
+  twoFactor     Boolean
+  xp            Int
+  ladelLevel    Int
+  status        Status
+  FriendsList   FriendsList? @relation(fields: [friendsListId], references: [id])
+  friendsListId String?
+}
+
+model FriendsList {
+  id      String @id @default(uuid())
+  friends User[]
+}
