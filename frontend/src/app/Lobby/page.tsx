@@ -20,6 +20,7 @@ import UserSetting from '@/components/UserSetting';
 import PasswordSetting from '@/components/PasswordSetting';
 import PageLayout from '@/components/PageLayout';
 import UserRequest from '@/components/UserRequest';
+import ProgressLevel from '@/components/ProgressLevel';
 
 export default function Home() {
   const items1=[
@@ -62,6 +63,7 @@ export default function Home() {
     <UserField userPic='' userName='ma3ert'></UserField>,
     ]
   return (
+    // <ProgressLevel></ProgressLevel>
     <PageLayout
       navBar={<NavBar/>}
       tabs={[<Icon as={BiSolidUser} style={{ fontSize: "23px" }}/>,

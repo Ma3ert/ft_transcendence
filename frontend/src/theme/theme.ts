@@ -35,9 +35,11 @@ const ModalStyle: ComponentStyleConfig={
         bg: "#252932",
         borderRadius: "20px",
         px: "30px",
-        py: "40px"
+        py: "40px",
+        fontFamily: "visbyRound",
       },
       body:{
+        fontFamily: "visbyRound",
         margin: "0px",
         padding: "0px"
       },
@@ -55,6 +57,7 @@ const ModalStyle: ComponentStyleConfig={
     },
     form:{
       dialog:{
+        fontFamily: "visbyRound",
         bg: "#252932",
         borderRadius: "20px",
         padding: "auto",
@@ -62,6 +65,7 @@ const ModalStyle: ComponentStyleConfig={
         py: "40px"
       },
       body:{
+        fontFamily: "visbyRound",
         margin: "0px",
         px: "0px",
         py: "10px"
@@ -94,6 +98,7 @@ const ButtonStyle: ComponentStyleConfig = {
 		color: "#F5F5F5",
 		py: "7px",
 		px: "8px",
+    fontFamily: "visbyRound",
     _active: {
       // Customize the styles when button is active (clicked)
       transform: "scale(1.1)", // Increase the scale to make it grow
@@ -106,6 +111,7 @@ const ButtonStyle: ComponentStyleConfig = {
     color: "#DC585B",
     py: "7px",
     px: "8px",
+    fontFamily: "visbyRound",
     _active: {
       // Customize the styles when button is active (clicked)
       transform: "scale(1.1)", // Increase the scale to make it grow
@@ -118,6 +124,7 @@ const ButtonStyle: ComponentStyleConfig = {
 		alignContent: "center",
 		py: "7px",
 		px: "20px",
+    fontFamily: "visbyRound",
     _hover: {
       bg: "transparent",
       color: "#D9D9D9", // Change this to your desired hover text color
@@ -145,6 +152,7 @@ const ButtonStyle: ComponentStyleConfig = {
     color: "#5B6171",
     px: "0px",
     margin: "0px",
+    fontFamily: "visbyRound",
     _hover:{
       borderRadius: "15px",
       bg: "#5B6171",
@@ -201,6 +209,7 @@ const TabsStyle: ComponentStyleConfig = {
   variants: {
     default:{
       tablist:{
+        fontFamily: "visbyRound",
         p: "2px",
         bg: "#1D222C",
         borderRadius: "15px",
@@ -219,6 +228,7 @@ const TabsStyle: ComponentStyleConfig = {
         }
       },
       tabpanel:{
+        fontFamily: "visbyRound",
         display: 'flex',
         justifyContent: 'center',
         w: "100%"
@@ -235,6 +245,7 @@ const InputStyle: ComponentStyleConfig = {
   variants: {
     default: {
 		field: {
+      fontFamily: "visbyRound",
 			backgroundColor: "#1D222C",
 			marginBottom: "3px",
 			borderRadius: "15px",
@@ -246,8 +257,8 @@ const InputStyle: ComponentStyleConfig = {
 			  color: "#5B6171",
 			  fontSize: "18px",
 			  fontSizeAdjust: "15px",
-        opacity: "0.5"
-        //   fontFamily: "Poppins",
+        opacity: "0.5",
+        fontFamily: "visbyRound",
 			},
       _focus: {
         boxShadow: "3px 4px 5px 0px rgba(0, 0, 0, 0.12)", 
@@ -256,6 +267,7 @@ const InputStyle: ComponentStyleConfig = {
 	},
     secondary: {
 		field: {
+      fontFamily: "visbyRound",
 			backgroundColor: "#252932",
 			marginBottom: "3px",
 			borderRadius: "15px",
@@ -267,8 +279,8 @@ const InputStyle: ComponentStyleConfig = {
 			  color: "#5B6171",
 			  fontSize: "18px",
 			  fontSizeAdjust: "15px",
-        opacity: "0.5"
-        //   fontFamily: "Poppins",
+        opacity: "0.5",
+        fontFamily: "visbyRound",
 			},
       _focus: {
         boxShadow: "3px 4px 5px 0px rgba(0, 0, 0, 0.12)", 
@@ -310,6 +322,9 @@ const theme = extendTheme({
     Checkbox: CheckboxStyle,
     Modal: ModalStyle
     },
+    fonts: {
+      visbyRound: "visbyRound, sans-serif"
+    }
   },
 );
 
