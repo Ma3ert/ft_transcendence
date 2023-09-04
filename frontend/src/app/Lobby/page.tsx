@@ -4,7 +4,7 @@ import ScrollableStack from '@/components/ScrollableStack';
 import IconButton from '@/components/IconButton';
 import NavBar from '@/components/NavBar';
 import SideBar from '@/components/SideBar';
-import { TabList, Tabs, Tab, TabIndicator, Icon } from '@chakra-ui/react';
+import { TabList, Tabs, Tab, TabIndicator, Icon, Wrap, Stack, Text } from '@chakra-ui/react';
 // import UserField from '@/components/UserField';
 import UserRankField from '@/components/UserRankField';
 import {FaMedal, FaTrophy} from "react-icons/fa"
@@ -18,70 +18,33 @@ import AddToChannel from '@/components/AddToChannel';
 import CreateChannel from '@/components/CreateChannel';
 import UserSetting from '@/components/UserSetting';
 import PasswordSetting from '@/components/PasswordSetting';
-import PageLayout from '@/components/PageLayout';
+import PageBody from '@/components/PageBody';
 import UserRequest from '@/components/UserRequest';
 import ProgressLevel from '@/components/ProgressLevel';
+import SoloLobbyParty from '@/components/SoloLobbyParty';
+import MultiLobbyParty from '@/components/MultiLobbyParty';
+import LobbyParty from '@/components/LobbyParty';
+import PageLayout from '@/components/PageLayout';
+import { ReactNode, useState } from 'react';
+import Setting from '@/components/Setting';
+import Lobby from '@/components/Lobby';
+import Achievements from '@/components/Achievements';
+import FriendSection from '@/components/FriendSection';
+
+
 
 export default function Home() {
-  const items1=[
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-    ]
-  const items2=[
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    <UserField userPic='' userName='ma3ert'></UserField>,
-    ]
+  const [bodyIndex, setBodyIndex] = useState(0);
+
+  const bodys:ReactNode[] =  [<Lobby/>, <Achievements/>, <FriendSection/>, <Setting/>,];
   return (
+    <PageLayout body={bodys[bodyIndex]} bodySetter={setBodyIndex}/>
+    
     // <ProgressLevel></ProgressLevel>
-    <PageLayout
-      navBar={<NavBar/>}
-      tabs={[<Icon as={BiSolidUser} style={{ fontSize: "23px" }}/>,
-             <Icon as={BiSolidLockAlt} style={{ fontSize: "23px" }}/>]}
-      bodys={[<UserSetting></UserSetting>, <PasswordSetting></PasswordSetting>, ]}
-    />
-    // <PageLayout
-    //   navBar={<NavBar/>}
-    //   tabs={[<Icon as={FaUserPlus} style={{ fontSize: "23px" }}/>, <Icon as={FaUserGroup} style={{ fontSize: "23px" }}/>]}
-    //   bodys={[<ScrollableStack items={items1} width={555} height={624} spacing='25px'></ScrollableStack>,
-    //           <ScrollableStack items={items2} width={555} height={624} spacing='25px'></ScrollableStack>]}
-    // />
-    // <PageLayout
-    //   navBar={<NavBar/>}
-    //   tabs={[<Icon as={FaMedal} style={{ fontSize: "23px" }}/>, <Icon as={FaTrophy} style={{ fontSize: "23px" }}/>]}
-    //   bodys={[<ScrollableStack items={items1} width={535} height={624} spacing='25px'></ScrollableStack>,
-    //           <ScrollableStack items={items1} width={535} height={624} spacing='25px'></ScrollableStack>]}
-    // />
+    // <SoloLobbyParty></SoloLobbyParty>
+    // <MultiLobbyParty></MultiLobbyParty>
+    
+    
     // <NavBar></NavBar>
     // <SideBar></SideBar>
     // <Tabs w={"255px"} h={"50px"} isFitted variant={"default"}>
@@ -92,10 +55,9 @@ export default function Home() {
     //   </TabList>
     // </Tabs>
     // <AddToChannel users={items}/>
-      // <CreateChannel/>
-      // <UserSetting></UserSetting>
-      // <PasswordSetting></PasswordSetting>
-    
+    // <CreateChannel/>
+    // <UserSetting></UserSetting>
+    // <PasswordSetting></PasswordSetting>
     // <UserRankField userName='ma3ert' userPic=''></UserRankField>
   )
 }

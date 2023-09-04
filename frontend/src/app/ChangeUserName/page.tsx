@@ -4,6 +4,7 @@ import {FaArrowCircleRight} from "react-icons/fa"
 import IconButton from '@/components/IconButton';
 import Logo from "@/components/Logo"
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [send, setSend] = useState(0);
@@ -31,14 +32,18 @@ export default function Home() {
                 h={"66px"}
                 onChange={handleInputChange}
                 placeholder='new Username'/>
-              <IconButton
-                icon={FaArrowCircleRight}
-                size="44px"/>
+                <Link href={"/Lobby"}>
+                  <IconButton
+                    icon={FaArrowCircleRight}
+                    size="44px"/>
+                </Link>
             </Wrap>
-            <Button
-              fontSize={"20px"}
-              variant={"ghost"}
-              >skip</Button>
+            <Link href={"/Lobby"}>
+              <Button
+                fontSize={"20px"}
+                variant={"ghost"}
+                >skip</Button>
+            </Link>
           </Stack>
         </Stack>
     </Stack>
