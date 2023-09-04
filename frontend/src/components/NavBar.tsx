@@ -3,12 +3,11 @@ import React from 'react'
 import IconButton from './IconButton'
 import {FaSignOutAlt} from "react-icons/fa"
 import Logo from './Logo'
+import Link from 'next/link'
 
-type Props = {}
-// maxW={"60%"} mx={"auto"}  justify="space-between"
-const NavBar = (props: Props) => {
+const NavBar = () => {
   return (
-    <Wrap align={"center"} spacingX={"800px"} marginTop={"40px"}>
+    <Wrap align={"center"} spacingX={"800px"} marginTop={"50px"}>
       <Logo
         src='/logo.png'
         width='246px'
