@@ -19,6 +19,8 @@ const NavBar = (props: Props) => {
         <IconButton
           icon={FaSignOutAlt}
           size="40px"
+          color='#5B6171'
+          aria-label="Sign out"
         />
       </Wrap>
     </Wrap>

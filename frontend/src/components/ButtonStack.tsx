@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Text, Button, Wrap, Stack, Flex } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
@@ -19,7 +19,8 @@ const ButtonStack = (props: Props) => {
       <Stack spacing={props.spaceBetween} mx={0} px={0}>
         {props.buttons.map((button, index) => (
           <Button
-		        onClick={props.onClick[index]}
+            key={index}
+            onClick={props.onClick[index]}
             variant={props.style[index]}
             w={props.width}
             h={props.height}
@@ -28,7 +29,9 @@ const ButtonStack = (props: Props) => {
           >
             <Flex alignItems="center" justifyContent="center">
               <Wrap align="center" spacingX="20px">
-                <Text fontSize={props.fontSize ? props.fontSize : "20px"}>{button}</Text>
+                <Text fontSize={props.fontSize ? props.fontSize : "20px"}>
+                  {button}
+                </Text>
                 {!(props.Icons === undefined) && props.Icons[index]}
               </Wrap>
             </Flex>
