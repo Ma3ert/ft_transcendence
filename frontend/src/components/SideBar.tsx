@@ -8,18 +8,18 @@ import {FaUserGroup} from "react-icons/fa6"
 import {IoMdSettings} from "react-icons/io"
 
 interface Props {
-  bodySetter: React.Dispatch<React.SetStateAction<number>>
+  bodySetter?: React.Dispatch<React.SetStateAction<number>>
 }
 
-const SideBar = ({bodySetter} : Props) => {
-  const size = "40px";
+const SideBar:React.FC<Props> = ({bodySetter}) => {
+  const size = "25px";
   return (
-    <Stack spacing={"90px"} w={"60px"}>
-      <IconButton onClick={() => (bodySetter(0))} icon={AiFillHome} size={size}/> 
-      <IconButton onClick={() => (bodySetter(0))} icon={BiSolidBell} size={size}/>
-      <IconButton onClick={() => (bodySetter(1))} icon={FaMedal} size={size}/>
-      <IconButton onClick={() => (bodySetter(2))} icon={FaUserGroup} size={size}/>
-      <IconButton onClick={() => (bodySetter(3))} icon={IoMdSettings} size={size}/>
+    <Stack spacing={10}>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)} } icon={AiFillHome} size={size}/> 
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)} }icon={BiSolidBell} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (1)}}icon={FaMedal} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (2)}}icon={FaUserGroup} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (3)}}icon={IoMdSettings} size={size}/>
     </Stack>
   )
 }
