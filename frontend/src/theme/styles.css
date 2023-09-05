@@ -4,6 +4,11 @@
     scrollbar-color: #252932;
   } */
   
+@font-face {
+    font-family: 'visbyRound';
+    src: url('/fonts/VisbyRoundCF-Bold.otf') format('truetype');
+    font-weight: bold; /* You can specify font weight if needed */
+}
 .customScroll::-webkit-scrollbar {
     width: 10px;
 }

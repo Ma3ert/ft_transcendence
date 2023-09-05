@@ -12,6 +12,7 @@ type Props = {
 const ScrollableStack = ({ width, height, spacing, items }: Props) => {
   return (
     <Box
+      fontFamily={"visbyRound"}
       display="flex"
       justifyContent="center"
       alignItems="center"

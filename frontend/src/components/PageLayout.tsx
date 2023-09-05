@@ -1,26 +1,19 @@
-import { Stack, TabList, Tabs, Tab, TabPanels, TabPanel } from '@chakra-ui/react'
+import { Wrap } from '@chakra-ui/react'
 import { Icon } from 'next/dist/lib/metadata/types/metadata-types'
 import React, { ReactNode } from 'react'
+import SideBar from './SideBar';
 
 type Props = {
-    navBar: ReactNode;
-    tabs: ReactNode[];
-    bodys: ReactNode[];
+  body: ReactNode;
+  bodySetter: React.Dispatch<React.SetStateAction<number>>
 }
 
-const PageLayout = ({navBar, tabs, bodys}: Props) => {
+const PageLayout = ({body, bodySetter}: Props) => {
   return (
-    <Stack spacing={"80px"} align={"center"} margin={"auto"}>
-        {navBar}
-        <Tabs isFitted variant={"default"} align='center'>
-            <TabList  w={"180px"} h={"45px"} >
-                 {tabs.map((tab) => (<Tab>{tab}</Tab>))}
-            </TabList>
-            <TabPanels marginTop={"50px"}>
-              {bodys.map((body) => (<TabPanel>{body}</TabPanel>))}
-            </TabPanels>
-        </Tabs>
-    </Stack>
+    <Wrap spacingX={"90px"} align={"center"} marginLeft={"500px"}>
+      <SideBar bodySetter={bodySetter}></SideBar>
+      {body}
+    </Wrap>
   )
 }
 
