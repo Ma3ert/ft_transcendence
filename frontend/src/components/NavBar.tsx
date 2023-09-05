@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const NavBar = () => {
   return (
-    <Wrap align={"center"} spacingX={"800px"} marginTop={"50px"}>
+    <Wrap align={"center"} spacingX={"1000px"} marginTop={"50px"}>
       <Logo
         src='/logo.png'
         width='246px'
