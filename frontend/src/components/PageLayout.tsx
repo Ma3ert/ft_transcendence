@@ -10,7 +10,7 @@ type Props = {
 
 const PageLayout = ({body, bodySetter}: Props) => {
   return (
-    <Wrap spacingX={"90px"} align={"center"} marginLeft={"500px"}>
+    <Wrap spacingX={"90px"} align={"center"} marginLeft={"440px"}>
       <SideBar bodySetter={bodySetter}></SideBar>
       {body}
     </Wrap>
