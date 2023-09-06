@@ -19,9 +19,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     profile: Profile,
     cb: VerifyCallback,
   ) {
-      console.log(accessToken);
-      // console.log(refreshToken);
-      console.log(profile);
-      const user = this.authService.validateUser(profile.email)
+    const user = this.authService.validateUser(profile.emails[0].value);
+    return user || null;
   }
 }

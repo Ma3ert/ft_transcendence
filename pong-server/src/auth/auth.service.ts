@@ -6,11 +6,14 @@ import { UsersService } from "src/users/users.service";
 export class AuthService 
 {
     constructor(private readonly usersService: UsersService){}
-    async validateUser(userdetails: User)
+    async validateUser(userEmail: string)
     {
-        let user = await this.usersService.findOne(userdetails.email);
+        let user = await this.usersService.findOne(userEmail);
         if (!user)
-            user = await this.usersService.createUser(userdetails);
+        {
+            console.log("Could not find user creating..");
+            user = await this.usersService.createUser({email: userEmail});
+        }
         return (user);
     }
 }
