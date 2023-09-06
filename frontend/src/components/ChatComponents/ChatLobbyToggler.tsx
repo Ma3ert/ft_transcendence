@@ -20,9 +20,12 @@ const TogglerButton:React.FC<TgglerButtonProps> = ({value, isOpen, })=>{
 }
 
 
-const ChatLobbyToggler:React.FC<ChatLobbyTogglerProps> = ({})=>{
+const ChatLobbyToggler:React.FC<ChatLobbyTogglerProps> = ({action})=>{
     const [isOpen, setIsOpen] = useState(false);
-    return (<HStack maxWidth={'3xl'} w={'300px'} onClick={()=>setIsOpen(!isOpen)} borderRadius={'2xl'} bg='#1D222C' height={'50px'} maxH={'80px'} p={1}>
+    return (<HStack maxWidth={'3xl'} w={'300px'} onClick={()=>{
+        setIsOpen(!isOpen);
+        action && action(!isOpen);
+    }} borderRadius={'2xl'} bg='#1D222C' height={'50px'} maxH={'80px'} p={1}>
             <TogglerButton value={'Chat'} isOpen={isOpen} />
             <TogglerButton value={'Lobby'} isOpen={!isOpen} />
         </HStack>)

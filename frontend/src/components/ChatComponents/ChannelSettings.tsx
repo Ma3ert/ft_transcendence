@@ -16,7 +16,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
         spacing={4}
       >
         <HStack px={4} w={"90%"} justify={"space-between"}>
-          <Text color={"#5B6171"}>Private channel</Text>
+          <Text color={"#5B6171"} fontSize={'md'}>Private channel</Text>
           <Switch size={"lg"} colorScheme="red" />
         </HStack>
         <Button
