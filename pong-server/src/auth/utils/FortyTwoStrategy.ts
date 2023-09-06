@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile, VerifyCallback } from 'passport-42';
 import { AuthService } from '../auth.service';
@@ -19,7 +19,12 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     profile: Profile,
     cb: VerifyCallback,
   ) {
-    const user = this.authService.validateUser(profile.emails[0].value);
+    const userInfo = profile._json;
+    const user = this.authService.validateUser({
+      email: userInfo.email,
+      avatar: userInfo.image.link,
+      username: userInfo.login,
+    });
     return user || null;
   }
 }

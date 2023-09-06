@@ -18,12 +18,12 @@ enum Status {
 
 model User {
   id            String       @id @default(uuid())
-  // username      String        @unique
+  username      String        @unique
   email         String        @unique
-  // avatar        String
-  // twoFactor     Boolean
-  // xp            Int
-  // ladelLevel    Int
+  avatar        String
+  twoFactor     Boolean       @default(false)
+  xp            Int           @default(0)
+  ladelLevel    Int           @default(0)
   // status        Status
   // FriendsList   FriendsList? @relation(fields: [friendsListId], references: [id])
   // friendsListId String?

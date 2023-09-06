@@ -1,8 +1,8 @@
 export class User {
   id?: string;
-  username?: string;
+  username: string;
   email: string;
-  avatar?: string;
+  avatar: string;
   twoFactor?: boolean;
   xp?: number;
   ladelLevel?: number;
