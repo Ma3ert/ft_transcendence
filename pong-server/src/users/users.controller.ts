@@ -24,12 +24,12 @@ export class UsersController {
   }
 
   @Get('current')
-  @UseGuards(LoggedInGuard)
   getCurrentUser(@Req() req) {
     return { status: 'success', data: req.user };
   }
 
   @Get()
+  @UseGuards(LoggedInGuard)
   findAll() {
     return this.usersService.findAll();
   }
@@ -40,8 +40,8 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return await this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')

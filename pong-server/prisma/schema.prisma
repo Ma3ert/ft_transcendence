@@ -22,8 +22,7 @@ model User {
   email         String        @unique
   avatar        String
   twoFactor     Boolean       @default(false)
-  xp            Int           @default(0)
-  ladelLevel    Int           @default(0)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
   // status        Status
   // FriendsList   FriendsList? @relation(fields: [friendsListId], references: [id])
   // friendsListId String?

@@ -34,11 +34,20 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.prismaService.user.findMany();
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  updateUser(id: string, updateUserDto: UpdateUserDto) {
+    return this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        username: updateUserDto.username,
+        avatar: updateUserDto.avatar,
+        twoFactor: updateUserDto.twoFactor
+      },
+    });
   }
 
   remove(id: number) {
