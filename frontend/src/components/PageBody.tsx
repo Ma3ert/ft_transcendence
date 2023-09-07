@@ -10,14 +10,13 @@ type Props = {
 
 const PageBody = ({navBar, tabs, bodys}: Props) => {
   return (
-    <Stack spacing={"100px"} align={"center"} h={"1080px"}>
-        {navBar}
+    <Stack spacing={1}   w={'100%'} align={"center"} justify={'center'} border="1px" borderColor='red'  h={'auto'}>
         <Tabs isFitted variant={"default"} align='center'>
             <TabList  w={"180px"} h={"45px"} >
-                 {tabs.map((tab) => (<Tab>{tab}</Tab>))}
+                 {tabs.map((tab, index) => (<Tab key={index}>{tab}</Tab>))}
             </TabList>
             <TabPanels marginTop={"50px"}>
-              {bodys.map((body) => (<TabPanel>{body}</TabPanel>))}
+              {bodys.map((body, index) => (<TabPanel key={index}>{body}</TabPanel>))}
             </TabPanels>
         </Tabs>
     </Stack>

@@ -58,3 +58,57 @@ export const messages:Message[] = [
     time:'12:01',
     Author:friendsList[1]
 }]
+
+export const Channels:Channel[] =[
+    {
+        isPrivate:true,
+        name:'New Channel',
+        members:friendsList,
+        admin:friendsList[0],
+        membersCount:3
+    }
+]
+
+
+export const ChannelTypes:string[] = [
+    'Private channels',
+    'Public channels',
+    'Protected channels',
+    'Private messages'
+]
+
+export const UserSettings:friendAction [] = [
+    {
+        actionName:'Invite to game',
+        important:false
+    },
+    {
+        actionName:'See Profile',
+        important:false
+    },
+    {
+        actionName:'Make party admin',
+        important:false
+    },
+    {
+        actionName:'Make channel owner',
+        important:false
+    },
+    {
+        actionName:'Ban from channel',
+        important:true
+    },
+    {
+        actionName:'Kick from channel',
+        important:true
+    },
+    {
+        actionName:'Mute',
+        important:true
+    },
+    {
+        actionName:'Block',
+        important:true
+    },
+
+]
