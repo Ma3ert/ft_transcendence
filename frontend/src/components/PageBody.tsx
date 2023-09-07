@@ -14,7 +14,7 @@ const PageBody = ({navBar, tabs, bodys}: Props) => {
         {navBar}
         <Tabs isFitted variant={"default"} align='center'>
             <TabList  w={"180px"} h={"45px"} >
-                 {tabs.map((tab) => (<Tab>{tab}</Tab>))}
+              {tabs.map((tab) => (<Tab>{tab}</Tab>))}
             </TabList>
             <TabPanels marginTop={"50px"}>
               {bodys.map((body) => (<TabPanel>{body}</TabPanel>))}
