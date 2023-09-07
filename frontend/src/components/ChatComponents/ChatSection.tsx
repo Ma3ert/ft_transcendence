@@ -14,7 +14,7 @@ const ChatSection:React.FC<ChatSectionProps> = ({})=>{
 
     return (<Stack justify={'center'} alignItems={'center'} w='100%' h='100%'>
     <ChatLobbyToggler action={setIsPrivateChat} />
-    <HStack w='100%' h='100%'  justify={'space-around'} alignItems={'center'}>
+    <HStack w='100%' h='100%'  justify={'space-around'} alignItems={'flex-start'}>
       <Stack justify='start' alignItems={'center'}  w={'20%'} h='100%' >
         <ChannelToggler />
         <FriendsList friends={friendsList} />

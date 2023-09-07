@@ -4,7 +4,7 @@ interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   return (
-    <Stack justify="center" align="space-between" w="100%" h="100%" spacing={4}>
+    <Stack justify="center" align="space-between" w="100%" maxW={'300px'} h="100%" spacing={4}>
       <Stack
         w={"95%"}
         bg="#1D222C"
