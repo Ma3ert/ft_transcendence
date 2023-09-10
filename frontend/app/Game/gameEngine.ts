@@ -1,9 +1,9 @@
-interface point {
+export interface Point {
 	x: number;
 	y: number;
 }
 
-function getNextStep(current:point, target:point, stepSize:number) {
+function getNextStep(current:Point, target:Point, stepSize:number) {
 	const dx: number = target.x - current.x;
 	const dy: number = target.y - current.y;
 	const angle: number = Math.atan2(dy, dx);
@@ -17,10 +17,10 @@ function getNextStep(current:point, target:point, stepSize:number) {
 	return { x: newX, y: newY };
 }
 
-function getBallTrajectory(start: point, end: point): point[]
+export function getBallTrajectory(start: Point, end: Point): Point[]
 {
-	var toAdd:point = start;
-	var toReturn:point[] = [];
+	var toAdd:Point = start;
+	var toReturn:Point[] = [];
 	while (toAdd.x !== end.x && toAdd.y !== end.y)
 	{
 		toAdd = getNextStep(toAdd, {x: 500, y:500}, 10);
@@ -29,4 +29,25 @@ function getBallTrajectory(start: point, end: point): point[]
 	return (toReturn);
 }
 
-console.log(getBallTrajectory({x: 100, y:100}, {x: 500, y:500}));
+export function getBallPositions(bottomLeft: Point, topLeft: Point, baseLine: number, topLine: number): Point[]
+{
+	var baseLineSteps: number = baseLine / 5.0;
+	var topLineSteps: number = topLine / 5.0;
+	var shooting : Point[] = [
+		{x: bottomLeft.x, y: bottomLeft.y},
+		{x: bottomLeft.x + baseLineSteps, y: bottomLeft.y},
+		{x: bottomLeft.x + baseLineSteps * 2, y: bottomLeft.y},
+		{x: bottomLeft.x + baseLineSteps * 3, y: bottomLeft.y},
+		{x: bottomLeft.x + baseLineSteps * 4, y: bottomLeft.y}
+	]
+	var receiving : Point[] = [
+		{x: topLeft.x, y: topLeft.y},
+		{x: topLeft.x + topLineSteps, y: topLeft.y},
+		{x: topLeft.x + topLineSteps * 2, y: topLeft.y},
+		{x: topLeft.x + topLineSteps * 3, y: topLeft.y},
+		{x: topLeft.x + topLineSteps * 4, y: topLeft.y}
+	]
+	return (shooting.concat(receiving))
+}
+
+// console.log(getBallPositions({x: 100, y: 500}, {x: 200, y: 200}, 300, 200));

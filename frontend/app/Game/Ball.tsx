@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import { Decimal } from 'decimal.js';
 
 type Props = {}
 
