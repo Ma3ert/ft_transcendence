@@ -34,7 +34,7 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prismaService.user.findMany;
+    return this.prismaService.user.findMany();
   }
 
   updateUser(id: string, updateUserDto: UpdateUserDto) {
@@ -48,6 +48,11 @@ export class UsersService {
         twoFactor: updateUserDto.twoFactor
       },
     });
+  }
+
+  updateUserAuth(id: string, updateUserDto: UpdateUserDto)
+  {
+    return true;
   }
 
   remove(id: number) {

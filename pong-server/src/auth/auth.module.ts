@@ -8,6 +8,10 @@ import { SessionSerializer } from './utils/Serializer';
 @Module({
   imports: [UsersModule],
   controllers: [AuthController],
-  providers: [FortyTwoStrategy, SessionSerializer ,AuthService],
+  providers: [
+    FortyTwoStrategy,
+    SessionSerializer,
+    AuthService,
+  ],
 })
 export class AuthModule {}

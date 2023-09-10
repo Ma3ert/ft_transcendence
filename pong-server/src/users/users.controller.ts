@@ -20,6 +20,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptimizerPipe } from './utils/imageOptimizer.pipe';
+import { GetSessionInterceptor } from 'src/auth/utils/GetSession.interceptor';
 
 @Controller('users')
 export class UsersController {
@@ -37,12 +38,14 @@ export class UsersController {
 
   @Get()
   @UseGuards(LoggedInGuard)
+  // @UseInterceptors(GetSessionInterceptor)
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    //? This route should calculate properties like stats (wins or loses) and get all user game history
     return this.usersService.findOne(id);
   }
 
@@ -62,8 +65,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    if (image)
-      updateUserDto.avatar = image;
+    if (image) updateUserDto.avatar = image;
     return await this.usersService.updateUser(id, updateUserDto);
   }
 
