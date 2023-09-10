@@ -20,7 +20,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptimizerPipe } from './utils/imageOptimizer.pipe';
-import { GetSessionInterceptor } from 'src/auth/utils/GetSession.interceptor';
 
 @Controller('users')
 export class UsersController {

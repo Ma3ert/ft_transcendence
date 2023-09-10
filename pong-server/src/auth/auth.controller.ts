@@ -5,15 +5,14 @@ import {
   Req,
   HttpException,
   HttpStatus,
-  UseInterceptors,
   Post,
   Body,
 } from '@nestjs/common';
 import { FortyTwoGuard } from './utils/FortyTwo.guard';
 import { Request } from 'express';
-import { GetSessionInterceptor } from './utils/GetSession.interceptor';
 import { AuthService } from './auth.service';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +26,6 @@ export class AuthController {
 
   @Get('42/callback')
   @UseGuards(FortyTwoGuard)
-  @UseInterceptors(GetSessionInterceptor)
   handleRedirect(@Req() req: Request) {
     return { user: req.session.id };
   }
@@ -42,6 +40,12 @@ export class AuthController {
         );
     });
     return { status: 'success', message: 'User logout succesfully' };
+  }
+
+  @Post('local/login')
+  @UseGuards(AuthGuard('local'))
+  handleLocalLogin() {
+    return { message: 'Local authentication' };
   }
 
   @Get('/twoFactor')
