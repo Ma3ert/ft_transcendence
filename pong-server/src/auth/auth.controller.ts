@@ -44,8 +44,8 @@ export class AuthController {
 
   @Post('local/login')
   @UseGuards(AuthGuard('local'))
-  handleLocalLogin() {
-    return { message: 'Local authentication' };
+  handleLocalLogin(@Req() req: Request) {
+    return { user: req.user };
   }
 
   @Get('/twoFactor')
