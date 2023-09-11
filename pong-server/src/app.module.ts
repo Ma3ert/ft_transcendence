@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { memoryStorage } from 'multer';
     MulterModule.register({ storage: memoryStorage() }),
     AuthModule,
     PassportModule.register({ session: true }),
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
