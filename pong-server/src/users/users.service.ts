@@ -52,7 +52,14 @@ export class UsersService {
 
   updateUserAuth(id: string, updateUserDto: UpdateUserDto)
   {
-    return true;
+    return this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updateUserDto
+      },
+    });
   }
 
   remove(id: number) {

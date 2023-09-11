@@ -1,7 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { UsersService } from 'src/users/users.service';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,7 @@ export class AuthService {
   async generateTwoFactorPin(userData: User) {
     // Generate a two factor pin
     if (!userData)
-      throw new HttpException(
-        'You need to authenticate using you intra account first.',
-        HttpStatus.UNAUTHORIZED,
-      );
+      return null;
     const rawPin = Math.floor(Math.random() * 899999) + 100000;
     const Pin = await bcrypt.hash(rawPin.toString(), 12);
 
@@ -27,28 +25,22 @@ export class AuthService {
       twoFactorPin: Pin,
     });
     // Send it to the user email
-    console.log('Pin:', rawPin);
+    return rawPin;
   }
 
-  async validateTwoFactorPin(userData: User, authPin: string) {
+  async validateTwoFactorPin(pin: string, user: UpdateUserDto) {
     // Check if the two factor pin match
-    if (!userData)
-    throw new HttpException(
-      'You need to authenticate using you intra account first.',
-      HttpStatus.UNAUTHORIZED,
-    );
-    const user = await this.usersService.findById(userData.id);
-    if (user.twoFactorRetry <= 3)
-      throw new HttpException(
-        'You have reached maxium numbers of retires please contact an adminstrator to unlock you account.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    const validated = await bcrypt.compare(authPin, user.twoFactorPin);
+
     // Alter the the pinValidation status if the pin is validated
+    const validated = await bcrypt.compare(pin, user.twoFactorPin);
+    console.log("Validation result:", validated);
     if (!validated)
-      return await this.usersService.updateUserAuth(user.id, {
+    {
+      await this.usersService.updateUserAuth(user.id, {
         twoFactorRetry: user.twoFactorRetry + 1,
       });
-    await this.usersService.updateUserAuth(user.id, { pinValidated: true });
+      return null;
+    }
+    return await this.usersService.updateUserAuth(user.id, { pinValidated: true, twoFactorPin: undefined });
   }
 }

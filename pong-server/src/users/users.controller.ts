@@ -37,7 +37,6 @@ export class UsersController {
 
   @Get()
   @UseGuards(LoggedInGuard)
-  // @UseInterceptors(GetSessionInterceptor)
   findAll() {
     return this.usersService.findAll();
   }

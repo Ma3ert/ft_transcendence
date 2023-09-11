@@ -11,12 +11,18 @@ import {
 import { FortyTwoGuard } from './utils/FortyTwo.guard';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
-import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { LoggedInGuard } from './utils/LoggedIn.guard';
+import { LocalAuthGuard } from './utils/LocalAuth.guard';
+import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcryptjs';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get('42/login')
   @UseGuards(FortyTwoGuard)
@@ -39,22 +45,46 @@ export class AuthController {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
     });
-    return { status: 'success', message: 'User logout succesfully' };
+    return { status: 'success', message: 'User logout successfully.' };
   }
 
   @Post('local/login')
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   handleLocalLogin(@Req() req: Request) {
-    return { user: req.user };
+    return { status: 'success', message: 'User logged in successfully.' };
   }
 
   @Get('/twoFactor')
-  requestTwoFactorPin(@Req() request: any) {
-    this.authService.generateTwoFactorPin(request.user);
+  @UseGuards(LoggedInGuard)
+  async requestTwoFactorPin(@Req() request: any) {
+    const pin = await this.authService.generateTwoFactorPin(request.user);
+    if (!pin)
+      throw new HttpException(
+        'You do not have enough permission please login again.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    return { status: 'success', pinNumber: pin };
   }
 
   @Post('/twoFactor')
-  validateTwoFactorPin(@Req() request: any, @Body('pin') pin: string) {
-    this.authService.validateTwoFactorPin(request.user, pin);
+  async validateTwoFactorPin(@Req() request: any, @Body('pin') pin: string) {
+    if (!request.user)
+      throw new HttpException(
+        'You do not have enough permission please login again.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    const user = await this.usersService.findById(request.user.id);
+    if (user.twoFactorRetry >= 3)
+      throw new HttpException(
+        'You have reached maxium numbers of retires please contact an adminstrator to unlock you account.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    const result = await this.authService.validateTwoFactorPin(pin, request.user);
+    if (!result)
+      throw new HttpException(
+        'Invalid 2FA Pin number please provide a valid one.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    return { status: 'success', message: 'Pin validated succesfully.'}
   }
 }
