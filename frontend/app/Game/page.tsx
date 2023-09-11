@@ -8,7 +8,7 @@ type Props = {}
 
 export default function Home() {
   const positions: Point[] = getBallPositions({x: 270, y: 803}, {x: 460, y: 339}, 900, 400);
-  const trajectory: Point[] = getBallTrajectory(positions[9], positions[0], 15)
+  const trajectory: Point[] = getBallTrajectory(positions[5], positions[3], 15)
   console.log(trajectory)
   return (
     <>
