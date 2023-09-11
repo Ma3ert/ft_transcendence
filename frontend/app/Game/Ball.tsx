@@ -1,20 +1,55 @@
 import React from 'react'
 import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
+import {Point} from "./gameEngine"
 
-type Props = {}
+type Props = {
+	points: Point[]
+}
 
-const Ball = (props: Props) => {
+const Ball = ({points}: Props) => {
 	var box = 100;
-	const [bx, setBx] = useState(500)
-	const [by, setBy] = useState(900)
+	const [bx, setBx] = useState(points[0].x)
+	const [by, setBy] = useState(points[0].y)
 	const [scale, setScale] = useState(by / 800)
+	const [index, setIndex] = useState(1)
 	var boxSize = scale * box
+	const handleMovement = () => {
+		if (index < points.length)
+		{
+			setIndex(index + 1);
+			setBy(points[index].y)
+			setBx(points[index].x)
+			setScale(by / 800)
+			boxSize = scale * box
+		}
+	}
 	const handleKeyDown = (event: KeyboardEvent) => {
 		if (event.key === "ArrowUp")
 		{
-			if (by - 10 > 10)
-				setBy(by - 10)
+			// if (by - 10 > 10)
+			// 	setBy(by - 10)
+			if (index < points.length)
+			{
+				setBy(points[index].y)
+				setBx(points[index].x)
+				console.log(points[index])
+				setIndex(index + 1);
+			}
+			setScale(by / 800)
+			boxSize = scale * box
+		}
+		if (event.key === "ArrowDown")
+		{
+			// if (by - 10 > 10)
+			// 	setBy(by - 10)
+			if (index > 0)
+			{
+				setBy(points[index].y)
+				setBx(points[index].x)
+				console.log(points[index])
+				setIndex(index - 1);
+			}
 			setScale(by / 800)
 			boxSize = scale * box
 		}
@@ -36,33 +71,19 @@ const Ball = (props: Props) => {
 		}
 	}
 	useEffect(() => {
-		window.addEventListener('keydown', handleKeyDown);
+		setTimeout(handleMovement, 60);
+		// window.addEventListener('keydown', handleKeyDown);
+		// console.log("event is fired ", index)
 		// console.log("box size: " + boxSize)
 		// console.log("scale: " + scale.toString())
 		// console.log("y cordination: " + by.toString())
 		// console.log("------------------------------")
-		return () => {
-		window.removeEventListener('keydown', handleKeyDown);
-		};
-	}, [by, bx, box, scale]);
+		// return () => {
+		// window.removeEventListener('keydown', handleKeyDown);
+		// };
+	}, [by, bx, box, scale, index]);
   	return (
 		<>
-			<Box
-				top={"10px"}
-				position={"absolute"}
-				w={"100px"}
-				h={"10px"}
-				bg={"#fff"}
-			>
-			</Box>
-			<Box
-				top={"1000px"}
-				position={"absolute"}
-				w={"100px"}
-				h={"10px"}
-				bg={"#fff"}
-			>
-			</Box>
 			<Box
 				bg={"#fff"}
 				position={"absolute"}
