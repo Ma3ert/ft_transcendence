@@ -4,7 +4,7 @@ interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   return (
-    <Stack justify="center" align="space-between" w="100%" h="100%" spacing={4}>
+    <Stack justify="center" align="space-between" w="100%" maxW={'300px'} h="100%" spacing={4}>
       <Stack
         w={"95%"}
         bg="#1D222C"
@@ -16,7 +16,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
         spacing={4}
       >
         <HStack px={4} w={"90%"} justify={"space-between"}>
-          <Text color={"#5B6171"}>Private channel</Text>
+          <Text color={"#5B6171"} fontSize={'md'}>Private channel</Text>
           <Switch size={"lg"} colorScheme="red" />
         </HStack>
         <Button

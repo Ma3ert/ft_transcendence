@@ -299,6 +299,10 @@ const InputStyle: ComponentStyleConfig = {
 };
 
 const theme = extendTheme({
+  breakpoints: {
+    // Define your custom breakpoint here
+    xl: "1440px", // Adjust the value as needed
+  },
   config,
   styles: {
     global: {
@@ -326,6 +330,8 @@ const theme = extendTheme({
       visbyRound: "visbyRound, sans-serif"
     }
   },
+  
+
 );
 
 export default theme;
