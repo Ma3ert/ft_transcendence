@@ -13,7 +13,7 @@ interface Props {
 }
 
 const SideBar:React.FC<Props> = ({bodySetter}) => {
-  const size = "25px";
+  const size = "35px";
   return (
     <Stack spacing={10}>
       <Link href='/'>
