@@ -13,6 +13,7 @@ const Ball = ({points}: Props) => {
 	const [by, setBy] = useState(points[0].y)
 	const [scale, setScale] = useState(by / 800)
 	const [index, setIndex] = useState(1)
+	console.log("ball rendered up ", index)
 	var boxSize = scale * box
 	const handleMovement = () => {
 		if (index < points.length)
@@ -71,7 +72,7 @@ const Ball = ({points}: Props) => {
 		}
 	}
 	useEffect(() => {
-		setTimeout(handleMovement, 60);
+		setTimeout(handleMovement, 25);
 		// window.addEventListener('keydown', handleKeyDown);
 		// console.log("event is fired ", index)
 		// console.log("box size: " + boxSize)
