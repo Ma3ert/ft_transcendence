@@ -10,13 +10,14 @@ export class AuthService {
   async validateUser(userData: User) {
     let user = await this.usersService.findOne(userData.email);
     if (!user) user = await this.usersService.createUser(userData);
+    if (user)
+      await this.usersService.updateUserAuth(user.id, { status: 'ONLINE' });
     return user;
   }
 
   async generateTwoFactorPin(userData: User) {
     // Generate a two factor pin
-    if (!userData)
-      return null;
+    if (!userData) return null;
     const rawPin = Math.floor(Math.random() * 899999) + 100000;
     const Pin = await bcrypt.hash(rawPin.toString(), 12);
 
@@ -33,14 +34,15 @@ export class AuthService {
 
     // Alter the the pinValidation status if the pin is validated
     const validated = await bcrypt.compare(pin, user.twoFactorPin);
-    console.log("Validation result:", validated);
-    if (!validated)
-    {
+    if (!validated) {
       await this.usersService.updateUserAuth(user.id, {
         twoFactorRetry: user.twoFactorRetry + 1,
       });
       return null;
     }
-    return await this.usersService.updateUserAuth(user.id, { pinValidated: true, twoFactorPin: undefined });
+    return await this.usersService.updateUserAuth(user.id, {
+      pinValidated: true,
+      twoFactorPin: undefined,
+    });
   }
 }
