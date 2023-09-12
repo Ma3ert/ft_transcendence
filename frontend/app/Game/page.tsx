@@ -51,7 +51,7 @@ export default function Home() {
           >
         </Box>
       ))}
-      <Ball points={table[index]}/>
+      <Ball points={table[index]} reset={index}/>
     </>
   )
 }

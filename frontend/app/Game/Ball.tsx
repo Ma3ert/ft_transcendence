@@ -5,91 +5,88 @@ import {Point} from "./gameEngine"
 
 type Props = {
 	points: Point[]
+	reset: number
 }
 
-const Ball = ({points}: Props) => {
+const Ball = ({ points, reset }: Props) => {
 	var box = 100;
-	const [bx, setBx] = useState(points[0].x)
-	const [by, setBy] = useState(points[0].y)
-	const [scale, setScale] = useState(by / 800)
+	const [scale, setScale] = useState(points[0].y / 800)
 	const [index, setIndex] = useState(1)
-	console.log("ball rendered up ", index)
+	const [start, setStart] = useState(reset)
 	var boxSize = scale * box
 	const handleMovement = () => {
-		if (index < points.length)
+		if (index < points.length - 1 && start === reset)
 		{
 			setIndex(index + 1);
-			setBy(points[index].y)
-			setBx(points[index].x)
-			setScale(by / 800)
+			setScale(points[index].y / 800)
 			boxSize = scale * box
+		}
+		else {
+			setIndex(0)
+			setStart(reset)
+			
 		}
 	}
-	const handleKeyDown = (event: KeyboardEvent) => {
-		if (event.key === "ArrowUp")
-		{
-			// if (by - 10 > 10)
-			// 	setBy(by - 10)
-			if (index < points.length)
-			{
-				setBy(points[index].y)
-				setBx(points[index].x)
-				console.log(points[index])
-				setIndex(index + 1);
-			}
-			setScale(by / 800)
-			boxSize = scale * box
-		}
-		if (event.key === "ArrowDown")
-		{
-			// if (by - 10 > 10)
-			// 	setBy(by - 10)
-			if (index > 0)
-			{
-				setBy(points[index].y)
-				setBx(points[index].x)
-				console.log(points[index])
-				setIndex(index - 1);
-			}
-			setScale(by / 800)
-			boxSize = scale * box
-		}
-		else if (event.key === "ArrowDown"){
-			if (by + 10 < 1000)
-				setBy(by + 10)
-			setScale(by / 800)
-			boxSize = scale * box
-		}
-		else if (event.key === "ArrowRight")
-		{
-			if (bx + 10 < 1000)
-				setBx(bx + 10)
-		}
-		else if (event.key === "ArrowLeft")
-		{
-			if (bx - 10 > 10)
-				setBx(bx - 10)
-		}
-	}
+	// const handleKeyDown = (event: KeyboardEvent) => {
+	// 	if (event.key === "ArrowUp")
+	// 	{
+	// 		// if (by - 10 > 10)
+	// 		// 	setBy(by - 10)
+	// 		if (index < points.length)
+	// 		{
+	// 			setBy(points[index].y)
+	// 			setBx(points[index].x)
+	// 			console.log(points[index])
+	// 			setIndex(index + 1);
+	// 		}
+	// 		setScale(by / 800)
+	// 		boxSize = scale * box
+	// 	}
+	// 	if (event.key === "ArrowDown")
+	// 	{
+	// 		// if (by - 10 > 10)
+	// 		// 	setBy(by - 10)
+	// 		if (index > 0)
+	// 		{
+	// 			setBy(points[index].y)
+	// 			setBx(points[index].x)
+	// 			console.log(points[index])
+	// 			setIndex(index - 1);
+	// 		}
+	// 		setScale(by / 800)
+	// 		boxSize = scale * box
+	// 	}
+	// 	else if (event.key === "ArrowDown"){
+	// 		if (by + 10 < 1000)
+	// 			setBy(by + 10)
+	// 		setScale(by / 800)
+	// 		boxSize = scale * box
+	// 	}
+	// 	else if (event.key === "ArrowRight")
+	// 	{
+	// 		if (bx + 10 < 1000)
+	// 			setBx(bx + 10)
+	// 	}
+	// 	else if (event.key === "ArrowLeft")
+	// 	{
+	// 		if (bx - 10 > 10)
+	// 			setBx(bx - 10)
+	// 	}
+	// }
 	useEffect(() => {
-		setTimeout(handleMovement, 25);
+		setTimeout(handleMovement, 60);
 		// window.addEventListener('keydown', handleKeyDown);
-		// console.log("event is fired ", index)
-		// console.log("box size: " + boxSize)
-		// console.log("scale: " + scale.toString())
-		// console.log("y cordination: " + by.toString())
-		// console.log("------------------------------")
 		// return () => {
 		// window.removeEventListener('keydown', handleKeyDown);
 		// };
-	}, [by, bx, box, scale, index]);
+	}, [box, scale, index]);
   	return (
 		<>
 			<Box
 				bg={"#fff"}
 				position={"absolute"}
-				top={by}
-				left={bx}
+				top={points[index].y}
+				left={points[index].x}
 				boxSize={boxSize.toString() + "px"}
 				borderRadius={"full"}
 				>
