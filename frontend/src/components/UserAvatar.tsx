@@ -9,7 +9,7 @@ interface UserAvatarProps {
 const UserAvatar:React.FC<UserAvatarProps> = ({url, status, name}) => {
     return (
         <Avatar name={name} src={url} border={'2px'} borderColor={'green.400'}>
-            {status && <AvatarBadge boxSize='1.25em' bg='green.500' />
+            {status && <AvatarBadge boxSize='1em' border='none' bg='green.500' />
 }
         </Avatar>    )
 }

@@ -11,7 +11,7 @@ interface ChannelChatProps {
     Peer?: User
 }
 const ChannelChat:React.FC<ChannelChatProps> = ({isPrivateChat, Channel, Peer})=>{
-    return (<Stack borderRadius={'2xl'} bg='#1D222C' justify={'space-between'} alignItems={'center'} w='100%' h='100%' py={2}>
+    return (<Stack borderRadius={'2xl'} bg='#1D222C' justify={'space-between'} maxW={'6xl'} alignItems={'center'} w='100%' flex={1} py={2}>
             {isPrivateChat ? <PrivateChatHeader Peer={Peer!}/> : <ChannelChatHeader channel={Channel!}/>}
             <MessageStack  messages={messages}/>
             <ChatInputBox/>
