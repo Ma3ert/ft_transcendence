@@ -3,6 +3,7 @@ import { Box } from "@chakra-ui/react"
 import { Key, useEffect, useState } from "react"
 import Ball from "./Ball"
 import {getBallTrajectory, getBallPositions, Point} from "./gameEngine"
+import FirstRaquette from "./FirstRaquette"
 
 type Props = {}
 
@@ -30,13 +31,13 @@ export default function Home() {
         setIndex(index - 1)
     }
   }
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown)
-    console.log("is called")
-    return () => {
-		  window.removeEventListener('keydown', handleKeyDown);
-		};
-  }, [index])
+  // useEffect(() => {
+  //   window.addEventListener("keydown", handleKeyDown)
+  //   console.log("is called")
+  //   return () => {
+	// 	  window.removeEventListener('keydown', handleKeyDown);
+	// 	};
+  // }, [index])
   console.log(trajectory)
   return (
     <>
@@ -51,7 +52,23 @@ export default function Home() {
           >
         </Box>
       ))}
-      <Ball points={table[index]} reset={index}/>
+        <Box
+          bg={"#fff"}
+          position={"absolute"}
+          boxSize={"10px"}
+          borderRadius={"full"}
+          top={100}
+          left={270 + 900 / 2}
+          >
+        </Box>
+      {/* <Ball points={table[index]} reset={index}/> */}
+      <FirstRaquette
+        w="140px"
+        h="140px"
+        x={270}
+        y={803}
+        lenght={900}
+      />
     </>
   )
 }
