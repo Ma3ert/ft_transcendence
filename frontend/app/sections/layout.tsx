@@ -24,7 +24,7 @@ const chatLayout: React.FC<LayoutProps> = ({ children }) => {
               lg: "red",
               xl: "yellow",
             }}
-            w={{ base: "100%", sm: "100%", md: "98%", lg: "98%", xl: "80%" }}
+            w={{ base: "80%", sm: "100%", md: "98%", lg: "98%", xl: "85%"}}
             h="100vh"
             flex={1}
             maxH="100%"
@@ -40,7 +40,7 @@ const chatLayout: React.FC<LayoutProps> = ({ children }) => {
               <SideBar />
             </Box>
             <Stack flex={1} p={4}  h="100%">
-              <Box  border='1px' borderColor={'green'}>
+              <Box>
                 <Header />
               </Box>
               <Box
@@ -48,9 +48,8 @@ const chatLayout: React.FC<LayoutProps> = ({ children }) => {
                 justifyContent={"center"}
                 alignItems={"center"}
                 w={'100%'}
-                border='1px'
-                borderColor='blue'
-                flex="1"
+                maxH={'100%'}
+                h={'100%'}
               >
                 {children}
               </Box>

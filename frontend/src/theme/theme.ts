@@ -302,6 +302,7 @@ const theme = extendTheme({
   breakpoints: {
     // Define your custom breakpoint here
     xl: "1440px", // Adjust the value as needed
+    vl: "1620px"
   },
   config,
   styles: {

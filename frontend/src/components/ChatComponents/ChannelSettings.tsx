@@ -4,19 +4,23 @@ interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   return (
-    <Stack justify="center" align="space-between" w="100%" maxW={'300px'} h="100%" spacing={4}>
+    <Stack justify="space-between" alignItems={'center'}   h="100%"   >
       <Stack
-        w={"95%"}
+        w={"auto"}
         bg="#1D222C"
         borderRadius={"2xl"}
         p={4}
         alignItems={"start"}
         justify="start"
-        flex={1}
         spacing={4}
+        h='auto'
+        minW={'300px'}
+        minH={'50%'}
+        maxH='500px'
+
       >
         <HStack px={4} w={"90%"} justify={"space-between"}>
-          <Text color={"#5B6171"} fontSize={'md'}>Private channel</Text>
+          <Text color={"#5B6171"} fontSize='sm'> Private channel</Text>
           <Switch size={"lg"} colorScheme="red" />
         </HStack>
         <Button
@@ -26,7 +30,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           w="90%"
         >
           <HStack justify={"space-between"} w={"100%"}>
-            <Text color={"#5B6171"}>Set Password</Text>
+            <Text fontSize={'sm'} color={"#5B6171"}>Set Password</Text>
             <Icon as={SlArrowRight} />
           </HStack>
         </Button>
@@ -37,12 +41,13 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           w="90%"
         >
           <HStack justify={"space-between"} w={"100%"}>
-            <Text color={"#5B6171"}>Members</Text>
+            <Text fontSize={'sm'} color={"#5B6171"}>Members</Text>
             <Icon as={SlArrowRight} />
           </HStack>
         </Button>
       </Stack>
-      <Button
+    <Stack spacing={3}>
+    <Button
         mx={"auto"}
         borderRadius={"2xl"}
         _hover={{ opacity: 0.8 }}
@@ -54,6 +59,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       >
         <Text>Leave Channel</Text>
       </Button>
+      <Button
+        colorScheme="darkGhost"
+        color={"#5B6171"}
+        borderRadius={"2xl"}
+        _hover={{ opacity: 0.8 }}
+        >
+          Envite
+        </Button>
+    </Stack>
     </Stack>
   );
 };

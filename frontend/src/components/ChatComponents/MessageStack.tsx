@@ -7,8 +7,9 @@ interface MessageStackProps {
     messages:Message[]
 }
 const MessageStack:React.FC<MessageStackProps> = ({messages})=>{
+   
     return (
-        <Stack flex={1}  spacing={4} justify={'start'} alignItems={'start'} w='100%' maxH={'40vh'}  overflowY={'scroll'} className={LayoutStyles.customScroll}>
+        <Stack px={2} py={4}  maxHeight='100%'   spacing={2}  justify={'start'} alignItems={'start'} w='100%'   overflowY={'auto'} className={LayoutStyles.customScroll}>
             {messages.map((message,index)=>{
                 return (
                     <MessageBox Message={message} key={index}/>

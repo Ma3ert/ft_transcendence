@@ -9,6 +9,7 @@ type Message = {
     incoming:boolean,
     time:string
     Author:User
+    EnviteMessage:boolean
 }
 
 type Channel = {

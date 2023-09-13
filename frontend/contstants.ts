@@ -22,41 +22,41 @@ export const friendsList:User[] = [{
 
 export const messages:Message[] = [
     {
-        content:'Hello world you bitch',
+        content:'lorem ipsum dolor sit amet',
         incoming:true,
         time:'12:00',
         Author:friendsList[0]
     },
     {
-        content:'FUCK YOU',
+        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
         incoming:false,
         time:'12:01',
         Author:friendsList[1]
     },
     {
-        content:'i am sorry i guess you can fuck yourself now',
+        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
         incoming:true,
         time:'12:01',
         Author:friendsList[1]
     }
 ,
 {
-    content:'i am sorry i guess you can fuck yourself now',
+    content:'lorem ipsum dolor sit amet, dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+    incoming:true,
+    time:'12:01',
+    Author:friendsList[0]
+},
+{
+    content:'ipsim dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
     incoming:true,
     time:'12:01',
     Author:friendsList[1]
 },
 {
-    content:'i am sorry i guess you can fuck yourself now',
+    content:'amet  consectetur adipisicing elit. Quisquam, voluptatum.',                                                                            
     incoming:true,
     time:'12:01',
-    Author:friendsList[1]
-},
-{
-    content:'i am sorry i guess you can fuck yourself now',
-    incoming:true,
-    time:'12:01',
-    Author:friendsList[1]
+    Author:friendsList[0]
 }]
 
 export const Channels:Channel[] =[

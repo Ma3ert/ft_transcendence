@@ -27,6 +27,7 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "decimal.js": "^10.4.3",
     "framer-motion": "^10.15.2",
     "react-icons": "^4.10.1"
   }
