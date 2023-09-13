@@ -15,7 +15,7 @@ interface Props {
 const SideBar: React.FC<Props> = ({ bodySetter }) => {
   const size = "25px";
   return (
-    <Stack spacing={{base:10, sm:2, md:6, lg:12, xl:20}}>
+    <Stack spacing={{base:10, sm:'10px', md:'15px', lg:'35px', xl:'50px', vl:'100px'}}>
       <IconButton
         color="#5B6171"
         onClick={() => {

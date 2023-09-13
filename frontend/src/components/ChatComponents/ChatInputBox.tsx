@@ -1,4 +1,4 @@
-import { Button, FormControl, HStack, Input } from "@chakra-ui/react";
+import { Button, FormControl, HStack, Input , Image} from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 
@@ -14,6 +14,17 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       px={4}
       py={2}
     >
+      <Button
+
+        bg="transparent"
+        border='none'
+        outline={"none"}
+        _hover={{ opacity: 0.8 }}
+        _active={{transform:'scale(1.1)'}}
+        >
+          <Image src={'/LightSolidLogo.png'} alt={'envite'} w={6} h={'auto'}  />
+        </Button>
+
       <FormControl flex={1}>
         <Input
           type="text"

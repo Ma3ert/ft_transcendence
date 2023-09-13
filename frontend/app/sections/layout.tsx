@@ -23,6 +23,7 @@ const chatLayout: React.FC<LayoutProps> = ({ children }) => {
               md: "blue",
               lg: "red",
               xl: "yellow",
+              vl: "purple",
             }}
             w={{ base: "80%", sm: "100%", md: "98%", lg: "98%", xl: "85%"}}
             h="100vh"

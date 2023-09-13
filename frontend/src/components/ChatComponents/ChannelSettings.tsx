@@ -1,12 +1,14 @@
-import { HStack, Stack, Text, Button, Switch, Icon } from "@chakra-ui/react";
+import { HStack, Stack, Text, Button, Switch, Icon , Image} from "@chakra-ui/react";
 import { SlArrowRight } from "react-icons/sl";
 interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   return (
-    <Stack justify="space-between" alignItems={'center'}   h="100%"   >
+    <Stack spacing={5} justifyContent={'space-around'} alignItems={'center'}   h="100%" w="100%"  >
+      <Stack spacing={3} w="100%"  justify={'center'} alignItems={'center'}>
+        <Image src='/settings.png' alt='settings' w={8} h={'auto'} _hover={{opacity:0.8, transform:'scale(1.1)'}} />
       <Stack
-        w={"auto"}
+        w="100%"
         bg="#1D222C"
         borderRadius={"2xl"}
         p={4}
@@ -14,20 +16,21 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
         justify="start"
         spacing={4}
         h='auto'
-        minW={'300px'}
-        minH={'50%'}
+        minW={'auto'}
+        minH={'250px'}
         maxH='500px'
-
+        maxW='300px'
       >
-        <HStack px={4} w={"90%"} justify={"space-between"}>
-          <Text color={"#5B6171"} fontSize='sm'> Private channel</Text>
+        <HStack px={4} w={"99%"} justify={"space-between"}>
+          <Text color={"#5B6171"} fontSize='sm'> Private </Text>
           <Switch size={"lg"} colorScheme="red" />
         </HStack>
         <Button
           _hover={{ bg: "#252932" }}
           color={"#5B6171"}
           colorScheme="ghost"
-          w="90%"
+          w="99%"
+          fontSize={'xs'}
         >
           <HStack justify={"space-between"} w={"100%"}>
             <Text fontSize={'sm'} color={"#5B6171"}>Set Password</Text>
@@ -38,13 +41,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           _hover={{ bg: "#252932" }}
           color={"#5B6171"}
           colorScheme="ghost"
-          w="90%"
+          w="99%"
+          fontSize={'xs'}
         >
           <HStack justify={"space-between"} w={"100%"}>
             <Text fontSize={'sm'} color={"#5B6171"}>Members</Text>
             <Icon as={SlArrowRight} />
           </HStack>
         </Button>
+      </Stack>
       </Stack>
     <Stack spacing={3}>
     <Button
@@ -55,7 +60,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
         color={"white"}
         px={8}
         py={4}
-        maxW={"250px"}
+        w={"98%"}
       >
         <Text>Leave Channel</Text>
       </Button>

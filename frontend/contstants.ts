@@ -22,41 +22,47 @@ export const friendsList:User[] = [{
 
 export const messages:Message[] = [
     {
-        content:'lorem ipsum dolor sit amet',
+        content:'',
         incoming:true,
         time:'12:00',
-        Author:friendsList[0]
+        Author:friendsList[0],
+        EnviteMessage:true
     },
     {
         content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
         incoming:false,
         time:'12:01',
-        Author:friendsList[1]
+        Author:friendsList[1],
+        EnviteMessage:false
     },
     {
         content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
         incoming:true,
         time:'12:01',
-        Author:friendsList[1]
+        Author:friendsList[1],
+        EnviteMessage:false
     }
 ,
 {
     content:'lorem ipsum dolor sit amet, dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
     incoming:true,
     time:'12:01',
-    Author:friendsList[0]
+    Author:friendsList[0],
+    EnviteMessage:false
 },
 {
     content:'ipsim dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
     incoming:true,
     time:'12:01',
-    Author:friendsList[1]
+    Author:friendsList[1],
+    EnviteMessage:false
 },
 {
-    content:'amet  consectetur adipisicing elit. Quisquam, voluptatum.',                                                                            
-    incoming:true,
+    content:'',                                                                            
+    incoming:false,
     time:'12:01',
-    Author:friendsList[0]
+    Author:friendsList[0],
+    EnviteMessage:true
 }]
 
 export const Channels:Channel[] =[
@@ -65,8 +71,25 @@ export const Channels:Channel[] =[
         name:'New Channel',
         members:friendsList,
         admin:friendsList[0],
-        membersCount:3
-    }
+        membersCount:3,
+        imageUrl:'https://source.unsplash.com/random/?car',
+    },
+    {
+        isPrivate:false,
+        name:'New Channel',
+        members:friendsList,
+        admin:friendsList[1],
+        membersCount:3,
+        imageUrl:'https://source.unsplash.com/random/?army',
+    },
+    {
+        isPrivate:true,
+        name:'cat Channel',
+        members:friendsList,
+        admin:friendsList[0],
+        membersCount:3,
+        imageUrl:'https://source.unsplash.com/random/?cats',
+    },
 ]
 
 

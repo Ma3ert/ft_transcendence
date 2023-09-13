@@ -11,12 +11,12 @@ const ChatContainer: React.FC = () => {
   
   return (
 
-    <Grid templateRows={{base:'60px 400px', sm:'60px 400px', md:'60px 300px', lg:'60px 430px', xl:'60px 500px', vl:'60px 700px'}} w='100%' h='100%' maxH='100%' >
+    <Grid templateRows={{base:'60px 400px', sm:'60px 400px', md:'60px 300px', lg:'60px 430px', xl:'60px 430px', vl:'60px 500px'}} w='100%' h='100%' maxH='100%' >
       <GridItem display='flex' justifyContent={'center'} alignItems='center'>
-        <ChatLobbyToggler />
+        <ChatLobbyToggler action={toggleSelectedTab} />
       </GridItem>
       <GridItem w='100%'  display={'flex'}  justifyContent={'center'} alignItems='center'>
-         <ChatSection />
+         {selectedTab ? <ChatSection /> : <LobbySection />}
       </GridItem>
     </Grid>
     

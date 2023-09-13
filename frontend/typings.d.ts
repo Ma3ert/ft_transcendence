@@ -18,6 +18,7 @@ type Channel = {
     members:User[],
     admin:User,
     membersCount:number,
+    imageUrl?:string
 }
 
 type friendAction = {

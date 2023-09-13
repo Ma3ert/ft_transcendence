@@ -6,20 +6,43 @@ import {FaUserAlt} from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
 interface FriendsListProps {
-  friends: User[];
+  friends?: User[];
+  channels?: Channel[];
+  isForChannel: boolean;
 }
-const FriendsList: React.FC<FriendsListProps> = ({ friends }) => {
-  const [isChannel, setIsChannel] = useState<boolean>(true);
+const FriendsList: React.FC<FriendsListProps> = ({ friends ,channels, isForChannel}) => {
+  const [isChannel, setIsChannel] = useState<boolean>(isForChannel);
   return (
-    <Stack justify={'center'} alignItems={'center'} spacing={2}>
+    <Stack justify={'center'} alignItems={'center'} spacing={2} h={'100%'}>
       <IconButton
         color="#5B6171"
         onClick={() => setIsChannel(!isChannel)}
         icon={isChannel ? FaUserGroup : FaUserAlt  }
         size={'25px'}
       />
-      <Stack w="auto" borderRadius={"2xl"} p={4} bg={"#1D222C"} spacing={2}>
-        {friends.map((friend, index) => {
+      <Stack w="auto" borderRadius={"2xl"} p={4} bg={"#1D222C"} spacing={2} h={'96%'}>
+        {
+          isChannel ? channels?.map((channel, index) => {
+            return (
+              <HStack
+                spacing={4}
+                key={index}
+                alignItems={"center"}
+                borderRadius={"2xl"}
+                w="98%"
+                _hover={{ bg: "#252932" }}
+              >
+                <UserAvatar
+                  isChannel={true}  
+                  channel={channel}
+                />
+              </HStack>
+            );
+          })
+          
+          : 
+        
+          friends?.map((friend, index) => {
           return (
             <HStack
               spacing={4}
@@ -30,9 +53,8 @@ const FriendsList: React.FC<FriendsListProps> = ({ friends }) => {
               _hover={{ bg: "#252932" }}
             >
               <UserAvatar
-                url={friend.imageUrl}
-                name={friend.username}
-                status={friend.online}
+                isChannel={false}
+                user={friend}
               />
             </HStack>
           );
