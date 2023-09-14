@@ -17,38 +17,16 @@ enum UserStatus {
 }
 
 model User {
-<<<<<<< HEAD
-  id             String     @id @default(uuid())
-  username       String     @unique
-  email          String     @unique
-  avatar         String
-  twoFactorRetry Int        @default(0)
-  twoFactor      Boolean    @default(false)
-  twoFactorPin   String?
-  activated      Boolean    @default(false)
-  pinValidated   Boolean    @default(false)
-  status         UserStatus @default(ONLINE)
-
-  // status        Status
-  // FriendsList   FriendsList? @relation(fields: [friendsListId], references: [id])
-  // friendsListId String?
-}
-
-// model FriendsList {
-//   id      String @id @default(uuid())
-//   friends User[]
-// }
-=======
-  id                    String            @id @default(uuid())
-  username              String            @unique
-  email                 String            @unique
-  avatar                String          
-  twoFactorRetry        Int               @default(0)
-  twoFactor             Boolean           @default(false)
-  twoFactorPin          String?         
-  activated             Boolean           @default(false)
-  pinValidated          Boolean           @default(false)
-  
+  id                    String     @id @default(uuid())
+  username              String     @unique
+  email                 String     @unique
+  avatar                String
+  twoFactorRetry        Int        @default(0)
+  twoFactor             Boolean    @default(false)
+  twoFactorPin          String?
+  activated             Boolean    @default(false)
+  pinValidated          Boolean    @default(false)
+  status                UserStatus @default(ONLINE)  
   directmessageSent     DirectMessage[]  @relation("DMsent")
   directmessageReceived DirectMessage[]  @relation("DMreceived")
 
@@ -164,4 +142,3 @@ enum Role{
   ADMIN
 }
 
->>>>>>> chat
