@@ -17,18 +17,18 @@ enum Status {
 }
 
 model User {
-  id             String  @id @default(uuid())
-  username       String  @unique
-  email          String  @unique
-  avatar         String
-  twoFactorRetry Int     @default(0)
-  twoFactor      Boolean @default(false)
-  twoFactorPin   String?
-  activated      Boolean @default(false)
-  pinValidated   Boolean @default(false)
+  id                    String            @id @default(uuid())
+  username              String            @unique
+  email                 String            @unique
+  avatar                String          
+  twoFactorRetry        Int               @default(0)
+  twoFactor             Boolean           @default(false)
+  twoFactorPin          String?         
+  activated             Boolean           @default(false)
+  pinValidated          Boolean           @default(false)
   
-  directmessageSent     DirectMessage[] @relation("DMsent")
-  directmessageReceived DirectMessage[] @relation("DMreceived")
+  directmessageSent     DirectMessage[]  @relation("DMsent")
+  directmessageReceived DirectMessage[]  @relation("DMreceived")
 
   channelMessages       ChannelMessage[] @relation("userChannelMsg")
 
@@ -75,6 +75,7 @@ model Channel {
   name              String
   type              Type
   password          String?
+  avatar            String?
 
   messages          ChannelMessage[] @relation("channelMsg")
 
@@ -86,7 +87,7 @@ model Channel {
 
   created_at        DateTime         @default(now())
   
-  updated_at        DateTime
+  updated_at        DateTime         @updatedAt
 }
 
 model ChannelUser {
@@ -112,13 +113,13 @@ model ChannelBan {
 }
 
 model ChannelInvite {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   
   senderId    String
-  sender      User   @relation(fields:[senderId], references:[id], onDelete: Cascade, name:"ChannelInviteSent")
+  sender      User     @relation(fields:[senderId], references:[id], onDelete: Cascade, name:"ChannelInviteSent")
 
   receiverId  String
-  receiver    User   @relation(fields:[receiverId], references:[id], onDelete: Cascade, name:"ChannelInviteReceived")
+  receiver    User     @relation(fields:[receiverId], references:[id], onDelete: Cascade, name:"ChannelInviteReceived")
   
   channelId   String
   channel     Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"channelInvite")

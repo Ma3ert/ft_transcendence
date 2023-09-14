@@ -17,7 +17,7 @@ export class ChatGateway implements OnGatewayConnection{
 
   @SubscribeMessage('message')
   handleMessage(Socket: Socket) {
-
+    
   }
   
 }
