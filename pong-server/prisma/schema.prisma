@@ -66,6 +66,7 @@ model ChannelMessage {
   user    User     @relation(fields:[userId], references:[id], onDelete: Cascade, name:"userChannelMsg")
 
   content   String
+
   create_at DateTime @default(now())
 }
 

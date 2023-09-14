@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
 
 // TODO
-// * create channel
+// * create channel Nadi
 // * join user to channel
 // * send DM
 // * send message to channel
@@ -59,5 +59,27 @@ export class ChatService {
             }
         })
         return user;
+    }
+
+    // Create DM
+    async createDirectMessage(sender:string, receiver:string, message:string){
+        await this.prismaService.directMessage.create({
+            data:{
+                senderId:sender,
+                receiverId:receiver,
+                content:message,
+            }
+        })
+    }
+
+    // Create ChannelMessage
+    async createChannelMessage(sender:string, channel:string, message:string){
+        await this.prismaService.channelMessage.create({
+            data:{
+                userId:sender,
+                channelId:channel,
+                content:message,
+            }
+        })
     }
 }
