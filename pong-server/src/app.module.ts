@@ -7,6 +7,8 @@ import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { ChatModule } from './chat/chat.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -15,6 +17,9 @@ import { ChatModule } from './chat/chat.module';
     AuthModule,
     PassportModule.register({ session: true }),
     ChatModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

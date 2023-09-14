@@ -53,6 +53,8 @@ model DirectMessage {
 
   content    String
 
+  cursor     String?
+
   create_at  DateTime @default(now())
 }
 
@@ -62,8 +64,8 @@ model ChannelMessage {
   channelId String
   channel   Channel   @relation(fields:[channelId], references:[id], onDelete:Cascade, name:"channelMsg")
 
-  userId  String
-  user    User     @relation(fields:[userId], references:[id], onDelete: Cascade, name:"userChannelMsg")
+  userId    String
+  user      User     @relation(fields:[userId], references:[id], onDelete: Cascade, name:"userChannelMsg")
 
   content   String
 

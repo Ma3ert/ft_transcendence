@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Messaging</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="chat">
+            <div class="messages" id="messages"></div>
+            <div class="input">
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('/chat');
+
+        // function sendMessage() {
+        //     const messageInput = document.getElementById('messageInput');
+        //     const message = messageInput.value.trim();
+            
+        //     if (message) {
+        //         // Send the message to the server
+        //         socket.emit('privateMessage', message);
+
+        //         // Display the message in the chat
+        //         displayMessage('You', message);
+
+        //         // Clear the input field
+        //         messageInput.value = '';
+        //     }
+        // }
+
+        // function displayMessage(sender, message) {
+        //     const messagesDiv = document.getElementById('messages');
+        //     const messageElement = document.createElement('div');
+        //     messageElement.className = 'message';
+        //     messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        //     messagesDiv.appendChild(messageElement);
+        // }
+
+        // // Listen for incoming private messages
+        // socket.on('privateMessage', (message) => {
+        //     displayMessage('Other User', message);
+        // });
+    </script>
+</body>
+</html>

@@ -6,8 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
 
 // TODO
-// * create channel Nadi
-// * join user to channel
+// * create channel Good
+// * join user to channel 
 // * send DM
 // * send message to channel
 // * ban user from channel
@@ -21,7 +21,11 @@ import { Role } from '@prisma/client';
 
 @Injectable()
 export class ChatService {
-    constructor(private prismaService:PrismaService){}
+    constructor(private prismaService:PrismaService){
+    }
+
+    private cursor = await this.prismaService.;
+    private NUM_MSG = 5;
 
     // Create Channel
     async createChannel(createChannelDto:createChannelDto){
@@ -82,4 +86,5 @@ export class ChatService {
             }
         })
     }
+    
 }

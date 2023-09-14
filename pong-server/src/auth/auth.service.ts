@@ -7,6 +7,7 @@ import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
+
   async validateUser(userData: User) {
     let user = await this.usersService.findOne(userData.email);
     if (!user) user = await this.usersService.createUser(userData);
