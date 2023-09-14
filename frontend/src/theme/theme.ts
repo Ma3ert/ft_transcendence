@@ -135,6 +135,38 @@ const ButtonStyle: ComponentStyleConfig = {
       transform: "scale(1.1)", // Increase the scale to make it grow
     }
 	},
+  lightGray:{
+    bg: "#5B6171",
+    color: "#1D222C",
+    fontSize: "xs",
+    borderRadius: "xl",
+    border: "none",
+    px: "12px",
+    h:'30px',
+    fontFamily: "visbyRound",
+    _hover: {
+      opacity: "0.8",
+    },
+    _active: {
+      transform: "scale(1.1)", // Increase the scale to make it grow
+    }
+  },
+  darkGray:{
+    color: "#5B6171",
+    bg: "#1D222C",
+    fontSize: "xs",
+    borderRadius: "xl",
+    border: "none",
+    px: "12px",
+    h:'30px',
+    fontFamily: "visbyRound",
+    _hover: {
+      opacity: "0.8",
+    },
+    _active: {
+      transform: "scale(1.1)", // Increase the scale to make it grow
+    }
+  },
   icon:{
     borderRadius: "50px",
     px: "0px",
@@ -302,6 +334,7 @@ const theme = extendTheme({
   breakpoints: {
     // Define your custom breakpoint here
     xl: "1440px", // Adjust the value as needed
+    vl: "1620px"
   },
   config,
   styles: {

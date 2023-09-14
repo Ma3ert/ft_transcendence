@@ -9,6 +9,7 @@ type Message = {
     incoming:boolean,
     time:string
     Author:User
+    EnviteMessage:boolean
 }
 
 type Channel = {
@@ -17,6 +18,7 @@ type Channel = {
     members:User[],
     admin:User,
     membersCount:number,
+    imageUrl?:string
 }
 
 type friendAction = {

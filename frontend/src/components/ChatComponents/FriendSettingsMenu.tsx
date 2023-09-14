@@ -10,9 +10,12 @@ const FriendSettingsMenu = (props: FriendSettingsMenuProps) => {
       <MenuButton bg='transparent' _active={{}} _hover={{}} as={Button}>
         <IconButton icon={FaEllipsis} color="#5B6171" size="25px" />
       </MenuButton>
-      <MenuList bg="#181D25" border="none" borderRadius={"xl"}>
+      <MenuList bg="#181D25" border="none" borderRadius={"xl"} >
         {UserSettings.map((setting, index) => (
           <MenuItem
+            w='96%'
+            borderRadius={"xl"}
+            mx={"auto"}
             key={index}
             _hover={{
               background: "#252932",

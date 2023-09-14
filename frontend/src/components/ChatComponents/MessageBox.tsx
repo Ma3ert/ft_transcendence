@@ -1,4 +1,4 @@
-import { Avatar, HStack, Stack, Text } from "@chakra-ui/react";
+import { HStack, Stack, Text } from "@chakra-ui/react";
 interface MessageBoxProps {
   Message: Message;
 }
@@ -7,7 +7,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
     <HStack justify={Message.incoming ? "end" : "start"} w="98%" mx="auto">
       <Stack
         borderRadius={"2xl"}
-        bg="#252932"
+        bg={Message.incoming ? "#252932" : "#5B6171"}
         justify={"center"}
         alignItems={Message.incoming ? "end" : "start"}
         w="auto"
@@ -17,10 +17,10 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
         maxW="100%"
         h="auto"
       >
-        <Text color="#DC585B" fontSize={"xs"}>
+        <Text color="#DC585B" fontSize={"xs"} fontWeight={'bold'}>
           {Message.Author.username}
         </Text>
-        <Text color="#5B6171" fontSize={"sm"}>
+        <Text color={Message.incoming ? "#5B6171" : '#1D222C'} fontSize={"sm"}>
           {Message.content}
         </Text>
       </Stack>
