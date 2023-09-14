@@ -22,12 +22,13 @@ import { BullModule } from '@nestjs/bull';
         port: 6379,
       },
     }),
+    MatchmakingModule,
     AuthModule,
     PassportModule.register({ session: true }),
     GameModule,
     MatchmakingModule,
   ],
-  controllers: [AppController, MatchmakingController],
-  providers: [AppService, MatchmakingService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

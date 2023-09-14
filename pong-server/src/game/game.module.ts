@@ -10,6 +10,4 @@ import { GameController } from './game.controller';
   ],
   controllers: [GameController],
 })
-export class GameModule {
-    
-}
+export class GameModule {}

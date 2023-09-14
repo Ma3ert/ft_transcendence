@@ -8,8 +8,11 @@ export class MatchmakingService {
   constructor(@InjectQueue('playerQueue') private playerQueue: Queue) {}
 
   async addPlayer(player: User) {
-    await this.playerQueue.add({
-      ...player,
-    });
+    await this.playerQueue.add(
+      {
+        ...player,
+      },
+      { removeOnComplete: true },
+    );
   }
 }
