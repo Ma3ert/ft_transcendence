@@ -1,4 +1,4 @@
-import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io'
 import { ChatService } from './chat.service';
 
@@ -51,15 +51,18 @@ export class ChatGateway implements OnGatewayConnection{
   }
 
   @SubscribeMessage('sendDM')
-  async sendDM(client: Socket, @MessageBody() data:{
+  async sendDM(@ConnectedSocket() client:Socket, @MessageBody() data:{
     from:string,
     to:string,
     message:string
   })
   {
     await this.chatService.createDirectMessage(data.from, data.to, data.message);
-    this.server.to(data.from).emit("sendDM", data);
-    this.server.to(data.to).emit("sendDM", data); // send the message the other user and handling the addition of the message on the front for the sender
+    client.to(data.from).emit("sendDM", data);
+
+    this.connectedUsers.get(data.to).forEach((socket) => {
+      socket.emit("sendDM", data);
+    })
   }
 
   @SubscribeMessage('sendCM')
