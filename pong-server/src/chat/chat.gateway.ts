@@ -1,13 +1,11 @@
-import { Req } from '@nestjs/common';
 import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io'
-import { AuthService } from 'src/auth/auth.service';
 import { ChatService } from './chat.service';
-import { from } from 'rxjs';
+
 
 @WebSocketGateway({
   origin:"*",
-  // namespace:"chat"
+  namespace:"chat"
 })
 
 export class ChatGateway implements OnGatewayConnection{
@@ -16,7 +14,7 @@ export class ChatGateway implements OnGatewayConnection{
   @WebSocketServer()
   server : Server;
 
-  // private connectedUsers = new Map<String, Socket[]> ();
+  private connectedUsers = new Map<String, Socket[]> ();
 
   handleConnection(client:Socket) {
     // get the user Id
@@ -50,7 +48,6 @@ export class ChatGateway implements OnGatewayConnection{
   })
   {
     await this.chatService.createDirectMessage(data.from, data.to, data.message);
-    // const count = await this.chatService.getDMCount(data.from, data.to);
     this.server.to(data.to).emit("sendDM", data); // send the message the other user and handling the addition of the message on the front for the sender
   }
 

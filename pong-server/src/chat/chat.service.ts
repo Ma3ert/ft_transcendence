@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
-import { channel } from 'diagnostics_channel';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
 
@@ -21,12 +20,8 @@ import { Role } from '@prisma/client';
 
 @Injectable()
 export class ChatService {
-    constructor(private prismaService:PrismaService){
-    }
-
-    private cursor = await this.prismaService.;
-    private NUM_MSG = 5;
-
+    constructor(private prismaService:PrismaService){}
+    
     // Create Channel
     async createChannel(createChannelDto:createChannelDto){
         let hashedPassword = null;
@@ -86,5 +81,27 @@ export class ChatService {
             }
         })
     }
-    
+
+    // get all messages of direct message in descending order still need to configure the pagination
+    // for getting messages.
+    async getDMs(user1:string, user2:string){
+        const messages = await this.prismaService.directMessage.findMany({
+            where:{
+                OR:[
+                    {
+                        senderId:user1,
+                        receiverId:user2,},
+                    {
+                        senderId:user2,
+                        receiverId:user1,
+                    }
+                ]
+            },
+            orderBy:{
+                create_at:'desc'
+            }
+        })
+        return messages;
+    }
+
 }

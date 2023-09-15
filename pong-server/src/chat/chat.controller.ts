@@ -1,20 +1,12 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { createChannelDto } from './dto/channel.create.dto';
 import { ChatService } from './chat.service';
 import { Request, Response } from 'express';
-import { channel } from 'diagnostics_channel';
+
 @Controller('chat')
 export class ChatController {
-    constructor(private userService: UsersService,
-        private chatService:ChatService) {}
-
-    @Get('/')
-    @UseGuards(LoggedInGuard)
-    async getAllUsers(){
-        return this.userService.findAll();
-    }
+    constructor(private chatService:ChatService) {}
 
     @Post('/channels')
     @HttpCode(HttpStatus.CREATED)
@@ -29,6 +21,26 @@ export class ChatController {
                 'channel Creation error',
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 )
+        }
+    }
+
+    // get message of a specific Direct Message
+    @Get('/direct/messages/:friendId')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(LoggedInGuard)
+    async getDirectMessages(@Param('friendId') friendId:string, @Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return;
+            const messages = await this.chatService.getDMs(friendId, req.user['id']);
+            return (messages);
+        }
+        catch(error){
+            throw new HttpException(
+                'Direct Message Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 }
