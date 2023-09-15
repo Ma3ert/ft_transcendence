@@ -42,7 +42,7 @@ const ChannelChat: React.FC<ChannelChatProps> = ({
             {Peer?.username}
           </Text>
         </HStack>
-        <FriendSettingsMenu />
+        {isPrivateChat && <FriendSettingsMenu user={Peer!} />}
       </HStack>
         <MessageStack messages={messages}  />
       <Stack w={"100%"} alignItems={"center"}>

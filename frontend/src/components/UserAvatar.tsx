@@ -4,11 +4,12 @@ interface UserAvatarProps {
     user?: User;
     channel?: Channel;
     isChannel?: boolean;
+    size?: string;
 }
 
-const UserAvatar:React.FC<UserAvatarProps> = ({isChannel, channel, user}) => {
+const UserAvatar:React.FC<UserAvatarProps> = ({isChannel, channel, user, size}) => {
     return (
-        <Avatar name={isChannel ? channel?.name : user?.username} src={isChannel ? channel?.imageUrl : user?.imageUrl} _hover={{
+        <Avatar size={size} name={isChannel ? channel?.name : user?.username} src={isChannel ? channel?.imageUrl : user?.imageUrl} _hover={{
             transform: 'scale(1.1)',
             transition: 'all 0.2s ease-in-out',
             boxShadow: '0 0 0 2px #DC585B'

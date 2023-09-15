@@ -1,3 +1,4 @@
+import MembersList from "@/components/ChatComponents/MembersList"
 export const CHAT = true
 export const LOBBY = false
 
@@ -5,18 +6,27 @@ export const LOBBY = false
 export const friendsList:User[] = [{
     username:'7amid',
     imageUrl:'https://source.unsplash.com/random/?profile',
-    online:false
+    online:false,
+    level: 12
 }, 
 {
     username:'Rachid',
     imageUrl:'',
-    online:true
+    online:true,
+    level: 1
 },
 {
     username:'Wa7id45',
     imageUrl:'',
-    online:true
+    online:true,
+    level:5
 },
+{
+    username:'Sami78',
+    imageUrl:'',
+    online:true,
+    level:22
+}
 
 ]
 
@@ -72,7 +82,7 @@ export const Channels:Channel[] =[
         members:friendsList,
         admin:friendsList[0],
         membersCount:3,
-        imageUrl:'https://source.unsplash.com/random/?car',
+        imageUrl:'https://source.unsplash.com/random/?car'
     },
     {
         isPrivate:false,
@@ -100,37 +110,54 @@ export const ChannelTypes:string[] = [
     'Private messages'
 ]
 
+export const channelSettings:string[] = [
+    'Members',
+    'Set password',
+    'Edit channel',
+]
+
+
+// Channel
+
 export const UserSettings:friendAction [] = [
     {
         actionName:'Invite to game',
+        modal:false,
         important:false
     },
     {
         actionName:'See Profile',
+        modal:true,
         important:false
     },
     {
         actionName:'Make party admin',
+        modal:false,
         important:false
     },
     {
         actionName:'Make channel owner',
+        modal:false,
         important:false
     },
     {
         actionName:'Ban from channel',
+        modal:false,
         important:true
     },
     {
         actionName:'Kick from channel',
+        modal:false,
         important:true
     },
     {
         actionName:'Mute',
+        modal:false,
         important:true
     },
     {
         actionName:'Block',
+        modal:false,
         important:true
     },
 

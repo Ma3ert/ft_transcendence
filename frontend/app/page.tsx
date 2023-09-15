@@ -11,7 +11,7 @@ export default function Home() {
       w="100%"
       h="100vh"
       border={"1px"}
-      borderColor={{base:'red', sm:'green', md:'blue', lg:'yellow', xl:'white'}}
+      // borderColor={{base:'red', sm:'green', md:'blue', lg:'yellow', xl:'white'}}
       justify={"center"}
       alignItems={"center"}
     >

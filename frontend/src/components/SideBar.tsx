@@ -15,47 +15,67 @@ interface Props {
 const SideBar: React.FC<Props> = ({ bodySetter }) => {
   const size = "25px";
   return (
-    <Stack spacing={{base:10, sm:'10px', md:'15px', lg:'35px', xl:'50px', vl:'100px'}}>
-      <IconButton
-        color="#5B6171"
-        onClick={() => {
-          bodySetter && bodySetter(0);
-        }}
-        icon={AiFillHome}
-        size={size}
-      />
-      <IconButton
-        color="#5B6171"
-        onClick={() => {
-          bodySetter && bodySetter(0);
-        }}
-        icon={BiSolidBell}
-        size={size}
-      />
-      <IconButton
-        color="#5B6171"
-        onClick={() => {
-          bodySetter && bodySetter(1);
-        }}
-        icon={FaMedal}
-        size={size}
-      />
-      <IconButton
-        color="#5B6171"
-        onClick={() => {
-          bodySetter && bodySetter(2);
-        }}
-        icon={FaUserGroup}
-        size={size}
-      />
-      <IconButton
-        color="#5B6171"
-        onClick={() => {
-          bodySetter && bodySetter(3);
-        }}
-        icon={IoMdSettings}
-        size={size}
-      />
+    <Stack
+      spacing={{
+        base: 10,
+        sm: "10px",
+        md: "15px",
+        lg: "35px",
+        xl: "50px",
+        vl: "100px",
+      }}
+    >
+      <Link href={"/sections/lobby"}>
+        <IconButton
+          color="#5B6171"
+          onClick={() => {
+            bodySetter && bodySetter(0);
+          }}
+          icon={AiFillHome}
+          size={size}
+        />
+      </Link>
+      <Link href={"/sections/notifications"}>
+        <IconButton
+          color="#5B6171"
+          onClick={() => {
+            bodySetter && bodySetter(0);
+          }}
+          icon={BiSolidBell}
+          size={size}
+        />
+      </Link>
+
+      <Link href={"/sections/achievements"}>
+        <IconButton
+          color="#5B6171"
+          onClick={() => {
+            bodySetter && bodySetter(1);
+          }}
+          icon={FaMedal}
+          size={size}
+        />
+      </Link>
+      <Link href={"/sections/chat"}>
+        <IconButton
+          color="#5B6171"
+          onClick={() => {
+            bodySetter && bodySetter(2);
+          }}
+          icon={FaUserGroup}
+          size={size}
+        />
+      </Link>
+      <Link href={"/sections/settings"}>
+        <IconButton
+          color="#5B6171"
+          onClick={() => {
+            bodySetter && bodySetter(3);
+          }}
+          icon={IoMdSettings}
+          size={size}
+        />
+      </Link>
     </Stack>
   );
 };

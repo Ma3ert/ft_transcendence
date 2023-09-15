@@ -4,6 +4,7 @@ import ChannelChat from "@/components/ChatComponents/ChannelChat";
 import ChannelSettings from "@/components/ChatComponents/ChannelSettings";
 import FriendsList from "@/components/ChatComponents/FriendsList";
 import { friendsList, Channels } from "../../../contstants";
+import NewChannelModal from "./NewChannel";
 interface ChatSectionProps {}
 
 const ChatSection: React.FC<ChatSectionProps> = ({}) => {
@@ -21,9 +22,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({}) => {
       </Stack>
       <ChannelChat isPrivateChat={true} Peer={friendsList[0]} />
       <Stack justify={'end'} alignItems={"center"} w={"15%"} h='95%'>
-        <Button variant="secondary" p={2} fontSize={'sm'}>
-          create a channel
-        </Button>
+        <NewChannelModal />
       </Stack>
     </HStack>
   );
