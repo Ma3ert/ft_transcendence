@@ -14,30 +14,40 @@ export class ChatGateway implements OnGatewayConnection{
   @WebSocketServer()
   server : Server;
 
+
+  // connected Users sockets.
   private connectedUsers = new Map<String, Socket[]> ();
 
   handleConnection(client:Socket) {
-    // get the user Id
-    // if the user is not found diconnnect the socket
-    // check if the userId is already have a socket in the map
-    // if not create one
-
     const user = client.handshake.headers['userid'] as string;
-
-    // console.log(user);
-    // console.log(`Socket Created ${user}`);
 
     if (!user)
       client.disconnect();
-    
-    // if (this.connectedUsers.has(user.toString())){
-    //   this.connectedUsers.get(user.toString()).push(client);
-    // }else
-    // {
-    //   this.connectedUsers.set(user.toString(), [client]);
-    // }
+
+    if (this.connectedUsers.has(user)){
+      this.connectedUsers.get(user).push(client);
+    }
+    else{
+      this.connectedUsers.set(user, [client]);
+    }
 
     client.join(user);
+
+    client.on("disconnect",() => {
+      console.log(`the client with the socketID: ${client.id} is disconnected.`);
+      console.log(this.connectedUsers);
+      for (const [user, sockets] of this.connectedUsers.entries()){
+        if (sockets.includes(client)){
+          const index = sockets.indexOf(client);
+          if (index !== -1){
+            sockets.splice(index, 1);
+            if (sockets.length === 0){
+              this.connectedUsers.delete(user);
+            }
+          }
+        }
+      }
+    })
   }
 
   @SubscribeMessage('sendDM')
@@ -48,6 +58,7 @@ export class ChatGateway implements OnGatewayConnection{
   })
   {
     await this.chatService.createDirectMessage(data.from, data.to, data.message);
+    this.server.to(data.from).emit("sendDM", data);
     this.server.to(data.to).emit("sendDM", data); // send the message the other user and handling the addition of the message on the front for the sender
   }
 
