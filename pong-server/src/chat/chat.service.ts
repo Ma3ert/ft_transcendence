@@ -49,10 +49,10 @@ export class ChatService {
         return channel;
     }
 
-    //user join a channel
-    async joinChannel(joinChannelDto:joinChannelDto){
+    // //user join a channel
+    // async joinChannel(joinChannelDto:joinChannelDto){
         
-    }
+    // }
 
     // User To Channel
     async addUserToChannel(channelId:string, userId:string, role:Role){
@@ -116,6 +116,10 @@ export class ChatService {
         users.push(receiverId);
         users.sort();
         return (users[0] + users[1]);
+    }
+
+    async isBanned(userid:string, channelId:string){
+        
     }
 
 }

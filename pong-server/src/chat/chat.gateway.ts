@@ -79,6 +79,9 @@ export class ChatGateway implements OnGatewayConnection{
     channel:string,
     message:string
   }){
+    // check if the user is banned or muted
+    // and after then you can save the message you want to sent in the database
+    // 
                         
   }
 }

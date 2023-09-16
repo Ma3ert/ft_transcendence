@@ -36,6 +36,8 @@ model User {
 
   channelBan            ChannelBan[]     @relation("UserbannedInChannel")
 
+  channelMute           ChannelMute[]     @relation("UserMutedInchannel")
+
   channelInviteSent     ChannelInvite[]  @relation("ChannelInviteSent")
   channelInviteReceived ChannelInvite[]  @relation("ChannelInviteReceived")
 
@@ -86,6 +88,8 @@ model Channel {
 
   bannedUsers       ChannelBan[]     @relation("ChannelBannedUser")
 
+  mutedUsers        ChannelMute[]    @relation("ChannelMutedUser")
+
   channelInvitation ChannelInvite[]  @relation("channelInvite")
 
   created_at        DateTime         @default(now())
@@ -110,6 +114,23 @@ model ChannelBan {
 
   channelId String
   channel   Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"ChannelBannedUser")
+
+  @@id([userId, channelId])
+  created_at DateTime @default(now())
+}
+
+model ChannelMute{
+  userId     String
+  user       User    @relation(fields:[userId], references:[id], onDelete: Cascade, name:"UserMutedInchannel")
+
+  channelId  String
+  channel    Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"ChannelMutedUser")
+
+  startMute  DateTime
+
+  mutePeriod Int
+
+  isMuted    Boolean  
 
   @@id([userId, channelId])
   created_at DateTime @default(now())
