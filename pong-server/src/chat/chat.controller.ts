@@ -64,4 +64,22 @@ export class ChatController {
             )
         }
     }
+
+    @Get('/channels/messages/:channelId')
+    @UseGuards(LoggedInGuard)
+    async getChannelMessages(@Param('channelId') channelId:string, @Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return;
+            const messages = await this.chatService.getChannelMessages(channelId);
+            return messages;
+        }
+        catch(error){
+            throw new HttpException(
+                'Direct Message Error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
 }

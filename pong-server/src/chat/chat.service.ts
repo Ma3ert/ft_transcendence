@@ -143,7 +143,14 @@ export class ChatService {
         });
     }
 
-    // async isMuted(user:string, channel:string){
-
-    // }
+    async getChannelMessages(channel:string){
+        return await this.prismaService.channelMessage.findMany({
+            where:{
+                channelId:channel,
+            },
+            orderBy:{
+                create_at:'desc',
+            }
+        })
+    }
 }
