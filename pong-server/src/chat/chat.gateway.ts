@@ -2,7 +2,6 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import {Server, Socket} from 'socket.io'
 import { ChatService } from './chat.service';
 
-
 @WebSocketGateway({
   origin:"*",
   namespace:"chat"
@@ -31,8 +30,7 @@ export class ChatGateway implements OnGatewayConnection{
       this.connectedUsers.set(user, [client]);
     }
 
-    client.join(user);
-
+    
     client.on("disconnect",() => {
       console.log(`the client with the socketID: ${client.id} is disconnected.`);
       console.log(this.connectedUsers);
@@ -54,19 +52,33 @@ export class ChatGateway implements OnGatewayConnection{
   async sendDM(@ConnectedSocket() client:Socket, @MessageBody() data:{
     from:string,
     to:string,
-    message:string
+    message:string,
+    game:boolean
   })
   {
-    await this.chatService.createDirectMessage(data.from, data.to, data.message);
-    client.to(data.from).emit("sendDM", data);
-
-    this.connectedUsers.get(data.to).forEach((socket) => {
-      socket.emit("sendDM", data);
-    })
+    // create a roomId for DM
+    // then join all the socket to the room.
+    const RoomId = this.chatService.CreateRoomId(data.from, data.to);
+    const from = this.connectedUsers.get(data.from);
+    const to = this.connectedUsers.get(data.to);
+    for (const val of from){
+      val.join(RoomId);
+    }
+    for (const val of to){
+      val.join(RoomId);
+    }
+    if (!data.game){
+      await this.chatService.createDirectMessage(data.from, data.to, data.message);
+    }
+    client.to(RoomId).emit("sendDM", data);
   }
 
   @SubscribeMessage('sendCM')
-  SendChannelM(Socket: Socket, @MessageBody() data:any){
-
+  SendChannelM(@ConnectedSocket() client:Socket, @MessageBody() data:{
+    from:string,
+    channel:string,
+    message:string
+  }){
+                        
   }
 }

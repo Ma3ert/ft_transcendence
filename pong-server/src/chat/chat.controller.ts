@@ -24,6 +24,14 @@ export class ChatController {
         }
     }
 
+    // User Join a Channel
+    // @Post('/channels/')
+    // @HttpCode(HttpStatus.CREATED)
+    // @UseGuards(LoggedInGuard)
+    // async joinChannel(){
+
+    // }
+
     // get message of a specific Direct Message
     @Get('/direct/messages/:friendId')
     @HttpCode(HttpStatus.OK)
