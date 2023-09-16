@@ -45,7 +45,9 @@ export class ChatService {
                 id:true,
             }
         })
-        await this.addUserToChannel(channel.id, createChannelDto.ownerId, "OWNER");
+        await this.userJoinChannel({userId:channel.id,
+                                    channelId:createChannelDto.ownerId,
+                                    role:"OWNER"});
         return channel;
     }
 
@@ -55,12 +57,12 @@ export class ChatService {
     // }
 
     // User To Channel
-    async addUserToChannel(channelId:string, userId:string, role:Role){
+    async userJoinChannel(joinChannelDto:joinChannelDto){
         const user = await this.prismaService.channelUser.create({
             data:{
-                userId:userId,
-                channelId:channelId,
-                role:role,
+                userId:joinChannelDto.userId,
+                channelId:joinChannelDto.channelId,
+                role:joinChannelDto.role
             }
         })
         return user;
@@ -118,8 +120,30 @@ export class ChatService {
         return (users[0] + users[1]);
     }
 
-    async isBanned(userid:string, channelId:string){
-        
+    async isBanned(user:string, channel:string){
+        const isBanned = this.prismaService.channelBan.findFirst({
+            where:{
+                userId:user,
+                channelId:channel,
+            }
+        })
+        if (isBanned)
+            return true;
+        return false;
     }
 
+    async getAllchannelMembers(channel:string){
+        return await this.prismaService.channelUser.findMany({
+            where:{
+                channelId:channel,
+            },
+            select:{
+                userId:true,
+            }
+        });
+    }
+
+    // async isMuted(user:string, channel:string){
+
+    // }
 }

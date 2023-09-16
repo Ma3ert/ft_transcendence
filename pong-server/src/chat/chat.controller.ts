@@ -3,6 +3,7 @@ import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { createChannelDto } from './dto/channel.create.dto';
 import { ChatService } from './chat.service';
 import { Request, Response } from 'express';
+import { joinChannelDto } from './dto/joinChannel.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -25,12 +26,24 @@ export class ChatController {
     }
 
     // User Join a Channel
-    // @Post('/channels/')
-    // @HttpCode(HttpStatus.CREATED)
-    // @UseGuards(LoggedInGuard)
-    // async joinChannel(){
-
-    // }
+    // now the user will join the channel without any constraints.
+    @Post('/channels/join')
+    @HttpCode(HttpStatus.CREATED)
+    @UseGuards(LoggedInGuard)
+    async joinChannel(@Body() joinchannelDto:joinChannelDto, @Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return ;
+            await this.chatService.userJoinChannel(joinchannelDto);
+        }
+        catch(error){
+            throw new HttpException(
+                "User Cnnot Join the channel",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
 
     // get message of a specific Direct Message
     @Get('/direct/messages/:friendId')

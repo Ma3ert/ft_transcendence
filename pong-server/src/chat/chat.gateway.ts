@@ -59,13 +59,13 @@ export class ChatGateway implements OnGatewayConnection{
     // create a roomId for DM
     // then join all the socket to the room.
     const RoomId = this.chatService.CreateRoomId(data.from, data.to);
-    const from = this.connectedUsers.get(data.from);
-    const to = this.connectedUsers.get(data.to);
-    for (const val of from){
-      val.join(RoomId);
+    const sender = this.connectedUsers.get(data.from);
+    const receiver = this.connectedUsers.get(data.to);
+    for (const socket of sender){
+      socket.join(RoomId);
     }
-    for (const val of to){
-      val.join(RoomId);
+    for (const socket of receiver){
+      socket.join(RoomId);
     }
     if (!data.game){
       await this.chatService.createDirectMessage(data.from, data.to, data.message);
@@ -74,14 +74,25 @@ export class ChatGateway implements OnGatewayConnection{
   }
 
   @SubscribeMessage('sendCM')
-  SendChannelM(@ConnectedSocket() client:Socket, @MessageBody() data:{
+  async SendChannelM(@ConnectedSocket() client:Socket, @MessageBody() data:{
     from:string,
     channel:string,
     message:string
   }){
     // check if the user is banned or muted
     // and after then you can save the message you want to sent in the database
-    // 
-                        
+    // for now i will write the logic like the user has the privileges to send a message.
+    // get all the user in the channel and then join them to the room
+    const channelUsers = await this.chatService.getAllchannelMembers(data.channel);
+    for (const user of channelUsers){
+      if (this.connectedUsers.has(user.userId)){
+        const sockets = this.connectedUsers.get(user.userId);
+        for (const socket of sockets){
+          socket.join(data.channel);
+        }
+      }
+    }
+    await this.chatService.createChannelMessage(data.from, data.channel, data.message);
+    client.to(data.channel).emit("sendCM", data);
   }
 }
