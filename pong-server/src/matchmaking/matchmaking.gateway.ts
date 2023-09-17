@@ -1,31 +1,41 @@
-import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { UseGuards } from '@nestjs/common';
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
+import { WsLoggedInGuard } from 'src/auth/utils/WsLoggedIn.guard';
+import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 
+@UseGuards(WsLoggedInGuard)
 @WebSocketGateway({namespace: 'matchmaking', cors: {
   origin: ['*'],
   credentials: true
 }})
 
-export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    console.log(payload);
-    return 'Hello world!';
+  @SubscribeMessage('joinGame')
+  joinGameHandler(client: any, payload: any){
+    // Here i should add the user to the queue and wait for the match
+
+    this.server.emit('matchmade', 'Hello from matchmaking.')
+    console.log(client.user);
   }
+
+
 
   // sendMatchMaking()
   // {
   //   this.server.emit('matchmade', 'Hello from matchmaking.')
   // }
 
-  handleConnection(client: Socket) {
-    const user = client.request;
+  afterInit(client: Socket)
+  {
+    client.use(SocketAuthMiddlware() as any)
+  }
 
-    const expressRequest = client.request;
+  handleConnection(client: Socket) {
     console.log("Client connected");
   }
 

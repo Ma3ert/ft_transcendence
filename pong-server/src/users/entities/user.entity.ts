@@ -8,4 +8,5 @@ export class User {
   twoFactor?: boolean;
   xp?: number;
   ladelLevel?: number;
+  status?: 'ONLINE' | 'OFFLINE' | 'INMATCH';
 }

@@ -31,6 +31,7 @@ export class UsersController {
   }
 
   @Get('current')
+  @UseGuards(LoggedInGuard)
   getCurrentUser(@Req() req) {
     return { status: 'success', data: req.user };
   }

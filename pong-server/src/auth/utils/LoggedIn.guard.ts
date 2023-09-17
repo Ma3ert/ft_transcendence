@@ -11,12 +11,11 @@ export class LoggedInGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> 
     {
         const req: Request = context.switchToHttp().getRequest();
-        console.log(req.cookies.jwt);
         if (!req.cookies.jwt)
             return false;
         const decoded = await this.authService.verifyAccessToken(req.cookies.jwt);
-        console.log(decoded);
         const user = await this.userService.findById(decoded.sub);
+        req.user = user;
         if (user)
             return true
         //! Need to add the logic for 2FA auth validation here.

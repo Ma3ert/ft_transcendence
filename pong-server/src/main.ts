@@ -8,16 +8,16 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser())
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        maxAge: 60000 * 17280,
-      },
-    }),
-  );
+  // app.use(
+  //   session({
+  //     secret: process.env.SESSION_SECRET,
+  //     resave: false,
+  //     saveUninitialized: false,
+  //     cookie: {
+  //       maxAge: 60000 * 17280,
+  //     },
+  //   }),
+  // );
   app.use(passport.initialize());
   // app.use(passport.session());
   app.useWebSocketAdapter(new IoAdapter(app))
