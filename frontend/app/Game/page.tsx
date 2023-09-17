@@ -2,46 +2,71 @@
 import { Box } from "@chakra-ui/react"
 import { Key, useEffect, useState } from "react"
 import Ball from "./Ball"
-import {getBallTrajectory, getBallPositions, Point} from "./gameEngine"
+import {getBallTrajectory, getBallPositions, Point, getOtherPosition} from "./gameEngine"
 import FirstRaquette from "./FirstRaquette"
 
 type Props = {}
 
 export default function Home() {
+  
   const positions: Point[] = getBallPositions({x: 270, y: 803}, {x: 460, y: 339}, 900, 400);
   const trajectory: Point[] = getBallTrajectory(positions[0], positions[7], 10)
   const trajectory2: Point[] = getBallTrajectory(positions[7], positions[4], 10)
   const trajectory3: Point[] = getBallTrajectory(positions[4], positions[5], 10)
   const trajectory4: Point[] = getBallTrajectory(positions[5], positions[2], 10)
-  const [index, setIndex] = useState(0);
+  const [Px, setPlayerX] = useState(100);
+  const [Ox, setOtherX] = useState(getOtherPosition({x: 100, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 100));
   const table: Point[][] = [trajectory, trajectory2, trajectory3, trajectory4];
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    console.log("hoho")
-    if (event.key === "ArrowUp")
+    if (event.key === 'a')
     {
-      console.log("up")
-      if (index < 3)
-        setIndex(index + 1)
+      if (Px - 10 >= 100)
+      {
+        setPlayerX(Px - 10)
+        setOtherX(getOtherPosition({x: 100, y: 200}, {x: 100, y: 100}, {x: Px - 10, y:200}, 100, 100))
+      }
     }
-    else if (event.key === "ArrowDown")
+    else if (event.key === 'd')
     {
-      console.log("down")
-      if (index > 0)
-        setIndex(index - 1)
+      if (Px + 10 <= 200)
+      {
+        setPlayerX(Px + 10)
+        setOtherX(getOtherPosition({x: 100, y: 200}, {x: 100, y: 100}, {x: Px + 10, y:200}, 100, 100))
+      }
     }
   }
-  // useEffect(() => {
-  //   window.addEventListener("keydown", handleKeyDown)
-  //   console.log("is called")
-  //   return () => {
-	// 	  window.removeEventListener('keydown', handleKeyDown);
-	// 	};
-  // }, [index])
-  console.log(trajectory)
+useEffect(() => {
+    console.log("Px: ", Px)
+    console.log("Ox: ", Ox)
+    window.addEventListener("keydown", handleKeyDown)
+    console.log("is called")
+    return () => {
+		  window.removeEventListener('keydown', handleKeyDown);
+		};
+  }, [Px, Ox])
+  // console.log(trajectory)
   return (
     <>
-      {positions.map((point) => (
+      <Box
+        bg={"#fff"}
+        position={"absolute"}
+        boxSize={"10px"}
+        borderRadius={"full"}
+        top={600}
+        left={Px}
+      >    
+      </Box>
+      <Box
+        bg={"#fff"}
+        position={"absolute"}
+        boxSize={"10px"}
+        borderRadius={"full"}
+        top={500}
+        left={Ox}
+      >    
+      </Box>
+      {/* {positions.map((point) => (
         <Box
           bg={"#fff"}
           position={"absolute"}
@@ -60,15 +85,15 @@ export default function Home() {
           top={100}
           left={270 + 900 / 2}
           >
-        </Box>
+        </Box> */}
       {/* <Ball points={table[index]} reset={index}/> */}
-      <FirstRaquette
+      {/* <FirstRaquette
         w="140px"
         h="140px"
         x={270}
         y={803}
         lenght={900}
-      />
+      /> */}
     </>
   )
 }
