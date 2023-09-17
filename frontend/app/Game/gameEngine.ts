@@ -3,6 +3,13 @@ export interface Point {
 	y: number;
 }
 
+export function checkDirection(start: number, end: number, position: number, lineLenght: number): string
+{
+	if (position - start < lineLenght / 2)
+		return ("left");
+	return ("right");
+}
+
 export function getBallTrajectory(start: Point, end: Point, step: number): Point[] {
     const points: Point[] = [];
     const dx = Math.abs(end.x - start.x);
@@ -39,7 +46,6 @@ export function getBallTrajectory(start: Point, end: Point, step: number): Point
             y += sy;
         }
     }
-
     return points;
 }
 

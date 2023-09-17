@@ -5,26 +5,19 @@ import {Point} from "./gameEngine"
 
 type Props = {
 	points: Point[]
-	reset: number
+	box: number;
 }
 
-const Ball = ({ points, reset }: Props) => {
-	var box = 100;
+const Ball = ({ points, box }: Props) => {
 	const [scale, setScale] = useState(points[0].y / 800)
 	const [index, setIndex] = useState(1)
-	const [start, setStart] = useState(reset)
 	var boxSize = scale * box
 	const handleMovement = () => {
-		if (index < points.length - 1 && start === reset)
+		if (index < points.length)
 		{
 			setIndex(index + 1);
 			setScale(points[index].y / 800)
 			boxSize = scale * box
-		}
-		else {
-			setIndex(0)
-			setStart(reset)
-			
 		}
 	}
 	// const handleKeyDown = (event: KeyboardEvent) => {
@@ -75,10 +68,6 @@ const Ball = ({ points, reset }: Props) => {
 	// }
 	useEffect(() => {
 		setTimeout(handleMovement, 60);
-		// window.addEventListener('keydown', handleKeyDown);
-		// return () => {
-		// window.removeEventListener('keydown', handleKeyDown);
-		// };
 	}, [box, scale, index]);
   	return (
 		<>

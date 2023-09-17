@@ -15,7 +15,7 @@ export default function Home() {
   const trajectory3: Point[] = getBallTrajectory(positions[4], positions[5], 10)
   const trajectory4: Point[] = getBallTrajectory(positions[5], positions[2], 10)
   const [Px, setPlayerX] = useState(100);
-  const [Ox, setOtherX] = useState(getOtherPosition({x: 100, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 100));
+  const [Ox, setOtherX] = useState(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 60));
   const table: Point[][] = [trajectory, trajectory2, trajectory3, trajectory4];
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -24,7 +24,7 @@ export default function Home() {
       if (Px - 10 >= 100)
       {
         setPlayerX(Px - 10)
-        setOtherX(getOtherPosition({x: 100, y: 200}, {x: 100, y: 100}, {x: Px - 10, y:200}, 100, 100))
+        setOtherX(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px - 10, y:200}, 100, 60))
       }
     }
     else if (event.key === 'd')
@@ -32,7 +32,7 @@ export default function Home() {
       if (Px + 10 <= 200)
       {
         setPlayerX(Px + 10)
-        setOtherX(getOtherPosition({x: 100, y: 200}, {x: 100, y: 100}, {x: Px + 10, y:200}, 100, 100))
+        setOtherX(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px + 10, y:200}, 100, 60))
       }
     }
   }
