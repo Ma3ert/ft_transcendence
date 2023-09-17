@@ -51,11 +51,6 @@ export class ChatService {
         return channel;
     }
 
-    // //user join a channel
-    // async joinChannel(joinChannelDto:joinChannelDto){
-        
-    // }
-
     // User To Channel
     async userJoinChannel(joinChannelDto:joinChannelDto){
         const user = await this.prismaService.channelUser.create({

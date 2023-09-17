@@ -4,6 +4,8 @@ import { createChannelDto } from './dto/channel.create.dto';
 import { ChatService } from './chat.service';
 import { Request, Response } from 'express';
 import { joinChannelDto } from './dto/joinChannel.dto';
+import { Role } from '@prisma/client';
+import { Roles } from './decorator/role.decorator';
 
 @Controller('chat')
 export class ChatController {
@@ -67,6 +69,7 @@ export class ChatController {
 
     @Get('/channels/messages/:channelId')
     @UseGuards(LoggedInGuard)
+    @Roles(Role.MEMBER)
     async getChannelMessages(@Param('channelId') channelId:string, @Req() req:Request){
         try{
             const userId = req.user['id'] as string;

@@ -95,4 +95,8 @@ export class ChatGateway implements OnGatewayConnection{
     await this.chatService.createChannelMessage(data.from, data.channel, data.message);
     client.to(data.channel).emit("sendCM", data);
   }
+
+  // what's coming next 
+  // creating guard to protect the action ban and kick and mute.
+  // channel invite system.
 }
