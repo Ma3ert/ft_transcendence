@@ -4,13 +4,14 @@ import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
 import { joinChannelDto } from './dto/joinChannel.dto';
+import { changeUserPermissionDto } from './dto/changeUserPermission.dto';
 
 // TODO
 // * create channel Good
-// * join user to channel 
-// * send DM
-// * send message to channel
-// * ban user from channel
+// * join user to channel Good
+// * send DM Good
+// * send message to channel Good
+// * ban user from channel 
 // * unban user from channel
 // * kick(delete) user from channel
 // * mute user
@@ -36,7 +37,7 @@ export class ChatService {
                 name:createChannelDto.name,
                 type:createChannelDto.type,
                 password:hashedPassword,
-                avatar:createChannelDto.avatar
+                avatar:createChannelDto.avatar,
             },
             select:{
                 name:true,
@@ -45,11 +46,12 @@ export class ChatService {
                 id:true,
             }
         })
-        await this.userJoinChannel(createChannelDto.owner,channel.id, "OWNER");
+        await this.userJoinChannel(createChannelDto.owner, channel.id, Role.OWNER);
         return channel;
     }
 
     // User join the Channel
+    // if it is public or private or protected
     async userJoinChannel(user:string, channel:string, role:Role){
         const isJoined = await this.prismaService.channelUser.findFirst({
             where:{
@@ -164,5 +166,90 @@ export class ChatService {
                 id:channel,
             }
         })
+    }
+
+    async actionValidity(actionSender:string, actionReceiver:string, channel:string){
+
+    }
+
+    // get bannedusers
+    async bannedUsers(){
+
+    }
+
+    // get Members of Channel
+    async getChannelMembers(channel:string){
+        return await this.prismaService.channelUser.findMany({
+            where:{
+                channelId:channel,
+            },
+            select:{
+                userId:true,
+            }
+        })
+    }
+
+
+    // ban user
+    async banUser(banner:string, banned:string, channel:string){
+        if (banned === banned)
+            return false;
+
+        const bannerUser = await this.prismaService.channelUser.findFirst({
+            where:{
+                userId:banner,
+                channelId:channel,
+            }
+        });
+
+        const bannedUser = await this.prismaService.channelUser.findFirst({
+            where:{
+                userId:banned,
+                channelId:channel,
+            }
+        });
+
+        if (!bannedUser || bannedUser.role === Role.OWNER || bannedUser.channelId !== bannerUser.channelId)
+            return false;
+
+        await this.prismaService.channelBan.create({
+            data:{
+                userId:banned,
+                channelId:channel,
+            }
+        })
+        return true;
+    }
+
+    async unbanUser(banner:string, banned:string, channel:string){
+
+    }
+
+    async changePermission(owner:string, changeUserPermission:changeUserPermissionDto){
+        if (owner === changeUserPermission.user || changeUserPermission.role == Role.OWNER)
+            return false;
+
+        const userChange = await this.prismaService.channelUser.findFirst({
+            where:{
+                userId:changeUserPermission.user,
+                channelId:changeUserPermission.channel,
+            }
+        });
+
+        if (!userChange)
+            return false;
+
+        await this.prismaService.channelUser.update({
+            where:{
+                userId_channelId:{
+                    userId:userChange.userId,
+                    channelId:userChange.channelId
+                }
+            },
+            data:{
+                role:changeUserPermission.role,
+            }
+        })
+        return true;
     }
 }

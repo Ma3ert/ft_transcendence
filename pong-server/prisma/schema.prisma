@@ -17,16 +17,17 @@ enum UserStatus {
 }
 
 model User {
-  id                    String     @id @default(uuid())
-  username              String     @unique
-  email                 String     @unique
-  avatar                String
-  twoFactorRetry        Int        @default(0)
-  twoFactor             Boolean    @default(false)
-  twoFactorPin          String?
-  activated             Boolean    @default(false)
-  pinValidated          Boolean    @default(false)
-  status                UserStatus @default(ONLINE)  
+  id                    String           @id @default(uuid())
+  username              String           @unique
+  email                 String           @unique
+  avatar                String       
+  twoFactorRetry        Int              @default(0)
+  twoFactor             Boolean          @default(false)
+  twoFactorPin          String?      
+  activated             Boolean          @default(false)
+  pinValidated          Boolean          @default(false)
+  status                UserStatus       @default(ONLINE)
+
   directmessageSent     DirectMessage[]  @relation("DMsent")
   directmessageReceived DirectMessage[]  @relation("DMreceived")
 
@@ -36,7 +37,7 @@ model User {
 
   channelBan            ChannelBan[]     @relation("UserbannedInChannel")
 
-  channelMute           ChannelMute[]     @relation("UserMutedInchannel")
+  channelMute           ChannelMute[]    @relation("UserMutedInchannel")
 
   channelInviteSent     ChannelInvite[]  @relation("ChannelInviteSent")
   channelInviteReceived ChannelInvite[]  @relation("ChannelInviteReceived")
@@ -105,7 +106,8 @@ model ChannelUser {
   channel   Channel @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"channelMembers")
 
   role Role
-  @@id([userId, channelId], name:"channelUser")
+  
+  @@id([userId, channelId])
 }
 
 model ChannelBan {
@@ -116,6 +118,7 @@ model ChannelBan {
   channel   Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"ChannelBannedUser")
 
   @@id([userId, channelId])
+
   created_at DateTime @default(now())
 }
 
@@ -162,4 +165,3 @@ enum Role{
   MEMBER
   ADMIN
 }
-
