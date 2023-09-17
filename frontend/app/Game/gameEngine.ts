@@ -43,6 +43,13 @@ export function getBallTrajectory(start: Point, end: Point, step: number): Point
     return points;
 }
 
+export function getOtherPosition(topLeft: Point, bottomLeft: Point, playerPosition: Point, baseLine: number, topLine: number): number
+{
+	const positionPercent: number = playerPosition.x - bottomLeft.x / baseLine * 100;
+	var otherPosition: number = topLine - ((positionPercent / 100) * topLine);
+	return (otherPosition + topLeft.x);
+}
+
 export function getBallPositions(bottomLeft: Point, topLeft: Point, baseLine: number, topLine: number): Point[]
 {
 	var baseLineSteps: number = baseLine / 5.0;
