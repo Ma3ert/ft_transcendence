@@ -7,10 +7,9 @@ import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { GameModule } from './game/game.module';
-import { MatchmakingService } from './matchmaking/matchmaking.service';
-import { MatchmakingController } from './matchmaking/matchmaking.controller';
 import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { BullModule } from '@nestjs/bull';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [

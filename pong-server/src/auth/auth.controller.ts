@@ -7,15 +7,14 @@ import {
   HttpStatus,
   Post,
   Body,
+  Res,
 } from '@nestjs/common';
 import { FortyTwoGuard } from './utils/FortyTwo.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { LoggedInGuard } from './utils/LoggedIn.guard';
 import { LocalAuthGuard } from './utils/LocalAuth.guard';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcryptjs';
 
 @Controller('auth')
 export class AuthController {
@@ -32,8 +31,12 @@ export class AuthController {
 
   @Get('42/callback')
   @UseGuards(FortyTwoGuard)
-  handleRedirect(@Req() req: Request) {
-    return { user: req.session.id };
+  async handleRedirect(@Req() req: any, @Res() res: Response) {
+    console.log(req.user);
+    const token = await this.authService.generateAccessToken(req.user);
+    console.log(token);
+    res.cookie('jwt', token)
+    res.status(200).json({message: "Worked"})
   }
 
   @Get('42/logout')
