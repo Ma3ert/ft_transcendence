@@ -19,6 +19,11 @@ const Ball = ({ points, box }: Props) => {
 			setScale(points[index].y / 800)
 			boxSize = scale * box
 		}
+		else if (index === points.length)
+		{
+			// here I have to send to the server that the ball will hit the border
+			// if there's a player means it will bounce otherwise a point count to me
+		}
 	}
 	// const handleKeyDown = (event: KeyboardEvent) => {
 	// 	if (event.key === "ArrowUp")

@@ -10,6 +10,13 @@ export function checkDirection(start: number, end: number, position: number, lin
 	return ("right");
 }
 
+export function checkBounce(playerPosition: Point, ballPosition: Point): boolean
+{
+	if (playerPosition.x + 20 >= ballPosition.x && playerPosition.x - 20 <= ballPosition.x)
+		return (true);
+	return (false);
+}
+
 export function getBallTrajectory(start: Point, end: Point, step: number): Point[] {
     const points: Point[] = [];
     const dx = Math.abs(end.x - start.x);

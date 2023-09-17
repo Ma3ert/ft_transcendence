@@ -18,24 +18,24 @@ export default function Home() {
   const [Ox, setOtherX] = useState(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 60));
   const table: Point[][] = [trajectory, trajectory2, trajectory3, trajectory4];
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'a')
-    {
-      if (Px - 10 >= 100)
-      {
-        setPlayerX(Px - 10)
-        setOtherX(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px - 10, y:200}, 100, 60))
-      }
-    }
-    else if (event.key === 'd')
-    {
-      if (Px + 10 <= 200)
-      {
-        setPlayerX(Px + 10)
-        setOtherX(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px + 10, y:200}, 100, 60))
-      }
-    }
-  }
+  // const handleKeyDown = (event: KeyboardEvent) => {
+  //   if (event.key === 'a')
+  //   {
+  //     if (Px - 10 >= 100)
+  //     {
+  //       setPlayerX(Px - 10)
+  //       setOtherX(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px - 10, y:200}, 100, 60))
+  //     }
+  //   }
+  //   else if (event.key === 'd')
+  //   {
+  //     if (Px + 10 <= 200)
+  //     {
+  //       setPlayerX(Px + 10)
+  //       setOtherX(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px + 10, y:200}, 100, 60))
+  //     }
+  //   }
+  // }
 useEffect(() => {
     console.log("Px: ", Px)
     console.log("Ox: ", Ox)
