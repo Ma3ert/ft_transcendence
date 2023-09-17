@@ -18,5 +18,5 @@ export class createChannelDto{
 
     @IsString()
     @IsNotEmpty()
-    ownerId:string
+    owner:string
 }

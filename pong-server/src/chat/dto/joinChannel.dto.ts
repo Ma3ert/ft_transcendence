@@ -9,7 +9,4 @@ export class joinChannelDto{
     @IsNotEmpty()
     @IsString()
     channelId:string
-
-    @IsNotEmpty()
-    role:Role
 }

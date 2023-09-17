@@ -45,22 +45,30 @@ export class ChatService {
                 id:true,
             }
         })
-        await this.userJoinChannel({userId:channel.id,
-                                    channelId:createChannelDto.ownerId,
-                                    role:"OWNER"});
+        await this.userJoinChannel(createChannelDto.owner,channel.id, "OWNER");
         return channel;
     }
 
-    // User To Channel
-    async userJoinChannel(joinChannelDto:joinChannelDto){
-        const user = await this.prismaService.channelUser.create({
+    // User join the Channel
+    async userJoinChannel(user:string, channel:string, role:Role){
+        const isJoined = await this.prismaService.channelUser.findFirst({
+            where:{
+                userId:user,
+                channelId:channel
+            },
+        })
+
+        if (isJoined)
+            return isJoined;
+
+        const joinedUser = await this.prismaService.channelUser.create({
             data:{
-                userId:joinChannelDto.userId,
-                channelId:joinChannelDto.channelId,
-                role:joinChannelDto.role
+                userId:user,
+                channelId:channel,
+                role:role
             }
         })
-        return user;
+        return joinedUser;
     }
 
     // Create DM
@@ -145,6 +153,15 @@ export class ChatService {
             },
             orderBy:{
                 create_at:'desc',
+            }
+        })
+    }
+
+    // Delete Channel
+    async deleteChannelById(channel:string){
+        const deletedChannel = await this.prismaService.channel.delete({
+            where:{
+                id:channel,
             }
         })
     }
