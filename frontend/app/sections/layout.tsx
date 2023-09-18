@@ -16,15 +16,15 @@ const chatLayout: React.FC<LayoutProps> = ({ children }) => {
           <HStack
             justify={"space-between"}
             mx={"auto"}
-            border={"1px"}
-            borderColor={{
-              base: "white",
-              sm: "green",
-              md: "blue",
-              lg: "red",
-              xl: "yellow",
-              vl: "purple",
-            }}
+            // border={"1px"}
+            // borderColor={{
+            //   base: "white",
+            //   sm: "green",
+            //   md: "blue",
+            //   lg: "red",
+            //   xl: "yellow",
+            //   vl: "purple",
+            // }}
             w={{ base: "80%", sm: "100%", md: "98%", lg: "98%", xl: "85%"}}
             h="100vh"
             flex={1}

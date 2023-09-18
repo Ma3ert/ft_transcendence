@@ -10,6 +10,7 @@ import { GameModule } from './game/game.module';
 import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { BullModule } from '@nestjs/bull';
 import { UsersModule } from './users/users.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     PassportModule.register({ session: true }),
     GameModule,
     MatchmakingModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
