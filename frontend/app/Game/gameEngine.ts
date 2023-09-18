@@ -21,7 +21,7 @@ function getBallTrajectory(start: point, end: point): point[]
 {
 	var toAdd:point = start;
 	var toReturn:point[] = [];
-	while (toAdd.x !== end.x && toAdd.y !== end.y)
+	while (toAdd.x < end.x && toAdd.y < end.y)
 	{
 		toAdd = getNextStep(toAdd, {x: 500, y:500}, 10);
 		toReturn.push(toAdd);

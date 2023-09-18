@@ -14,7 +14,6 @@ function getBallTrajectory(start, end) {
     var toReturn = [];
     while (toAdd.x < end.x && toAdd.y < end.y) {
         toAdd = getNextStep(toAdd, { x: 500, y: 500 }, 5);
-        console.log(toAdd.x, toAdd.y)
         toReturn.push(toAdd);
     }
     return (toReturn);
