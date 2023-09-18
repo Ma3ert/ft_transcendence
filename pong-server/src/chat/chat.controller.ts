@@ -32,29 +32,28 @@ export class ChatController {
             throw new HttpException({
                 error:`${error}`,
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-            },HttpStatus.FORBIDDEN);
+            },HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // // User Join a Channel
-    // // now the user will join the channel without any constraints.
-    // @Post('/channels/:channelId/join/')
-    // @HttpCode(HttpStatus.CREATED)
-    // @UseGuards(LoggedInGuard)
-    // async joinChannel(@Body() joinchannelDto:joinChannelDto, @Req() req:Request){
-    //     try{
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId === undefined)
-    //             return ;
-    //         await this.chatService.userJoinChannel(joinchannelDto.userId, joinchannelDto.channelId, "MEMBER");
-    //     }
-    //     catch(error){
-    //         throw new HttpException(
-    //             "User Cnnot Join the channel",
-    //             HttpStatus.INTERNAL_SERVER_ERROR
-    //         )
-    //     }
-    // }
+    // User Join a Channel
+    @Post('/channels/:channelId/join/')
+    @HttpCode(HttpStatus.CREATED)
+    @UseGuards(LoggedInGuard)
+    async joinChannel(@Param('channelId') channelId:string, @Body() joinchannelDto:joinChannelDto, @Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return ;
+            await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
+        }
+        catch(error){
+            throw new HttpException({
+                error: `You cannot Join this Channel`,
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
 
     // // ban user from the channel
     // // the banner the banned user

@@ -55,25 +55,36 @@ export class ChatService {
 
     // User join the Channel
     // if it is public or private or protected
-    async userJoinChannel(user:string, channel:string, role:Role){
-        const isJoined = await this.prismaService.channelUser.findFirst({
+    async userJoinChannel(userId:string, channel:string, password:string){
+        const user = await this.prismaService.user.findFirstOrThrow({
             where:{
-                userId:user,
-                channelId:channel
-            },
-        })
+                id:userId,
+            }
+        });
 
-        if (isJoined)
-            return isJoined;
-
-        const joinedUser = await this.prismaService.channelUser.create({
-            data:{
-                userId:user,
-                channelId:channel,
-                role:role
+        const Channel = await this.prismaService.channel.findFirst({
+            where:{
+                id:channel,
             }
         })
-        return joinedUser;
+
+        if (Channel.type === Type.PROTECTED && !password)
+            throw new InternalServerErrorException('the channel required password');
+
+        if (password)
+        {
+            const isMatch = await bcrypt.compare(password, Channel.password);
+            if (!isMatch)
+                throw new InternalServerErrorException('Invalid Password');
+        }
+
+        await this.prismaService.channelUser.create({
+            data:{
+                userId:userId,
+                channelId:channel,
+                role:Role.MEMBER,
+            }
+        })
     }
 
     // Create DM
