@@ -18,6 +18,8 @@ export class RoleGuard implements CanActivate {
             return true;
         }
         const request: Request = context.switchToHttp().getRequest();
+        if (!request.user || request.user === undefined)
+            return false;
         const user = request.user['id'] as string;
         const channel = request.params.channelId;
         const roles = await this.prismaService.channelUser.findFirst({

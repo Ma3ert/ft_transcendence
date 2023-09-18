@@ -192,18 +192,6 @@ export class ChatService {
         })
     }
 
-    // get Members of Channel
-    async getChannelMembers(channel:string){
-        return await this.prismaService.channelUser.findMany({
-            where:{
-                channelId:channel,
-            },
-            select:{
-                userId:true,
-            }
-        })
-    }
-
     async leaveChannel(channel:string, user:string){
         const isInChannel = !!await this.prismaService.channelUser.findFirstOrThrow({
             where:{
@@ -218,6 +206,15 @@ export class ChatService {
                     userId:user,
                     channelId:channel,
                 }
+            }
+        })
+    }
+
+    async getChannelMembers(channelId:string, userId:string){
+        return await this.prismaService.channelUser.findMany({
+            select:{
+                userId:true,
+                role:true,
             }
         })
     }

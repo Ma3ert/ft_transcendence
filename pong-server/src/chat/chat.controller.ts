@@ -2,14 +2,11 @@ import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Par
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { createChannelDto } from './dto/channel.create.dto';
 import { ChatService } from './chat.service';
-import { Request, Response } from 'express';
 import { joinChannelDto } from './dto/joinChannel.dto';
 import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
-import { RoleGuard } from './role.guard';
-import { banDto } from './dto/ban.dto';
-import { changeUserPermissionDto } from './dto/changeUserPermission.dto';
-import { updateChannelDto } from './dto/updateChannel.dto';
+import { Request } from 'express';
+
 
 @Controller('chat')
 export class ChatController {
@@ -21,10 +18,9 @@ export class ChatController {
     @UseGuards(LoggedInGuard)
     async CreateChannel(@Body() createChannelDto:createChannelDto, @Req() req:Request){
         try{
-            const userId = req.user['id'] as string;
-            if (!userId || userId === undefined)
+            if (!req.user || req.user === undefined)
                 return ;
-
+            const userId = req.user['id'] as string;
             const channel = await this.chatService.createChannel(userId, createChannelDto);
 
             return channel;
@@ -43,9 +39,9 @@ export class ChatController {
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
         try
         {
-            const userId = req.user['id'] as string;
-            if (!userId || userId === undefined)
+            if (!req.user || req.user === undefined)
                 return ;
+            const userId = req.user['id'] as string;
             await this.chatService.deleteChannelById(userId, channel);
         }
         catch(error)
@@ -56,19 +52,17 @@ export class ChatController {
             }, HttpStatus.FORBIDDEN);
         }
     }
-    
-    
-    
+
     // User Join a Channel
     @Post('/channels/:channelId/join/')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
     async joinChannel(@Param('channelId') channelId:string, @Body() joinchannelDto:joinChannelDto, @Req() req:Request){
         try{
+            if (!req.user || req.user === undefined)
+                return ;
             const userId = req.user['id'] as string;
-            if (!userId || userId === undefined)
-            return ;
-        await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
+            await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
         }
         catch(error){
             throw new HttpException({
@@ -81,12 +75,13 @@ export class ChatController {
     // leave channel
     @Delete('/channels/:channelId/leave')
     @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
         try
         {
-            const userId = req.user['id'] as string;
-            if (!userId || userId === undefined)
+            if (!req.user || req.user === undefined)
                 return ;
+            const userId = req.user['id'] as string;
             await this.chatService.leaveChannel(channelId, userId);
         }
         catch(error)
@@ -97,12 +92,25 @@ export class ChatController {
             )
         }
     }
-    // // ban user from the channel
-    // // the banner the banned user
-    // // the banner should have the permission of (admin or owner)
-    // // the banned and the banner should belong to the same channel
-    // // if the banner have the privilege of admin should not ban owner
-    // // the owner ban everyone
+
+    // get channel Members
+    @Get('/channels/:channelId/members/')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
+        try{
+            if (!req.user || req.user === undefined)
+                return ;
+            const userId = req.user['id'] as string;
+            return await this.chatService.getChannelMembers(channelId, userId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                "You don't have the previliege to get cahnnel members",
+                HttpStatus.FORBIDDEN)
+        }
+    }
 
     // @Patch('/channels/permission/')
     // @UseGuards(LoggedInGuard)
