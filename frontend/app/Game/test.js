@@ -1,25 +1,21 @@
 "use strict";
-function getNextStep(current, target, stepSize) {
-    const dx = target.x - current.x;
-    const dy = target.y - current.y;
-    const angle = Math.atan2(dy, dx);
-    const xStep = stepSize * Math.cos(angle);
-    const yStep = stepSize * Math.sin(angle);
-    const newX = current.x + xStep;
-    const newY = current.y + yStep;
-    return { x: Math.round(newX), y: Math.round(newY) };
+function getBallPositions(bottomLeft, topLeft, baseLine, topLine) {
+    var baseLineSteps = baseLine / 5.0;
+    var topLineSteps = topLine / 5.0;
+    var shooting = [
+        { x: bottomLeft.x , y: bottomLeft.y },
+        { x: bottomLeft.x + baseLineSteps, y: bottomLeft.y },
+        { x: bottomLeft.x + baseLineSteps * 2, y: bottomLeft.y },
+        { x: bottomLeft.x + baseLineSteps * 3, y: bottomLeft.y },
+        { x: bottomLeft.x + baseLineSteps * 4, y: bottomLeft.y }
+    ];
+    var receiving = [
+        { x: topLeft.x, y: topLeft.y },
+        { x: topLeft.x + topLineSteps, y: topLeft.y },
+        { x: topLeft.x + topLineSteps * 2, y: topLeft.y },
+        { x: topLeft.x + topLineSteps * 3, y: topLeft.y },
+        { x: topLeft.x + topLineSteps * 4, y: topLeft.y },
+    ];
+    return (shooting.concat(receiving));
 }
-function getBallTrajectory(start, end) {
-    var toAdd = start;
-    var toReturn = [];
-    while (toAdd.x < end.x && toAdd.y < end.y) {
-        toAdd = getNextStep(toAdd, { x: 500, y: 500 }, 5);
-        toReturn.push(toAdd);
-    }
-    return (toReturn);
-}
-
-var table = getBallTrajectory({ x: 100, y: 100 }, { x: 500, y: 500 })
-
-console.log(table);
-console.log(table.length);
+console.log(getBallPositions({ x: 100, y: 500 }, { x: 200, y: 200 }, 300, 200));

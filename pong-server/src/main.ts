@@ -11,7 +11,7 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 6000 * 10,
+        maxAge: 60000 * 17280,
       },
     }),
   );

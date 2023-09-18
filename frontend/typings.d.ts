@@ -10,3 +10,16 @@ type Message = {
     time:string
     Author:User
 }
+
+type Channel = {
+    isPrivate:boalean
+    name:string,
+    members:User[],
+    admin:User,
+    membersCount:number,
+}
+
+type friendAction = {
+    actionName:string
+    important:boolean
+}
