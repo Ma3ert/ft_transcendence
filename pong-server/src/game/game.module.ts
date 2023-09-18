@@ -1,13 +1,8 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
-import { GameController } from './game.controller';
+import { GameGateway } from './game.gateway';
+import { GameService } from './game.service';
 
 @Module({
-  imports: [
-    BullModule.registerQueue({
-      name: 'matchmakingQueue',
-    }),
-  ],
-  controllers: [GameController],
+  providers: [GameGateway, GameService],
 })
 export class GameModule {}

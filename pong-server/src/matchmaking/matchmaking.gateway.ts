@@ -18,8 +18,8 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
   @SubscribeMessage('joinGame')
   joinGameHandler(client: any, payload: any){
     // Here i should add the user to the queue and wait for the match
-
-    this.server.emit('matchmade', 'Hello from matchmaking.')
+    if (client.user.status === "INMATCH")
+      return this.server.emit('alreadyInMatch', 'The user is already subscribed to a game session.')
     console.log(client.user);
   }
 
