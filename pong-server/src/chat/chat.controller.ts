@@ -35,7 +35,30 @@ export class ChatController {
             },HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
+    // delete Channel
+    @Delete('/channels/:channelId')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.OWNER)
+    async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
+        try
+        {
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return ;
+            await this.chatService.deleteChannelById(userId, channel);
+        }
+        catch(error)
+        {
+            throw new HttpException({
+                error:"You cannot delete This Channel",
+                status: HttpStatus.FORBIDDEN
+            }, HttpStatus.FORBIDDEN);
+        }
+    }
+    
+    
+    
     // User Join a Channel
     @Post('/channels/:channelId/join/')
     @HttpCode(HttpStatus.CREATED)
@@ -44,8 +67,8 @@ export class ChatController {
         try{
             const userId = req.user['id'] as string;
             if (!userId || userId === undefined)
-                return ;
-            await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
+            return ;
+        await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
         }
         catch(error){
             throw new HttpException({
@@ -55,6 +78,25 @@ export class ChatController {
         }
     }
 
+    // leave channel
+    @Delete('/channels/:channelId/leave')
+    @UseGuards(LoggedInGuard)
+    async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
+        try
+        {
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return ;
+            await this.chatService.leaveChannel(channelId, userId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                'You are not belonging to this channel',
+                HttpStatus.NOT_FOUND
+            )
+        }
+    }
     // // ban user from the channel
     // // the banner the banned user
     // // the banner should have the permission of (admin or owner)
@@ -116,13 +158,6 @@ export class ChatController {
     //         }
     // }
 
-    // // delete Channel
-    // @Delete('/channels/:channelId')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.OWNER)
-    // async deleteChannel(@Param('channelId') channel:string){
-    //     await this.chatService.deleteChannelById(channel);
-    // }
 
     // // get message of a specific Direct Message
     // // it will updated for pagination
@@ -174,26 +209,6 @@ export class ChatController {
 
     // // }
     
-    // // leave channel
-    // @Delete('/channels/:channelId/leave')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
-    // async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
-    //     try
-    //     {
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId === undefined)
-    //             return ;
-    //         await this.chatService.leaveChannel(channelId, userId);
-    //     }
-    //     catch(error)
-    //     {
-    //         throw new HttpException(
-    //             'You are not belonging to this channel',
-    //             HttpStatus.NOT_FOUND
-    //         )
-    //     }
-    // }
 
     // // kick User
     // @Delete('/channels/:channelId/kick/:userid')

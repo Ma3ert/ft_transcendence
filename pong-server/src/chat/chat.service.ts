@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
@@ -174,7 +174,17 @@ export class ChatService {
     }
 
     // Delete Channel
-    async deleteChannelById(channel:string){
+    async deleteChannelById(user:string, channel:string){
+        const owner = await this.prismaService.channelUser.findUniqueOrThrow({
+            where:{
+                userId_channelId:{
+                    userId:user,
+                    channelId:channel,
+                }
+            }
+        })
+        if (owner.role != Role.OWNER)
+            throw new ForbiddenException('You are not the owner of the channel');
         const deletedChannel = await this.prismaService.channel.delete({
             where:{
                 id:channel,
@@ -195,6 +205,13 @@ export class ChatService {
     }
 
     async leaveChannel(channel:string, user:string){
+        const isInChannel = !!await this.prismaService.channelUser.findFirstOrThrow({
+            where:{
+                userId:user,
+                channelId:channel
+            }
+        })
+
         await this.prismaService.channelUser.delete({
             where:{
                 userId_channelId:{
@@ -204,6 +221,5 @@ export class ChatService {
             }
         })
     }
-
 
 }
