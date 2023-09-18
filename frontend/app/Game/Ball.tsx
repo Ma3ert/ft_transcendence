@@ -22,7 +22,8 @@ const Ball = ({ points, box }: Props) => {
 		else if (index === points.length)
 		{
 			// here I have to send to the server that the ball will hit the border
-			// if there's a player means it will bounce otherwise a point count to me
+			// if there's a player at that position means it will bounce otherwise
+			// a point count to me
 		}
 	}
 	// const handleKeyDown = (event: KeyboardEvent) => {
@@ -85,17 +86,6 @@ const Ball = ({ points, box }: Props) => {
 				borderRadius={"full"}
 				>
 			</Box>
-			{/* <Box
-				position={"absolute"}
-				bg={"#000"}
-				opacity={"0.15"}
-				top={by + bw + (40 * scale)}
-				left={bx}
-				w={bw * scale}
-				h={2}
-				borderRadius={"full"}
-			>
-			</Box> */}
 		</>
 	)
 }

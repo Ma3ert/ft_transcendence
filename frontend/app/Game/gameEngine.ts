@@ -3,6 +3,30 @@ export interface Point {
 	y: number;
 }
 
+interface Game{
+	id: 0 | 1; // the id of the player whether he's the first to shoot or not
+	playerPosition: Point; // the position of the player update by the keystrok from the user
+	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
+	ballTrajectory: Point[]; // the trajectory of the ball 
+	ballPositions: Point[]; // the position of shooting and receiving the ball
+	indexStart: number; // the index from the ball is goind
+	indexEnd: number; // the index of where the ball is gonna end up
+	state: "R" | "S"; // to decide whether the player is a sender or receiver
+	playerDirection: "left" | "right"; // to decide which side the raquette is facing for the user
+	playerW: number; // the width of the raquette 
+	playerH: number; // the height of the raquette
+	playerSrc: string; // the src file of teh image to render for the player
+	otherDirection: "left" | "right"; // to decide which side the raquette is face for the other user
+	otherW: number; // the width of the raquette for the other user
+	otherH: number; // the height of the raquette for the other user
+	otherSrc: string; // the src file of the image to render for the other player raquette
+	baseLine: number; // the lenght of the baseLine of the table
+	topLine: number; // the lenght of the topLine of the table
+	topLeft: Point; // the position of the topleft corner of the table
+	bottomLeft: Point; // the position of the bottomleft corner of the table
+	score: number; // how many point the player scored
+}
+
 export function checkDirection(start: number, end: number, position: number, lineLenght: number): string
 {
 	if (position - start < lineLenght / 2)
