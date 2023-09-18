@@ -15,8 +15,4 @@ export class createChannelDto{
     @IsNotEmpty()
     @IsOptional()
     avatar:string
-
-    @IsString()
-    @IsNotEmpty()
-    owner:string
 }

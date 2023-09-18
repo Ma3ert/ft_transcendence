@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { Role } from '@prisma/client';
+import { Role, Type } from '@prisma/client';
 import { joinChannelDto } from './dto/joinChannel.dto';
 import { changeUserPermissionDto } from './dto/changeUserPermission.dto';
 
@@ -11,12 +11,24 @@ export class ChatService {
     constructor(private prismaService:PrismaService){}
     
     // Create Channel
-    async createChannel(createChannelDto:createChannelDto){
+    async createChannel(owner:string, createChannelDto:createChannelDto){
         let hashedPassword = null;
+
+        if (!createChannelDto.password && createChannelDto.type == Type.PROTECTED)
+            throw new InternalServerErrorException('password not set for protected channel');
         
         if (createChannelDto.type === "PROTECTED"){
             hashedPassword = await bcrypt.hash(createChannelDto.password.toString(), 10);
         }
+
+        const ownerId = await this.prismaService.user.findFirstOrThrow({
+            where:{
+                id:owner,
+            },
+            select:{
+                id:true,
+            }
+        })
 
         const channel = await this.prismaService.channel.create({
             data:{
@@ -24,6 +36,11 @@ export class ChatService {
                 type:createChannelDto.type,
                 password:hashedPassword,
                 avatar:createChannelDto.avatar,
+                members:{
+                    create:[
+                        {userId:ownerId.id, role:Role.OWNER},
+                    ]
+                }
             },
             select:{
                 name:true,
@@ -32,7 +49,7 @@ export class ChatService {
                 id:true,
             }
         })
-        await this.userJoinChannel(createChannelDto.owner, channel.id, Role.OWNER);
+
         return channel;
     }
 
@@ -132,7 +149,7 @@ export class ChatService {
                 userId:true,
             }
         });
-    }
+    }             
 
     async getChannelMessages(channel:string){
         return await this.prismaService.channelMessage.findMany({
@@ -166,66 +183,6 @@ export class ChatService {
         })
     }
 
-
-    // ban user
-    async banUser(banner:string, banned:string, channel:string){
-        if (banned === banned)
-            return false;
-
-        const bannerUser = await this.prismaService.channelUser.findFirst({
-            where:{
-                userId:banner,
-                channelId:channel,
-            }
-        });
-
-        const bannedUser = await this.prismaService.channelUser.findFirst({
-            where:{
-                userId:banned,
-                channelId:channel,
-            }
-        });
-
-        if (!bannedUser || bannedUser.role === Role.OWNER || bannedUser.channelId !== bannerUser.channelId)
-            return false;
-
-        await this.prismaService.channelBan.create({
-            data:{
-                userId:banned,
-                channelId:channel,
-            }
-        })
-        return true;
-    }
-
-    async changePermission(owner:string, changeUserPermission:changeUserPermissionDto){
-        if (owner === changeUserPermission.user || changeUserPermission.role == Role.OWNER)
-            return false;
-
-        const userChange = await this.prismaService.channelUser.findFirst({
-            where:{
-                userId:changeUserPermission.user,
-                channelId:changeUserPermission.channel,
-            }
-        });
-
-        if (!userChange)
-            return false;
-
-        await this.prismaService.channelUser.update({
-            where:{
-                userId_channelId:{
-                    userId:userChange.userId,
-                    channelId:userChange.channelId
-                }
-            },
-            data:{
-                role:changeUserPermission.role,
-            }
-        })
-        return true;
-    }
-    
     async leaveChannel(channel:string, user:string){
         await this.prismaService.channelUser.delete({
             where:{
@@ -236,4 +193,6 @@ export class ChatService {
             }
         })
     }
+
+
 }
