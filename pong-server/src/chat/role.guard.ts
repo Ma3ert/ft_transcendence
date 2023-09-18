@@ -18,9 +18,8 @@ export class RoleGuard implements CanActivate {
             return true;
         }
         const request: Request = context.switchToHttp().getRequest();
-        const user = request.user['id'];
+        const user = request.user['id'] as string;
         const channel = request.params.channelId;
-
         const roles = await this.prismaService.channelUser.findFirst({
             where:{
                 userId:user,
@@ -30,6 +29,8 @@ export class RoleGuard implements CanActivate {
                 role:true,
             }
         })
+        if (!roles || roles === undefined)
+            return false;
         return requireRole.some((role) => roles.role.includes(role));
     }
 }

@@ -9,6 +9,7 @@ import { Roles } from './decorator/role.decorator';
 import { RoleGuard } from './role.guard';
 import { banDto } from './dto/ban.dto';
 import { changeUserPermissionDto } from './dto/changeUserPermission.dto';
+import { updateChannelDto } from './dto/updateChannel.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -112,6 +113,7 @@ export class ChatController {
     }
 
     // get message of a specific Direct Message
+    // it will updated for pagination
     @Get('/direct/messages/:friendId')
     @HttpCode(HttpStatus.OK)
     @UseGuards(LoggedInGuard)
@@ -132,6 +134,7 @@ export class ChatController {
     }
 
     // get channel Messages
+    // it will updated for pagination
     @Get('/channels/messages/:channelId')
     @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
@@ -150,4 +153,35 @@ export class ChatController {
             )
         }
     }
+
+    // update channel
+    // @Patch('/channels/update')
+    // @UseGuards(LoggedInGuard)
+    // @Roles(Role.OWNER)
+    // async updateChannelSetting(@Body() updateChannelDto:updateChannelDto){
+
+    // }
+    
+    // leave channel
+    @Delete('/channels/leave/:channelId')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
+        try
+        {
+            const userId = req.user['id'] as string;
+            if (!userId || userId === undefined)
+                return ;
+            await this.chatService.leaveChannel(channelId, userId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                'You are not belonging to this channel',
+                HttpStatus.NOT_FOUND
+            )
+        }
+    }
+
+    //
 }

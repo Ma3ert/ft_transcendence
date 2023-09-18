@@ -117,7 +117,7 @@ model ChannelBan {
   channelId String
   channel   Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"ChannelBannedUser")
 
-  @@id([userId, channelId])
+  @@id([userId, channelId], name: "userId_channelId")
 
   created_at DateTime @default(now())
 }

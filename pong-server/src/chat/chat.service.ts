@@ -6,20 +6,6 @@ import { Role } from '@prisma/client';
 import { joinChannelDto } from './dto/joinChannel.dto';
 import { changeUserPermissionDto } from './dto/changeUserPermission.dto';
 
-// TODO
-// * create channel Good
-// * join user to channel Good
-// * send DM Good
-// * send message to channel Good
-// * ban user from channel 
-// * unban user from channel
-// * kick(delete) user from channel
-// * mute user
-// * change user role
-// * update channel (passwordName)
-// * invite user to channel
-
-
 @Injectable()
 export class ChatService {
     constructor(private prismaService:PrismaService){}
@@ -168,15 +154,6 @@ export class ChatService {
         })
     }
 
-    async actionValidity(actionSender:string, actionReceiver:string, channel:string){
-
-    }
-
-    // get bannedusers
-    async bannedUsers(){
-
-    }
-
     // get Members of Channel
     async getChannelMembers(channel:string){
         return await this.prismaService.channelUser.findMany({
@@ -221,10 +198,6 @@ export class ChatService {
         return true;
     }
 
-    async unbanUser(banner:string, banned:string, channel:string){
-
-    }
-
     async changePermission(owner:string, changeUserPermission:changeUserPermissionDto){
         if (owner === changeUserPermission.user || changeUserPermission.role == Role.OWNER)
             return false;
@@ -251,5 +224,16 @@ export class ChatService {
             }
         })
         return true;
+    }
+    
+    async leaveChannel(channel:string, user:string){
+        await this.prismaService.channelUser.delete({
+            where:{
+                userId_channelId:{
+                    userId:user,
+                    channelId:channel,
+                }
+            }
+        })
     }
 }
