@@ -6,6 +6,7 @@ import { joinChannelDto } from './dto/joinChannel.dto';
 import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
+import { ChangePermissionDto } from './dto/changePermission.dto';
 
 
 @Controller('chat')
@@ -112,23 +113,24 @@ export class ChatController {
         }
     }
 
-    // @Patch('/channels/permission/')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.OWNER)
-    // async changePermission(@Body() changeUserPermission:changeUserPermissionDto, @Req() req:Request){
-    //     const user = req.user['id'] as string;
-    //     if (!user || user == undefined)
-    //         return ;
-    //     const changedUser = await this.chatService.changePermission(user, changeUserPermission);
-    //     if (!changedUser)
-    //     {
-    //         throw new HttpException(
-    //             'You cannot change the permission of this User',
-    //             HttpStatus.FORBIDDEN
-    //         );
-    //     }
-
-    // }
+    //Change permission
+    @Patch('/channels/:channelId/permissions/')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.OWNER, Role.ADMIN)
+    async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
+        try{
+            if (!req.user || req.user === undefined)
+                return ;
+            const user = req.user['id'] as string;
+            await this.chatService.changePermission(user, UserPermission, channelId);
+        }
+        catch (error)
+        {
+            throw new HttpException(
+                "You cannot change permission of that User",
+                HttpStatus.FORBIDDEN)
+        }
+    }
 
     // @Delete('/channels/:channelId/unban/:userId')
     // @HttpCode(HttpStatus.NO_CONTENT)

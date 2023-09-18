@@ -3,8 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
 import { Role, Type } from '@prisma/client';
-import { joinChannelDto } from './dto/joinChannel.dto';
-import { changeUserPermissionDto } from './dto/changeUserPermission.dto';
+import { ChangePermissionDto } from './dto/changePermission.dto';
 
 @Injectable()
 export class ChatService {
@@ -219,4 +218,25 @@ export class ChatService {
         })
     }
 
+    async changePermission(owner:string, UserPermission:ChangePermissionDto, channel:string){
+        const user = await this.prismaService.channelUser.findFirstOrThrow({
+            where:{
+                userId:UserPermission.user,
+                channelId:channel
+            }
+        })
+        if (user.role == Role.OWNER || UserPermission.role == Role.OWNER)
+            throw new InternalServerErrorException('You cannot Change the owner permission');
+        await this.prismaService.channelUser.update({
+            where:{
+                userId_channelId:{
+                    userId:UserPermission.user,
+                    channelId:channel,
+                }
+            },
+            data:{
+                role:UserPermission.role,
+            }
+        })
+    }
 }
