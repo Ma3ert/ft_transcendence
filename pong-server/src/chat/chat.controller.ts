@@ -19,8 +19,6 @@ export class ChatController {
     @UseGuards(LoggedInGuard)
     async CreateChannel(@Body() createChannelDto:createChannelDto, @Req() req:Request){
         try{
-            if (!req.user || req.user === undefined)
-                return ;
             const userId = req.user['id'] as string;
             const channel = await this.chatService.createChannel(userId, createChannelDto);
 
@@ -40,8 +38,6 @@ export class ChatController {
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
         try
         {
-            if (!req.user || req.user === undefined)
-                return ;
             const userId = req.user['id'] as string;
             await this.chatService.deleteChannelById(userId, channel);
         }
@@ -61,8 +57,6 @@ export class ChatController {
     @UseGuards(LoggedInGuard)
     async joinChannel(@Param('channelId') channelId:string, @Body() joinchannelDto:joinChannelDto, @Req() req:Request){
         try{
-            if (!req.user || req.user === undefined)
-                return ;
             const userId = req.user['id'] as string;
             await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
         }
@@ -81,8 +75,6 @@ export class ChatController {
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
         try
         {
-            if (!req.user || req.user === undefined)
-                return ;
             const userId = req.user['id'] as string;
             await this.chatService.leaveChannel(channelId, userId);
         }
@@ -101,8 +93,6 @@ export class ChatController {
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
         try{
-            if (!req.user || req.user === undefined)
-                return ;
             const userId = req.user['id'] as string;
             return await this.chatService.getChannelMembers(channelId, userId);
         }
@@ -120,8 +110,6 @@ export class ChatController {
     @Roles(Role.OWNER, Role.ADMIN)
     async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
         try{
-            if (!req.user || req.user === undefined)
-                return ;
             const user = req.user['id'] as string;
             await this.chatService.changePermission(user, UserPermission, channelId);
         }
@@ -134,6 +122,7 @@ export class ChatController {
     }
 
     // get channel messages
+    // return total length
     @Get('/channels/:channelId/messages/')
     @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
@@ -145,8 +134,6 @@ export class ChatController {
             try
             {
                 const userId = req.user['id'] as string;
-                if (!userId || userId === undefined)
-                    return;
                 return this.chatService.getChannelMessages(skip, take, channelId);
             }
             catch(error)
@@ -168,8 +155,6 @@ export class ChatController {
             try
             {
                 const userId = req.user['id'] as string;
-                if (!userId || userId === undefined)
-                    return ;
                 return this.chatService.getDMs(userId,friend, skip, take);
             }
             catch(error)
