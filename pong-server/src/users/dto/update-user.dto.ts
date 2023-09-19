@@ -1,10 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 
-enum GameStatus {
-  READY,
-  NOTREADY,
-}
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   id?: string;
@@ -13,7 +9,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   twoFactorPin?: string;
   pinValidated?: boolean;
   twoFactorRetry?: number;
-  // gameStatus?: GameStatus;
   status?: 'ONLINE' | 'OFFLINE' | 'INMATCH';
   // laddelLevel?: number;
   // xp?: number;

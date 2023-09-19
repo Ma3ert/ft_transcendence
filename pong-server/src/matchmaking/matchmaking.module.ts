@@ -1,13 +1,14 @@
-import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { MatchmakingController } from './matchmaking.controller';
-import { MatchmakingConsumer } from './matchmaking.consumer';
 import { MatchmakingService } from './matchmaking.service';
+import { MatchmakingGateway } from './matchmaking.gateway';
+import { UsersModule } from 'src/users/users.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { UsersService } from 'src/users/users.service';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
-  imports: [BullModule.registerQueue({ name: 'playerQueue' })],
-  controllers: [MatchmakingController],
-  exports: [MatchmakingConsumer, MatchmakingService],
-  providers: [MatchmakingConsumer, MatchmakingService],
+  imports: [UsersModule, AuthModule],
+  providers: [MatchmakingService, MatchmakingGateway, UsersService, AuthService, JwtService],
 })
 export class MatchmakingModule {}

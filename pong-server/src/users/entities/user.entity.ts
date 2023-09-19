@@ -1,5 +1,3 @@
-
-
 export class User {
   id?: string;
   username: string;
@@ -8,4 +6,5 @@ export class User {
   twoFactor?: boolean;
   xp?: number;
   ladelLevel?: number;
+  status?: 'ONLINE' | 'OFFLINE' | 'INMATCH';
 }

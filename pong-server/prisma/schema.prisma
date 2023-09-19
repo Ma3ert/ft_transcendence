@@ -17,128 +17,163 @@ enum UserStatus {
 }
 
 model User {
-  id                    String     @id @default(uuid())
-  username              String     @unique
-  email                 String     @unique
-  avatar                String
-  twoFactorRetry        Int        @default(0)
-  twoFactor             Boolean    @default(false)
-  twoFactorPin          String?
-  activated             Boolean    @default(false)
-  pinValidated          Boolean    @default(false)
-  status                UserStatus @default(ONLINE)  
-  directmessageSent     DirectMessage[]  @relation("DMsent")
-  directmessageReceived DirectMessage[]  @relation("DMreceived")
+  id             String     @id @default(uuid())
+  username       String     @unique
+  email          String     @unique
+  avatar         String
+  twoFactorRetry Int        @default(0)
+  twoFactor      Boolean    @default(false)
+  twoFactorPin   String?
+  activated      Boolean    @default(false)
+  pinValidated   Boolean    @default(false)
+  status         UserStatus @default(ONLINE)
+  friendsList    User[]     @relation("Friendship")
+  friendOf       User[]     @relation("Friendship")
+  
+  sentInvites     UserInvite[] @relation("sentInvites")
+  receivedInvites UserInvite[] @relation("receivedInvites")
 
-  channelMessages       ChannelMessage[] @relation("userChannelMsg")
+  directmessageSent     DirectMessage[] @relation("DMsent")
+  directmessageReceived DirectMessage[] @relation("DMreceived")
 
-  channels              ChannelUser[]    @relation("memberOfChannel")
+  channelMessages ChannelMessage[] @relation("userChannelMsg")
 
-  channelBan            ChannelBan[]     @relation("UserbannedInChannel")
+  channels ChannelUser[] @relation("memberOfChannel")
 
-  channelInviteSent     ChannelInvite[]  @relation("ChannelInviteSent")
-  channelInviteReceived ChannelInvite[]  @relation("ChannelInviteReceived")
+  channelBan ChannelBan[] @relation("UserbannedInChannel")
 
-  created_at            DateTime @default(now())
+  channelMute ChannelMute[] @relation("UserMutedInchannel")
+
+  channelInviteSent     ChannelInvite[] @relation("ChannelInviteSent")
+  channelInviteReceived ChannelInvite[] @relation("ChannelInviteReceived")
+
+  created_at DateTime @default(now())
+}
+
+model UserInvite {
+  id            String   @id @default(uuid())
+  invitedUser   User     @relation("receivedInvites", fields: [inviteUserId], references: [id])
+  inviteUserId  String
+  inviteOwner   User     @relation("sentInvites", fields: [inviteOwnerId], references: [id])
+  inviteOwnerId String
+  createdAt     DateTime @default(now())
 }
 
 model DirectMessage {
-  id         String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  senderId   String
-  sender     User     @relation(fields:[senderId], references:[id], onDelete: Cascade, name:"DMsent")
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "DMsent")
 
   receiverId String
-  receiver   User     @relation(fields:[receiverId], references:[id], onDelete: Cascade, name:"DMreceived")
+  receiver   User   @relation(fields: [receiverId], references: [id], onDelete: Cascade, name: "DMreceived")
 
-  content    String
+  content String
 
-  cursor     String?
-
-  create_at  DateTime @default(now())
-}
-
-model ChannelMessage {
-  id        String    @id @default(uuid())
-
-  channelId String
-  channel   Channel   @relation(fields:[channelId], references:[id], onDelete:Cascade, name:"channelMsg")
-
-  userId    String
-  user      User     @relation(fields:[userId], references:[id], onDelete: Cascade, name:"userChannelMsg")
-
-  content   String
+  cursor String?
 
   create_at DateTime @default(now())
 }
 
+model ChannelMessage {
+  id String @id @default(uuid())
+
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelMsg")
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "userChannelMsg")
+
+  content String
+
+  create_at DateTime @default(now())
+}
 
 model Channel {
-  id                String           @id @default(uuid())
-  name              String
-  type              Type
-  password          String?
-  avatar            String?
+  id       String  @id @default(uuid())
+  name     String
+  type     Type
+  password String?
+  avatar   String?
 
-  messages          ChannelMessage[] @relation("channelMsg")
+  messages ChannelMessage[] @relation("channelMsg")
 
-  members           ChannelUser[]    @relation("channelMembers")
+  members ChannelUser[] @relation("channelMembers")
 
-  bannedUsers       ChannelBan[]     @relation("ChannelBannedUser")
+  bannedUsers ChannelBan[] @relation("ChannelBannedUser")
 
-  channelInvitation ChannelInvite[]  @relation("channelInvite")
+  mutedUsers ChannelMute[] @relation("ChannelMutedUser")
 
-  created_at        DateTime         @default(now())
-  
-  updated_at        DateTime         @updatedAt
+  channelInvitation ChannelInvite[] @relation("channelInvite")
+
+  created_at DateTime @default(now())
+
+  updated_at DateTime @updatedAt
 }
 
 model ChannelUser {
-  userId    String
-  user      User    @relation(fields:[userId], references:[id], onDelete: Cascade, name:"memberOfChannel")
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "memberOfChannel")
 
-  channelId String 
-  channel   Channel @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"channelMembers")
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelMembers")
 
   role Role
-  @@id([userId, channelId], name:"channelUser")
+
+  @@id([userId, channelId], name: "channelUser")
 }
 
 model ChannelBan {
-  userId    String
-  user      User    @relation(fields:[userId], references:[id], onDelete: Cascade, name:"UserbannedInChannel")
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserbannedInChannel")
 
-  channelId String
-  channel   Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"ChannelBannedUser")
+  channelId  String
+  channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "ChannelBannedUser")
+  created_at DateTime @default(now())
 
   @@id([userId, channelId])
+}
+
+model ChannelMute {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserMutedInchannel")
+
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "ChannelMutedUser")
+
+  startMute DateTime
+
+  mutePeriod Int
+
+  isMuted    Boolean
   created_at DateTime @default(now())
+
+  @@id([userId, channelId])
 }
 
 model ChannelInvite {
-  id          String   @id @default(uuid())
-  
-  senderId    String
-  sender      User     @relation(fields:[senderId], references:[id], onDelete: Cascade, name:"ChannelInviteSent")
+  id String @id @default(uuid())
 
-  receiverId  String
-  receiver    User     @relation(fields:[receiverId], references:[id], onDelete: Cascade, name:"ChannelInviteReceived")
-  
-  channelId   String
-  channel     Channel  @relation(fields:[channelId], references:[id], onDelete: Cascade, name:"channelInvite")
-  
-  created_at  DateTime @default(now())
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "ChannelInviteSent")
+
+  receiverId String
+  receiver   User   @relation(fields: [receiverId], references: [id], onDelete: Cascade, name: "ChannelInviteReceived")
+
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelInvite")
+
+  created_at DateTime @default(now())
 }
 
-enum Type{
+enum Type {
   PUBLIC
   PRIVATE
   PROTECTED
 }
 
-enum Role{
+enum Role {
   OWNER
   MEMBER
   ADMIN
 }
-
