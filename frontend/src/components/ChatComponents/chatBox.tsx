@@ -5,12 +5,12 @@ import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
-interface ChannelChatProps {
+interface ChatBoxProps {
   isPrivateChat: boolean;
   Channel?: Channel;
   Peer?: User;
 }
-const ChannelChat: React.FC<ChannelChatProps> = ({
+const ChatBox: React.FC<ChatBoxProps> = ({
   isPrivateChat,
   Channel,
   Peer,
@@ -19,13 +19,13 @@ const ChannelChat: React.FC<ChannelChatProps> = ({
   return (
     <Stack
       borderRadius={"2xl"}
+      w={'98%'}
+      h='98%'
+      maxH='72vh'
       bg="#1D222C"
       justify={"space-between"}
       alignItems={"center"}
       py={2}
-      maxW={{base:'100%', sm:'300px', md:'400px', lg:'600px', xl:'800px'}} 
-      maxH={'100%'}
-      h={'100%'}
     >
       <HStack
         borderRadius={"2xl"}
@@ -52,4 +52,4 @@ const ChannelChat: React.FC<ChannelChatProps> = ({
   );
 };
 
-export default ChannelChat;
+export default ChatBox;

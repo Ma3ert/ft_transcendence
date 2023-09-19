@@ -1,0 +1,15 @@
+
+private message playload
+{
+    to:(userid) => string
+    from:(userid) => string
+    content: => string
+    EnviteMessage: => boolean
+}
+
+
+- client chat tasks :
+ -- setup socket connection for each private session
+ -- setup socket connection for each chat channel session
+ -- handle sending private message 
+ -- handle sending message in a channel

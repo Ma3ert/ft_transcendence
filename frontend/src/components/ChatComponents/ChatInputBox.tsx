@@ -1,9 +1,23 @@
+import React, { useState, useEffect } from "react";
 import { Button, FormControl, HStack, Input , Image} from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
+import { SendMessage} from '../../../utils/privateChatClient'
+import { Socket, io } from "socket.io-client";
+import useSocket from "@/hooks/useConnection";
 
-interface ChatInputBoxProps {}
+interface ChatInputBoxProps {
+  // socket: Socket;
+}
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
+
+  const [message, setMessage] = useState("");
+  const socket:Socket = useSocket('http://localhost:3060');
+
+    socket.on('chat message', (msg) => {
+      alert(msg)
+    })
+  
   return (
     <HStack
       borderRadius={"29px"}
@@ -27,6 +41,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
 
       <FormControl flex={1}>
         <Input
+          value={message}
           type="text"
           bg={"transparent"}
           color="white"
@@ -37,6 +52,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
           outline="none"
           border="none"
           w="100%"
+          onChange={(e) => setMessage(e.target.value)}
           _placeholder={{ color: "#5B6171" }}
         />
       </FormControl>
@@ -49,6 +65,11 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         p={2}
         fontSize={"sm"}
         fontWeight={"bold"}
+        onClick={() => {
+          socket.emit ('chat message', message)
+          // socket.emit('privateMessage', {message: message, to: '60f9b1b9e9b9c2a4e8b9e0a4', from: '60f9b1b9e9b9c2a4e8b9e0a4'})
+          setMessage("");
+        }}
       >
         <Icon as={TbArrowBigRightFilled} />
       </Button>

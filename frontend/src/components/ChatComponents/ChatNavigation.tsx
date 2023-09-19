@@ -5,12 +5,12 @@ import FilterBox from "./FilterBox";
 import {FaUserAlt} from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
-interface FriendsListProps {
+interface ChatNavigationProps {
   friends?: User[];
   channels?: Channel[];
   isForChannel: boolean;
 }
-const FriendsList: React.FC<FriendsListProps> = ({ friends ,channels, isForChannel}) => {
+const ChatNavigation: React.FC<ChatNavigationProps> = ({ friends ,channels, isForChannel}) => {
   const [isChannel, setIsChannel] = useState<boolean>(isForChannel);
   return (
     <Stack justify={'center'} alignItems={'center'} spacing={2} h={'100%'}>
@@ -64,4 +64,4 @@ const FriendsList: React.FC<FriendsListProps> = ({ friends ,channels, isForChann
   );
 };
 
-export default FriendsList;
+export default ChatNavigation;

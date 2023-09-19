@@ -25,6 +25,8 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       alignItems={"center"}
       h="100%"
       w="100%"
+      border={'1px'}
+      borderColor={'white'}
     >
       <Stack spacing={3} w="100%" justify={"center"} alignItems={"center"}>
         <Image
@@ -35,23 +37,22 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           _hover={{ opacity: 0.8, transform: "scale(1.1)" }}
         />
         <Stack
-          w="100%"
+          w="auto"
           bg="#1D222C"
           borderRadius={"2xl"}
-          p={4}
+          px={8}
+          py={6}
           alignItems={"start"}
           justify="start"
           spacing={4}
           h="auto"
           minW={"auto"}
-          minH={"250px"}
-          maxH="500px"
-          maxW="300px"
+          minH={"45vh"}
+          maxH="auto"
         >
-          <HStack px={4} w={"99%"} justify={"space-between"}>
+          <HStack px={2}  justify={"space-between"}>
             <Text color={"#5B6171"} fontSize="sm" fontWeight={"bold"}>
-              {" "}
-              Private{" "}
+              Private Channel
             </Text>
             <CostumSwitcher />
           </HStack>
