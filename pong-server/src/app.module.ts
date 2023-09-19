@@ -11,6 +11,7 @@ import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { BullModule } from '@nestjs/bull';
 import { UsersModule } from './users/users.module';
 import { ChatModule } from './chat/chat.module';
+import { FriendslistModule } from './invite/invite.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ChatModule } from './chat/chat.module';
     GameModule,
     MatchmakingModule,
     ChatModule,
+    FriendslistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

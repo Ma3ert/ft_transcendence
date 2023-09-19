@@ -16,7 +16,6 @@ export class AuthService {
     if (!user) user = await this.usersService.createUser(userData);
     if (user)
       await this.usersService.updateUserAuth(user.id, { status: 'ONLINE' });
-    // Set the users cookies
     return user;
   }
 
