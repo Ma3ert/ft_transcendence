@@ -73,7 +73,7 @@ export class InviteService {
     const users = await this.prismaService.user.findMany();
     const invitesUsers = invites.map((invite) => invite.inviteUserId);
     const userFriends = user.friendsList.map((user) => user.id);
-    const excludedUsers = [...invitesUsers, ...userFriends];
+    const excludedUsers = [user.id,...invitesUsers, ...userFriends];
 
     return users.filter((user) => !excludedUsers.includes(user.id))
   }
@@ -93,7 +93,7 @@ export class InviteService {
     // Check the current user is authorized to accept the invite.
     if (invite.inviteUserId !== inviteUserId)
       return null;
-    return this.prismaService.user.update({
+    await this.prismaService.user.update({
       where: {
         id: invite.inviteUserId
       },
@@ -105,11 +105,17 @@ export class InviteService {
         }
       }
     })
+    // Delete the invite
+    return await this.prismaService.userInvite.delete({
+      where: {
+        id: inviteId
+      }
+    })
   }
 
   async removeInvite(inviteId: string, inviteUserId: string) {
     const invite: UserInvite = await this.checkInviteById(inviteId);
-    if (invite.inviteUserId !== inviteUserId)
+    if (invite.inviteOwnerId !== inviteUserId)
       return null;
     return this.prismaService.userInvite.delete({
       where: {

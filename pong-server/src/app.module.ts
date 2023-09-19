@@ -11,7 +11,7 @@ import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { BullModule } from '@nestjs/bull';
 import { UsersModule } from './users/users.module';
 import { ChatModule } from './chat/chat.module';
-import { FriendslistModule } from './invite/invite.module';
+import { FriendslistModule } from './invites/invite.module';
 
 @Module({
   imports: [
