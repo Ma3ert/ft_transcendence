@@ -7,7 +7,6 @@ import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { ChangePermissionDto } from './dto/changePermission.dto';
-import { skip } from 'rxjs';
 
 
 @Controller('chat')
@@ -134,6 +133,7 @@ export class ChatController {
         }
     }
 
+    // get channel messages
     @Get('/channels/:channelId/messages/')
     @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
@@ -157,6 +157,7 @@ export class ChatController {
             }
     }
 
+    // get direct message of a conversation
     @Get('/direct/:friendId/messages/')
     @UseGuards(LoggedInGuard)
     async getDirectMessage(
@@ -244,4 +245,7 @@ export class ChatController {
     //         )
     //     }
     // }
+
+
+    // Route needed update channel preferences
 }

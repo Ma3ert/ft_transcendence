@@ -108,8 +108,6 @@ export class ChatService {
         })
     }
 
-    // get all messages of direct message in descending order still need to configure the pagination
-    // for getting messages.
     async getDMs(user:string, friend:string, skip:number, take:number){
         return await this.prismaService.directMessage.findMany({
             where:{
@@ -162,6 +160,7 @@ export class ChatService {
         });
     }             
 
+    // get channel message
     async getChannelMessages(skip:number, take:number, channel:string){
         return await this.prismaService.channelMessage.findMany({
             where:{
@@ -194,6 +193,7 @@ export class ChatService {
         })
     }
 
+    // leave channel
     async leaveChannel(channel:string, user:string){
         const isInChannel = !!await this.prismaService.channelUser.findFirstOrThrow({
             where:{
@@ -212,6 +212,7 @@ export class ChatService {
         })
     }
 
+    // get Channel Members
     async getChannelMembers(channelId:string, userId:string){
         return await this.prismaService.channelUser.findMany({
             select:{
@@ -221,6 +222,7 @@ export class ChatService {
         })
     }
 
+    // change user permission in the channel
     async changePermission(owner:string, UserPermission:ChangePermissionDto, channel:string){
         const user = await this.prismaService.channelUser.findFirstOrThrow({
             where:{
