@@ -56,8 +56,6 @@ model DirectMessage {
 
   content    String
 
-  cursor     String?
-
   create_at  DateTime @default(now())
 }
 

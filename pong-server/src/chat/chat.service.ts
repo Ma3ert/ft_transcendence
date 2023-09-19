@@ -161,14 +161,16 @@ export class ChatService {
         });
     }             
 
-    async getChannelMessages(channel:string){
+    async getChannelMessages(skip:number, take:number, channel:string){
         return await this.prismaService.channelMessage.findMany({
             where:{
                 channelId:channel,
             },
             orderBy:{
                 create_at:'desc',
-            }
+            },
+            skip:skip,
+            take:take
         })
     }
 

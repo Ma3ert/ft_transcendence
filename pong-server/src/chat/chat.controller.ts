@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { createChannelDto } from './dto/channel.create.dto';
 import { ChatService } from './chat.service';
@@ -7,6 +7,7 @@ import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { ChangePermissionDto } from './dto/changePermission.dto';
+import { skip } from 'rxjs';
 
 
 @Controller('chat')
@@ -55,6 +56,7 @@ export class ChatController {
     }
 
     // User Join a Channel
+    // ****** still there is some improvment to in this route
     @Post('/channels/:channelId/join/')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
@@ -130,6 +132,26 @@ export class ChatController {
                 "You cannot change permission of that User",
                 HttpStatus.FORBIDDEN)
         }
+    }
+
+    @Get('/channels/:channelId/messages/')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    async getchannelmessage(
+        @Query('skip', ParseIntPipe) skip:number,
+        @Query('take', ParseIntPipe) take:number,
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
+            try
+            {
+                return this.chatService.getChannelMessages(skip, take, channelId);
+            }
+            catch(error)
+            {
+                throw new HttpException(
+                    "You can't get channel messages.",
+                HttpStatus.FORBIDDEN)
+            }
     }
 
     // @Delete('/channels/:channelId/unban/:userId')

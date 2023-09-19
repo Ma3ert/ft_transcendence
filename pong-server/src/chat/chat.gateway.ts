@@ -18,6 +18,7 @@ export class ChatGateway implements OnGatewayConnection{
   private connectedUsers = new Map<String, Socket[]> ();
 
   handleConnection(client:Socket) {
+    console.log(`Connected socket ${client.id}`);
     const user = client.handshake.headers['userid'] as string;
 
     if (!user)
