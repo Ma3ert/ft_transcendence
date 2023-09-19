@@ -42,7 +42,7 @@ model User {
 
   channelBan ChannelBan[] @relation("UserbannedInChannel")
 
-  channelMute ChannelMute[] @relation("UserMutedInchannel")
+  channelMute           ChannelMute[] @relation("UserMutedInchannel")
 
   channelInviteSent     ChannelInvite[] @relation("ChannelInviteSent")
   channelInviteReceived ChannelInvite[] @relation("ChannelInviteReceived")
@@ -70,9 +70,7 @@ model DirectMessage {
 
   content String
 
-  cursor String?
-
-  create_at DateTime @default(now())
+  create_at  DateTime @default(now())
 }
 
 model ChannelMessage {
@@ -119,8 +117,8 @@ model ChannelUser {
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelMembers")
 
   role Role
-
-  @@id([userId, channelId], name: "channelUser")
+  
+  @@id([userId, channelId])
 }
 
 model ChannelBan {
@@ -131,7 +129,7 @@ model ChannelBan {
   channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "ChannelBannedUser")
   created_at DateTime @default(now())
 
-  @@id([userId, channelId])
+  @@id([userId, channelId], name: "userId_channelId")
 }
 
 model ChannelMute {
