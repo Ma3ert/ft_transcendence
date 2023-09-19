@@ -137,20 +137,46 @@ export class ChatController {
     @Get('/channels/:channelId/messages/')
     @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
-    async getchannelmessage(
+    async getChannelmessage(
         @Query('skip', ParseIntPipe) skip:number,
         @Query('take', ParseIntPipe) take:number,
         @Param('channelId') channelId:string,
         @Req() req:Request){
             try
             {
+                const userId = req.user['id'] as string;
+                if (!userId || userId === undefined)
+                    return;
                 return this.chatService.getChannelMessages(skip, take, channelId);
             }
             catch(error)
             {
                 throw new HttpException(
                     "You can't get channel messages.",
-                HttpStatus.FORBIDDEN)
+                HttpStatus.INTERNAL_SERVER_ERROR)
+            }
+    }
+
+    @Get('/direct/:friendId/messages/')
+    @UseGuards(LoggedInGuard)
+    async getDirectMessage(
+        @Query('skip', ParseIntPipe) skip:number,
+        @Query('take', ParseIntPipe) take:number,
+        @Param('friendId') friend:string,
+        @Req() req:Request){
+            try
+            {
+                const userId = req.user['id'] as string;
+                if (!userId || userId === undefined)
+                    return ;
+                return this.chatService.getDMs(userId,friend, skip, take);
+            }
+            catch(error)
+            {
+                throw new HttpException(
+                    "You can't get the Direct messages of this conversation",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                )
             }
     }
 
@@ -188,49 +214,6 @@ export class ChatController {
     //                 "You don't have the permission to ban that User",
     //                 HttpStatus.FORBIDDEN);
     //         }
-    // }
-
-
-    // // get message of a specific Direct Message
-    // // it will updated for pagination
-    // @Get('/direct/messages/:friendId')
-    // @HttpCode(HttpStatus.OK)
-    // @UseGuards(LoggedInGuard)
-    // async getDirectMessages(@Param('friendId') friendId:string, @Req() req:Request){
-    //     try{
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId === undefined)
-    //             return;
-    //         const messages = await this.chatService.getDMs(friendId, req.user['id']);
-    //         return (messages);
-    //     }
-    //     catch(error){
-    //         throw new HttpException(
-    //             'Direct Message Error',
-    //             HttpStatus.INTERNAL_SERVER_ERROR
-    //         )
-    //     }
-    // }
-
-    // // get channel Messages
-    // // it will updated for pagination
-    // @Get('/channels/:channelId/messages')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
-    // async getChannelMessages(@Param('channelId') channelId:string, @Req() req:Request){
-    //     try{
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId === undefined)
-    //             return;
-    //         const messages = await this.chatService.getChannelMessages(channelId);
-    //         return messages;
-    //     }
-    //     catch(error){
-    //         throw new HttpException(
-    //             'Direct Message Error',
-    //             HttpStatus.INTERNAL_SERVER_ERROR
-    //         )
-    //     }
     // }
 
     // // update channel

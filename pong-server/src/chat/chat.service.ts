@@ -110,24 +110,25 @@ export class ChatService {
 
     // get all messages of direct message in descending order still need to configure the pagination
     // for getting messages.
-    async getDMs(user1:string, user2:string){
-        const messages = await this.prismaService.directMessage.findMany({
+    async getDMs(user:string, friend:string, skip:number, take:number){
+        return await this.prismaService.directMessage.findMany({
             where:{
                 OR:[
                     {
-                        senderId:user1,
-                        receiverId:user2,},
+                        senderId:user,
+                        receiverId:friend,},
                     {
-                        senderId:user2,
-                        receiverId:user1,
+                        senderId:friend,
+                        receiverId:user,
                     }
                 ]
             },
             orderBy:{
                 create_at:'desc'
-            }
+            },
+            skip:skip,
+            take:take,
         })
-        return messages;
     }
 
     CreateRoomId(senderId:string, receiverId:string){
