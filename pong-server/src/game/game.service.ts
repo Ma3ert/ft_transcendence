@@ -6,7 +6,7 @@ import { AuthSocket } from 'src/auth/utils/WsLoggedIn.guard';
 export interface Player {
   id: number;
   user: string;
-  socketID: string;
+  socket: Socket;
   ballX: number;
   ballY: number;
   score: number;
@@ -15,7 +15,7 @@ export interface Player {
 }
 
 export interface GameSession {
-  roomId: string;
+  sessionId: string;
   players: Player[];
   updateInterval?: NodeJS.Timeout;
 }
@@ -23,12 +23,13 @@ export interface GameSession {
 @Injectable()
 export class GameService {
   private gameSessions: Map<string, GameSession> = new Map();
-  constructor() {}
+  private gameQueue: Map<string, Player[]> = new Map();
+  private gameInvites: Map<string, Player[]> = new Map();
 
   createPlayer(player: AuthSocket, id: number) {
     const state: Player = {
       id,
-      socketID: player.id,
+      socket: player,
       user: player.user.id,
       ballX: 0,
       ballY: 0,
@@ -39,11 +40,36 @@ export class GameService {
     return state;
   }
 
-  createGameInvite(player: AuthSocket, server: Server)
-  {
+  createGameInvite(player: AuthSocket, server: Server) {
     // Create a new game session in the map
+    //
+  }
 
-    // 
+  createGameSession(playersData: Player[], server: Server) {
+    const gameSessionID = randomUUID();
+    const playerOne = playersData[0];
+    const playerTwo = playersData[1];
+
+    this.gameSessions.set(gameSessionID, {
+      sessionId: gameSessionID,
+      players: [playerOne, playerTwo],
+    });
+    //TODO: Should change the players status to in match
+
+    // Emit the player number.
+    server.to(playerOne.socket.id).emit('player', playerOne.id);
+    server.to(playerTwo.socket.id).emit('player', playerTwo.id);
+    // Join player to the same game session.
+    playerOne.socket.join(gameSessionID);
+    playerTwo.socket.join(gameSessionID);
+    server.to(gameSessionID).emit('startingGameSession');
+    // Notify the user that we're going to start the session
+    setTimeout(() => {
+      server
+        .to(gameSessionID)
+        .emit('startGameSession', this.gameSessions.get(gameSessionID));
+      this.gameStarted(gameSessionID, server);
+    }, 3000);
   }
 
   joinGameQueue(player: AuthSocket, server: Server) {
@@ -74,7 +100,7 @@ export class GameService {
       const gameSession = randomUUID();
       const playerOne = this.createPlayer(player, 1);
       this.gameSessions.set(gameSession, {
-        roomId: gameSession,
+        sessionId: gameSession,
         players: [playerOne],
       });
       player.join(gameSession);
@@ -86,7 +112,7 @@ export class GameService {
         }
       }, 15000);
     }
-    //TODO: Should change the players status to in match
+
     //TODO: Should put the initial game state in the gameSessions map
     //TODO: Should emit the initial game state in room-specific variable
   }
