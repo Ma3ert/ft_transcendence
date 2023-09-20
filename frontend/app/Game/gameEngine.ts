@@ -3,8 +3,19 @@ export interface Point {
 	y: number;
 }
 
+interface PlayerAction {
+    roomId: string;
+    userId: number;
+    event: string;
+}
+
+interface BallAction{
+	roomId: string;
+	event: string;
+}
+
 interface Game{
-	id: 0 | 1; // the id of the player whether he's the first to shoot or not
+	id: number; // the id of the player whether he's the first to shoot or not
 	playerPosition: Point; // the position of the player update by the keystrok from the user
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
 	ballTrajectory: Point[]; // the trajectory of the ball 
@@ -12,6 +23,7 @@ interface Game{
 	indexStart: number; // the index from the ball is goind
 	indexEnd: number; // the index of where the ball is gonna end up
 	state: "R" | "S"; // to decide whether the player is a sender or receiver
+	shootingPosition: number; // the position where the player gonna shoot the ball
 	playerDirection: "left" | "right"; // to decide which side the raquette is facing for the user
 	playerW: number; // the width of the raquette 
 	playerH: number; // the height of the raquette
@@ -25,9 +37,16 @@ interface Game{
 	topLeft: Point; // the position of the topleft corner of the table
 	bottomLeft: Point; // the position of the bottomleft corner of the table
 	score: number; // how many point the player scored
+	roomId: string; // the id of the room that the player blongs to
 }
 
-export function checkDirection(start: number, end: number, position: number, lineLenght: number): string
+interface GameRoom{
+	player1: Game;
+	player2: Game;
+	roomId: Game;
+}
+
+export function checkDirection(start: number, position: number, lineLenght: number): "left" | "right"
 {
 	if (position - start < lineLenght / 2)
 		return ("left");
@@ -106,4 +125,52 @@ export function getBallPositions(bottomLeft: Point, topLeft: Point, baseLine: nu
 		{x: topLeft.x + topLineSteps * 4, y: topLeft.y}
 	]
 	return (shooting.concat(receiving))
+}
+
+export function servePlayerAction(action: PlayerAction, game: GameRoom) // this function will take the Action and apply it to the coresponding gameSession
+{
+	const sender: Game = game.player1.id === action.userId ? game.player1 : game.player2;
+	const other: Game = sender.id === game.player1.id ? game.player2 : game.player1;
+	if (action.event === "A")
+	{
+		if (sender.playerPosition.x - 10 >= sender.bottomLeft.x)
+		{
+			sender.playerPosition.x -= 10;
+			other.otherPosition.x = getOtherPosition(sender.topLeft, sender.bottomLeft, sender.playerPosition, sender.baseLine, sender.topLine)
+			sender.playerDirection = checkDirection(sender.bottomLeft.x, sender.playerPosition.x, sender.baseLine);
+			other.otherDirection = sender.playerDirection === "right" ? "left" : "right";
+		}
+	}
+	else if (action.event === "D")
+	{
+		if (sender.playerPosition.x + 10 >= sender.bottomLeft.x + sender.baseLine)
+		{
+			sender.playerPosition.x += 10;
+			other.otherPosition.x = getOtherPosition(sender.topLeft, sender.bottomLeft, sender.playerPosition, sender.baseLine, sender.topLine)
+			sender.playerDirection = checkDirection(sender.bottomLeft.x, sender.playerPosition.x, sender.baseLine);
+			other.otherDirection = sender.playerDirection === "right" ? "left" : "right";
+		}
+	}
+	else if (action.event === "Left")		sender.shootingPosition = 5;
+	else if (action.event === "LeftUp")		sender.shootingPosition = 6;
+	else if (action.event === "Up")			sender.shootingPosition = 7;
+	else if (action.event === "UpRight")	sender.shootingPosition = 8;
+	else if (action.event === "UpRight")	sender.shootingPosition = 9;
+}
+
+export function serveBallAction(action: BallAction, game: GameRoom)
+{
+	const reciever: Game = game.player1.state === "R" ? game.player1 : game.player2;
+	const sender: Game = game.player1.state === "S" ? game.player1 : game.player2;
+	const dec:boolean = checkBounce(reciever.playerPosition, reciever.ballTrajectory[reciever.ballTrajectory.length - 2]);
+	if (dec)
+	{
+		reciever.ballTrajectory = getBallTrajectory(reciever.ballPositions[reciever.indexEnd], reciever.ballPositions[reciever.shootingPosition], 10);
+		const otherNewDir = 9 - reciever.shootingPosition;
+		sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexEnd], sender.ballPositions[otherNewDir], 10);
+	}
+	else
+	{
+		sender.score += 1;
+	}
 }
