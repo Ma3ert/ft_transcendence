@@ -7,7 +7,8 @@ import { AuthService } from "../auth.service";
 type LoggedInUser = {
     user: User
 }
-type AuthSocket = Socket & LoggedInUser
+
+export type AuthSocket = Socket & LoggedInUser
 
 @Injectable()
 export class WsLoggedInGuard implements CanActivate 
