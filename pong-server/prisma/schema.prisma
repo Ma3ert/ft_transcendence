@@ -118,7 +118,7 @@ model ChannelUser {
 
   role Role
   
-  @@id([userId, channelId])
+  @@id([userId, channelId],name: "userId_channelId")
 }
 
 model ChannelBan {

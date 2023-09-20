@@ -1,11 +1,38 @@
 -- CreateEnum
+CREATE TYPE "UserStatus" AS ENUM ('ONLINE', 'OFFLINE', 'INMATCH');
+
+-- CreateEnum
 CREATE TYPE "Type" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('OWNER', 'MEMBER', 'ADMIN');
 
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "avatar" TEXT NOT NULL,
+    "twoFactorRetry" INTEGER NOT NULL DEFAULT 0,
+    "twoFactor" BOOLEAN NOT NULL DEFAULT false,
+    "twoFactorPin" TEXT,
+    "activated" BOOLEAN NOT NULL DEFAULT false,
+    "pinValidated" BOOLEAN NOT NULL DEFAULT false,
+    "status" "UserStatus" NOT NULL DEFAULT 'ONLINE',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserInvite" (
+    "id" TEXT NOT NULL,
+    "inviteUserId" TEXT NOT NULL,
+    "inviteOwnerId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserInvite_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "DirectMessage" (
@@ -35,6 +62,7 @@ CREATE TABLE "Channel" (
     "name" TEXT NOT NULL,
     "type" "Type" NOT NULL,
     "password" TEXT,
+    "avatar" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -60,6 +88,18 @@ CREATE TABLE "ChannelBan" (
 );
 
 -- CreateTable
+CREATE TABLE "ChannelMute" (
+    "userId" TEXT NOT NULL,
+    "channelId" TEXT NOT NULL,
+    "startMute" TIMESTAMP(3) NOT NULL,
+    "mutePeriod" INTEGER NOT NULL,
+    "isMuted" BOOLEAN NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ChannelMute_pkey" PRIMARY KEY ("userId","channelId")
+);
+
+-- CreateTable
 CREATE TABLE "ChannelInvite" (
     "id" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
@@ -69,6 +109,30 @@ CREATE TABLE "ChannelInvite" (
 
     CONSTRAINT "ChannelInvite_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "_Friendship" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_Friendship_AB_unique" ON "_Friendship"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_Friendship_B_index" ON "_Friendship"("B");
+
+-- AddForeignKey
+ALTER TABLE "UserInvite" ADD CONSTRAINT "UserInvite_inviteUserId_fkey" FOREIGN KEY ("inviteUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserInvite" ADD CONSTRAINT "UserInvite_inviteOwnerId_fkey" FOREIGN KEY ("inviteOwnerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "DirectMessage" ADD CONSTRAINT "DirectMessage_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -95,6 +159,12 @@ ALTER TABLE "ChannelBan" ADD CONSTRAINT "ChannelBan_userId_fkey" FOREIGN KEY ("u
 ALTER TABLE "ChannelBan" ADD CONSTRAINT "ChannelBan_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "ChannelMute" ADD CONSTRAINT "ChannelMute_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ChannelMute" ADD CONSTRAINT "ChannelMute_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "ChannelInvite" ADD CONSTRAINT "ChannelInvite_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -102,3 +172,9 @@ ALTER TABLE "ChannelInvite" ADD CONSTRAINT "ChannelInvite_receiverId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "ChannelInvite" ADD CONSTRAINT "ChannelInvite_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
