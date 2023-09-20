@@ -3,18 +3,18 @@ export interface Point {
 	y: number;
 }
 
-interface PlayerAction {
+export interface PlayerAction {
     roomId: string;
     userId: number;
     event: string;
 }
 
-interface BallAction{
+export interface BallAction{
 	roomId: string;
 	event: string;
 }
 
-interface Game{
+export interface Game{
 	id: number; // the id of the player whether he's the first to shoot or not
 	playerPosition: Point; // the position of the player update by the keystrok from the user
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
