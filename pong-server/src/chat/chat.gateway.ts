@@ -1,6 +1,7 @@
 import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io'
 import { ChatService } from './chat.service';
+import { AuthSocket } from 'src/auth/utils/WsLoggedIn.guard';
 
 @WebSocketGateway({
   origin:"*",
@@ -13,13 +14,12 @@ export class ChatGateway implements OnGatewayConnection{
   @WebSocketServer()
   server : Server;
 
-
   // connected Users sockets.
   private connectedUsers = new Map<String, Socket[]> ();
 
-  handleConnection(client:Socket) {
+  handleConnection(client:AuthSocket) {
     console.log(`Connected socket ${client.id}`);
-    const user = client.handshake.headers['userid'] as string;
+    const user = client.user.id;
 
     if (!user)
       client.disconnect();
@@ -50,15 +50,13 @@ export class ChatGateway implements OnGatewayConnection{
   }
 
   @SubscribeMessage('sendDM')
-  async sendDM(@ConnectedSocket() client:Socket, @MessageBody() data:{
+  async sendDM(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
     from:string,
     to:string,
     message:string,
     game:boolean
   })
   {
-    // create a roomId for DM
-    // then join all the socket to the room.
     const RoomId = this.chatService.CreateRoomId(data.from, data.to);
     const sender = this.connectedUsers.get(data.from);
     const receiver = this.connectedUsers.get(data.to);
@@ -75,7 +73,7 @@ export class ChatGateway implements OnGatewayConnection{
   }
 
   @SubscribeMessage('sendCM')
-  async SendChannelM(@ConnectedSocket() client:Socket, @MessageBody() data:{
+  async SendChannelM(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
     from:string,
     channel:string,
     message:string

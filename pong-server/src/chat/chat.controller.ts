@@ -185,14 +185,12 @@ export class ChatController {
     //     }
     // }
 
-    // @Post('/channels/:channelId/ban')
+    // @Post('/channels/:channelId/ban/:userId')
     // @HttpCode(HttpStatus.CREATED)
     // @UseGuards(LoggedInGuard)
     // @Roles(Role.ADMIN, Role.OWNER)
-    // async banUserFromChannel(@Param ('channelId') channelId:string, @Body() banDto:banDto, @Req() req:Request){
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId == undefined)
-    //             return ;
+    // async banUserFromChannel(@Param ('channelId') channelId:string, @Req() req:Request){
+
     //         const ban = await this.chatService.banUser(userId, banDto.banned, channelId);
     //         if (!ban)
     //         {
@@ -202,13 +200,13 @@ export class ChatController {
     //         }
     // }
 
-    // // update channel
-    // // @Patch('/channels/update')
-    // // @UseGuards(LoggedInGuard)
-    // // @Roles(Role.OWNER)
-    // // async updateChannelSetting(@Body() updateChannelDto:updateChannelDto){
+    // update channel
+    // @Patch('/channels/update')
+    // @UseGuards(LoggedInGuard)
+    // @Roles(Role.OWNER)
+    // async updateChannelSetting(@Body() updateChannelDto:updateChannelDto){
 
-    // // }
+    // }
     
 
     // // kick User
