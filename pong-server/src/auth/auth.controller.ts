@@ -38,6 +38,7 @@ export class AuthController {
 
   @Get('42/logout')
   handleLogout(@Res() res: Response) {
+    //TODO: should set the 2FA validation to false.
     res.cookie('jwt', "");
     return { status: 'success', message: 'User logout successfully.' };
   }

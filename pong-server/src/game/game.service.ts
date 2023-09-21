@@ -72,9 +72,7 @@ export class GameService {
     server.to(gameSessionID).emit(GAME_SESSION_STARTING);
     // Notify the user that we're going to start the session
     setTimeout(() => {
-      server
-        .to(gameSessionID)
-        .emit(START_GAME_SESSION, this.gameSessions.get(gameSessionID));
+      server.to(gameSessionID).emit(START_GAME_SESSION, this.gameSessions.get(gameSessionID));
       this.gameStarted(gameSessionID, server);
     }, 3000);
   }
@@ -86,6 +84,7 @@ export class GameService {
     const gameSession = randomUUID();
     const playerOne = this.createPlayer(player, 1);
     this.gameInvites.set(gameSession, { players: [playerOne] });
+    // Emit the invite event to the other user
     setTimeout(() => {
       if (this.gameInvites.get(gameSession).players.length == 1) {
         this.gameInvites.delete(gameSession);
@@ -119,7 +118,7 @@ export class GameService {
       });
       // Wait for 15 seconds if you don't find a match emit noPlayersAvaiable to the player
       setTimeout(() => {
-        if (this.gameQueue.get(gameSession).players.length == 1) {
+        if (this.gameQueue.has(gameSession) && this.gameQueue.get(gameSession).players.length == 1) {
           this.gameQueue.delete(gameSession);
           server.to(player.id).emit(NO_PLAYERS_AVAILABLE);
         }

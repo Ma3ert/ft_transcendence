@@ -13,6 +13,7 @@ import { AuthSocket, WsLoggedInGuard } from 'src/auth/utils/WsLoggedIn.guard';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { GameService } from './game.service';
 import { AuthService } from 'src/auth/auth.service';
+import { ONGOING_MATCH } from './utils/events';
 
 @UseGuards(WsLoggedInGuard)
 @WebSocketGateway({
@@ -28,7 +29,6 @@ export class GameGateway
   private socketUsers: Map<string, AuthSocket> = new Map();
   constructor(
     private readonly gameService: GameService,
-    private readonly authService: AuthService,
   ) {}
 
   @WebSocketServer()
@@ -50,18 +50,8 @@ export class GameGateway
 
   handleConnection(client: AuthSocket) {
     if (this.socketUsers.size > 0 && this.socketUsers.has(client.user.id))
-    {
-      console.log(client.id);
-      console.log("Same client just getting the old one");
-      const OldSocket = this.socketUsers.get(client.user.id);
-      console.log(OldSocket.id);
-      client = OldSocket;
-      console.log(client.id);
-      return;
-    }
-    client = null;
-    // console.log("Setting new user in the map:", client.id);
-    // this.socketUsers.set(client.user.id, client);
+      return client.emit(ONGOING_MATCH);
+    this.socketUsers.set(client.user.id, client);
   }
 
   handleDisconnect(client: AuthSocket) {
