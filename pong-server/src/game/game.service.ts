@@ -2,7 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Socket, Server } from 'socket.io';
 import { AuthSocket } from 'src/auth/utils/WsLoggedIn.guard';
-import { GAME_SESSION_STARTING, GAME_UPDATE, NO_PLAYERS_AVAILABLE, ONGOING_MATCH, START_GAME_SESSION } from './utils/events';
+import {
+  GAME_SESSION_STARTING,
+  GAME_UPDATE,
+  NO_PLAYERS_AVAILABLE,
+  ONGOING_MATCH,
+  START_GAME_SESSION,
+  USER_DENIED_INVITE,
+} from './utils/events';
 
 export interface Player {
   id: number;
@@ -76,6 +83,15 @@ export class GameService {
     if (player.user.status === 'INMATCH') {
       return server.to(player.id).emit(ONGOING_MATCH);
     }
+    const gameSession = randomUUID();
+    const playerOne = this.createPlayer(player, 1);
+    this.gameInvites.set(gameSession, { players: [playerOne] });
+    setTimeout(() => {
+      if (this.gameInvites.get(gameSession).players.length == 1) {
+        this.gameInvites.delete(gameSession);
+        server.to(player.id).emit(USER_DENIED_INVITE);
+      }
+    }, 15000);
   }
 
   acceptGameInvite() {
