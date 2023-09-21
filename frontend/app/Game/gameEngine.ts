@@ -9,7 +9,7 @@ interface Game{
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
 	ballTrajectory: Point[]; // the trajectory of the ball 
 	ballPositions: Point[]; // the position of shooting and receiving the ball
-	indexStart: number; // the index from the ball is goind
+	indexStart: number; // the index from the ball is going
 	indexEnd: number; // the index of where the ball is gonna end up
 	state: "R" | "S"; // to decide whether the player is a sender or receiver
 	playerDirection: "left" | "right"; // to decide which side the raquette is facing for the user
