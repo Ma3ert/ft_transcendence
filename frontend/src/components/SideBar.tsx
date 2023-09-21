@@ -17,10 +17,10 @@ const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
   const size = "25px";
   const links = new Map<Section, React.ElementType> ();
 
-  links.set ("home", AiFillHome)
+  links.set ("lobby", AiFillHome)
   links.set ("notifications", BiSolidBell)
   links.set ("achievements", FaMedal)
-  links.set ("chat", FaUserGroup)
+  links.set ("friends", FaUserGroup)
   links.set ("settings", IoMdSettings)
 
   return (

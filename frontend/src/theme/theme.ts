@@ -32,11 +32,6 @@ const ModalStyle: ComponentStyleConfig = {
   variants: {
     default: {
       dialog: {
-        minW: "500px",
-        w: "auto",
-        h: "auto",
-        maxH: "auto",
-        minH: "250px",
         bg: "#252932",
         borderRadius: "20px",
         px: "30px",
@@ -179,6 +174,46 @@ const ButtonStyle: ComponentStyleConfig = {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
     },
+    largeGhost:{
+      bg: "transparent",            
+      color: "#5B6171",
+      _hover: {
+        bg:'#252932',
+        color: "#D9D9D9", // Change this to your desired hover text color                                   
+      },
+      w:'100%',
+      fontSize:'sm',
+    },
+    largePrimary:{
+      bg:'#DC585B',
+      color:'#D9D9D9',
+      borderRadius:'15px',
+      _hover: {
+        opacity: "0.8",
+      },
+      _active: {
+        bg:'#D9D9D9',
+        color:'#DC585B',
+        transform: "scale(1.1)", // Increase the scale to make it grow
+      },
+      w:'100%',
+      fontSize:'sm',
+    },
+    largeSecondary:{
+      bg:'#D9D9D9',
+      color:'#DC585B',
+      borderRadius:'15px',
+      _hover: {
+        opacity: "0.8",
+      },
+      _active: {
+        bg:'#DC585B',
+        color:'#D9D9D9',
+        transform: "scale(1.1)", // Increase the scale to make it grow
+      },
+      w:'100%',
+      fontSize:'sm',
+    },
     menuItemImportant: {
       display: "flex",
       justifyContent: "start",
@@ -204,6 +239,30 @@ const ButtonStyle: ComponentStyleConfig = {
       color: "#5B6171",
       w: "99%",
       fontSize: "xs",
+    },
+    modalCancel: {
+      color:'#5B6171',
+      fontSize:'sm',
+      bg:'#1D222C',
+      px:'15px',
+      py:'5px',
+      borderRadius:'10px',
+      hover:{
+        opacity:'0.8',
+        transform: "scale(1.1)", // Increase the scale to make it grow
+      }
+    },
+    modalConfirm: {
+      color:'#D9D9D9',
+      fontSize:'sm',
+      bg:'#DC585B',
+      px:'15px',
+      py:'5px',
+      borderRadius:'10px',
+      hover:{
+        opacity:'0.8',
+        transform: "scale(1.1)", // Increase the scale to make it grow
+      }
     },
     icon: {
       borderRadius: "50px",

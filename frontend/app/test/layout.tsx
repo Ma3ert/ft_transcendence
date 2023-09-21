@@ -9,6 +9,7 @@ import localFont from "@next/font/local";
 import { Grid, GridItem } from "@chakra-ui/react";
 import Header from "@/components/ChatComponents/Header";
 import AppNavigationProvider from "@/providers/AppNavigationProvider";
+import ChatProvider from "@/providers/ChatProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,25 +33,21 @@ export default function RootLayout({
       <body>
         <ChakraProvider theme={theme}>
           <AppNavigationProvider>
-            <Grid templateRows={"15vh 10vh 75vh"} w="100%" h="100%">
-              <GridItem
-                border={"1px"}
-                borderColor={"red"}
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Header />
-              </GridItem>
-              <GridItem border={"1px"} borderColor={"yellow"}></GridItem>
-              <GridItem
-                border={"1px"}
-                borderColor={"green"}
-                justifyContent="center"
-                alignItems="center"
-              >
-                {children}
-              </GridItem>
-            </Grid>
+            <ChatProvider>
+              <Grid templateRows={"15vh 85vh"} w="100%" h="100%">
+                <GridItem
+                  w="100%"
+                  h="100%"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Header />
+                </GridItem>
+                <GridItem  border='1px' borderColor='green' w='100%' h='100%' justifyContent="center" alignItems="center">
+                  {children}
+                </GridItem>
+              </Grid>
+            </ChatProvider>
           </AppNavigationProvider>
         </ChakraProvider>
       </body>

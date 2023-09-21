@@ -2,15 +2,15 @@
 import React from "react";
 import ScrollableStack from "@/components/ScrollableStack";
 import NavBar from "@/components/NavBar";
-import { Wrap, Stack, Text } from "@chakra-ui/react";
+import { Wrap, Stack, Text, HStack } from "@chakra-ui/react";
 import PageBody from "@/components/PageBody";
 import ProgressLevel from "@/components/ProgressLevel";
 import LobbyParty from "@/components/LobbyParty";
-import Challenge from "./Challenge";
+import Challenge from "../Challenge";
 
 type Props = {};
 
-const Lobby = (props: Props) => {
+const LobbySection = (props: Props) => {
   const challenges = [
     <Challenge
       progress="5"
@@ -117,7 +117,7 @@ const Lobby = (props: Props) => {
     //             <LobbyParty solo={true}></LobbyParty>
     //           </Wrap>]}
     // />
-    <Wrap align={"center"} spacing={"135px"}>
+    <HStack w='100%' h='100%' justifyContent={'space-around'} alignItems={'center'}>
       <Stack spacing={"55px"} align={"start"}>
         <ProgressLevel></ProgressLevel>
         <Stack spacing={"20px"}>
@@ -133,8 +133,8 @@ const Lobby = (props: Props) => {
         </Stack>
       </Stack>
       <LobbyParty solo={true}></LobbyParty>
-    </Wrap>
+    </HStack>
   );
 };
 
-export default Lobby;
+export default LobbySection;

@@ -1,30 +1,35 @@
 import MembersList from "@/components/ChatComponents/MembersList"
-export const CHAT = true
-export const LOBBY = false
+// constants definitions
+export const PRIVATE = true
+export const CHANNEL = false
 
 
 export const friendsList:User[] = [{
     username:'7amid',
     imageUrl:'https://source.unsplash.com/random/?profile',
     online:false,
+    id:1,
     level: 12
 }, 
 {
     username:'Rachid',
-    imageUrl:'',
+    imageUrl:'https://source.unsplash.com/random/?profile=3',
     online:true,
+    id:2,
     level: 1
 },
 {
     username:'Wa7id45',
-    imageUrl:'',
+    imageUrl:'https://source.unsplash.com/random/?profile=1',
     online:true,
+    id:3,
     level:5
 },
 {
     username:'Sami78',
-    imageUrl:'',
+    imageUrl:'https://source.unsplash.com/random/?profile=2',
     online:true,
+    id:4,
     level:22
 }
 
@@ -82,15 +87,17 @@ export const Channels:Channel[] =[
         members:friendsList,
         admin:friendsList[0],
         membersCount:3,
-        imageUrl:'https://source.unsplash.com/random/?car'
+        imageUrl:'https://source.unsplash.com/random/?car',
+        id:1
     },
     {
         isPrivate:false,
-        name:'New Channel',
+        name:'test Channel',
         members:friendsList,
         admin:friendsList[1],
         membersCount:3,
         imageUrl:'https://source.unsplash.com/random/?army',
+        id:2
     },
     {
         isPrivate:true,
@@ -99,6 +106,7 @@ export const Channels:Channel[] =[
         admin:friendsList[0],
         membersCount:3,
         imageUrl:'https://source.unsplash.com/random/?cats',
+        id:3
     },
 ]
 

@@ -4,4 +4,5 @@ import { createContext } from "react";
 
 
 export const AppNavigationContext = createContext <AppNavigationContext> ({})
-export const ChatNavigationContext = createContext <ChatNavigationContext> ({})
+export const ChatContext = createContext <ChatContext> ({})
+export const ModalContext = createContext <ModalContext> ({})
