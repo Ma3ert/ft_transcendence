@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import {
   HStack,
   Stack,
@@ -6,18 +7,20 @@ import {
   Switch,
   Icon,
   Image,
+  Wrap,
 } from "@chakra-ui/react";
 import { channelSettings } from "../../../contstants";
-import CostumModal from "./CostumModal";
-import ConfirmationModal from "./ConfirmationModal";
 import CostumSwitcher from "./CostumSwitcher";
 import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
+import { ModalWrapper } from "@/components/Wrappers/ModalWrapper";
+import { SlArrowRight } from "react-icons/sl";
 interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   // eslint-disable-next-line react/jsx-key
-  const settings:Array<React.ReactNode> = [<MembersList/>, <SetPassword/>]
+  const settings: Array<React.ReactNode> = [<MembersList />, <SetPassword />];
+
   return (
     <Stack
       spacing={5}
@@ -35,42 +38,42 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           _hover={{ opacity: 0.8, transform: "scale(1.1)" }}
         />
         <Stack
-          w="100%"
+          w="auto"
           bg="#1D222C"
           borderRadius={"2xl"}
-          p={4}
+          px={4}
+          py={6}
           alignItems={"start"}
           justify="start"
           spacing={4}
           h="auto"
           minW={"auto"}
-          minH={"250px"}
-          maxH="500px"
-          maxW="300px"
+          minH={"45vh"}
+          maxH="auto"
         >
-          <HStack px={4} w={"99%"} justify={"space-between"}>
+          <HStack px={2} justify={"space-between"} alignItems={"center"}>
             <Text color={"#5B6171"} fontSize="sm" fontWeight={"bold"}>
-              {" "}
-              Private{" "}
+              Private Channel
             </Text>
             <CostumSwitcher />
           </HStack>
           {channelSettings.map((setting, index) => {
-            return (
-              <CostumModal key={index} value={setting} buttonVariant="modal">
-                {settings[index]}
-              </CostumModal>
-            );
+            return (<ModalWrapper type="regular" key={index} buttonVariant='largeGhost' buttonValue={
+              <HStack w='100%' h='100%' justifyContent='space-between'>
+                <Text>
+                  {setting}
+                </Text>
+                <Icon as={SlArrowRight} />
+              </HStack>
+            }>{settings[index]}</ModalWrapper>);
           })}
         </Stack>
       </Stack>
       <Stack spacing={3}>
-        <ConfirmationModal
-          buttonVariant="primary"
-          buttonValue="Leave channel"
-          actionDescription="leave channel"
-          actionKeyword="leave"
-        />
+          <ModalWrapper type="confirmation" actionDescription="leave this channel" buttonValue={
+            <Text>Leave Channel</Text>
+          }
+          buttonVariant='largePrimary'/>
         <Button
           colorScheme="darkGhost"
           color={"#5B6171"}

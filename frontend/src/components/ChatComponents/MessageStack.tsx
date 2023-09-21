@@ -10,7 +10,7 @@ interface MessageStackProps {
 const MessageStack:React.FC<MessageStackProps> = ({messages})=>{
    
     return (
-        <Stack px={2} py={4}  maxHeight='100%'   spacing={2}  justify={'start'} alignItems={'start'} w='100%'   overflowY={'auto'} className={LayoutStyles.customScroll}>
+        <Stack px={2} py={4} h='75%'  maxH='75%'   spacing={2}  justify={'start'} alignItems={'start'} w='100%'   overflowY={'auto'} className={LayoutStyles.customScroll}>
             {messages.map((message,index)=>{
                 if (message.EnviteMessage) {
                     return (
