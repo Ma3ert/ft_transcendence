@@ -6,6 +6,8 @@ import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { RoleGuard } from './role.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   providers: [ChatGateway,
@@ -13,7 +15,11 @@ import { JwtService } from '@nestjs/jwt';
               UsersService,
               AuthService,
               JwtService,
-              PrismaService],
+              PrismaService,
+            {
+              provide: APP_GUARD,
+              useClass: RoleGuard,
+            }],
   controllers: [ChatController],
   exports:[ChatService]
 })

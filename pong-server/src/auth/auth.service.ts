@@ -27,11 +27,20 @@ export class AuthService {
   async verifyAccessToken(token: string) {
     //! Should do the necessary check for user validaion
     try {
-      return await this.jwtService.verifyAsync(token, { secret: 'something werid to see'});
+      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET});
     } catch (e) {
-      console.log(e);
       return null;
     }
+  }
+
+  async getTokenUser(authorization: string)
+  {
+    const token = authorization.split(' ')[1];
+    if (!token)
+        return null;
+    const decoded = await this.verifyAccessToken(token);
+    const user = await this.usersService.findById(decoded.sub);
+    return user;
   }
 
   async generateTwoFactorPin(userData: User) {

@@ -7,11 +7,9 @@ import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { GameModule } from './game/game.module';
-import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { BullModule } from '@nestjs/bull';
-import { UsersModule } from './users/users.module';
 import { ChatModule } from './chat/chat.module';
-import { FriendslistModule } from './invite/invite.module';
+import { FriendslistModule } from './invites/invite.module';
 
 @Module({
   imports: [
@@ -23,11 +21,9 @@ import { FriendslistModule } from './invite/invite.module';
         port: 6379,
       },
     }),
-    MatchmakingModule,
     AuthModule,
     PassportModule.register({ session: true }),
     GameModule,
-    MatchmakingModule,
     ChatModule,
     FriendslistModule,
   ],

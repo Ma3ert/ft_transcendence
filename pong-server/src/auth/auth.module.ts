@@ -7,7 +7,7 @@ import { LocalStrategy } from './utils/LocalStrategy';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [UsersModule, JwtModule.register({secret: 'something werid to see', signOptions: { expiresIn: '5h'}})],
+  imports: [UsersModule, JwtModule.register({secret: process.env.JWT_SECRET, signOptions: { expiresIn: '5h'}})],
   controllers: [AuthController],
   providers: [
     FortyTwoStrategy,
