@@ -98,7 +98,7 @@ const Ball = ({ points, box, setIndexStart, setIndexEnd }: Props) => {
 	// 	}
 	// }
 	useEffect(() => {
-		setTimeout(handleMovement, 60);
+		setTimeout(handleMovement, 30);
 	}, [box, scale, index]);
   	return (
 		<>

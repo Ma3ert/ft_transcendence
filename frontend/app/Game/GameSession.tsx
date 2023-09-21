@@ -35,7 +35,6 @@ const GameSession = () => {
   const [indexEnd, setIndexEnd] = useState(player.indexEnd);
   const [indexStart, setIndexStart] = useState(player.indexStart);
   const [xposition, setXPositions] = useState(player.playerPosition.x)
-  console.log("xposition: ", xposition)
   player.playerPosition.x = xposition;
   player.otherPosition.x = getOtherPosition(player.topLeft, player.bottomLeft, player.playerPosition, player.baseLine, player.topLine);
   const trajectory = getBallTrajectory(player.ballPositions[indexStart], player.ballPositions[indexEnd], 10);
