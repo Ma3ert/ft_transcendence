@@ -1,3 +1,4 @@
+"use client";
 export interface Point {
 	x: number;
 	y: number;
@@ -101,7 +102,7 @@ export function getBallTrajectory(start: Point, end: Point, step: number): Point
 
 export function getOtherPosition(topLeft: Point, bottomLeft: Point, playerPosition: Point, baseLine: number, topLine: number): number
 {
-	const positionPercent: number = playerPosition.x - bottomLeft.x / baseLine * 100;
+	const positionPercent: number = ((playerPosition.x - bottomLeft.x) / baseLine) * 100;
 	var otherPosition: number = topLine - ((positionPercent / 100) * topLine);
 	return (otherPosition + topLeft.x);
 }
@@ -155,7 +156,7 @@ export function servePlayerAction(action: PlayerAction, game: GameRoom) // this 
 	else if (action.event === "LeftUp")		sender.shootingPosition = 6;
 	else if (action.event === "Up")			sender.shootingPosition = 7;
 	else if (action.event === "UpRight")	sender.shootingPosition = 8;
-	else if (action.event === "UpRight")	sender.shootingPosition = 9;
+	else if (action.event === "Right")		sender.shootingPosition = 9;
 }
 
 export function serveBallAction(action: BallAction, game: GameRoom)

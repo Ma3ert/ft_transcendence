@@ -4,6 +4,7 @@ import { Key, useEffect, useState } from "react"
 import Ball from "./Ball"
 import {getBallTrajectory, getBallPositions, Point, getOtherPosition} from "./gameEngine"
 import FirstRaquette from "./FirstRaquette"
+import GameSession from "./GameSession"
 
 type Props = {}
 
@@ -15,7 +16,7 @@ export default function Home() {
   const trajectory3: Point[] = getBallTrajectory(positions[4], positions[5], 10)
   const trajectory4: Point[] = getBallTrajectory(positions[5], positions[2], 10)
   const [Px, setPlayerX] = useState(100);
-  const [Ox, setOtherX] = useState(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 60));
+  // const [Ox, setOtherX] = useState(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 60));
   const table: Point[][] = [trajectory, trajectory2, trajectory3, trajectory4];
 
   // const handleKeyDown = (event: KeyboardEvent) => {
@@ -36,19 +37,20 @@ export default function Home() {
   //     }
   //   }
   // }
-useEffect(() => {
-    console.log("Px: ", Px)
-    console.log("Ox: ", Ox)
-    window.addEventListener("keydown", handleKeyDown)
-    console.log("is called")
-    return () => {
-		  window.removeEventListener('keydown', handleKeyDown);
-		};
-  }, [Px, Ox])
+// useEffect(() => {
+//     console.log("Px: ", Px)
+//     console.log("Ox: ", Ox)
+//     window.addEventListener("keydown", handleKeyDown)
+//     console.log("is called")
+//     return () => {
+// 		  window.removeEventListener('keydown', handleKeyDown);
+// 		};
+//   }, [Px, Ox])
   // console.log(trajectory)
   return (
     <>
-      <Box
+    <GameSession></GameSession>
+      {/* <Box
         bg={"#fff"}
         position={"absolute"}
         boxSize={"10px"}
@@ -65,35 +67,7 @@ useEffect(() => {
         top={500}
         left={Ox}
       >    
-      </Box>
-      {/* {positions.map((point) => (
-        <Box
-          bg={"#fff"}
-          position={"absolute"}
-          boxSize={"10px"}
-          borderRadius={"full"}
-          top={point.y}
-          left={point.x}
-          >
-        </Box>
-      ))}
-        <Box
-          bg={"#fff"}
-          position={"absolute"}
-          boxSize={"10px"}
-          borderRadius={"full"}
-          top={100}
-          left={270 + 900 / 2}
-          >
-        </Box> */}
-      {/* <Ball points={table[index]} reset={index}/> */}
-      {/* <FirstRaquette
-        w="140px"
-        h="140px"
-        x={270}
-        y={803}
-        lenght={900}
-      /> */}
+      </Box> */}
     </>
   )
 }

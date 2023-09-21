@@ -1,29 +1,54 @@
+"use client"
 import React from 'react'
 import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import {Point} from "./gameEngine"
+import {Point, checkBounce, getBallTrajectory} from "./gameEngine"
 
 type Props = {
 	points: Point[]
 	box: number;
+	setIndexStart: (n: number) => void;
+	setIndexEnd: (n: number) => void;
 }
 
-const Ball = ({ points, box }: Props) => {
+const Ball = ({ points, box, setIndexStart, setIndexEnd }: Props) => {
 	const [scale, setScale] = useState(points[0].y / 800)
 	const [index, setIndex] = useState(1)
+	const [turn, setTurn] = useState(0);
 	var boxSize = scale * box
 	const handleMovement = () => {
-		if (index < points.length)
+		if (index < points.length - 1)
 		{
 			setIndex(index + 1);
 			setScale(points[index].y / 800)
 			boxSize = scale * box
 		}
-		else if (index === points.length)
+		else
 		{
-			// here I have to send to the server that the ball will hit the border
-			// if there's a player at that position means it will bounce otherwise
-			// a point count to me
+			if (turn === 0)
+			{
+				setIndexStart(7);
+				setIndexEnd(3);
+			}
+			else if (turn === 1)
+			{
+				if (checkBounce({x: 270, y: 803}, points[index])) console.log("it bounce");
+				setIndexStart(3);
+				setIndexEnd(5);
+			}
+			else if (turn === 2)
+			{
+				setIndexStart(5);
+				setIndexEnd(0);
+			}
+			else if (turn === 3)
+			{
+				if (checkBounce({x: 275, y: 803}, points[index])) console.log("it bounce")
+				setIndexStart(0);
+				setIndexEnd(9);
+			}
+			setIndex(0);
+			setTurn(turn + 1);
 		}
 	}
 	// const handleKeyDown = (event: KeyboardEvent) => {

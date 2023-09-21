@@ -9,7 +9,7 @@ type Props = {
     src: string
 }
 
-const secondRaquette = ({w, h, x, y, src}: Props) => {
+const SecondRaquette = ({w, h, x, y, src}: Props) => {
   return (
     <Image
         position={"absolute"}
@@ -23,4 +23,4 @@ const secondRaquette = ({w, h, x, y, src}: Props) => {
   )
 }
 
-export default secondRaquette
+export default SecondRaquette
