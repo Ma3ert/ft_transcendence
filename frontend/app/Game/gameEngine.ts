@@ -40,12 +40,14 @@ export interface Game{
 	score: number; // how many point the player scored
 	roomId: string; // the id of the room that the player blongs to
 	velocity: number; // the velocity of the ball it will increament while the game is progressing
+	you: string;
+	other: string;
 }
 
 interface GameRoom{
 	player1: Game;
 	player2: Game;
-	roomId: Game;
+	roomId: string;
 }
 
 export function checkDirection(start: number, position: number, lineLenght: number): "left" | "right"
