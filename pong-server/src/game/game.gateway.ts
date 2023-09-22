@@ -55,6 +55,7 @@ export class GameGateway
   }
 
   handleDisconnect(client: AuthSocket) {
+    //! Should the function that is reponsible for the player leaving the game session.
     console.log('User id:', client.user.id);
     if (this.socketUsers.has(client.user.id)) {
       this.socketUsers.delete(client.user.id);
