@@ -2,8 +2,8 @@
 import { useEffect } from "react";
 import io from "socket.io-client";
 
-const useSocket = (url:string) => {
-  const socket = io(url);
+const useConnection = (serverEndpoint:string) => {
+  const socket = io(serverEndpoint);
 
   useEffect(() => {
 
@@ -21,4 +21,4 @@ const useSocket = (url:string) => {
   return socket;
 };
 
-export default useSocket;
+export default useConnection;
