@@ -244,4 +244,83 @@ export class ChatService {
             }
         })
     }
+
+    async banUser(banner:string, banned:string, channel:string)
+    {
+        const isBanner = !!await this.prismaService.channelBan.findFirst({
+            where:{
+                userId:banner,
+                channelId:channel,
+            }
+        })
+
+        if (isBanner)
+            throw new InternalServerErrorException('You cannot ban this User');
+
+        const isBanned = !!await this.prismaService.channelBan.findFirst({
+            where:{
+                userId:banned,
+                channelId:channel,
+            }
+        })
+
+        if (isBanned)
+            throw new InternalServerErrorException('You cannot ban this User');
+
+        const bannerUser = await this.prismaService.channelUser.findFirstOrThrow({
+            where:{
+                userId:banner,
+                channelId:channel,
+            }
+        });
+
+        const bannedUser = await this.prismaService.channelUser.findFirstOrThrow({
+            where:{
+                userId:banned,
+                channelId:channel,
+            }
+        })
+
+        if (bannerUser.role == Role.MEMBER || bannedUser.role == Role.OWNER)
+            throw new InternalServerErrorException('You cannot ban this User');
+
+        await this.prismaService.channelBan.create({
+            data:{
+                userId:banned,
+                channelId:channel,
+            }
+        });
+    }
+
+    async unbanUser(unbanner:string, banned:string, channel:string)
+    {
+        const unbannerUser = !!await this.prismaService.channelBan.findFirst({
+            where:{
+                userId:unbanner,
+                channelId:channel,
+            }
+        })
+
+        if (unbannerUser)
+            throw new InternalServerErrorException('You cannot ban this User.');
+
+        const isBanned = !!await this.prismaService.channelBan.findFirst({
+            where:{
+                userId:banned,
+                channelId:channel,
+            }
+        })
+
+        if (!isBanned)
+            throw new InternalServerErrorException('The requested User is already unbaned');
+
+        await this.prismaService.channelBan.delete({
+            where:{
+                userId_channelId:{
+                    userId:banned,
+                    channelId:channel,
+                }
+            }
+        })
+    }
 }

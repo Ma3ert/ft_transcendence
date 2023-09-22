@@ -166,39 +166,40 @@ export class ChatController {
             }
     }
 
-    // @Delete('/channels/:channelId/unban/:userId')
-    // @HttpCode(HttpStatus.NO_CONTENT)
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.OWNER)
-    // async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
-    //     const user = req.user['id'] as string;
-    //     if (!user || user == undefined)
-    //         return ;
-    //     try
-    //     {
-    //         await this.chatService.unbanUser(user, userId, channelId);
-    //     }
-    //     catch(error){
-    //         throw new HttpException(
-    //             "You don't have the permission to unban that User",
-    //             HttpStatus.FORBIDDEN);
-    //     }
-    // }
+    @Delete('/channels/:channelId/unban/:userId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.OWNER)
+    async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+        try
+        {
+            const user = req.user['id'] as string;
+            await this.chatService.unbanUser(user, userId, channelId);
+        }
+        catch(error){
+            throw new HttpException(
+                "You don't have the permission to unban that User",
+                HttpStatus.FORBIDDEN);
+        }
+    }
 
-    // @Post('/channels/:channelId/ban/:userId')
-    // @HttpCode(HttpStatus.CREATED)
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.OWNER)
-    // async banUserFromChannel(@Param ('channelId') channelId:string, @Req() req:Request){
-
-    //         const ban = await this.chatService.banUser(userId, banDto.banned, channelId);
-    //         if (!ban)
-    //         {
-    //             throw new HttpException(
-    //                 "You don't have the permission to ban that User",
-    //                 HttpStatus.FORBIDDEN);
-    //         }
-    // }
+    @Post('/channels/:channelId/ban/:userId')
+    @HttpCode(HttpStatus.CREATED)
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.OWNER)
+    async banUserFromChannel(@Param('userId') bannedId:string, @Param ('channelId') channelId:string, @Req() req:Request){
+        try
+        {
+            const userId = req.user['id'] as string;
+            await this.chatService.banUser(userId, bannedId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                "You don't have the permission to ban that User",
+                HttpStatus.FORBIDDEN);
+        }
+    }
 
     // update channel
     // @Patch('/channels/update')
@@ -209,26 +210,27 @@ export class ChatController {
     // }
     
 
-    // // kick User
-    // @Delete('/channels/:channelId/kick/:userid')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.OWNER)
-    // async kickUser(@Param('channelId') channelId:string, @Param('userId') userId:string,@Req() req:Request){
-    //     try{
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId === undefined)
-    //             return ;
-    //         await this.chatService.leaveChannel(channelId, userId);
-    //     }
-    //     catch (error)
-    //     {
-    //         throw new HttpException(
-    //             'The User you are Trying to kick is not in the channel.',
-    //             HttpStatus.NOT_FOUND
-    //         )
-    //     }
-    // }
+    // kick User
+    @Delete('/channels/:channelId/kick/:userid')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.OWNER)
+    async kickUser(@Param('channelId') channelId:string, @Param('userId') userId:string,@Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            await this.chatService.leaveChannel(channelId, userId);
+        }
+        catch (error)
+        {
+            throw new HttpException(
+                'The User you are Trying to kick is not in the channel.',
+                HttpStatus.NOT_FOUND
+            )
+        }
+    }
 
 
-    // Route needed update channel preferences
+    // kick user
+    // ban/unban user
+    // mute/unmute user
+    // update channel
 }
