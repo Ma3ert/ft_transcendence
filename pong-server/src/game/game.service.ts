@@ -3,13 +3,20 @@ import { randomUUID } from 'crypto';
 import { Socket, Server } from 'socket.io';
 import { AuthSocket } from 'src/auth/utils/WsLoggedIn.guard';
 import {
+  GAME_INVITE_DELETED,
   GAME_SESSION_STARTING,
   GAME_UPDATE,
+  INVALID_INVITE,
+  NEW_INVITE,
   NO_PLAYERS_AVAILABLE,
   ONGOING_MATCH,
   START_GAME_SESSION,
+  USER_ACCEPTED_INVITE,
   USER_DENIED_INVITE,
+  USER_INMATCH,
 } from './utils/events';
+import { session } from 'passport';
+import { send } from 'process';
 
 export interface Player {
   id: number;
@@ -29,6 +36,7 @@ export interface GameSession {
 }
 
 export interface MatchItem {
+  staggedPlayer?: Player;
   players: Player[];
 }
 
@@ -72,30 +80,50 @@ export class GameService {
     server.to(gameSessionID).emit(GAME_SESSION_STARTING);
     // Notify the user that we're going to start the session
     setTimeout(() => {
-      server
-        .to(gameSessionID)
-        .emit(START_GAME_SESSION, this.gameSessions.get(gameSessionID));
+      server.to(gameSessionID).emit(START_GAME_SESSION, this.gameSessions.get(gameSessionID));
       this.gameStarted(gameSessionID, server);
     }, 3000);
   }
 
-  createGameInvite(player: AuthSocket, server: Server, payload: any) {
-    if (player.user.status === 'INMATCH') {
-      return server.to(player.id).emit(ONGOING_MATCH);
+  createGameInvite(sendingPlayer: AuthSocket, receivingPlayer: AuthSocket, server: Server) {
+    if (sendingPlayer.user.status === 'INMATCH') {
+      return server.to(sendingPlayer.id).emit(ONGOING_MATCH); // User who's send invite is in match
+    } else if (receivingPlayer.user.status === 'INMATCH') {
+      return server.to(sendingPlayer.id).emit(USER_INMATCH); // User who's receiving the invite is in match
     }
-    const gameSession = randomUUID();
-    const playerOne = this.createPlayer(player, 1);
-    this.gameInvites.set(gameSession, { players: [playerOne] });
+
+    const sessionInvite = randomUUID();
+    const playerOne = this.createPlayer(sendingPlayer, 1);
+    const playerTwo = this.createPlayer(receivingPlayer, 2);
+    this.gameInvites.set(sessionInvite, { players: [playerOne], staggedPlayer: playerTwo });
+
+    server.to(receivingPlayer.id).emit(NEW_INVITE, sessionInvite);
     setTimeout(() => {
-      if (this.gameInvites.get(gameSession).players.length == 1) {
-        this.gameInvites.delete(gameSession);
-        server.to(player.id).emit(USER_DENIED_INVITE);
+      if (this.gameInvites.get(sessionInvite).players.length == 1) {
+        this.gameInvites.delete(sessionInvite);
+        server.to(sendingPlayer.id).emit(USER_DENIED_INVITE);
       }
     }, 15000);
   }
 
-  acceptGameInvite() {
-    //TODO: Add the second user if he accepts the invite.
+  acceptGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
+    // Check if the session still exists in the gameInvites
+    if (!this.gameInvites.has(gameInviteId)) {
+      server.to(player.id).emit(GAME_INVITE_DELETED);
+    }
+    const sessionInvite = this.gameInvites.get(gameInviteId);
+    // Move player from stagging to players array
+    if (sessionInvite.players.length == 1) {
+      this.gameInvites.set(gameInviteId, {
+        players: [...sessionInvite.players, sessionInvite.staggedPlayer],
+        staggedPlayer: undefined,
+      });
+    }
+    // Emit event to playerOne to notify him that invite has been accepted
+    const sendingUser = sessionInvite.players.find((player) => player.id == 1);
+    if (!sendingUser)
+      return server.to(player.id).emit(INVALID_INVITE);
+    server.to(sendingUser.socket.id).emit(USER_ACCEPTED_INVITE);
   }
 
   joinGameQueue(player: AuthSocket, server: Server) {
@@ -119,7 +147,7 @@ export class GameService {
       });
       // Wait for 15 seconds if you don't find a match emit noPlayersAvaiable to the player
       setTimeout(() => {
-        if (this.gameQueue.get(gameSession).players.length == 1) {
+        if (this.gameQueue.has(gameSession) && this.gameQueue.get(gameSession).players.length == 1) {
           this.gameQueue.delete(gameSession);
           server.to(player.id).emit(NO_PLAYERS_AVAILABLE);
         }
@@ -141,7 +169,7 @@ export class GameService {
     //TODO: write state watcher function to compare between the old state and the one and emit events.
     const gameSession = this.gameSessions.get(session);
     const interval = setInterval(() => {
-      server.to(session).emit(GAME_UPDATE, { data: gameSession.players });
+      server.to(session).emit(GAME_UPDATE, { data: this.gameSessions.get(session).players });
     }, 1000 / 60);
     this.gameSessions.set(session, {
       ...gameSession,
@@ -169,7 +197,6 @@ export class GameService {
     this.gameSessions.delete(gameSessionId);
     // Disconnect the player from the session
     if (gameSessionId) player.leave(gameSessionId);
-
     //! Should change the user status to online not in game anymore
   }
 }
