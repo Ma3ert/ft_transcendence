@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Ball from './Ball'
 import FirstRaquette from './FirstRaquette'
-import { Game, Point, getBallPositions, getBallTrajectory, getOtherPosition } from './gameEngine'
+import { Game, Point, distCalculation, getBallPositions, getBallTrajectory, getOtherPosition } from './gameEngine'
 import SecondRaquette from './SecondRaquette'
 import { Box } from '@chakra-ui/react'
 
@@ -29,6 +29,7 @@ const player:Game = {
   topLine: 400,
   score: 0,
   roomId: "chi haja",
+  velocity: 20
 }
 
 const GameSession = () => {
@@ -37,7 +38,7 @@ const GameSession = () => {
   const [xposition, setXPositions] = useState(player.playerPosition.x)
   player.playerPosition.x = xposition;
   player.otherPosition.x = getOtherPosition(player.topLeft, player.bottomLeft, player.playerPosition, player.baseLine, player.topLine);
-  const trajectory = getBallTrajectory(player.ballPositions[indexStart], player.ballPositions[indexEnd], 10);
+  const trajectory = getBallTrajectory(player.ballPositions[indexStart], player.ballPositions[indexEnd], 8);
   return (
     <>
       {player.ballPositions.map((point) => (
@@ -53,7 +54,9 @@ const GameSession = () => {
       ))}
       <Ball
         points={trajectory}
-        box={100}
+        box={70}
+        distance={distCalculation(player.ballPositions, indexStart, indexEnd)}
+        velocity={player.velocity}
         setIndexEnd={(end) => (setIndexEnd(end))}
         setIndexStart={(start) => (setIndexStart(start))}
       />

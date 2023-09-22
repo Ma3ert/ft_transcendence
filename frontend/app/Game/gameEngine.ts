@@ -39,6 +39,7 @@ export interface Game{
 	bottomLeft: Point; // the position of the bottomleft corner of the table
 	score: number; // how many point the player scored
 	roomId: string; // the id of the room that the player blongs to
+	velocity: number; // the velocity of the ball it will increament while the game is progressing
 }
 
 interface GameRoom{
@@ -163,15 +164,26 @@ export function serveBallAction(action: BallAction, game: GameRoom)
 {
 	const reciever: Game = game.player1.state === "R" ? game.player1 : game.player2;
 	const sender: Game = game.player1.state === "S" ? game.player1 : game.player2;
-	const dec:boolean = checkBounce(reciever.playerPosition, reciever.ballTrajectory[reciever.ballTrajectory.length - 2]);
-	if (dec)
+	if (checkBounce(reciever.playerPosition, reciever.ballTrajectory[reciever.ballTrajectory.length - 2]))
 	{
 		reciever.ballTrajectory = getBallTrajectory(reciever.ballPositions[reciever.indexEnd], reciever.ballPositions[reciever.shootingPosition], 10);
 		const otherNewDir = 9 - reciever.shootingPosition;
-		sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexEnd], sender.ballPositions[otherNewDir], 10);
+		sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexEnd], sender.ballPositions[otherNewDir], 5);
 	}
 	else
 	{
 		sender.score += 1;
 	}
+}
+
+export function distCalculation(points: Point[], start: number, end: number): number
+{
+	let greater: number = start < end ? end : start;
+	let smaller: number = greater === end ? start : end;
+	if (greater - 5 === start)
+		return (points[smaller].y - points[greater].y)
+	let adj:number = Math.pow(Math.abs(points[start].x - points[end].x), 2)
+	let opp:number = Math.pow(Math.abs(points[start].y - points[end].y), 2)
+	let hypo:number = Math.sqrt(adj + opp);
+	return (hypo);
 }

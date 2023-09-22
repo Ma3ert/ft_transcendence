@@ -7,12 +7,14 @@ import {Point, checkBounce, getBallTrajectory} from "./gameEngine"
 type Props = {
 	points: Point[]
 	box: number;
+	distance: number;
+	velocity: number;
 	setIndexStart: (n: number) => void;
 	setIndexEnd: (n: number) => void;
 }
 
-const Ball = ({ points, box, setIndexStart, setIndexEnd }: Props) => {
-	const [scale, setScale] = useState(points[0].y / 800)
+const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd}: Props) => {
+	const [scale, setScale] = useState(points[0].y / 500)
 	const [index, setIndex] = useState(1)
 	const [turn, setTurn] = useState(0);
 	var boxSize = scale * box
@@ -20,7 +22,7 @@ const Ball = ({ points, box, setIndexStart, setIndexEnd }: Props) => {
 		if (index < points.length - 1)
 		{
 			setIndex(index + 1);
-			setScale(points[index].y / 800)
+			setScale(points[index].y /500)
 			boxSize = scale * box
 		}
 		else
@@ -98,7 +100,7 @@ const Ball = ({ points, box, setIndexStart, setIndexEnd }: Props) => {
 	// 	}
 	// }
 	useEffect(() => {
-		setTimeout(handleMovement, 30);
+		setTimeout(handleMovement, distance / velocity);
 	}, [box, scale, index]);
   	return (
 		<>
