@@ -29,7 +29,7 @@ const player:Game = {
   topLine: 400,
   score: 0,
   roomId: "chi haja",
-  velocity: 20
+  velocity: 40
 }
 
 const GameSession = () => {

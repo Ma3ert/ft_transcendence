@@ -19,14 +19,14 @@ export interface Game{
 	id: number; // the id of the player whether he's the first to shoot or not
 	playerPosition: Point; // the position of the player update by the keystrok from the user
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
-	ballTrajectory: Point[]; // the trajectory of the ball 
+	ballTrajectory: Point[]; // the trajectory of the ball
 	ballPositions: Point[]; // the position of shooting and receiving the ball
 	indexStart: number; // the index from the ball is going
 	indexEnd: number; // the index of where the ball is gonna end up
 	state: "R" | "S"; // to decide whether the player is a sender or receiver
 	shootingPosition: number; // the position where the player gonna shoot the ball
 	playerDirection: "left" | "right"; // to decide which side the raquette is facing for the user
-	playerW: number; // the width of the raquette 
+	playerW: number; // the width of the raquette
 	playerH: number; // the height of the raquette
 	playerSrc: string; // the src file of teh image to render for the player
 	otherDirection: "left" | "right"; // to decide which side the raquette is face for the other user
