@@ -15,11 +15,11 @@ const SideBar:React.FC<Props> = ({bodySetter}) => {
   const size = "35px";
   return (
     <Stack spacing={90}>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)} } icon={AiFillHome} size={size}/> 
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)} }icon={BiSolidBell} size={size}/>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (1)}}icon={FaMedal} size={size}/>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (2)}}icon={FaUserGroup} size={size}/>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (3)}}icon={IoMdSettings} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)}} icon={AiFillHome} size={size}/> 
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)}} icon={BiSolidBell} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (1)}} icon={FaMedal} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (2)}} icon={FaUserGroup} size={size}/>
+      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (3)}} icon={IoMdSettings} size={size}/>
     </Stack>
   )
 }
