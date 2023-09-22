@@ -138,7 +138,7 @@ const ButtonStyle: ComponentStyleConfig = {
   icon:{
     borderRadius: "50px",
     px: "0px",
-    color: "#5B6171",
+    // color: "#5B6171",
     _hover: {
       color: "#D9D9D9", // Change this to your desired hover text color
     },
