@@ -214,7 +214,7 @@ export class ChatController {
     @Delete('/channels/:channelId/kick/:userid')
     @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.OWNER)
-    async kickUser(@Param('channelId') channelId:string, @Param('userId') userId:string,@Req() req:Request){
+    async kickUser(@Param('channelId') channelId:string, @Param('userid') userId:string,@Req() req:Request){
         try{
             const userId = req.user['id'] as string;
             await this.chatService.leaveChannel(channelId, userId);
@@ -228,9 +228,28 @@ export class ChatController {
         }
     }
 
+    // Mute User
+    @Post('/channels/:channelId/mute/:userid')
+    @UseGuards(LoggedInGuard)
+    @Roles(Role.OWNER, Role.ADMIN)
+    async MuteUser(@Param('channelId') channelId:string, @Param('userid') mutedId:string, @Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            await this.chatService.muteUser(userId, mutedId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                'You cannot Mute This User.',
+                HttpStatus.FORBIDDEN
+            )
+        }
+    }
 
-    // kick user
-    // ban/unban user
-    // mute/unmute user
-    // update channel
+
+    // kick user [testing]
+    // ban/unban user [testing]
+    // mute/unmute user [not started]
+    // update channel [not started]
+    // channelInvite [not started]
 }

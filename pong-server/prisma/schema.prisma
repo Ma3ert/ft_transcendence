@@ -139,14 +139,9 @@ model ChannelMute {
   channelId String
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "ChannelMutedUser")
 
-  startMute DateTime
-
-  mutePeriod Int
-
-  isMuted    Boolean
   created_at DateTime @default(now())
 
-  @@id([userId, channelId])
+  @@id([userId, channelId], name: "userId_channelId")
 }
 
 model ChannelInvite {

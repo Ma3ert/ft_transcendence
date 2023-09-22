@@ -311,7 +311,7 @@ export class ChatService {
             }
         })
 
-        if (!isBanned)
+        if (!isBanned )
             throw new InternalServerErrorException('The requested User is already unbaned');
 
         await this.prismaService.channelBan.delete({
@@ -322,5 +322,36 @@ export class ChatService {
                 }
             }
         })
+    }
+
+    async muteUser(muter:string, muted:string, channel:string)
+    {
+        const mutedId = await this.prismaService.channelUser.findFirst({
+            where:{
+                userId:muted,
+                channelId:channel,
+            }
+        });
+
+        if (!mutedId || mutedId.role == Role.OWNER)
+            throw new InternalServerErrorException('You cannot Mute this user');
+
+        await this.prismaService.channelMute.create({
+            data:{
+                userId:muted,
+                channelId:channel,   
+            }
+        })
+
+        setTimeout(async () => {
+            await this.prismaService.channelMute.delete({
+                where:{
+                    userId_channelId:{
+                        userId:muted,
+                        channelId:channel,
+                    }
+                }
+            })
+        }, 100000);
     }
 }
