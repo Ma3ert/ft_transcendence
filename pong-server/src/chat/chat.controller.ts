@@ -107,23 +107,28 @@ export class ChatController {
         }
     }
 
+    // to-do
+    // create upgrade and downgrade route for user
     //Change permission
-    @Patch('/channels/:channelId/permissions/')
-    //(Role.OWNER, Role.ADMIN)
-    @UseGuards(RoleGuard)
-    @UseGuards(LoggedInGuard)
-    async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
-        try{
-            const user = req.user['id'] as string;
-            await this.chatService.changePermission(user, UserPermission, channelId);
-        }
-        catch (error)
-        {
-            throw new HttpException(
-                "You cannot change permission of that User",
-                HttpStatus.FORBIDDEN)
-        }
-    }
+    // @Patch('/channels/:channelId/upgrade/')
+    // //(Role.OWNER, Role.ADMIN)
+    // @UseGuards(RoleGuard)
+    // @UseGuards(LoggedInGuard)
+    // async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
+    //     try{
+    //         const user = req.user['id'] as string;
+    //         await this.chatService.changePermission(user, UserPermission, channelId);
+    //     }
+    //     catch (error)
+    //     {
+    //         throw new HttpException(
+    //             "You cannot change permission of that User",
+    //             HttpStatus.FORBIDDEN)
+    //     }
+    // }
+
+
+
 
     // get channel messages
     // return total length
