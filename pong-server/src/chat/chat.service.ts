@@ -353,10 +353,17 @@ export class ChatService {
 
     async createChannelInvite(sender:string, receiver:string, channel:string)
     {
+        const UserExist = await this.prismaService.user.findFirst({
+            where:{
+                id:receiver,
+            }
+        })
+        if (!UserExist)
+            throw new InternalServerErrorException("The User invited doesn't exist.");
         const User = await this.prismaService.channelInvite.findFirst({where:{receiverId:receiver, channelId:channel}});
 
         if (User)
-            throw new InternalServerErrorException("The User already joined the channel.");
+            throw new InternalServerErrorException("The Invite is already sent to the user.");
 
         await this.prismaService.channelInvite.create({
             data:{
@@ -380,7 +387,7 @@ export class ChatService {
             }
         })
         if (!found)
-            throw new InternalServerErrorException("The Invite is not found");
+            return ;
         await this.prismaService.channelInvite.delete({
             where:{
                 id:found.id,
