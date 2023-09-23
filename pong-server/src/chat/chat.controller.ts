@@ -143,7 +143,6 @@ export class ChatController {
     }
 
     // get channel messages
-    // return total length
     @Get('/channels/:channelId/messages/')
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
@@ -262,6 +261,80 @@ export class ChatController {
             )
         }
     }
-    
-    // @Post('/channels/:channelId/inviteSent/')
+
+    // sent invite
+    @Post('/channels/:channelId/invitesent/:userId')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async sendInvite(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+        try{
+            const user = req.user['id'] as string;
+            await this.chatService.createChannelInvite(user, userId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                `${error}`,
+                HttpStatus.FORBIDDEN
+            )
+        }
+    }
+
+    // accept invite
+    @Delete('/channels/:channelId/inviteaccept/:userId')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async acceptInvite(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+        try{
+            const user = req.user['id'] as string;
+            await this.chatService.deleteChannelInvite(user, userId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                `${error}`,
+                HttpStatus.FORBIDDEN
+            )
+        }
+    }
+
+
+    // decline
+    @Delete('/channels/:channelId/invitedecline/:userId')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async declineInvite(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+        try{
+            const user = req.user['id'] as string;
+            await this.chatService.deleteChannelInvite(user, userId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                `${error}`,
+                HttpStatus.FORBIDDEN
+            )
+        }
+    }
+
+    @Get('/channels/')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async getUserChannel(@Req() req:Request)
+    {
+        const user = req.user['id'] as string;
+        return await this.chatService.getUserChannels(user);
+    }
+
+    @Get('/direct/')
+    @UseGuards(LoggedInGuard)
+    async getUserConversation(@Req() req:Request)
+    {
+        const user = req.user['id'] as string;
+        return this.chatService.getUserConversations(user);
+    }
 }
