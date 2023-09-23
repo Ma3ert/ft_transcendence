@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 export interface Point {
 	x: number;
 	y: number;
@@ -52,6 +52,9 @@ interface GameRoom{
 
 export function checkDirection(start: number, position: number, lineLenght: number): "left" | "right"
 {
+	console.log("position: ", position)
+	console.log("start: ", start)
+	console.log("lineLenght: ", lineLenght)
 	if (position - start < lineLenght / 2)
 		return ("left");
 	return ("right");

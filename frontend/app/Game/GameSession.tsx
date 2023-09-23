@@ -1,7 +1,8 @@
+"use client";
 import React, { useState } from 'react'
 import Ball from './Ball'
 import FirstRaquette from './FirstRaquette'
-import { Game, Point, distCalculation, getBallPositions, getBallTrajectory, getOtherPosition } from './gameEngine'
+import { Game, Point, checkDirection, distCalculation, getBallPositions, getBallTrajectory, getOtherPosition } from './gameEngine'
 import SecondRaquette from './SecondRaquette'
 import { Box } from '@chakra-ui/react'
 
@@ -29,15 +30,21 @@ const player:Game = {
   topLine: 400,
   score: 0,
   roomId: "chi haja",
-  velocity: 40
+  velocity: 40,
+  you : "",
+  other: ""
 }
 
 const GameSession = () => {
   const [indexEnd, setIndexEnd] = useState(player.indexEnd);
   const [indexStart, setIndexStart] = useState(player.indexStart);
   const [xposition, setXPositions] = useState(player.playerPosition.x)
-  player.playerPosition.x = xposition;
-  player.otherPosition.x = getOtherPosition(player.topLeft, player.bottomLeft, player.playerPosition, player.baseLine, player.topLine);
+  player.playerPosition.x = player.ballPositions[4].x;
+  player.playerPosition.y = player.ballPositions[4].y;
+  // player.otherPosition.x = getOtherPosition(player.topLeft, player.bottomLeft, player.playerPosition, player.baseLine, player.topLine);
+  player.otherPosition.y = player.ballPositions[5].y - 50
+  player.otherPosition.x = player.ballPositions[5].x
+  console.log(checkDirection(player.bottomLeft.x, player.playerPosition.x, player.baseLine))
   const trajectory = getBallTrajectory(player.ballPositions[indexStart], player.ballPositions[indexEnd], 8);
   return (
     <>

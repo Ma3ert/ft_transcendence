@@ -31,26 +31,51 @@ const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd}: Pr
 			{
 				setIndexStart(7);
 				setIndexEnd(3);
+				setTurn(turn + 1);
 			}
 			else if (turn === 1)
 			{
-				if (checkBounce({x: 270, y: 803}, points[index])) console.log("it bounce");
 				setIndexStart(3);
 				setIndexEnd(5);
+				setTurn(turn + 1);
 			}
 			else if (turn === 2)
 			{
 				setIndexStart(5);
 				setIndexEnd(0);
+				setTurn(turn + 1);
 			}
 			else if (turn === 3)
 			{
-				if (checkBounce({x: 275, y: 803}, points[index])) console.log("it bounce")
 				setIndexStart(0);
 				setIndexEnd(9);
+				setTurn(turn + 1);
+			}
+			else if (turn === 4)
+			{
+				setIndexStart(9);
+				setIndexEnd(1);
+				setTurn(turn + 1);
+			}
+			else if (turn === 5)
+			{
+				setIndexStart(1);
+				setIndexEnd(8);
+				setTurn(turn + 1);
+			}
+			else if (turn === 6)
+			{
+				setIndexStart(8);
+				setIndexEnd(0);
+				setTurn(turn + 1);
+			}
+			else
+			{
+				setIndexStart(0);
+				setIndexEnd(7);
+				setTurn(0);
 			}
 			setIndex(0);
-			setTurn(turn + 1);
 		}
 	}
 	// const handleKeyDown = (event: KeyboardEvent) => {
