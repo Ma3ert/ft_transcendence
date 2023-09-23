@@ -170,3 +170,12 @@ export const UserSettings:friendAction [] = [
     },
 
 ]
+
+// users routes
+export const  AllUsersRoute = `${process.env.REACT_APP_API_URL}/users`
+export const  UserByIdRoute = (id:number) => `${process.env.REACT_APP_API_URL}/users/${id}`
+export const  AvailableUserRoute = `${process.env.REACT_APP_API_URL}/invites/users/`
+
+// chat routes 
+
+// game routes

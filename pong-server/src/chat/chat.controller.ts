@@ -22,7 +22,6 @@ export class ChatController {
         try{
             const userId = req.user['id'] as string;
             const channel = await this.chatService.createChannel(userId, createChannelDto);
-
             return channel;
         } catch(error){
             throw new HttpException({
@@ -72,8 +71,9 @@ export class ChatController {
 
     // leave channel
     @Delete('/channels/:channelId/leave')
+    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
         try
         {
@@ -91,8 +91,9 @@ export class ChatController {
 
     // get channel Members
     @Get('/channels/:channelId/members/')
+    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
         try{
             const userId = req.user['id'] as string;
@@ -108,8 +109,9 @@ export class ChatController {
 
     //Change permission
     @Patch('/channels/:channelId/permissions/')
+    //(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    @Roles(Role.OWNER, Role.ADMIN)
     async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
         try{
             const user = req.user['id'] as string;
@@ -126,8 +128,9 @@ export class ChatController {
     // get channel messages
     // return total length
     @Get('/channels/:channelId/messages/')
+    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     async getChannelmessage(
         @Query('skip', ParseIntPipe) skip:number,
         @Query('take', ParseIntPipe) take:number,
@@ -168,69 +171,79 @@ export class ChatController {
             }
     }
 
-    // @Delete('/channels/:channelId/unban/:userId')
-    // @HttpCode(HttpStatus.NO_CONTENT)
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.OWNER)
-    // async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
-    //     const user = req.user['id'] as string;
-    //     if (!user || user == undefined)
-    //         return ;
-    //     try
-    //     {
-    //         await this.chatService.unbanUser(user, userId, channelId);
-    //     }
-    //     catch(error){
-    //         throw new HttpException(
-    //             "You don't have the permission to unban that User",
-    //             HttpStatus.FORBIDDEN);
-    //     }
-    // }
+    @Delete('/channels/:channelId/unban/:userId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    //(Role.ADMIN, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+        try
+        {
+            const user = req.user['id'] as string;
+            await this.chatService.unbanUser(user, userId, channelId);
+        }
+        catch(error){
+            throw new HttpException(
+                `${error}`,
+                HttpStatus.FORBIDDEN);
+        }
+    }
 
-    // @Post('/channels/:channelId/ban/:userId')
-    // @HttpCode(HttpStatus.CREATED)
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.OWNER)
-    // async banUserFromChannel(@Param ('channelId') channelId:string, @Req() req:Request){
+    @Post('/channels/:channelId/ban/:userId')
+    @HttpCode(HttpStatus.CREATED)
+    //(Role.ADMIN, Role.OWNER)
+    // @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async banUserFromChannel(@Param('userId') bannedId:string, @Param ('channelId') channelId:string, @Req() req:Request){
+        try
+        {
+            const userId = req.user['id'] as string;
+            await this.chatService.banUser(userId, bannedId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                "You cannot Ban This User",
+                HttpStatus.FORBIDDEN);
+        }
+    }
 
-    //         const ban = await this.chatService.banUser(userId, banDto.banned, channelId);
-    //         if (!ban)
-    //         {
-    //             throw new HttpException(
-    //                 "You don't have the permission to ban that User",
-    //                 HttpStatus.FORBIDDEN);
-    //         }
-    // }
+    // kick User
+    @Delete('/channels/:channelId/kick/:userid')
+    @UseGuards(LoggedInGuard)
+    @UseGuards(RoleGuard)
+    //(Role.ADMIN, Role.OWNER)
+    async kickUser(@Param('channelId') channelId:string, @Param('userid') userId:string,@Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            await this.chatService.leaveChannel(channelId, userId);
+        }
+        catch (error)
+        {
+            throw new HttpException(
+                'The User you are Trying to kick is not in the channel.',
+                HttpStatus.NOT_FOUND
+            )
+        }
+    }
 
-    // update channel
-    // @Patch('/channels/update')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.OWNER)
-    // async updateChannelSetting(@Body() updateChannelDto:updateChannelDto){
+    // Mute User
+    @Post('/channels/:channelId/mute/:userid')
+    //(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async MuteUser(@Param('channelId') channelId:string, @Param('userid') mutedId:string, @Req() req:Request){
+        try{
+            const userId = req.user['id'] as string;
+            await this.chatService.muteUser(userId, mutedId, channelId);
+        }
+        catch(error)
+        {
+            throw new HttpException(
+                'You cannot Mute This User.',
+                HttpStatus.FORBIDDEN
+            )
+        }
+    }
 
-    // }
-    
-
-    // // kick User
-    // @Delete('/channels/:channelId/kick/:userid')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.ADMIN, Role.OWNER)
-    // async kickUser(@Param('channelId') channelId:string, @Param('userId') userId:string,@Req() req:Request){
-    //     try{
-    //         const userId = req.user['id'] as string;
-    //         if (!userId || userId === undefined)
-    //             return ;
-    //         await this.chatService.leaveChannel(channelId, userId);
-    //     }
-    //     catch (error)
-    //     {
-    //         throw new HttpException(
-    //             'The User you are Trying to kick is not in the channel.',
-    //             HttpStatus.NOT_FOUND
-    //         )
-    //     }
-    // }
-
-
-    // Route needed update channel preferences
 }
