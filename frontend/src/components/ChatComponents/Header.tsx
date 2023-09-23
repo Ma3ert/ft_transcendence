@@ -16,7 +16,7 @@ export default function Header() {
         <HStack justify='center' alignItems='center' spacing={12} maxW={'6xl'}>
             <UserStatus username='yassiiiiir12' status={true}/>
             <UserAvatar url='https://avatars.githubusercontent.com/u/55942632?v=4' status={true}/>
-             <IconButton color='#5B6171' size={'25px'} icon={FaSignOutAlt} aria-label="Sign out" />
+             <IconButton size={'25px'} icon={FaSignOutAlt} aria-label="Sign out" />
         </HStack>
         </HStack>
     </header>

@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const NavBar = () => {
   return (
-    <Wrap align={"center"} spacingX={"1000px"} marginTop={"50px"}>
+    <Wrap align={"center"} spacingX={"1000px"} marginTop={"50px"} color={"#5B6171"}>
       <Logo
         src='/logo.png'
         width='246px'
@@ -18,7 +18,6 @@ const NavBar = () => {
         <IconButton
           icon={FaSignOutAlt}
           size="40px"
-          color='#5B6171'
           aria-label="Sign out"
         />
       </Wrap>

@@ -16,7 +16,7 @@ const PrivateChatHeader:React.FC<PrivateChatHeaderProps> = ({Peer})=>{
                 {Peer.username}
             </Text>
         </HStack>
-        <IconButton icon={FaEllipsis} color="#5B6171"  size="25px"/>
+        <IconButton icon={FaEllipsis} size="25px"/>
     </HStack>
     )
 }

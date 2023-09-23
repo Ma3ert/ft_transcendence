@@ -20,6 +20,16 @@ const ProgressStyle: ComponentStyleConfig = {
   }
 }
 
+const DividerStyle: ComponentStyleConfig= {
+  variants: {
+    vertical: {
+      border: "2px solid",
+      borderRadius: "full",
+      p: 0,
+    }
+  }
+}
+
 const ModalStyle: ComponentStyleConfig={
   // sizes:{
   //   invite:{
@@ -138,9 +148,12 @@ const ButtonStyle: ComponentStyleConfig = {
   icon:{
     borderRadius: "50px",
     px: "0px",
-    // color: "#5B6171",
+    // color: "#5B6171", I removed this cus of the icon color in the hover
     _hover: {
-      color: "#D9D9D9", // Change this to your desired hover text color
+      color: "#D9D9D9",
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out",
+      transform: "scale(1.2)", // Change this to your desired hover text color
     },
     _active: {
       color: "#D9D9D9", // Change this to your desired hover text color
@@ -320,7 +333,8 @@ const theme = extendTheme({
     Tabs: TabsStyle,
     Progress: ProgressStyle,
     Checkbox: CheckboxStyle,
-    Modal: ModalStyle
+    Modal: ModalStyle,
+    Divider: DividerStyle
     },
     fonts: {
       visbyRound: "visbyRound, sans-serif"
