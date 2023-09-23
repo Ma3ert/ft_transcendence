@@ -15,11 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
               UsersService,
               AuthService,
               JwtService,
-              PrismaService,
-            {
-              provide: APP_GUARD,
-              useClass: RoleGuard,
-            }],
+              PrismaService],
   controllers: [ChatController],
   exports:[ChatService]
 })

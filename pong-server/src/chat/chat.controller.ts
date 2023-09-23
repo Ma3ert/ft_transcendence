@@ -7,6 +7,7 @@ import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { ChangePermissionDto } from './dto/changePermission.dto';
+import { RoleGuard } from './role.guard';
 
 
 @Controller('chat')
@@ -33,8 +34,9 @@ export class ChatController {
     
     // delete Channel
     @Delete('/channels/:channelId')
+    @Roles(Role.ADMIN)
+    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    @Roles(Role.OWNER)
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
         try
         {

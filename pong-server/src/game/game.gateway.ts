@@ -40,7 +40,9 @@ export class GameGateway
   }
 
   @SubscribeMessage('gameSendInvite')
-  sendGameInvite(client: AuthSocket, payload: any) {}
+  sendGameInvite(client: AuthSocket, payload: any) {
+    //! Here i should check that the user we're trying to invite is online using the socketUsers map.
+  }
 
   @SubscribeMessage('gameEvent')
   handleGameEvent(client: AuthSocket, payload: any) {
