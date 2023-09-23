@@ -6,7 +6,6 @@ import { joinChannelDto } from './dto/joinChannel.dto';
 import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
-import { ChangePermissionDto } from './dto/changePermission.dto';
 import { RoleGuard } from './role.guard';
 
 
@@ -33,7 +32,7 @@ export class ChatController {
     
     // delete Channel
     @Delete('/channels/:channelId')
-    @Roles(Role.ADMIN)
+    @Roles(Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
@@ -52,7 +51,6 @@ export class ChatController {
     }
 
     // User Join a Channel
-    // ****** still there is some improvment to in this route
     @Post('/channels/:channelId/join/')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
@@ -71,7 +69,7 @@ export class ChatController {
 
     // leave channel
     @Delete('/channels/:channelId/leave')
-    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
@@ -91,7 +89,7 @@ export class ChatController {
 
     // get channel Members
     @Get('/channels/:channelId/members/')
-    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
@@ -107,33 +105,47 @@ export class ChatController {
         }
     }
 
-    // to-do
-    // create upgrade and downgrade route for user
-    //Change permission
-    // @Patch('/channels/:channelId/upgrade/')
-    // //(Role.OWNER, Role.ADMIN)
-    // @UseGuards(RoleGuard)
-    // @UseGuards(LoggedInGuard)
-    // async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
-    //     try{
-    //         const user = req.user['id'] as string;
-    //         await this.chatService.changePermission(user, UserPermission, channelId);
-    //     }
-    //     catch (error)
-    //     {
-    //         throw new HttpException(
-    //             "You cannot change permission of that User",
-    //             HttpStatus.FORBIDDEN)
-    //     }
-    // }
+    @Patch('/channels/:channelId/upgrade/:upgradeuser')
+    @Roles(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async changePermission(@Param('channelId') channelId:string, @Param('upgradeuser') upgradeuser:string, @Req() req:Request){
+        try{
+            const user = req.user['id'] as string;
+            await this.chatService.upgradeUser(user, upgradeuser, channelId);
+            return {status:"success", message:"upgrade successfully"};
+        }
+        catch (error)
+        {
+            throw new HttpException(
+                `${error}`,
+                HttpStatus.UNAUTHORIZED)
+        }
+    }
 
-
-
+    @Patch('/channels/:channelId/downgrade/:downgradeuser')
+    @Roles(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async downGradePersmission(@Param('channelId') channelId:string, @Param('downgradeuser') downgradeuser:string, @Req() req:Request)
+    {
+        try{
+            const user = req.user['id'] as string;
+            await this.chatService.downgradeUser(user, downgradeuser, channelId);
+            return {status:"success", message:"downgrade successfully"};
+        }
+        catch (error)
+        {
+            throw new HttpException(
+                `${error}`,
+                HttpStatus.UNAUTHORIZED)
+        }
+    }
 
     // get channel messages
     // return total length
     @Get('/channels/:channelId/messages/')
-    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async getChannelmessage(
@@ -178,7 +190,7 @@ export class ChatController {
 
     @Delete('/channels/:channelId/unban/:userId')
     @HttpCode(HttpStatus.NO_CONTENT)
-    //(Role.ADMIN, Role.OWNER)
+    @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
@@ -196,8 +208,8 @@ export class ChatController {
 
     @Post('/channels/:channelId/ban/:userId')
     @HttpCode(HttpStatus.CREATED)
-    //(Role.ADMIN, Role.OWNER)
-    // @UseGuards(RoleGuard)
+    @Roles(Role.ADMIN, Role.OWNER)
+    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async banUserFromChannel(@Param('userId') bannedId:string, @Param ('channelId') channelId:string, @Req() req:Request){
         try
@@ -215,9 +227,9 @@ export class ChatController {
 
     // kick User
     @Delete('/channels/:channelId/kick/:userid')
-    @UseGuards(LoggedInGuard)
+    @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
-    //(Role.ADMIN, Role.OWNER)
+    @UseGuards(LoggedInGuard)
     async kickUser(@Param('channelId') channelId:string, @Param('userid') userId:string,@Req() req:Request){
         try{
             const userId = req.user['id'] as string;
@@ -234,7 +246,7 @@ export class ChatController {
 
     // Mute User
     @Post('/channels/:channelId/mute/:userid')
-    //(Role.OWNER, Role.ADMIN)
+    @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async MuteUser(@Param('channelId') channelId:string, @Param('userid') mutedId:string, @Req() req:Request){
@@ -250,5 +262,6 @@ export class ChatController {
             )
         }
     }
-
+    
+    // @Post('/channels/:channelId/inviteSent/')
 }
