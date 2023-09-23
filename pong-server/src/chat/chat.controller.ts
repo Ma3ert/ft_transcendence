@@ -33,7 +33,7 @@ export class ChatController {
     
     // delete Channel
     @Delete('/channels/:channelId')
-    @Roles(Role.OWNER)
+    @Roles(Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
