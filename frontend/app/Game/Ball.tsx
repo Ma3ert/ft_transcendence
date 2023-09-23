@@ -3,6 +3,7 @@ import React from 'react'
 import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import {Point, checkBounce, getBallTrajectory} from "./gameEngine"
+import io from "socket.io-client"
 
 type Props = {
 	points: Point[]
@@ -12,6 +13,8 @@ type Props = {
 	setIndexStart: (n: number) => void;
 	setIndexEnd: (n: number) => void;
 }
+
+const socket = io("http://localhost:3001", {autoConnect: false})
 
 const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd}: Props) => {
 	const [scale, setScale] = useState(points[0].y / 500)
@@ -27,6 +30,7 @@ const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd}: Pr
 		}
 		else
 		{
+			socket.emit("end", {});
 			if (turn === 0)
 			{
 				setIndexStart(7);
@@ -78,52 +82,6 @@ const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd}: Pr
 			setIndex(0);
 		}
 	}
-	// const handleKeyDown = (event: KeyboardEvent) => {
-	// 	if (event.key === "ArrowUp")
-	// 	{
-	// 		// if (by - 10 > 10)
-	// 		// 	setBy(by - 10)
-	// 		if (index < points.length)
-	// 		{
-	// 			setBy(points[index].y)
-	// 			setBx(points[index].x)
-	// 			console.log(points[index])
-	// 			setIndex(index + 1);
-	// 		}
-	// 		setScale(by / 800)
-	// 		boxSize = scale * box
-	// 	}
-	// 	if (event.key === "ArrowDown")
-	// 	{
-	// 		// if (by - 10 > 10)
-	// 		// 	setBy(by - 10)
-	// 		if (index > 0)
-	// 		{
-	// 			setBy(points[index].y)
-	// 			setBx(points[index].x)
-	// 			console.log(points[index])
-	// 			setIndex(index - 1);
-	// 		}
-	// 		setScale(by / 800)
-	// 		boxSize = scale * box
-	// 	}
-	// 	else if (event.key === "ArrowDown"){
-	// 		if (by + 10 < 1000)
-	// 			setBy(by + 10)
-	// 		setScale(by / 800)
-	// 		boxSize = scale * box
-	// 	}
-	// 	else if (event.key === "ArrowRight")
-	// 	{
-	// 		if (bx + 10 < 1000)
-	// 			setBx(bx + 10)
-	// 	}
-	// 	else if (event.key === "ArrowLeft")
-	// 	{
-	// 		if (bx - 10 > 10)
-	// 			setBx(bx - 10)
-	// 	}
-	// }
 	useEffect(() => {
 		setTimeout(handleMovement, distance / velocity);
 	}, [box, scale, index]);

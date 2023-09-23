@@ -1,6 +1,7 @@
 import { Image } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { Point } from './gameEngine';
+import io from "socket.io-client"
 
 type Props = {
     w: string;
@@ -11,7 +12,10 @@ type Props = {
     setxPosition:React.Dispatch<React.SetStateAction<number>>
 }
 
+const socket = io("http://localhost:3001", {autoConnect: false})
+
 const FirstRaquette = ({w, h, x, y, src, setxPosition}: Props) => {
+    socket.connect();
     const activeKeys: Record<string, boolean> = {};
     console.log("the xCord: ", x)
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -20,30 +24,37 @@ const FirstRaquette = ({w, h, x, y, src, setxPosition}: Props) => {
         {
             console.log("if fires ", event.key)
             if (activeKeys["ArrowUp"] && activeKeys["ArrowLeft"])
-                console.log("6");
+                socket.emit("shooting-pos", 6)
+                // console.log("6");
                 // setEvent(6)
             else if (activeKeys["ArrowUp"] && activeKeys["ArrowRight"])
-                console.log("8");
+                socket.emit("shooting-pos", 8)
+                // console.log("8");
                 // setEvent(8)
             else if (activeKeys["ArrowRight"])
-                console.log("9");
+                socket.emit("shooting-pos", 9)
+                // console.log("9");
                 // setEvent(9)
             else if (activeKeys["ArrowLeft"])
-                console.log("5");
+                socket.emit("shooting-pos", 5)
+                // console.log("5");
                 // setEvent(5)
             else if (activeKeys["ArrowUp"])
-                console.log("7");
+                socket.emit("shooting-pos", 7)
+                // console.log("7");
                 // setEvent(7)
         }
         else if (event.key === "a")
         {
-            console.log("a")
-            setxPosition(200)
+            socket.emit("player-move", "a")
+            // console.log("a")
+            // setxPosition(200)
         }
         else if (event.key === "d")
         {
-            console.log("d")
-            setxPosition(300)
+            socket.emit("player-move", "d")
+            // console.log("d")
+            // setxPosition(300)
         }
     }
     useEffect(() => {
