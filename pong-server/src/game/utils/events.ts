@@ -13,3 +13,4 @@ export const USER_DENIED_INVITE = "userDeniedInvite";
 export const NO_SUCH_INVITE = "noSuchInvite";
 export const USER_ACCEPTED_INVITE = "userAcceptedInvite";
 export const INVITE_CANCELED = "inviteCanceled";
+export const UNAUTHORIZED_INVITE_ACTION = "unauthorizedInviteAction";

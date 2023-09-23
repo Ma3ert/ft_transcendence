@@ -12,7 +12,6 @@ import { Server, Socket } from 'socket.io';
 import { AuthSocket, WsLoggedInGuard } from 'src/auth/utils/WsLoggedIn.guard';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { GameService } from './game.service';
-import { AuthService } from 'src/auth/auth.service';
 import { ONGOING_MATCH } from './utils/events';
 
 @UseGuards(WsLoggedInGuard)

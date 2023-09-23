@@ -16,6 +16,7 @@ import {
   USER_INMATCH,
   INVITE_SENT,
   INVITE_CANCELED,
+  UNAUTHORIZED_INVITE_ACTION,
 } from './utils/events';
 import { User } from 'src/users/entities/user.entity';
 import { send } from 'process';
@@ -100,12 +101,11 @@ export class GameService {
     this.gameInvites.set(sessionInvite, { players: [playerOne], staggedPlayer: playerTwo });
     // Add the player for the in match check
     this.allPlayers.set(sendingPlayer.id, sendingPlayer.user);
-    this.allPlayers.set(receivingPlayer.id, receivingPlayer.user);
 
-    server.to(receivingPlayer.id).emit(NEW_INVITE, { invite: sessionInvite });
+    server.to(receivingPlayer.id).emit(NEW_INVITE, { invite: sessionInvite, user: sendingPlayer.user });
     server.to(sendingPlayer.id).emit(INVITE_SENT, { invite: sessionInvite });
     setTimeout(() => {
-      if (this.gameInvites.get(sessionInvite).players.length == 1) {
+      if (this.gameInvites.has(sessionInvite) && this.gameInvites.get(sessionInvite).players.length == 1) {
         this.gameInvites.delete(sessionInvite);
         server.to(sendingPlayer.id).emit(USER_DENIED_INVITE);
         server.to(receivingPlayer.id).emit(INVITE_CANCELED);
@@ -116,6 +116,7 @@ export class GameService {
   cancelGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
     if (!this.gameInvites.has(gameInviteId)) server.to(player.id).emit(NO_SUCH_INVITE);
     const receivingPlayer = this.gameInvites.get(gameInviteId).staggedPlayer;
+
     server.to(receivingPlayer.socket.id).emit(INVITE_CANCELED);
   }
 
@@ -126,16 +127,29 @@ export class GameService {
     }
     const sessionInvite = this.gameInvites.get(gameInviteId);
     // Move player from stagging to players array
+    if (player.user.id !== sessionInvite.staggedPlayer.user)
+      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION)
     if (sessionInvite.players.length == 1) {
       this.gameInvites.set(gameInviteId, {
         players: [...sessionInvite.players, sessionInvite.staggedPlayer],
         staggedPlayer: undefined,
       });
     }
+    // When the user accept add this user to users array
+    this.allPlayers.set(player.user.id, player.user);
     // Emit event to playerOne to notify him that invite has been accepted
     const sendingUser = sessionInvite.players.find((player) => player.id == 1);
     if (!sendingUser) return server.to(player.id).emit(INVALID_INVITE);
     server.to(sendingUser.socket.id).emit(USER_ACCEPTED_INVITE);
+  }
+
+  denyGameInvite(player: AuthSocket, gameInviteId: string, server: Server)
+  {
+    //TODO: Check if the invite exists
+    //TODO: Check that player matches stagged player as proof of invite ownership
+    //TODO: Emit to both players that the game invite is denied
+    //TODO: Remove players from the allPlayers map
+    //TODO: Remove the invite Session from the map
   }
 
   joinGameQueue(player: AuthSocket, server: Server) {
@@ -149,7 +163,7 @@ export class GameService {
       const playerTwo = this.createPlayer(player, 2);
       this.allPlayers.set(player.user.id, player.user);
       this.gameQueue.set(gameSession, { players: [playerOne, playerTwo] });
-      // Send the users information about each other.
+      //TODO: Send the users information about each other.
       console.log('Game Session: ', gameSession, this.gameQueue.get(gameSession));
     } else {
       const gameSession = randomUUID();
@@ -158,6 +172,7 @@ export class GameService {
         players: [playerOne],
       });
       this.allPlayers.set(player.user.id, player.user);
+      //TODO: Emit he joined the game queue
       // Wait for 15 seconds if you don't find a match emit noPlayersAvaiable to the player
       setTimeout(() => {
         if (this.gameQueue.has(gameSession) && this.gameQueue.get(gameSession).players.length == 1) {
@@ -196,6 +211,16 @@ export class GameService {
     // setInterval(() => {
     //   console.log('Started game session watcher');
     // }, 3000);
+  }
+
+  endGameSession(gameSessionId: string)
+  {
+    //TODO: Remove the item from the game sessions map
+    //TODO: Remove both players from the players array
+    //TODO: Check users status to ONLINE again
+    //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
+    //TODO: Quit the game session (ROOM)
+    //TODO: Clear the interval for that game sesion
   }
 
   leaveGameSession(player: Socket) {
