@@ -14,7 +14,6 @@ export class ChatGateway implements OnGatewayConnection{
   @WebSocketServer()
   server : Server;
 
-  // connected Users sockets.
   private connectedUsers = new Map<String, Socket[]> ();
 
   handleConnection(client:AuthSocket) {
