@@ -354,4 +354,23 @@ export class ChatService {
             })
         }, 100000);
     }
+
+
+    // the sender belong to the channel
+    // the receiver doesn't exist in the channel
+    // if the channel is 
+    async createChannelInvite(sender:string, receiver:string, channel:string)
+    {
+        
+    }
+
+    async deleteChannelInvite()
+    {
+
+    }
+
+    async getChannelInvite()
+    {
+
+    }
 }

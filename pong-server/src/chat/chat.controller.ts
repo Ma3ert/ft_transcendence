@@ -7,6 +7,7 @@ import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { ChangePermissionDto } from './dto/changePermission.dto';
+import { RoleGuard } from './role.guard';
 
 
 @Controller('chat')
@@ -70,8 +71,9 @@ export class ChatController {
 
     // leave channel
     @Delete('/channels/:channelId/leave')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
         try
         {
@@ -89,8 +91,9 @@ export class ChatController {
 
     // get channel Members
     @Get('/channels/:channelId/members/')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
         try{
             const userId = req.user['id'] as string;
@@ -106,8 +109,9 @@ export class ChatController {
 
     //Change permission
     @Patch('/channels/:channelId/permissions/')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
         try{
             const user = req.user['id'] as string;
@@ -124,8 +128,9 @@ export class ChatController {
     // get channel messages
     // return total length
     @Get('/channels/:channelId/messages/')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async getChannelmessage(
         @Query('skip', ParseIntPipe) skip:number,
         @Query('take', ParseIntPipe) take:number,
@@ -168,8 +173,9 @@ export class ChatController {
 
     @Delete('/channels/:channelId/unban/:userId')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
         try
         {
@@ -185,8 +191,9 @@ export class ChatController {
 
     @Post('/channels/:channelId/ban/:userId')
     @HttpCode(HttpStatus.CREATED)
-    @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async banUserFromChannel(@Param('userId') bannedId:string, @Param ('channelId') channelId:string, @Req() req:Request){
         try
         {
@@ -212,8 +219,9 @@ export class ChatController {
 
     // kick User
     @Delete('/channels/:channelId/kick/:userid')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.ADMIN, Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async kickUser(@Param('channelId') channelId:string, @Param('userid') userId:string,@Req() req:Request){
         try{
             const userId = req.user['id'] as string;
@@ -230,8 +238,9 @@ export class ChatController {
 
     // Mute User
     @Post('/channels/:channelId/mute/:userid')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async MuteUser(@Param('channelId') channelId:string, @Param('userid') mutedId:string, @Req() req:Request){
         try{
             const userId = req.user['id'] as string;
@@ -252,4 +261,12 @@ export class ChatController {
     // mute/unmute user [not started]
     // update channel [not started]
     // channelInvite [not started]
+    // add notification table
+    // conversation table
+
+
+
+    // Test Errors
+    // create Channel error in route test.
+    // 
 }

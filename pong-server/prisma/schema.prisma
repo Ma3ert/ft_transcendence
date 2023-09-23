@@ -145,18 +145,18 @@ model ChannelMute {
 }
 
 model ChannelInvite {
-  id String @id @default(uuid())
+  id          String @id @default(uuid())
 
-  senderId String
-  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "ChannelInviteSent")
+  senderId    String
+  sender      User   @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "ChannelInviteSent")
 
-  receiverId String
-  receiver   User   @relation(fields: [receiverId], references: [id], onDelete: Cascade, name: "ChannelInviteReceived")
+  receiverId  String
+  receiver    User   @relation(fields: [receiverId], references: [id], onDelete: Cascade, name: "ChannelInviteReceived")
 
-  channelId String
-  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelInvite")
+  channelId   String
+  channel     Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelInvite")
 
-  created_at DateTime @default(now())
+  created_at  DateTime @default(now())
 }
 
 enum Type {

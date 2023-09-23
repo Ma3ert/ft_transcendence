@@ -91,9 +91,6 @@ CREATE TABLE "ChannelBan" (
 CREATE TABLE "ChannelMute" (
     "userId" TEXT NOT NULL,
     "channelId" TEXT NOT NULL,
-    "startMute" TIMESTAMP(3) NOT NULL,
-    "mutePeriod" INTEGER NOT NULL,
-    "isMuted" BOOLEAN NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ChannelMute_pkey" PRIMARY KEY ("userId","channelId")

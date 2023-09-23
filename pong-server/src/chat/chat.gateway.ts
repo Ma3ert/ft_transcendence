@@ -95,20 +95,10 @@ export class ChatGateway implements OnGatewayConnection{
     client.to(data.channel).emit("sendCM", data);
   }
 
-  // what's coming next 
-  // creating guard to protect the action ban and kick and mute.
-  // channel invite system.
+  @SubscribeMessage('NewMessage')
+  async newMessage()
+  {
 
-  // @SubscribeMessage('invite')
-  // async inviteChannel(@ConnectedSocket() inviteSender:Socket, @MessageBody() invite: {
-  //   from: string,
-  //   to: string,
-  //   channel: string
-  // }){
-  //   const sender = this.connectedUsers.get(invite.from);
-  //   const receiver = this.connectedUsers.get(invite.to);
-  //   for (const socket of sender){
-  //     socket.join()
-  //   }
-  // }
+  }
+  
 }
