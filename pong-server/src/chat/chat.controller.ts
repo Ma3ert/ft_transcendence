@@ -22,7 +22,6 @@ export class ChatController {
         try{
             const userId = req.user['id'] as string;
             const channel = await this.chatService.createChannel(userId, createChannelDto);
-
             return channel;
         } catch(error){
             throw new HttpException({
@@ -34,8 +33,9 @@ export class ChatController {
     
     // delete Channel
     @Delete('/channels/:channelId')
-    @UseGuards(LoggedInGuard)
     @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
         try
         {
@@ -71,7 +71,7 @@ export class ChatController {
 
     // leave channel
     @Delete('/channels/:channelId/leave')
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
@@ -91,7 +91,7 @@ export class ChatController {
 
     // get channel Members
     @Get('/channels/:channelId/members/')
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
@@ -109,7 +109,7 @@ export class ChatController {
 
     //Change permission
     @Patch('/channels/:channelId/permissions/')
-    @Roles(Role.OWNER, Role.ADMIN)
+    //(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async changePermission(@Param('channelId') channelId:string, @Body() UserPermission:ChangePermissionDto, @Req() req:Request){
@@ -128,7 +128,7 @@ export class ChatController {
     // get channel messages
     // return total length
     @Get('/channels/:channelId/messages/')
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    //(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async getChannelmessage(
@@ -173,7 +173,7 @@ export class ChatController {
 
     @Delete('/channels/:channelId/unban/:userId')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @Roles(Role.ADMIN, Role.OWNER)
+    //(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
@@ -184,15 +184,15 @@ export class ChatController {
         }
         catch(error){
             throw new HttpException(
-                "You don't have the permission to unban that User",
+                `${error}`,
                 HttpStatus.FORBIDDEN);
         }
     }
 
     @Post('/channels/:channelId/ban/:userId')
     @HttpCode(HttpStatus.CREATED)
-    @Roles(Role.ADMIN, Role.OWNER)
-    @UseGuards(RoleGuard)
+    //(Role.ADMIN, Role.OWNER)
+    // @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async banUserFromChannel(@Param('userId') bannedId:string, @Param ('channelId') channelId:string, @Req() req:Request){
         try
@@ -203,25 +203,16 @@ export class ChatController {
         catch(error)
         {
             throw new HttpException(
-                "You don't have the permission to ban that User",
+                "You cannot Ban This User",
                 HttpStatus.FORBIDDEN);
         }
     }
 
-    // update channel
-    // @Patch('/channels/update')
-    // @UseGuards(LoggedInGuard)
-    // @Roles(Role.OWNER)
-    // async updateChannelSetting(@Body() updateChannelDto:updateChannelDto){
-
-    // }
-    
-
     // kick User
     @Delete('/channels/:channelId/kick/:userid')
-    @Roles(Role.ADMIN, Role.OWNER)
-    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
+    @UseGuards(RoleGuard)
+    //(Role.ADMIN, Role.OWNER)
     async kickUser(@Param('channelId') channelId:string, @Param('userid') userId:string,@Req() req:Request){
         try{
             const userId = req.user['id'] as string;
@@ -238,7 +229,7 @@ export class ChatController {
 
     // Mute User
     @Post('/channels/:channelId/mute/:userid')
-    @Roles(Role.OWNER, Role.ADMIN)
+    //(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async MuteUser(@Param('channelId') channelId:string, @Param('userid') mutedId:string, @Req() req:Request){
@@ -255,18 +246,4 @@ export class ChatController {
         }
     }
 
-
-    // kick user [testing]
-    // ban/unban user [testing]
-    // mute/unmute user [not started]
-    // update channel [not started]
-    // channelInvite [not started]
-    // add notification table
-    // conversation table
-
-
-
-    // Test Errors
-    // create Channel error in route test.
-    // 
 }

@@ -213,8 +213,11 @@ export class ChatService {
     }
 
     // get Channel Members
-    async getChannelMembers(channelId:string, userId:string){
+    async getChannelMembers(channel:string, userId:string){
         return await this.prismaService.channelUser.findMany({
+            where:{
+                channelId:channel,
+            },
             select:{
                 userId:true,
                 role:true,
@@ -247,42 +250,17 @@ export class ChatService {
 
     async banUser(banner:string, banned:string, channel:string)
     {
-        const isBanner = !!await this.prismaService.channelBan.findFirst({
-            where:{
-                userId:banner,
-                channelId:channel,
-            }
-        })
+        // belong to the same channel Good
+        // being not banned both 
+        // banner has owner/admin role
+        // banned has member/admin role
+        const user = await this.prismaService.channelUser.findUniqueOrThrow({where:{userId_channelId:{userId:banned, channelId:channel}}});
+        const UserBanned = !! await this.prismaService.channelBan.findFirst({where:{userId:banned,channelId:channel,}});
+        if (UserBanned)
+            throw new InternalServerErrorException('The User is already banned');
 
-        if (isBanner)
-            throw new InternalServerErrorException('You cannot ban this User');
-
-        const isBanned = !!await this.prismaService.channelBan.findFirst({
-            where:{
-                userId:banned,
-                channelId:channel,
-            }
-        })
-
-        if (isBanned)
-            throw new InternalServerErrorException('You cannot ban this User');
-
-        const bannerUser = await this.prismaService.channelUser.findFirstOrThrow({
-            where:{
-                userId:banner,
-                channelId:channel,
-            }
-        });
-
-        const bannedUser = await this.prismaService.channelUser.findFirstOrThrow({
-            where:{
-                userId:banned,
-                channelId:channel,
-            }
-        })
-
-        if (bannerUser.role == Role.MEMBER || bannedUser.role == Role.OWNER)
-            throw new InternalServerErrorException('You cannot ban this User');
+        if (user.role == Role.OWNER)
+            throw new InternalServerErrorException('You cannot ban The Owner of The Channel');
 
         await this.prismaService.channelBan.create({
             data:{
@@ -292,27 +270,31 @@ export class ChatService {
         });
     }
 
+    async getBannedUsers(channel:string)
+    {
+        return await this.prismaService.channelBan.findMany({
+            where:{
+                channelId:channel,
+            }
+        })
+    }
+
     async unbanUser(unbanner:string, banned:string, channel:string)
     {
-        const unbannerUser = !!await this.prismaService.channelBan.findFirst({
-            where:{
-                userId:unbanner,
-                channelId:channel,
-            }
-        })
+        // belong to the same channel
+        // the banned should be banned
+        // unbanner has owner/amdin
+        // banned has member/admin
+        const user = await this.prismaService.channelUser.findFirst({where:{userId:banned, channelId:channel}});
+        if (!user)
+            throw new  InternalServerErrorException("The User is not belong to the same channel.");
 
-        if (unbannerUser)
-            throw new InternalServerErrorException('You cannot ban this User.');
+        const isbanned = !!await this.prismaService.channelBan.findFirst({where:{userId:banned, channelId:channel}});
+        if (!isbanned)
+            throw new InternalServerErrorException('The User to unban is not banned.');
 
-        const isBanned = !!await this.prismaService.channelBan.findFirst({
-            where:{
-                userId:banned,
-                channelId:channel,
-            }
-        })
-
-        if (!isBanned )
-            throw new InternalServerErrorException('The requested User is already unbaned');
+        if (user.role == Role.OWNER)
+            throw new InternalServerErrorException('You cannot unban The Owner of The Channel');
 
         await this.prismaService.channelBan.delete({
             where:{
@@ -352,25 +334,113 @@ export class ChatService {
                     }
                 }
             })
-        }, 100000);
+        }, 50000);
     }
 
-
-    // the sender belong to the channel
-    // the receiver doesn't exist in the channel
-    // if the channel is 
     async createChannelInvite(sender:string, receiver:string, channel:string)
     {
+        const User = await this.prismaService.channelInvite.findFirst({where:{receiverId:receiver, channelId:channel}});
+
+        if (User)
+            throw new InternalServerErrorException("The User already joined the channel.");
+
+        await this.prismaService.channelInvite.create({
+            data:{
+                senderId:sender,
+                receiverId:receiver,
+                channelId:channel,
+            }
+        })
+    }
+
+    async deleteChannelInvite(sender:string, receiver:string, channel:string)
+    {
+        const found = await this.prismaService.channelInvite.findFirst({
+            where:{
+                senderId:sender,
+                receiverId:receiver,
+                channelId:channel
+            },
+            select:{
+                id:true,
+            }
+        })
+        if (!found)
+            throw new InternalServerErrorException("The Invite is not found");
+        await this.prismaService.channelInvite.delete({
+            where:{
+                id:found.id,
+            }
+        })
+    }
+
+    async getChannelInvite(channel:string, user:string)
+    {
+        return await this.prismaService.channelInvite.findMany({
+            where:{
+                channelId:channel,
+                receiverId:user,
+            },
+            select:{
+                channelId:true,
+                senderId:true,
+                receiverId:true,
+            }
+        })
+    }
+
+    async getUserChannels(user:string)
+    {
+        return await this.prismaService.channelUser.findMany({
+            where:{
+                userId:user,
+            },
+            select:{
+                channelId:true,
+                role:true,
+            }
+        })
+    }
+
+    async getUserConversations(user:string)
+    {
+        const UserConversations = await this.prismaService.directMessage.findMany({
+            where:{
+                OR:[
+                    {senderId:user},
+                    {receiverId:user},
+                ]
+            },
+            select:{
+                senderId:true,
+                receiverId:true,
+            }
+        });
+
+        const conversationsUsers = UserConversations.flatMap((conversation) => {
+            const users = [];
+            if (conversation.senderId !== user)
+                users.push(conversation.senderId);
+            if (conversation.receiverId !== user)
+                users.push(conversation.receiverId);
+            return users;
+        });
+
+        return Array.from(new Set(conversationsUsers));
+    }
+
+    async createNotification()
+    {
+
+    }
+
+    async getMessageNotification()
+    {
+
+    }
+
+    async getUserNotification()
+    {
         
-    }
-
-    async deleteChannelInvite()
-    {
-
-    }
-
-    async getChannelInvite()
-    {
-
     }
 }

@@ -47,6 +47,9 @@ model User {
   channelInviteSent     ChannelInvite[] @relation("ChannelInviteSent")
   channelInviteReceived ChannelInvite[] @relation("ChannelInviteReceived")
 
+  NotificationReceived  Notification[]  @relation("NotificationReceived")
+  NotificationSent      Notification[]  @relation("NotificationSent")
+
   created_at DateTime @default(now())
 }
 
@@ -157,6 +160,30 @@ model ChannelInvite {
   channel     Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelInvite")
 
   created_at  DateTime @default(now())
+}
+
+model Notification {
+  id          String @id @default(uuid())
+
+  senderId    String
+  sender      User   @relation(fields: [senderId], references: [id], name: "NotificationSent")
+
+  receiverId  String
+  receiver    User   @relation(fields: [receiverId], references: [id], name: "NotificationReceived")
+
+  type        NotificationType
+
+  read        Boolean
+
+  created_at  DateTime @default(now())
+}
+
+
+enum NotificationType {
+  FRIENDREQUEST
+  CHANNELINVITE
+  CMESSAGE
+  DMESSAGE
 }
 
 enum Type {
