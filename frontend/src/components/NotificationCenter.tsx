@@ -23,7 +23,7 @@ const NotificationCenter = (props: Props) => {
             time=""
         />,
         <NotificationField 
-            Icon={<Icon as={FaUserGroup} style={{ fontSize: "23px" }}/>}
+            Icon={<Icon as={FaUserPlus} style={{ fontSize: "23px" }}/>}
             senderAvatar=''
             senderUserName='Ma3ert'
             notifType='Friend-request'
@@ -33,11 +33,11 @@ const NotificationCenter = (props: Props) => {
             Icon={<Icon as={FaUserGroup} style={{ fontSize: "23px" }}/>}
             senderAvatar=''
             senderUserName='Ma3ert'
-            notifType='Friend-request'
+            notifType='h'
             time=""
         />,
         <NotificationField 
-            Icon={<Icon as={FaUserGroup} style={{ fontSize: "23px" }}/>}
+            Icon={<Icon as={FaUserPlus} style={{ fontSize: "23px" }}/>}
             senderAvatar=''
             senderUserName='Ma3ert'
             notifType='Friend-request'
@@ -54,7 +54,7 @@ const NotificationCenter = (props: Props) => {
   return (
     <ScrollableStack
         width={420}
-        height={400}
+        height={450}
         items={notifs}
         spacing='5px'
     />

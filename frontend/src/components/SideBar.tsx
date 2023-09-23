@@ -21,7 +21,7 @@ const SideBar:React.FC<Props> = ({bodySetter}) => {
     <Stack spacing={90} color={"#5B6171"}>
       <IconButton onClick={()=>{bodySetter && bodySetter (0)}} icon={AiFillHome} size={size}/>
       <IconButton onClick={onOpen} icon={BiSolidBell} size={size}/>
-      <Modal variant={"form"} isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent style={{ width: "555px", height: "420px" }}>
               <NotificationCenter/>

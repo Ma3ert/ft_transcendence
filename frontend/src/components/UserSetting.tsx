@@ -1,5 +1,5 @@
 "use client"
-import { Stack, Avatar, Button } from '@chakra-ui/react'
+import { Stack, Avatar, Button, Input, Wrap, Text } from '@chakra-ui/react'
 import React from 'react'
 import ScrollableStack from './ScrollableStack'
 import InputStack from './InputStack'
@@ -10,14 +10,10 @@ const UserSetting = (props: Props) => {
   return (
     <Stack align={"center"} spacing={"44px"} w={"468px"} h={"580px"} bg={"#1D222C"} py={"45px"} borderRadius={"20px"}>
         <Avatar boxSize={"105px"}></Avatar>
-        <InputStack
-          placeholder={["new username", "last name", "first name"]}
-          style='secondary'
-          width={["365px", "365px", "365px"]}
-          height={["57px", "57px", "57px"]}
-          spaceBetween='25px'
-          state={[false, true, true]}
-        />
+        <Input variant={"secondary"} w={"365px"} h={"57px"} placeholder='new username'></Input>
+        <Wrap align={"center"}>
+          <Text fontSize={"17px"} >Enable 2FA</Text>
+        </Wrap>
         <Button 
           variant={"secondary"}
           width={"160px"}
