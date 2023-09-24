@@ -100,24 +100,32 @@ export class GameService {
     const playerTwo = this.createPlayer(receivingPlayer, 2);
     this.gameInvites.set(sessionInvite, { players: [playerOne], staggedPlayer: playerTwo });
     // Add the player for the in match check
-    this.allPlayers.set(sendingPlayer.id, sendingPlayer.user);
+    this.allPlayers.set(sendingPlayer.user.id, sendingPlayer.user);
 
     server.to(receivingPlayer.id).emit(NEW_INVITE, { invite: sessionInvite, user: sendingPlayer.user });
     server.to(sendingPlayer.id).emit(INVITE_SENT, { invite: sessionInvite });
     setTimeout(() => {
       if (this.gameInvites.has(sessionInvite) && this.gameInvites.get(sessionInvite).players.length == 1) {
         this.gameInvites.delete(sessionInvite);
+        this.allPlayers.delete(sendingPlayer.user.id);
         server.to(sendingPlayer.id).emit(USER_DENIED_INVITE);
         server.to(receivingPlayer.id).emit(INVITE_CANCELED);
       }
-    }, 15000);
+    }, 30000);
   }
 
   cancelGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
-    if (!this.gameInvites.has(gameInviteId)) server.to(player.id).emit(NO_SUCH_INVITE);
-    const receivingPlayer = this.gameInvites.get(gameInviteId).staggedPlayer;
+    if (!this.gameInvites.has(gameInviteId)) {
+      server.to(player.id).emit(NO_SUCH_INVITE);
+    }
+    const invite = this.gameInvites.get(gameInviteId);
+    if (invite.players.length == 2)
+      return ;
+    const receivingPlayer = invite.staggedPlayer;
 
     server.to(receivingPlayer.socket.id).emit(INVITE_CANCELED);
+    this.allPlayers.delete(player.user.id);
+    this.gameInvites.delete(gameInviteId);
   }
 
   acceptGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
@@ -126,9 +134,9 @@ export class GameService {
       server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const sessionInvite = this.gameInvites.get(gameInviteId);
-    // Check invite authorization
+    // Check the invite authorization
     if (player.user.id !== sessionInvite.staggedPlayer.user)
-    server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION)
+      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION);
     // Move player from stagging to players array
     if (sessionInvite.players.length == 1) {
       this.gameInvites.set(gameInviteId, {
@@ -136,6 +144,9 @@ export class GameService {
         staggedPlayer: undefined,
       });
     }
+    // Dispay invite state
+    console.log(this.gameInvites.get(gameInviteId));
+
     // When the user accept add this user to users array
     this.allPlayers.set(player.user.id, player.user);
     // Emit event to playerOne to notify him that invite has been accepted
@@ -144,8 +155,7 @@ export class GameService {
     server.to(sendingUser.socket.id).emit(USER_ACCEPTED_INVITE);
   }
 
-  denyGameInvite(player: AuthSocket, gameInviteId: string, server: Server)
-  {
+  denyGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
     // Check if the invite exists
     if (!this.gameInvites.has(gameInviteId)) {
       server.to(player.id).emit(NO_SUCH_INVITE);
@@ -153,12 +163,12 @@ export class GameService {
     const sessionInvite = this.gameInvites.get(gameInviteId);
     // Check that player matches stagged player as proof of invite ownership
     if (player.user.id !== sessionInvite.staggedPlayer.user)
-      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION)
+      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION);
     // Emit to sending player that the game invite is denied
     server.to(sessionInvite.players[0].socket.id).emit(USER_DENIED_INVITE);
     // Remove players from the allPlayers map
     this.allPlayers.delete(sessionInvite.players[0].user);
-    this.allPlayers.delete(sessionInvite.players[1].user);
+    this.allPlayers.delete(sessionInvite.staggedPlayer.user);
     // Remove the invite Session from the map
     this.gameInvites.delete(gameInviteId);
   }
@@ -170,6 +180,7 @@ export class GameService {
     // Emit player joined queue event
     server.to(player.id).emit(JOINED_GAME_QUEUE);
 
+    console.log(this.gameQueue.size);
     // Check if a game session already exists just join the user otherwise create a new one
     const lastSession = Array.from(this.gameQueue)[this.gameQueue.size - 1];
     if (this.gameQueue.size > 0 && lastSession[1].players.length == 1) {
@@ -228,8 +239,7 @@ export class GameService {
     // }, 3000);
   }
 
-  endGameSession(gameSessionId: string)
-  {
+  endGameSession(gameSessionId: string) {
     //TODO: Remove the item from the game sessions map
     //TODO: Remove both players from the players array
     //TODO: Check users status to ONLINE again
