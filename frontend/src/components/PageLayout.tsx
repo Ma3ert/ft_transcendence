@@ -1,5 +1,4 @@
 import { Wrap } from '@chakra-ui/react'
-import { Icon } from 'next/dist/lib/metadata/types/metadata-types'
 import React, { ReactNode } from 'react'
 import SideBar from './SideBar';
 

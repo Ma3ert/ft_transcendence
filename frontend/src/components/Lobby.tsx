@@ -45,7 +45,7 @@ const Lobby = (props: Props) => {
                     items={challenges}/>
                 </Stack>
               </Stack>
-              <LobbyParty solo={true}></LobbyParty>
+              <LobbyParty solo={false}></LobbyParty>
             </Wrap>]}
   />
   )
