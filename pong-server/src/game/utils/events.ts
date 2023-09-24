@@ -1,3 +1,4 @@
+export const JOINED_GAME_QUEUE = "joinedGameQueue";
 export const GAME_UPDATE = "gameUpdate";
 export const USER_INMATCH = "userInMatch";
 export const USER_OFFLINE = "userOffline";

@@ -17,9 +17,9 @@ import {
   INVITE_SENT,
   INVITE_CANCELED,
   UNAUTHORIZED_INVITE_ACTION,
+  JOINED_GAME_QUEUE,
 } from './utils/events';
 import { User } from 'src/users/entities/user.entity';
-import { send } from 'process';
 
 export interface Player {
   id: number;
@@ -126,9 +126,10 @@ export class GameService {
       server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const sessionInvite = this.gameInvites.get(gameInviteId);
-    // Move player from stagging to players array
+    // Check invite authorization
     if (player.user.id !== sessionInvite.staggedPlayer.user)
-      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION)
+    server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION)
+    // Move player from stagging to players array
     if (sessionInvite.players.length == 1) {
       this.gameInvites.set(gameInviteId, {
         players: [...sessionInvite.players, sessionInvite.staggedPlayer],
@@ -145,17 +146,31 @@ export class GameService {
 
   denyGameInvite(player: AuthSocket, gameInviteId: string, server: Server)
   {
-    //TODO: Check if the invite exists
-    //TODO: Check that player matches stagged player as proof of invite ownership
-    //TODO: Emit to both players that the game invite is denied
-    //TODO: Remove players from the allPlayers map
-    //TODO: Remove the invite Session from the map
+    // Check if the invite exists
+    if (!this.gameInvites.has(gameInviteId)) {
+      server.to(player.id).emit(NO_SUCH_INVITE);
+    }
+    const sessionInvite = this.gameInvites.get(gameInviteId);
+    // Check that player matches stagged player as proof of invite ownership
+    if (player.user.id !== sessionInvite.staggedPlayer.user)
+      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION)
+    // Emit to sending player that the game invite is denied
+    server.to(sessionInvite.players[0].socket.id).emit(USER_DENIED_INVITE);
+    // Remove players from the allPlayers map
+    this.allPlayers.delete(sessionInvite.players[0].user);
+    this.allPlayers.delete(sessionInvite.players[1].user);
+    // Remove the invite Session from the map
+    this.gameInvites.delete(gameInviteId);
   }
 
   joinGameQueue(player: AuthSocket, server: Server) {
     // Checking if the user is in match before joinning the queue
     if (this.allPlayers.size > 0 && this.allPlayers.has(player.user.id))
       return server.to(player.id).emit(ONGOING_MATCH);
+    // Emit player joined queue event
+    server.to(player.id).emit(JOINED_GAME_QUEUE);
+
+    // Check if a game session already exists just join the user otherwise create a new one
     const lastSession = Array.from(this.gameQueue)[this.gameQueue.size - 1];
     if (this.gameQueue.size > 0 && lastSession[1].players.length == 1) {
       const gameSession = lastSession[0];
@@ -172,7 +187,6 @@ export class GameService {
         players: [playerOne],
       });
       this.allPlayers.set(player.user.id, player.user);
-      //TODO: Emit he joined the game queue
       // Wait for 15 seconds if you don't find a match emit noPlayersAvaiable to the player
       setTimeout(() => {
         if (this.gameQueue.has(gameSession) && this.gameQueue.get(gameSession).players.length == 1) {
@@ -194,6 +208,7 @@ export class GameService {
     return player.rooms.values().next().value;
   }
 
+  //! We might not need this logic
   gameStarted(session: string, server: Server) {
     //TODO: write state watcher function to compare between the old state and the one and emit events.
     const gameSession = this.gameSessions.get(session);
