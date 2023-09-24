@@ -3,6 +3,13 @@ import MembersList from "@/components/ChatComponents/MembersList"
 export const PRIVATE = true
 export const CHANNEL = false
 
+export const loggedIndUser:User = {
+    username:'7amid',
+    imageUrl:'https://source.unsplash.com/random/?profile=5',
+    online:false,
+    id:0,
+    level: 12
+}
 
 export const friendsList:User[] = [{
     username:'7amid',
@@ -35,50 +42,34 @@ export const friendsList:User[] = [{
 
 ]
 
-export const messages:Message[] = [
+export const messages:DirectMessage[] = [
+    
     {
-        content:'',
-        incoming:true,
-        time:'12:00',
-        Author:friendsList[0],
-        EnviteMessage:true
+        message:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+        game:false,
+        from:0,
+        to:1,
     },
     {
-        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-        incoming:false,
-        time:'12:01',
-        Author:friendsList[1],
-        EnviteMessage:false
-    },
-    {
-        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-        incoming:true,
-        time:'12:01',
-        Author:friendsList[1],
-        EnviteMessage:false
+        message:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+        game:false,
+        from:1,
+        to:0,
     }
 ,
 {
-    content:'lorem ipsum dolor sit amet, dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-    incoming:true,
-    time:'12:01',
-    Author:friendsList[0],
-    EnviteMessage:false
+    message:'lorem ipsum dolor sit amet, dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+    game:false,
+    from:1,
+    to:0,    
 },
 {
-    content:'ipsim dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-    incoming:true,
-    time:'12:01',
-    Author:friendsList[1],
-    EnviteMessage:false
+    message:'ipsim dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+    game:false,
+    from:1,
+    to:0,    
 },
-{
-    content:'',                                                                            
-    incoming:false,
-    time:'12:01',
-    Author:friendsList[0],
-    EnviteMessage:true
-}]
+]
 
 export const Channels:Channel[] =[
     {

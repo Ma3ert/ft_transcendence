@@ -19,10 +19,10 @@ const Toggler: React.FC<TabsTogglerWrapperProps> = ({ tabs, type }) => {
   return (
     
     <ControlledTabsContainer controlled={(sectionType === 'lobby' || sectionType === 'chat')} index={getCurrentIndex()}>
-      <TabList w={"180px"}>
+      <TabList w={type ? "220px" : "180px"}>
         {tabs.map((tab, index) => {
           return (
-            <Tab key={index} px={type ? 10 : 4} py={2} onClick={tab.action}>
+            <Tab key={index}  py={2} onClick={tab.action}>
               {tab.value}
             </Tab>
           );

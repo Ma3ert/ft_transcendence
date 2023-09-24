@@ -1,16 +1,57 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Stack, Text, HStack } from "@chakra-ui/react";
-import { friendsList, messages } from "../../../contstants";
+import { friendsList, loggedIndUser, messages } from "../../../contstants";
 import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
 import { ChatContext } from "../../context/Contexts";
 import { PRIVATE } from "../../../contstants";
+import { NotifyServer } from "../../../utils/eventEmitter";
+import { GlobalContext } from "@/context/Contexts";
+import EventListener from "../../../utils/EventListener";
 
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
-  const { activeChannel, activePeer, chatType } = useContext(ChatContext);
+  const { activeChannel, activePeer,setActivePeer, Friends, chatType} = useContext(ChatContext);
+  const [directMessages, setDirectMessages] = useState<DirectMessage[]>(messages)
+  const {socket} = useContext(GlobalContext)
+  const [GameInvitation, setGameInvitation] = useState<GameInvitation | null> (null);
+
+
+  const handleGameMessage = (msg:DirectMessage) => {
+    if (msg.from == loggedIndUser.id) {
+      // show game invitation
+      if (msg.to != activePeer?.id)
+        setActivePeer! (Friends!.find (friend => friend.id == msg.to)!);
+    }
+    else if (msg.to == loggedIndUser.id) {
+      // show game invitation
+      if (msg.from != activePeer?.id)
+        setActivePeer! (Friends!.find (friend => friend.id == msg.from)!);
+    }
+    setGameInvitation ({from:msg.from!, to:msg.to!});
+  }
+
+  useEffect(() => {
+
+    // if direct messaeges fetch active peer messages
+    // if channel fetch channel messages
+    console.log (`activePeer is ${activePeer?.username}`)
+    if (chatType == PRIVATE) {
+        NotifyServer (activePeer!, socket, 'checkStatus');
+        EventListener (socket,'checkNotification',  (msg:any)=>{
+          console.log (`${msg} from server`)
+      })
+      EventListener (socket,'directMessage' , (msg:any)=>{
+          console.log (`${msg} from server`)
+          if (msg.game)
+            handleGameMessage (msg)
+          else
+            setDirectMessages! ([...directMessages!, msg])
+  })
+    }
+  }, [directMessages]);
   return (
     <Stack
       borderRadius={"2xl"}
@@ -51,7 +92,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
         </HStack>
         {chatType == PRIVATE && <FriendSettingsMenu user={activePeer!} />}
       </HStack>
-      <MessageStack messages={messages} />
+      <MessageStack messages={directMessages} gameInvitation={GameInvitation}  setGameInvitation={setGameInvitation}/>
       <Stack w={"100%"} alignItems={"center"}>
         <ChatInputBox />
       </Stack>

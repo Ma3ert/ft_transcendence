@@ -41,12 +41,15 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const [privateChat, setPrivate] = useState<boolean>(PRIVATE);
-  const { chatType } = useContext(ChatContext);
+  const { chatType, setChatType } = useContext(ChatContext);
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         color="#5B6171"
-        onClick={() => setPrivate(!privateChat)}
+        onClick={() =>{
+          setPrivate(!privateChat)
+          // setChatType!(privateChat ? PRIVATE : CHANNEL)
+        }}
         icon={privateChat ? FaUserGroup : FaUserAlt}
         size={"25px"}
       />

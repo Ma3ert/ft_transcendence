@@ -1,26 +1,11 @@
-/* eslint-disable react/jsx-key */
-"use client";
-
-// import UserField from '@/components/UserField';
-
-import PageLayout from "@/components/PageLayout";
-import { ReactNode, useContext, useState } from "react";
-import Setting from "@/components/Setting";
-import Lobby from "@/components/Lobby";
-import Achievements from "@/components/Achievements";
-import FriendSection from "@/components/FriendSection";
 import { Grid, GridItem } from "@chakra-ui/react";
-import Header from "@/components/ChatComponents/Header";
-import ChatBox from "@/components/ChatComponents/chatBox";
-import { friendsList, Channels } from "../../contstants";
-import ChatNavigation from "@/components/ChatComponents/ChatNavigation";
-import ChannelSettings from "@/components/ChatComponents/ChannelSettings";
-import AppNavigationProvider from "@/providers/AppNavigationProvider";
+import React, { useContext } from "react";
+import SideBar from "../SideBar";
 import { AppNavigationContext } from "@/context/Contexts";
-import Chat from "@/components/Sections/ChatSection";
-import SideBar from "@/components/SideBar";
-import TabsWrapper from "@/components/Wrappers/tabsWrapper";
-export default function Home() {
+import TabsWrapper from "../Wrappers/tabsWrapper";
+interface MainSectionProps {}
+
+const MainSection: React.FC<MainSectionProps> = ({}) => {
   const { getCurrentSectionType, setCurrentSection, sections } =
     useContext(AppNavigationContext);
   return (
@@ -65,4 +50,6 @@ export default function Home() {
       </GridItem>
     </Grid>
   );
-}
+};
+
+export default MainSection

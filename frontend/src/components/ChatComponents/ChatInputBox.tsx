@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext} from "react";
 import { Button, FormControl, HStack, Input , Image} from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
-import { SendMessage} from '../../../utils/privateChatClient'
 import { Socket, io } from "socket.io-client";
-import useSocket from "@/hooks/useConnection";
-
+import { ChatContext, GlobalContext } from "@/context/Contexts";
+import {SendMessage} from "../../../utils/eventHandlers";
 interface ChatInputBoxProps {
   // socket: Socket;
+  gameInvitation?: GameInvitation;
+  setGameInvitation?: React.Dispatch<GameInvitation | null>;
 }
-const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
+const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvitation}) => {
 
   const [message, setMessage] = useState("");
-  const socket:Socket = useSocket('http://localhost:3060');
-
-    socket.on('chat message', (msg) => {
-      alert(msg)
-    })
+  const {activePeer} = useContext (ChatContext)
+  const {socket} = useContext (GlobalContext)
   
   return (
     <HStack
@@ -30,6 +28,16 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     >
       <Button
 
+        isDisabled={gameInvitation ? true : false}
+        onClick={() => {
+          const messageBody = {
+            message: message,
+            to:activePeer!.id,
+            from:0,
+            game:true
+          }
+          SendMessage (socket, messageBody , "directMessage")
+        }}
         bg="transparent"
         border='none'
         outline={"none"}
@@ -42,6 +50,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       <FormControl flex={1}>
         <Input
           value={message}
+          isDisabled={gameInvitation ? true : false}
           type="text"
           bg={"transparent"}
           color="white"
@@ -57,6 +66,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         />
       </FormControl>
       <Button
+        isDisabled={gameInvitation ? true : false}
         bg="#5B6171"
         color="#1D222C"
         borderRadius={"50%"}
@@ -66,8 +76,12 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-          socket.emit ('chat message', message)
-          // socket.emit('privateMessage', {message: message, to: '60f9b1b9e9b9c2a4e8b9e0a4', from: '60f9b1b9e9b9c2a4e8b9e0a4'})
+          const messageBody = {
+            message: message,
+            to:activePeer!.id,
+            from:0
+          }
+          SendMessage (socket, messageBody , "directMessage")
           setMessage("");
         }}
       >

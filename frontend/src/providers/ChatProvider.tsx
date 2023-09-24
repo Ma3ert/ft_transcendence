@@ -1,27 +1,35 @@
-import React, { useEffect, useState } from "react"
-import { ChatContext } from "@/context/Contexts"
+import React, { useEffect, useState, useContext } from "react"
+import { ChatContext, GlobalContext } from "@/context/Contexts"
 import {friendsList, Channels, PRIVATE} from "../../contstants"
-import useConnection from "@/hooks/useConnection"
-import { NotifyServer } from "@/services/eventEmitter"
+import { NotifyServer } from "../../utils/eventEmitter"
+import { messages } from "../../contstants"
+import EventListener from "../../utils/EventListener"
 interface ChatProviderProps {
     children: React.ReactNode
 }
 const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
     const [currentChat, setCurrentChat] = useState<ChatType>(PRIVATE)
-    const [Friends, setFriends] = useState<User[]>([])
+    const [Friends, setFriends] = useState<User[]>(friendsList)
+    const [directMessages, setDirectMessages] = useState<DirectMessage[]>(messages)
     const [ChannelsList, setChannels] = useState<Channel[]>([])
     const [activePeer, setActivePeer] = useState<User>(Friends[0])
     const [activeChannel, setActiveChannel] = useState<Channel>(Channels[0])
-    const socket = useConnection(process.env.REACT_APP_API_URL || 'http://localhost:3000')
+    const {socket} = useContext(GlobalContext)
+  
 
     useEffect(() => {
         // fetch Peers
         // fetch Channels
         setFriends (friendsList)
         setChannels (Channels)
-        NotifyServer (friendsList[0], socket, 'userLoggedIn');
+        console.log (`chat provider mounted socket id : ${socket?.id}`)
+        NotifyServer (friendsList[0], socket, 'userIsActive');
+        
+
         return () => {
+            // emit user is not active event
+            NotifyServer (friendsList[0], socket, 'userIsNotActive');
             // cleanup
             // cleanup event listeners
         }
@@ -35,7 +43,9 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
         Friends,
         Channels,
         activePeer,
-        activeChannel
+        activeChannel,
+        directMessages,
+        setDirectMessages
 
     }}>{children}</ChatContext.Provider>
 }

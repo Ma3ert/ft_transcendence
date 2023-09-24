@@ -1,3 +1,4 @@
+
 // import {PRIVATE,CHANNEL} from './constants'
 type Section =
   | "lobby"
@@ -13,22 +14,14 @@ type ChatType = boolean;
 type ModalType = "regular" | "confirmation" | "alert" | "prompt" | "custom";
 type EventName =
   | "userLoggedIn"
-  | "userIn"
-  | "userOut"
-  | "direct_message"
-  | "channel_message"
-  | "channel_created"
-  | "channel_deleted"
-  | "channel_updated"
-  | "friend_request"
-  | "friend_request_accepted"
-  | "friend_request_rejected"
-  | "friend_request_canceled"
-  | "friend_removed"
-  | "friend_updated"
-  | "user_updated"
-  | "user_created"
-  | "user_deleted";
+  | "userIsActive"
+  | "userisNotActive"
+  | "checkNotification"
+  | "checkStatus"
+  | "directMessage"
+  | "channelMessage"
+  | "checkChatNotification"
+  |  "serverSayHello"
 
 
 
@@ -39,19 +32,18 @@ type ServerNotificationMessage = {
 }
 
 type  DirectMessage = {
-    to: number;
-    from: number;
-    username:string;
-    message: string;
-    enviteMessage: boolean;
-    socketid: string;
+    to?: number;
+    from?: number;
+    username?:string;
+    message?: string;
+    socketid?: string;
+    game?: boolean;
 }
 
 type ChannelMessage ={
-    userid:number
-    username:string
-    message:string
+    from:number
     channelid:number
+    message:string
     socketid:string
 }
 
@@ -59,9 +51,9 @@ type EventMessage = ServerNotification | DirectMessage
 
 // type UsersResponse = {}
 // type ChannelsResponse = {}
-// type MessagesResponse = {}
+// typesResponse = {}
 // type FriendsResponse = {}
-// type responseData = UsersResponse | ChannelsResponse | MessagesResponse | FriendsResponse
+// type responseData = UsersResponse | ChannelsResponse |sResponse | FriendsResponse
 
 type responseData = any;
 type Tab = {
@@ -76,13 +68,13 @@ type User = {
   id: number;
 };
 
-type Message = {
-  content: string;
-  incoming: boolean;
-  time: string;
-  Author: User;
-  EnviteMessage: boolean;
-};
+
+type ChannelMessage = {
+  from: number
+  channelid: number
+  message: string
+}
+
 
 type Channel = {
   isPrivate: boalean;
@@ -93,7 +85,7 @@ type Channel = {
   membersCount: number;
   imageUrl?: string;
   createdAt?: string;
-  messages?: Message[];
+ s?: ChannelMessage[];
   id?: number;
 };
 
@@ -125,7 +117,9 @@ interface ChatContext {
   activeChannel?: Channel;
   Friends?: User[];
   Channels?: Channel[];
-  socket?: SocketIOClient.Socket;
+  socket?: Socket;
+  directMessages?: DirectMessage[];
+  setDirectMessages?: (value: DirectMessage[]) => void;
 }
 
 interface ModalWrapperProps {
@@ -182,3 +176,20 @@ type MutationArgs = {
   mutationFunction: () => Promise<any>;
   options?: MutationOptions;
 };
+
+
+type GlobalContext = {
+  Users?: User[];
+  socket?: Socket;
+  authenticated?: boolean;
+  setAuthenticated?: (value: boolean) => void;
+}
+
+
+
+// Chat Events Types
+
+type GameInvitation = {
+  from: number;
+  to: number;
+}

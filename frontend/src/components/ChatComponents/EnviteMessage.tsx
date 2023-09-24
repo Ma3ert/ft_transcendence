@@ -1,18 +1,34 @@
+import React, { useContext , useEffect} from "react";
+import { ChatContext } from "@/context/Contexts";
 import { HStack, Stack, Text, Image, Button } from "@chakra-ui/react";
+import {loggedIndUser} from "../../../contstants";
 interface EnviteMessageProps {
-  Message: Message;
+  gameInvitation: GameInvitation | null;
+  setGameInvitation: React.Dispatch<GameInvitation | null>;
 }
-const EnviteMessage: React.FC<EnviteMessageProps> = ({ Message }) => {
+const EnviteMessage: React.FC<EnviteMessageProps> = ({ gameInvitation, setGameInvitation }) => {
+
+  const { activePeer } = useContext(ChatContext);
+
+   useEffect(() => {
+    // Create a setTimeout to change the message after 3 seconds
+    const timerId = setTimeout(() => {
+      setGameInvitation(null);
+    }, 8000); // 3000 milliseconds (3 seconds)
+
+    // Clean up the timer when the component unmounts or when needed
+    return () => clearTimeout(timerId);
+  }, []);
   return (
     <HStack
-      justify={Message.incoming ? "end" : "start"}
+      justify={(gameInvitation!.from != loggedIndUser.id)? "end" : "start"}
       w="98%"
       mx="auto"
       spacing={3}
     >
       <HStack
         borderRadius={"2xl"}
-        bg={Message.incoming ? "#252932" : "#5B6171"}
+        bg={(gameInvitation!.from != loggedIndUser.id) ? "#252932" : "#5B6171"}
         minW={"300px"}
         maxW="100%"
         px={2}
@@ -21,16 +37,16 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({ Message }) => {
         h="auto"
         spacing={5}
       >
-        <Image src={Message.incoming ?  "/LightSolidLogo.png" : "/DarkSolidLogo.png" } alt={"envite"} w={8} h={"auto"} />
+        <Image src={(gameInvitation!.from != loggedIndUser.id) ?  "/LightSolidLogo.png" : "/DarkSolidLogo.png" } alt={"envite"} w={8} h={"auto"} />
         <Stack justify={"center"} alignItems={"center"} p={2}>
           <Text
-            color={Message.incoming ? "#5B6171" : "#1D222C"}
+            color={(gameInvitation!.from != loggedIndUser.id) ? "#5B6171" : "#1D222C"}
             fontSize={"sm"}
             fontWeight={"bold"}
           >
-            {Message.Author.username} Looking for a 1v1 ..
+            {(gameInvitation!.from != loggedIndUser.id) ? 'you' : activePeer!.username} Looking for a 1v1 ..
           </Text>
-          <Button variant={Message.incoming ? 'lightGray' : 'darkGray'} >
+          <Button onClick={()=>setGameInvitation (null)} variant={(gameInvitation!.from != loggedIndUser.id) ? 'lightGray' : 'darkGray'} >
             {`let's go`}
           </Button>
         </Stack>

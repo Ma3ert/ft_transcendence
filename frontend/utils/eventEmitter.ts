@@ -1,7 +1,14 @@
-import * as SocketIOClient from "socket.io-client";
+import { Socket } from "socket.io-client";
+
+export type EventName = string;
+export type EventMessage = {
+  username: string;
+  userid: number;
+  socketid: string;
+};
 
 export function EventEmitter(
-  socket: SocketIOClient.Socket,
+  socket: Socket,
   eventName: EventName,
   message: EventMessage
 ) {
@@ -10,7 +17,7 @@ export function EventEmitter(
 
 export function NotifyServer(
   user: User,
-  socket: SocketIOClient.Socket,
+  socket: Socket,
   socketEvent: EventName
 ) {
   EventEmitter(socket, socketEvent, {

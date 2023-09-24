@@ -1,15 +1,20 @@
 import { HStack, Stack, Text } from "@chakra-ui/react";
+import { ChatContext } from "@/context/Contexts";
+import { useContext } from "react";
+import { loggedIndUser } from "../../../contstants";
 interface MessageBoxProps {
-  Message: Message;
+  Message: DirectMessage;
 }
 const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
+
+  const { activePeer } = useContext(ChatContext);
   return (
-    <HStack justify={Message.incoming ? "end" : "start"} w="98%" mx="auto">
+    <HStack justify={(Message.from != loggedIndUser.id) ? "end" : "start"} w="98%" mx="auto">
       <Stack
         borderRadius={"2xl"}
-        bg={Message.incoming ? "#252932" : "#5B6171"}
+        bg={(Message.from != loggedIndUser.id) ? "#252932" : "#5B6171"}
         justify={"center"}
-        alignItems={Message.incoming ? "end" : "start"}
+        alignItems={(Message.from != loggedIndUser.id) ? "end" : "start"}
         w="auto"
         px={2}
         py={2}
@@ -21,10 +26,10 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
         }}
       >
         <Text color="#DC585B" fontSize={"xs"} fontWeight={"bold"}>
-          {Message.Author.username}
+          {(Message.from != loggedIndUser.id) ? activePeer?.username : "You"}
         </Text>
-        <Text color={Message.incoming ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
-          {Message.content}
+        <Text color={(Message.from != loggedIndUser.id) ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
+          {Message!.message}
         </Text>
       </Stack>
     </HStack>
