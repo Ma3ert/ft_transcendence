@@ -7,7 +7,6 @@ import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { GameModule } from './game/game.module';
-import { BullModule } from '@nestjs/bull';
 import { ChatModule } from './chat/chat.module';
 import { FriendslistModule } from './invites/invite.module';
 
@@ -15,12 +14,6 @@ import { FriendslistModule } from './invites/invite.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MulterModule.register({ storage: memoryStorage() }),
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
     AuthModule,
     PassportModule.register({ session: true }),
     GameModule,

@@ -180,7 +180,6 @@ export class GameService {
     // Emit player joined queue event
     server.to(player.id).emit(JOINED_GAME_QUEUE);
 
-    console.log(this.gameQueue.size);
     // Check if a game session already exists just join the user otherwise create a new one
     const lastSession = Array.from(this.gameQueue)[this.gameQueue.size - 1];
     if (this.gameQueue.size > 0 && lastSession[1].players.length == 1) {
