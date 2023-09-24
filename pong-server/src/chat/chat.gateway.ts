@@ -12,6 +12,7 @@ import { ChatService } from './chat.service';
 import { AuthSocket, WsLoggedInGuard } from 'src/auth/utils/WsLoggedIn.guard';
 import { UseGuards } from '@nestjs/common';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
+import { NotificationService } from 'src/notification/notification.service';
 
 @UseGuards(WsLoggedInGuard)
 @WebSocketGateway({
@@ -22,7 +23,9 @@ import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 })
 
 export class ChatGateway implements OnGatewayInit{
-  constructor(private chatService:ChatService) {}
+  constructor(private chatService:ChatService,
+              private notificationService:NotificationService,
+              ) {}
   private LoggedInUsers = new Map<String, AuthSocket[]> ();
   private activeUsers = new Map<String, AuthSocket[]> ();
   
@@ -33,6 +36,7 @@ export class ChatGateway implements OnGatewayInit{
   afterInit(client: Socket) {
     client.use(SocketAuthMiddlware() as any);
   }
+
 
   @SubscribeMessage('userLoggedIn')
   async userLoggeIn(client:AuthSocket, data:{userId:string, userSocket:AuthSocket}){
@@ -49,13 +53,22 @@ export class ChatGateway implements OnGatewayInit{
 
   async checkUserNotification(user:string, userSocket:AuthSocket)
   {
-    const data = await this.chatService.userCheckNotification(user);
-    userSocket.emit("checkNotification",{userId:user, notification:data});
+    const data = await this.notificationService.userCheckNotification(user);
+    userSocket.emit("checkNotification",{userId:user, data});
   }
 
 
   @SubscribeMessage('userIsActive')
   async userIsActive(client:AuthSocket, data:{userId:string, socketId:AuthSocket}){
+    if (this.activeUsers.has(data.userId))
+      this.activeUsers.get(data.userId).push(data.socketId);
+    else
+      this.activeUsers.set(data.userId, [data.socketId]);
+    await this.checkChatNotification(data.socketId);
+  }
+  
+  async checkChatNotification(UserSocket:AuthSocket)
+  {
 
   }
 
@@ -92,10 +105,6 @@ export class ChatGateway implements OnGatewayInit{
 
   }
 
-  async checkChatNotification(UserSocket:AuthSocket)
-  {
-    
-  }
 }
 
   // handleConnection(client:AuthSocket) {
