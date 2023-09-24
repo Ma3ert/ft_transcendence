@@ -12,8 +12,7 @@ import { Server, Socket } from 'socket.io';
 import { AuthSocket, WsLoggedInGuard } from 'src/auth/utils/WsLoggedIn.guard';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { GameService } from './game.service';
-import { AuthService } from 'src/auth/auth.service';
-import { ONGOING_MATCH } from './utils/events';
+import { ONGOING_MATCH, USER_OFFLINE } from './utils/events';
 
 @UseGuards(WsLoggedInGuard)
 @WebSocketGateway({
@@ -23,16 +22,17 @@ import { ONGOING_MATCH } from './utils/events';
     credentials: true,
   },
 })
-export class GameGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private socketUsers: Map<string, AuthSocket> = new Map();
-  constructor(
-    private readonly gameService: GameService,
-  ) {}
+  constructor(private readonly gameService: GameService) {}
 
   @WebSocketServer()
   server: Server;
+
+  @SubscribeMessage('who')
+  getCurrentUser(client: AuthSocket) {
+    client.emit('currentUser', client.user);
+  }
 
   @SubscribeMessage('gameJoinQueue')
   joinMatchmakingQueue(client: AuthSocket) {
@@ -40,17 +40,33 @@ export class GameGateway
   }
 
   @SubscribeMessage('gameSendInvite')
-  sendGameInvite(client: AuthSocket, payload: any) {}
+  sendGameInvite(client: AuthSocket, payload: any) {
+    if (!this.socketUsers.has(payload.user)) {
+      this.server.to(client.id).emit(USER_OFFLINE);
+    }
+    const sendingUser = client;
+    const receivingUser = this.socketUsers.get(payload.user);
+    this.gameService.createGameInvite(sendingUser, receivingUser, this.server);
+  }
 
-  @SubscribeMessage('gameEvent')
+  @SubscribeMessage('gameCancelInvite')
+  cancelGameInvite(client: AuthSocket, payload: any) {
+    this.gameService.cancelGameInvite(client, payload.invite, this.server);
+  }
+
+  @SubscribeMessage("gameDenyInvite")
+  denyGameInvite(client: AuthSocket, payload: any)
+  {
+    this.gameService.denyGameInvite(client, payload.invite, this.server);
+  }
+
+  @SubscribeMessage('gameAcceptInvite')
   handleGameEvent(client: AuthSocket, payload: any) {
-    console.log(client.id);
-    this.server.to(client.id).emit('test');
+    this.gameService.acceptGameInvite(client, payload.invite, this.server);
   }
 
   handleConnection(client: AuthSocket) {
-    if (this.socketUsers.size > 0 && this.socketUsers.has(client.user.id))
-      return client.emit(ONGOING_MATCH);
+    if (this.socketUsers.size > 0 && this.socketUsers.has(client.user.id)) return client.emit(ONGOING_MATCH);
     this.socketUsers.set(client.user.id, client);
   }
 

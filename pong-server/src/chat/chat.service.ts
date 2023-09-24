@@ -2,8 +2,8 @@ import { ForbiddenException, Injectable, InternalServerErrorException, Unauthori
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { Role, Type } from '@prisma/client';
-import { ChangePermissionDto } from './dto/changePermission.dto';
+import { NotificationType, Role, Type } from '@prisma/client';
+import { type } from 'os';
 
 @Injectable()
 export class ChatService {
@@ -225,35 +225,54 @@ export class ChatService {
         })
     }
 
-    // change user permission in the channel
-    async changePermission(owner:string, UserPermission:ChangePermissionDto, channel:string){
-        const user = await this.prismaService.channelUser.findFirstOrThrow({
+    async upgradeUser(owner:string, upgradeuser:string, channel:string){
+        const user = await this.prismaService.channelUser.findFirst({
             where:{
-                userId:UserPermission.user,
+                userId:upgradeuser,
                 channelId:channel
-            }
-        })
-        if (user.role == Role.OWNER || UserPermission.role == Role.OWNER)
-            throw new InternalServerErrorException('You cannot Change the owner permission');
+            }});
+        if (!user)
+            throw new InternalServerErrorException('user is not belong to the same channel as the owner.');
+        if (user.role != Role.MEMBER)
+            throw new InternalServerErrorException("you can't upgrade an owner or admin user");
         await this.prismaService.channelUser.update({
             where:{
                 userId_channelId:{
-                    userId:UserPermission.user,
-                    channelId:channel,
+                    userId:upgradeuser,
+                    channelId:channel
                 }
             },
             data:{
-                role:UserPermission.role,
+                role:Role.ADMIN,
+            }
+        })
+    }
+
+    async downgradeUser(owner:string, downgradeuser:string, channel:string){
+        const user = await this.prismaService.channelUser.findFirst({
+            where:{
+                userId:downgradeuser,
+                channelId:channel
+            }});
+        if (!user)
+            throw new InternalServerErrorException('user is not belong to the same channel as the owner.');
+        if (user.role != Role.ADMIN)
+            throw new InternalServerErrorException("you can't downgrade an owner or member user");
+        await this.prismaService.channelUser.update({
+            where:{
+                userId_channelId:{
+                    userId:downgradeuser,
+                    channelId:channel
+                }
+            },
+            data:{
+                role:Role.MEMBER,
             }
         })
     }
 
     async banUser(banner:string, banned:string, channel:string)
     {
-        // belong to the same channel Good
-        // being not banned both 
-        // banner has owner/admin role
-        // banned has member/admin role
         const user = await this.prismaService.channelUser.findUniqueOrThrow({where:{userId_channelId:{userId:banned, channelId:channel}}});
         const UserBanned = !! await this.prismaService.channelBan.findFirst({where:{userId:banned,channelId:channel,}});
         if (UserBanned)
@@ -281,10 +300,6 @@ export class ChatService {
 
     async unbanUser(unbanner:string, banned:string, channel:string)
     {
-        // belong to the same channel
-        // the banned should be banned
-        // unbanner has owner/amdin
-        // banned has member/admin
         const user = await this.prismaService.channelUser.findFirst({where:{userId:banned, channelId:channel}});
         if (!user)
             throw new  InternalServerErrorException("The User is not belong to the same channel.");
@@ -339,10 +354,17 @@ export class ChatService {
 
     async createChannelInvite(sender:string, receiver:string, channel:string)
     {
+        const UserExist = await this.prismaService.user.findFirst({
+            where:{
+                id:receiver,
+            }
+        })
+        if (!UserExist)
+            throw new InternalServerErrorException("The User invited doesn't exist.");
         const User = await this.prismaService.channelInvite.findFirst({where:{receiverId:receiver, channelId:channel}});
 
         if (User)
-            throw new InternalServerErrorException("The User already joined the channel.");
+            throw new InternalServerErrorException("The Invite is already sent to the user.");
 
         await this.prismaService.channelInvite.create({
             data:{
@@ -366,7 +388,7 @@ export class ChatService {
             }
         })
         if (!found)
-            throw new InternalServerErrorException("The Invite is not found");
+            return ;
         await this.prismaService.channelInvite.delete({
             where:{
                 id:found.id,
@@ -429,18 +451,7 @@ export class ChatService {
         return Array.from(new Set(conversationsUsers));
     }
 
-    async createNotification()
-    {
+    // async UserIsBelongToChannel(user:string, channels:[string]){
 
-    }
-
-    async getMessageNotification()
-    {
-
-    }
-
-    async getUserNotification()
-    {
-        
-    }
+    // }
 }

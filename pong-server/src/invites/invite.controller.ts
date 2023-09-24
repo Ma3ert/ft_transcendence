@@ -9,7 +9,6 @@ import {
   Req,
 } from '@nestjs/common';
 import { InviteService } from './invite.service';
-import { CreateInviteDto } from './dto/create-invite.dto';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 
 @Controller('invites')

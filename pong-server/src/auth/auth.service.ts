@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { UsersService } from 'src/users/users.service';
-import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { AuthUserDto } from 'src/users/dto/auth-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -57,10 +57,16 @@ export class AuthService {
     return rawPin;
   }
 
-  async validateTwoFactorPin(pin: string, user: UpdateUserDto) {
-    // Check if the two factor pin match
+  async alterTwoFactorStatus(status: boolean, userReq: User)
+  {
+    const user = await this.usersService.findById(userReq.id);
+    if (user.twoFactor && !user.pinValidated)
+      return null;
+    return await this.usersService.updateUserAuth(user.id, { twoFactor: status })
+  }
 
-    // Alter the the pinValidation status if the pin is validated
+  async validateTwoFactorPin(pin: string, user: AuthUserDto) {
+    // Check if the two factor pin match
     const validated = await bcrypt.compare(pin, user.twoFactorPin);
     if (!validated) {
       await this.usersService.updateUserAuth(user.id, {
@@ -68,6 +74,7 @@ export class AuthService {
       });
       return null;
     }
+    // Alter the the pinValidation status if the pin is validated
     return await this.usersService.updateUserAuth(user.id, {
       pinValidated: true,
       twoFactorPin: undefined,

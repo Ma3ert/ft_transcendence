@@ -7,7 +7,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { RoleGuard } from './role.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from 'src/auth/auth.module';
+import { NotificationService } from 'src/notification/notification.service';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Module({
   providers: [ChatGateway,
@@ -16,11 +18,10 @@ import { APP_GUARD } from '@nestjs/core';
               AuthService,
               JwtService,
               PrismaService,
-            {
-              provide: APP_GUARD,
-              useClass: RoleGuard,
-            }],
+              NotificationService,
+              NotificationGateway],
   controllers: [ChatController],
+  imports: [AuthModule],
   exports:[ChatService]
 })
 export class ChatModule {}
