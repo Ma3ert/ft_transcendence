@@ -113,6 +113,4 @@ export class NotificationService {
         // const UserCMNotification = this.chatService.UserIsBelongToChannel(user, );
         // return chatUserNotification;
     }
-
-
 }

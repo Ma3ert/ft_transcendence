@@ -26,8 +26,9 @@ export class ChatGateway implements OnGatewayInit{
   constructor(private chatService:ChatService,
               private notificationService:NotificationService,
               ) {}
-  private LoggedInUsers = new Map<String, AuthSocket[]> ();
-  private activeUsers = new Map<String, AuthSocket[]> ();
+
+  private LoggedInUsers =   new Map<String, AuthSocket[]> ();
+  private activeUsers   =   new Map<String, AuthSocket[]> ();
   
   @WebSocketServer()
   server : Server;
@@ -36,7 +37,6 @@ export class ChatGateway implements OnGatewayInit{
   afterInit(client: Socket) {
     client.use(SocketAuthMiddlware() as any);
   }
-
 
   @SubscribeMessage('userLoggedIn')
   async userLoggeIn(client:AuthSocket, data:{userId:string, userSocket:AuthSocket}){
@@ -48,7 +48,17 @@ export class ChatGateway implements OnGatewayInit{
     else{
       this.LoggedInUsers.set(user, [client]);
     }
-    await this.checkUserNotification(user, data.userSocket);
+    data.userSocket.join(data.userId);
+    this.userJoinHisChannel(data.userId, data.userSocket);
+    // await this.checkUserNotification(user, data.userSocket);
+  }
+
+  // user join room contains the channel id of his channels
+  async userJoinHisChannel(user:string, userSocket:AuthSocket)
+  {
+    const userChannels = await this.chatService.getUserChannels(user);
+    for (const user of userChannels)
+      userSocket.join(user.channelId);
   }
 
   async checkUserNotification(user:string, userSocket:AuthSocket)
@@ -64,24 +74,40 @@ export class ChatGateway implements OnGatewayInit{
       this.activeUsers.get(data.userId).push(data.socketId);
     else
       this.activeUsers.set(data.userId, [data.socketId]);
-    await this.checkChatNotification(data.socketId);
+    // await this.checkChatNotification(data.socketId);
   }
-  
-  async checkChatNotification(UserSocket:AuthSocket)
-  {
 
-  }
+  // check chat notification
+  // async checkChatNotification(UserSocket:AuthSocket)
+  // {
+
+  // }
 
   @SubscribeMessage('checkStatus')
   async checkStatus(client:AuthSocket, data:{userId:string})
   {
+    let status = "OFFLINE";
 
+    if (this.activeUsers.has(data.userId))
+      status = "ONLINE";
+    client.emit("checkStatus", {status:status});
   }
 
   @SubscribeMessage('userIsNotActive')
-  async UserIsNotActive(client:AuthSocket, data:{userId:string, socketId:AuthSocket})
+  async UserIsNotActive(client:AuthSocket, data:{userId:string, Usersocket:AuthSocket})
   {
+    if (this.activeUsers.has(data.userId))
+    {
+      const userSockets = this.activeUsers.get(data.userId);
+      const socketToDelete = userSockets.indexOf(data.Usersocket);
 
+      if (socketToDelete !== -1)
+      {
+        // what does splice do ?
+        userSockets.splice(socketToDelete, 1);
+        this.activeUsers.set(data.userId, userSockets);
+      }
+    }
   }
 
   @SubscribeMessage('DM')
@@ -92,7 +118,10 @@ export class ChatGateway implements OnGatewayInit{
     game:boolean
   })
   {
-
+    if (data.game === false)
+      await this.chatService.createDirectMessage(data.from, data.to, data.message);
+    this.server.to(data.from).emit("DM", data);
+    this.server.to(data.to).emit("DM", data);
   }
 
   @SubscribeMessage('CM')
@@ -102,7 +131,8 @@ export class ChatGateway implements OnGatewayInit{
     message:string
   })
   {
-
+    await this.chatService.createChannelMessage(data.from, data.channel, data.message);
+    this.server.to(data.channel).emit("CM", data);
   }
 
 }
