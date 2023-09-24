@@ -91,6 +91,34 @@ const ModalStyle: ComponentStyleConfig={
           transform: "scale(1.1)",
         }
       },
+    },
+    twoFa: {
+      dialog:{
+        fontFamily: "visbyRound",
+        bg: "#252932",
+        borderRadius: "20px",
+        padding: "auto",
+        px: "30px",
+        py: "40px"
+      },
+      body:{
+        fontFamily: "visbyRound",
+        margin: "0px",
+        px: "0px",
+        py: "10px"
+      },
+      closeButton: {
+        fontStyle: "bold",
+        fontSize: "8px",
+        boxSize: "20px",
+        borderRadius: "full",
+        bg: "#DC585B",
+        color: "#252932",
+        _active:{
+          transform: "scale(1.1)",
+        }
+      },
+
     }
   }
 }
