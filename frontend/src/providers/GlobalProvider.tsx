@@ -38,7 +38,7 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
     return () => {
       socketClient.disconnect();
     };
-  }, []);
+  }, [authenticated]);
   return (
     <GlobalContext.Provider
       value={{

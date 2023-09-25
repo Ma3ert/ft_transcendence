@@ -8,13 +8,15 @@ interface EnviteMessageProps {
 }
 const EnviteMessage: React.FC<EnviteMessageProps> = ({ gameInvitation, setGameInvitation }) => {
 
-  const { activePeer } = useContext(ChatContext);
+  const { activePeer , joinGameStatus, setJoinGameStatus} = useContext(ChatContext);
+
 
    useEffect(() => {
     // Create a setTimeout to change the message after 3 seconds
     const timerId = setTimeout(() => {
+      setJoinGameStatus! (false);
       setGameInvitation(null);
-    }, 8000); // 3000 milliseconds (3 seconds)
+    }, 15000); // 3000 milliseconds (3 seconds)
 
     // Clean up the timer when the component unmounts or when needed
     return () => clearTimeout(timerId);
@@ -44,9 +46,12 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({ gameInvitation, setGameIn
             fontSize={"sm"}
             fontWeight={"bold"}
           >
-            {(gameInvitation!.from != loggedIndUser.id) ? 'you' : activePeer!.username} Looking for a 1v1 ..
+            {(gameInvitation!.from != loggedIndUser.id) ? activePeer!.username :'you'} Looking for a 1v1 ..
           </Text>
-          <Button onClick={()=>setGameInvitation (null)} variant={(gameInvitation!.from != loggedIndUser.id) ? 'lightGray' : 'darkGray'} >
+          <Button onClick={()=>{
+            setJoinGameStatus! (false)
+            setGameInvitation (null)
+          }} variant={(gameInvitation!.from != loggedIndUser.id) ? 'lightGray' : 'darkGray'} >
             {`let's go`}
           </Button>
         </Stack>

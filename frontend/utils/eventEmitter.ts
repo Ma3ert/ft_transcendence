@@ -10,7 +10,7 @@ export type EventMessage = {
 export function EventEmitter(
   socket: Socket,
   eventName: EventName,
-  message: EventMessage
+  message: EventMessage | string | ReadChatNotification
 ) {
   socket.emit(eventName, message);
 }
@@ -18,13 +18,23 @@ export function EventEmitter(
 export function NotifyServer(
   user: User,
   socket: Socket,
-  socketEvent: EventName
+  socketEvent: EventName,
 ) {
+
+  
   EventEmitter(socket, socketEvent, {
     username: user.username,
     userid: user.id,
     socketid: socket.id,
   });
+
 }
 
 
+export function EmitNotification(
+  socket: Socket,
+  socketEvent: EventName,
+  message: EventMessage | string | ReadChatNotification 
+) {
+  EventEmitter(socket, socketEvent, message);
+}

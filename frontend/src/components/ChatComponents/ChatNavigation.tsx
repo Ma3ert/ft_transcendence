@@ -7,33 +7,54 @@ import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
 import { ChatContext } from "../../context/Contexts";
 import { PRIVATE, CHANNEL } from "../../../contstants";
+import { NotificationWrapper } from "./NotificationBadge";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Channels, setActiveChannel, activeChannel, setChatType } = useContext(ChatContext);
+  const { Channels, setActiveChannel, activeChannel, setChatType } =
+    useContext(ChatContext);
   return (
     <>
       {Channels?.map((channel, index) => {
-        return <UserAvatar isChannel={true} channel={channel} key={index} action={()=> {
-          setChatType!(CHANNEL)
-          setActiveChannel! (channel)
-        }} active={activeChannel!.id == channel.id} />;
+        return (
+          <NotificationWrapper type='activeChat' status={false} key={index}>
+            <UserAvatar
+              isChannel={true}
+              channel={channel}
+              action={() => {
+                setChatType!(CHANNEL);
+                setActiveChannel!(channel);
+              }}
+              active={activeChannel!.id == channel.id}
+            />
+          </NotificationWrapper>
+        );
       })}
     </>
   );
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Friends, setActivePeer, activePeer , setChatType} = useContext(ChatContext);
+  const { Friends, setActivePeer, activePeer, setChatType } =
+    useContext(ChatContext);
   return (
     <>
       {Friends?.map((friend, index) => {
-        return <UserAvatar isChannel={false} user={friend} key={index} action={() =>{
-          setChatType!(PRIVATE)
-          setActivePeer!(friend)
-        }}  active={activePeer?.id == friend.id}/>;
+        return (
+          <NotificationWrapper type='activeChat' status={true} key={index}>
+            <UserAvatar
+              isChannel={false}
+              user={friend}
+              action={() => {
+                setChatType!(PRIVATE);
+                setActivePeer!(friend);
+              }}
+              active={activePeer?.id == friend.id}
+            />
+          </NotificationWrapper>
+        );
       })}
     </>
   );
@@ -46,8 +67,8 @@ const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         color="#5B6171"
-        onClick={() =>{
-          setPrivate(!privateChat)
+        onClick={() => {
+          setPrivate(!privateChat);
           // setChatType!(privateChat ? PRIVATE : CHANNEL)
         }}
         icon={privateChat ? FaUserGroup : FaUserAlt}
@@ -56,7 +77,7 @@ const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
       <Stack
         w="auto"
         borderRadius={"2xl"}
-        h='100%'
+        h="100%"
         p={4}
         bg={"#1D222C"}
         spacing={2}

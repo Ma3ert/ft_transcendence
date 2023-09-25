@@ -1,9 +1,10 @@
-import { AppNavigationContext } from "@/context/Contexts";
+import { AppNavigationContext, ChatContext } from "@/context/Contexts";
 import { Tabs, TabList, Tab, Wrap, Text, Icon } from "@chakra-ui/react";
 import { useContext } from "react";
 import { FaUserPlus, FaMedal, FaTrophy } from "react-icons/fa";
 import { BiSolidUser, BiSolidLockAlt } from "react-icons/bi";
 import { FaUserGroup } from "react-icons/fa6";
+import { NotificationWrapper } from "../ChatComponents/NotificationBadge";
 interface TabsWrapperProps {
   tabs: Tab[];
 }
@@ -14,15 +15,17 @@ interface TabsTogglerWrapperProps extends TabsWrapperProps {
 const Toggler: React.FC<TabsTogglerWrapperProps> = ({ tabs, type }) => {
   const { getCurrentSectionType } = useContext(AppNavigationContext);
 
-  const sectionType = getCurrentSectionType ? getCurrentSectionType() : 'chat'
-  const getCurrentIndex = () => sectionType === 'lobby' ? 0 : 1;
+  const sectionType = getCurrentSectionType ? getCurrentSectionType() : "chat";
+  const getCurrentIndex = () => (sectionType === "lobby" ? 0 : 1);
   return (
-    
-    <ControlledTabsContainer controlled={(sectionType === 'lobby' || sectionType === 'chat')} index={getCurrentIndex()}>
+    <ControlledTabsContainer
+      controlled={sectionType === "lobby" || sectionType === "chat"}
+      index={getCurrentIndex()}
+    >
       <TabList w={type ? "220px" : "180px"}>
         {tabs.map((tab, index) => {
           return (
-            <Tab key={index}  py={2} onClick={tab.action}>
+            <Tab key={index} py={2} onClick={tab.action}>
               {tab.value}
             </Tab>
           );
@@ -32,36 +35,38 @@ const Toggler: React.FC<TabsTogglerWrapperProps> = ({ tabs, type }) => {
   );
 };
 
-
 interface ControlledTabsContainer {
-    controlled:boolean
-    index?:number
-    children:React.ReactNode
+  controlled: boolean;
+  index?: number;
+  children: React.ReactNode;
 }
 
-const ControlledTabsContainer:React.FC<ControlledTabsContainer> = ({controlled, index, children})=>{
-    return (
-        <>
-        {
-            controlled ?
-            <Tabs
-            index={index}
-            isFitted
-            variant={"default"}
-            align="center"
-            w="100%"
-            h="100%">{children}</Tabs> : 
-            <Tabs
-            isFitted
-            variant={"default"}
-            align="center"
-            w="100%"
-            h="100%">{children}</Tabs>
-
-        }
-        </>
-    )
-} 
+const ControlledTabsContainer: React.FC<ControlledTabsContainer> = ({
+  controlled,
+  index,
+  children,
+}) => {
+  return (
+    <>
+      {controlled ? (
+        <Tabs
+          index={index}
+          isFitted
+          variant={"default"}
+          align="center"
+          w="100%"
+          h="100%"
+        >
+          {children}
+        </Tabs>
+      ) : (
+        <Tabs isFitted variant={"default"} align="center" w="100%" h="100%">
+          {children}
+        </Tabs>
+      )}
+    </>
+  );
+};
 
 const TabsWrapper: React.FC = () => {
   const {
@@ -127,7 +132,11 @@ const TabsWrapper: React.FC = () => {
         (() => {
           switch (getCurrentSectionType()) {
             case "lobby":
-              return <Toggler tabs={ChatLobbyTabs} type={true} />;
+              return (
+                <NotificationWrapper type='activeChat' status={true}>
+                  <Toggler tabs={ChatLobbyTabs} type={true} />
+                </NotificationWrapper>
+              );
             case "chat":
               return <Toggler tabs={ChatLobbyTabs} type={true} />;
             case "friends":

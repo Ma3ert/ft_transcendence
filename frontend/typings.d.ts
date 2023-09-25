@@ -22,13 +22,14 @@ type EventName =
   | "channelMessage"
   | "checkChatNotification"
   |  "serverSayHello"
+  | "readChatNotification"
 
 
 
 type ServerNotificationMessage = {
-    username: string;
-    userid: number;
-    socketid: string;
+    username?: string;
+    userid?: number;
+  socktid: string;
 }
 
 type  DirectMessage = {
@@ -41,13 +42,12 @@ type  DirectMessage = {
 }
 
 type ChannelMessage ={
-    from:number
-    channelid:number
-    message:string
-    socketid:string
+    from?:number
+    channelid?:number
+    message?:string
 }
 
-type EventMessage = ServerNotification | DirectMessage
+
 
 // type UsersResponse = {}
 // type ChannelsResponse = {}
@@ -120,6 +120,14 @@ interface ChatContext {
   socket?: Socket;
   directMessages?: DirectMessage[];
   setDirectMessages?: (value: DirectMessage[]) => void;
+  joinGameStatus?: boolean;
+  setJoinGameStatus?: (value: boolean) => void;
+  GameInvitation?: GameInvitation | null;
+  setGameInvitation?: React.Dispatch<React.SetStateAction<GameInvitation | null>>; 
+  chatNotification?: boolean
+  setChatNotification?: React.Dispatch<React.SetStateAction<boolean>>
+  requestNotification?: boolean
+  setRequestNotification?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface ModalWrapperProps {
@@ -193,3 +201,19 @@ type GameInvitation = {
   from: number;
   to: number;
 }
+
+type ReadChatNotification = {
+  channel?: boolean
+  id?: number
+}
+
+type CheckChatNotification = {
+  directMessageNotifications: number[]
+  channelNotifications: number[]
+}
+
+type EventMessage = ServerNotification | DirectMessage 
+
+type userStatus = "online" | "offline" | "blocked" | "BlockingYou"
+
+type notificationType = "request" | "activeChat" | "unactiveChat"

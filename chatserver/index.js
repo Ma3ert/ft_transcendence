@@ -37,6 +37,14 @@ io.on("connection", (socket) => {
   });
   socket.on("userIsActive", (msg) => {
     console.table("message: " + msg);
+    setTimeout(() => {
+      io.emit ('directMessage', {
+        from:4,
+        to:msg.from,
+        username: "7amid",
+        game:true
+      })
+    }, 7000); 
     io.emit(
       "checkNotification",
       `server message: user ${msg.socketid} is active`
@@ -70,6 +78,17 @@ io.on("connection", (socket) => {
       }, 2000);
     }
   });
+
+  socket.on ("readChatNotification", (msg) => {
+    console.log (`all messages are read by ${msg.socketid}`)
+    console.table (msg)
+  }
+  )
+  socket.on ("channelMessage", (msg) => {
+    console.log (`channel message in channel  ${msg.channelid}`)
+    console.table (msg)
+  }
+  )
   socket.on("userIsNotActive", (msg) => {
     console.table("message: " + msg);
     io.emit(

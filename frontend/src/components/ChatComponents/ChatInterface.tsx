@@ -1,10 +1,20 @@
-import React from "react";
+import React, {useEffect, useContext} from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
 import ChatBox from "../ChatComponents/chatBox";
 import ChatNavigation from "../ChatComponents/ChatNavigation";
 import ChannelSettings from "../ChatComponents/ChannelSettings";
+import EventListener from "../../../utils/EventListener";
+import { GlobalContext } from "@/context/Contexts";
 
 const ChatInterface: React.FC = ({}) => {
+
+  const {socket} = useContext (GlobalContext)
+  useEffect (()=>{
+       EventListener (socket,'checkChatNotification',  (msg:any)=>{
+          console.log (`${msg} from server`)
+      })
+  }
+  ,[])
   return (
     <Grid
       templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}

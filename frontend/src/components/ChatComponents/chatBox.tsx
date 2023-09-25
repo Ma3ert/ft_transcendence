@@ -7,59 +7,74 @@ import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
 import { ChatContext } from "../../context/Contexts";
 import { PRIVATE } from "../../../contstants";
-import { NotifyServer } from "../../../utils/eventEmitter";
+import { EmitNotification, NotifyServer } from "../../../utils/eventEmitter";
 import { GlobalContext } from "@/context/Contexts";
 import EventListener from "../../../utils/EventListener";
+import UserChannelHeader from "./UserChannelHeader";
 
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
-  const { activeChannel, activePeer,setActivePeer, Friends, chatType} = useContext(ChatContext);
-  const [directMessages, setDirectMessages] = useState<DirectMessage[]>(messages)
-  const {socket} = useContext(GlobalContext)
-  const [GameInvitation, setGameInvitation] = useState<GameInvitation | null> (null);
+  const {
+    activeChannel,
+    activePeer,
+    setActivePeer,
+    Friends,
+    chatType,
+    setJoinGameStatus,
+    directMessages,
+    setDirectMessages,
+    GameInvitation,
+    setGameInvitation,
+  } = useContext(ChatContext);
+  const { socket } = useContext(GlobalContext);
 
+  const handleGameMessage = (msg: DirectMessage) => {
+    // if (msg.from != activePeer?.id)
+    //   setActivePeer! (Friends!.find (friend => friend.id == msg.from)!);
 
-  const handleGameMessage = (msg:DirectMessage) => {
-    if (msg.from == loggedIndUser.id) {
-      // show game invitation
-      if (msg.to != activePeer?.id)
-        setActivePeer! (Friends!.find (friend => friend.id == msg.to)!);
-    }
-    else if (msg.to == loggedIndUser.id) {
-      // show game invitation
-      if (msg.from != activePeer?.id)
-        setActivePeer! (Friends!.find (friend => friend.id == msg.from)!);
-    }
-    setGameInvitation ({from:msg.from!, to:msg.to!});
-  }
+    console.log(
+      `active user id : ${activePeer!.id} sender id : ${
+        msg.from
+      } reciever id : ${msg.to}`
+    );
+    setJoinGameStatus!(true);
+    setGameInvitation!({ from: msg.from!, to: msg.to! });
+  };
 
   useEffect(() => {
-
     // if direct messaeges fetch active peer messages
     // if channel fetch channel messages
-    console.log (`activePeer is ${activePeer?.username}`)
+    console.log(`activePeer is ${activePeer?.username}`);
     if (chatType == PRIVATE) {
-        NotifyServer (activePeer!, socket, 'checkStatus');
-        EventListener (socket,'checkNotification',  (msg:any)=>{
-          console.log (`${msg} from server`)
-      })
-      EventListener (socket,'directMessage' , (msg:any)=>{
-          console.log (`${msg} from server`)
-          if (msg.game)
-            handleGameMessage (msg)
-          else
-            setDirectMessages! ([...directMessages!, msg])
-  })
+      NotifyServer(activePeer!, socket, "checkStatus");
+      EmitNotification(socket, "readChatNotification", {
+        channel: false,
+        id: activePeer!.id,
+      });
+      EventListener(socket, "checkStatus", (msg: any) => {
+        console.log(`${msg} from server`);
+      });
+
+      EventListener(socket, "directMessage", (msg: any) => {
+        console.table(msg);
+        if (msg.game) handleGameMessage(msg);
+        else setDirectMessages!([...directMessages!, msg]);
+      });
+    } else {
+      EmitNotification(socket, "readChatNotification", {
+        channel: true,
+        id: activeChannel!.id,
+      });
     }
-  }, [directMessages]);
+  }, [directMessages, activePeer, activeChannel, chatType]);
   return (
     <Stack
       borderRadius={"2xl"}
       w={"98%"}
       h="98%"
       maxH="72vh"
-      maxW={'850px'}
-      mx={'auto'}
+      maxW={"850px"}
+      mx={"auto"}
       bg="#1D222C"
       justify={"space-between"}
       alignItems={"center"}
@@ -74,25 +89,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
         px={4}
         py={2}
       >
-        <HStack spacing={4} alignItems="center">
-          <Avatar
-            src={
-              chatType == PRIVATE
-                ? activePeer?.imageUrl
-                : activeChannel?.imageUrl
-            }
-            name={
-              chatType == PRIVATE ? activePeer?.username : activeChannel?.name
-            }
-            size="sm"
-          />
-          <Text fontWeight={"bold"} fontSize={"sm"} color="#5B6171">
-            {chatType == PRIVATE ? activePeer?.username : activeChannel?.name}
-          </Text>
-        </HStack>
+        <UserChannelHeader status={'online'} />
         {chatType == PRIVATE && <FriendSettingsMenu user={activePeer!} />}
       </HStack>
-      <MessageStack messages={directMessages} gameInvitation={GameInvitation}  setGameInvitation={setGameInvitation}/>
+      <MessageStack />
       <Stack w={"100%"} alignItems={"center"}>
         <ChatInputBox />
       </Stack>

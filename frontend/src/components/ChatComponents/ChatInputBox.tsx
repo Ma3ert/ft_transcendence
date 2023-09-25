@@ -5,15 +5,14 @@ import { TbArrowBigRightFilled } from "react-icons/tb";
 import { Socket, io } from "socket.io-client";
 import { ChatContext, GlobalContext } from "@/context/Contexts";
 import {SendMessage} from "../../../utils/eventHandlers";
+import { PRIVATE , loggedIndUser} from "../../../contstants";
 interface ChatInputBoxProps {
   // socket: Socket;
-  gameInvitation?: GameInvitation;
-  setGameInvitation?: React.Dispatch<GameInvitation | null>;
 }
-const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvitation}) => {
+const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
 
   const [message, setMessage] = useState("");
-  const {activePeer} = useContext (ChatContext)
+  const {activePeer, joinGameStatus, setJoinGameStatus, chatType, activeChannel} = useContext (ChatContext)
   const {socket} = useContext (GlobalContext)
   
   return (
@@ -27,8 +26,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvit
       py={2}
     >
       <Button
-
-        isDisabled={gameInvitation ? true : false}
+        isDisabled={joinGameStatus}
         onClick={() => {
           const messageBody = {
             message: message,
@@ -36,6 +34,8 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvit
             from:0,
             game:true
           }
+          // setJoinGameStatus! (true);
+          console.log ('sending game invitation')
           SendMessage (socket, messageBody , "directMessage")
         }}
         bg="transparent"
@@ -50,7 +50,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvit
       <FormControl flex={1}>
         <Input
           value={message}
-          isDisabled={gameInvitation ? true : false}
+          isDisabled={joinGameStatus}
           type="text"
           bg={"transparent"}
           color="white"
@@ -66,7 +66,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvit
         />
       </FormControl>
       <Button
-        isDisabled={gameInvitation ? true : false}
+        isDisabled={joinGameStatus}
         bg="#5B6171"
         color="#1D222C"
         borderRadius={"50%"}
@@ -76,12 +76,25 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({gameInvitation, setGameInvit
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-          const messageBody = {
-            message: message,
-            to:activePeer!.id,
-            from:0
+
+          if (chatType == PRIVATE)
+          {
+            const messageBody:DirectMessage = {
+              message: message,
+              to:activePeer!.id,
+              from:loggedIndUser!.id
+            }
+            SendMessage (socket, messageBody , "directMessage")
           }
-          SendMessage (socket, messageBody , "directMessage")
+          else
+          {
+            const messageBody:ChannelMessage = {
+              message: message,
+              channelid:activeChannel!.id!,
+              from:loggedIndUser!.id
+            }
+            SendMessage (socket, messageBody , "channelMessage")
+          }
           setMessage("");
         }}
       >
