@@ -72,10 +72,6 @@ export class NotificationService {
                 ],
                 read:false
             },
-            // select:{
-            //     id:false,
-            //     created_at:false
-            // }
         });
     }
 
@@ -114,6 +110,7 @@ export class NotificationService {
 
         for (const noti of userNotification)
             notificationType.add(noti.type);
+
         if (notificationType.has(NotificationType.CHANNELINVITE) || notificationType.has(NotificationType.FRIENDINVITE))
             userNotificationTypes['invites'] = true;
         if (notificationType.has(NotificationType.CMESSAGE) || notificationType.has(NotificationType.DMESSAGE))
@@ -153,5 +150,31 @@ export class NotificationService {
                 allNotification['DM'].push(value.id);
         })
         return allNotification;
+    }
+
+    // read all channel notificaion for a specific user
+    async readChannelNotification(user:string, channel:string){
+        await this.prismaService.notification.updateMany({
+            where:{
+                userId:user,
+                channelId:channel
+            },
+            data:{
+                read:true,
+            }
+        })
+    }
+
+    // read all direct message notificaion for a specific user
+    async readDirectNotification(user:string, sender:string){
+        await this.prismaService.notification.updateMany({
+            where:{
+                userId:user,
+                senderId:sender,
+            },
+            data:{
+                read:true,
+            }
+        })
     }
 }

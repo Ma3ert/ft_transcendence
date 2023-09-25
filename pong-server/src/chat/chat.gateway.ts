@@ -14,6 +14,7 @@ import { AuthSocket, WsLoggedInGuard } from 'src/auth/utils/WsLoggedIn.guard';
 import { UseGuards } from '@nestjs/common';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { NotificationService } from 'src/notification/notification.service';
+import { UsersService } from 'src/users/users.service';
 
 @UseGuards(WsLoggedInGuard)
 @WebSocketGateway({
@@ -26,6 +27,7 @@ import { NotificationService } from 'src/notification/notification.service';
 export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   constructor(private chatService:ChatService,
               private notificationService:NotificationService,
+              private usersService:UsersService
               ) {}
 
   private LoggedInUsers =   new Map<String, AuthSocket[]> ();
@@ -55,7 +57,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     }
     client.join(data.userId);
     this.userJoinHisChannel(data.userId, client);
-    await this.checkUserNotification(user, client);
+    await this.checkUserNotification(user);
   }
 
   @SubscribeMessage('userLoggedOut')
@@ -78,12 +80,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       userSocket.join(user.channelId);
   }
 
-  async checkUserNotification(user:string, userSocket:AuthSocket)
+  async checkUserNotification(user:string)
   {
     const data:{invites:boolean, chat:boolean} = await this.notificationService.checkUserNotification(user);
-    userSocket.emit("checkNotification",{userId:user, data});
+    this.server.to(user).emit("checkNotification",{userId:user, data});
   }
-
 
   @SubscribeMessage('userIsActive')
   async userIsActive(client:AuthSocket, data:{userId:string}){
@@ -102,6 +103,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.server.to(userId).emit("checkChatNotification", data);
   }
 
+  // online | offline | blocked | banned
   @SubscribeMessage('checkStatus')
   async checkStatus(client:AuthSocket, data:{userId:string})
   {
@@ -138,7 +140,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   })
   {
     if (data.game === false)
+    {
       await this.chatService.createDirectMessage(data.from, data.to, data.message);
+      await this.notificationService.createDirectMessageNotification(data.from, data.to);
+      //if user is logged in i will sent a checkNotificatoin event to all loggedIn users.
+      this.checkUserNotification(data.to);
+    }
     this.server.to(data.from).emit("DM", data);
     this.server.to(data.to).emit("DM", data);
   }
@@ -151,14 +158,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   })
   {
     await this.chatService.createChannelMessage(data.from, data.channel, data.message);
+    await this.notificationService.createChannelMessageNotification(data.from, data.channel);
     this.server.to(data.channel).emit("CM", data);
   }
 
   @SubscribeMessage('readChatNotification')
-  async readChatNotification(client: AuthSocket, data:{type:boolean, Id:string})
+  async readChatNotification(client: AuthSocket, data:{channel:boolean, Id:string})
   {
     // check the notification table and change the read field from false to true.
-    
+    if (data.channel === true)
+      await this.notificationService.readChannelNotification(client.user.id, data.Id);
+    else
+      await this.notificationService.readDirectNotification(client.user.id, data.Id);
   }
   // To-Do Setup events
   // userLoggedIn
