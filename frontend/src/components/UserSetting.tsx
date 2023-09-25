@@ -8,7 +8,7 @@ type Props = {}
 
 const UserSetting = (props: Props) => {
   return (
-    <Stack align={"center"} spacing={"44px"} w={"468px"} h={"580px"} bg={"#1D222C"} py={"45px"} borderRadius={"20px"}>
+    <Stack align={"center"} spacing={"44px"} w={"468px"} h={"580px"} maxH={'65vh'} bg={"#1D222C"} py={"45px"} borderRadius={"20px"}>
         <Avatar boxSize={"105px"}></Avatar>
         <InputStack
           placeholder={["new username", "last name", "first name"]}

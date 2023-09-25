@@ -30,7 +30,8 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Get('current')
+  @Get('me')
+  @UseGuards(LoggedInGuard)
   getCurrentUser(@Req() req) {
     return { status: 'success', data: req.user };
   }
@@ -69,6 +70,6 @@ export class UsersController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.removeUser(id);
   }
 }

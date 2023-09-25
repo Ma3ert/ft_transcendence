@@ -7,51 +7,52 @@ import {
   HttpStatus,
   Post,
   Body,
+  Res,
+  Patch,
 } from '@nestjs/common';
-import { FortyTwoGuard } from './utils/FortyTwo.guard';
-import { Request } from 'express';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { LoggedInGuard } from './utils/LoggedIn.guard';
-import { LocalAuthGuard } from './utils/LocalAuth.guard';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcryptjs';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
 
   @Get('42/login')
-  @UseGuards(FortyTwoGuard)
+  @UseGuards(AuthGuard('42'))
   handleLogin() {
     return { message: '42 authentication' };
   }
 
   @Get('42/callback')
-  @UseGuards(FortyTwoGuard)
-  handleRedirect(@Req() req: Request) {
-    return { user: req.session.id };
+  @UseGuards(AuthGuard('42'))
+  async handleRedirect(@Req() req: any, @Res() res: Response) {
+    const token = await this.authService.generateAccessToken(req.user);
+    res.cookie('jwt', token);
+    res.status(200).json({ message: 'Authenticated' });
   }
 
   @Get('42/logout')
-  handleLogout(@Req() req: Request) {
-    req.logOut(function (err) {
-      if (err)
-        throw new HttpException(
-          'Error in the auth module',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-    });
+  handleLogout(@Res() res: Response) {
+    //TODO: should set the 2FA validation to false.
+    res.cookie('jwt', '');
     return { status: 'success', message: 'User logout successfully.' };
   }
 
   @Post('local/login')
-  @UseGuards(LocalAuthGuard)
-  handleLocalLogin(@Req() req: Request) {
-    return { status: 'success', message: 'User logged in successfully.' };
+  @UseGuards(AuthGuard('local'))
+  async handleLocalLogin(@Req() req: any, @Res() res: Response) {
+    const token = await this.authService.generateAccessToken(req.user);
+    res.cookie('jwt', token);
+    res.status(200).json({ message: 'Authenticated' });
+  }
+
+  @Patch('/twoFactor')
+  @UseGuards(LoggedInGuard)
+  async updateTwoFactorStatus(@Req() req: any, @Body('twoFactor') status: boolean) {
+    this.authService.alterTwoFactorStatus(status, req.user);
   }
 
   @Get('/twoFactor')
@@ -63,6 +64,7 @@ export class AuthController {
         'You do not have enough permission please login again.',
         HttpStatus.UNAUTHORIZED,
       );
+    //! Should change this response and remove the pin
     return { status: 'success', pinNumber: pin };
   }
 
@@ -81,10 +83,7 @@ export class AuthController {
       );
     const result = await this.authService.validateTwoFactorPin(pin, request.user);
     if (!result)
-      throw new HttpException(
-        'Invalid 2FA Pin number please provide a valid one.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    return { status: 'success', message: 'Pin validated succesfully.'}
+      throw new HttpException('Invalid 2FA Pin number please provide a valid one.', HttpStatus.UNAUTHORIZED);
+    return { status: 'success', message: 'Pin validated succesfully.' };
   }
 }

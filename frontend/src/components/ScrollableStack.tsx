@@ -19,10 +19,11 @@ const ScrollableStack = ({ width, height, spacing, items }: Props) => {
       w={(width + 20).toString() + "px"}
       h={(height + 50).toString() + "px"}
       borderRadius={"20px"}
+      maxH={'65vh'}
       bg={"#1D222C"}>
       <Box
         className='customScroll'
-        maxH={height}
+        maxH={'95%'}
         overflowY={"scroll"}
         w={width.toString() + "px"}
         h={height.toString() + "px"}>

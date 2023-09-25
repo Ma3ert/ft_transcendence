@@ -1,62 +1,83 @@
-export const CHAT = true
-export const LOBBY = false
+import MembersList from "@/components/ChatComponents/MembersList"
+// constants definitions
+export const PRIVATE = true
+export const CHANNEL = false
 
 
 export const friendsList:User[] = [{
     username:'7amid',
     imageUrl:'https://source.unsplash.com/random/?profile',
-    online:false
+    online:false,
+    id:1,
+    level: 12
 }, 
 {
     username:'Rachid',
-    imageUrl:'',
-    online:true
+    imageUrl:'https://source.unsplash.com/random/?profile=3',
+    online:true,
+    id:2,
+    level: 1
 },
 {
     username:'Wa7id45',
-    imageUrl:'',
-    online:true
+    imageUrl:'https://source.unsplash.com/random/?profile=1',
+    online:true,
+    id:3,
+    level:5
 },
+{
+    username:'Sami78',
+    imageUrl:'https://source.unsplash.com/random/?profile=2',
+    online:true,
+    id:4,
+    level:22
+}
 
 ]
 
 export const messages:Message[] = [
     {
-        content:'Hello world you bitch',
+        content:'',
         incoming:true,
         time:'12:00',
-        Author:friendsList[0]
+        Author:friendsList[0],
+        EnviteMessage:true
     },
     {
-        content:'FUCK YOU',
+        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
         incoming:false,
         time:'12:01',
-        Author:friendsList[1]
+        Author:friendsList[1],
+        EnviteMessage:false
     },
     {
-        content:'i am sorry i guess you can fuck yourself now',
+        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum. lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
         incoming:true,
         time:'12:01',
-        Author:friendsList[1]
+        Author:friendsList[1],
+        EnviteMessage:false
     }
 ,
 {
-    content:'i am sorry i guess you can fuck yourself now',
+    content:'lorem ipsum dolor sit amet, dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
     incoming:true,
     time:'12:01',
-    Author:friendsList[1]
+    Author:friendsList[0],
+    EnviteMessage:false
 },
 {
-    content:'i am sorry i guess you can fuck yourself now',
+    content:'ipsim dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
     incoming:true,
     time:'12:01',
-    Author:friendsList[1]
+    Author:friendsList[1],
+    EnviteMessage:false
 },
 {
-    content:'i am sorry i guess you can fuck yourself now',
-    incoming:true,
+    content:'',                                                                            
+    incoming:false,
     time:'12:01',
-    Author:friendsList[1]
+    Author:friendsList[0],
+    EnviteMessage:true
 }]
 
 export const Channels:Channel[] =[
@@ -65,8 +86,28 @@ export const Channels:Channel[] =[
         name:'New Channel',
         members:friendsList,
         admin:friendsList[0],
-        membersCount:3
-    }
+        membersCount:3,
+        imageUrl:'https://source.unsplash.com/random/?car',
+        id:1
+    },
+    {
+        isPrivate:false,
+        name:'test Channel',
+        members:friendsList,
+        admin:friendsList[1],
+        membersCount:3,
+        imageUrl:'https://source.unsplash.com/random/?army',
+        id:2
+    },
+    {
+        isPrivate:true,
+        name:'cat Channel',
+        members:friendsList,
+        admin:friendsList[0],
+        membersCount:3,
+        imageUrl:'https://source.unsplash.com/random/?cats',
+        id:3
+    },
 ]
 
 
@@ -77,38 +118,64 @@ export const ChannelTypes:string[] = [
     'Private messages'
 ]
 
+export const channelSettings:string[] = [
+    'Members',
+    'Set password',
+    'Edit channel',
+]
+
+
+// Channel
+
 export const UserSettings:friendAction [] = [
     {
         actionName:'Invite to game',
+        modal:false,
         important:false
     },
     {
         actionName:'See Profile',
+        modal:true,
         important:false
     },
     {
         actionName:'Make party admin',
+        modal:false,
         important:false
     },
     {
         actionName:'Make channel owner',
+        modal:false,
         important:false
     },
     {
         actionName:'Ban from channel',
+        modal:false,
         important:true
     },
     {
         actionName:'Kick from channel',
+        modal:false,
         important:true
     },
     {
         actionName:'Mute',
+        modal:false,
         important:true
     },
     {
         actionName:'Block',
+        modal:false,
         important:true
     },
 
 ]
+
+// users routes
+export const  AllUsersRoute = `${process.env.REACT_APP_API_URL}/users`
+export const  UserByIdRoute = (id:number) => `${process.env.REACT_APP_API_URL}/users/${id}`
+export const  AvailableUserRoute = `${process.env.REACT_APP_API_URL}/invites/users/`
+
+// chat routes 
+
+// game routes

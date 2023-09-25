@@ -4,8 +4,8 @@ import Link from "next/link";
 
 interface Props {
     src: string;
-    width: string;
-    height: string;
+    width?: string;
+    height?: string;
 }
 
 const Logo = ({src, width, height}: Props) => {
@@ -13,8 +13,8 @@ const Logo = ({src, width, height}: Props) => {
     <Link href={"/Lobby"}>
       <Image
         src={src}
-        width={width}
-        height={height}
+        width={{base:'360px', sm:'100px', md:'120px', lg:'160px', xl:'200px'}}
+        height={'auto'}
         ></Image>
     </Link>
       // <svg width={width + "px"} height={height + "px"} viewBox={"0 0 " + width + " " + height} fill="none" xmlns="http://www.w3.org/2000/svg">

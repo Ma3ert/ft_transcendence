@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './entities/user.entity';
+import { AuthUserDto } from './dto/auth-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -45,12 +46,11 @@ export class UsersService {
       data: {
         username: updateUserDto.username,
         avatar: updateUserDto.avatar,
-        twoFactor: updateUserDto.twoFactor
       },
     });
   }
 
-  updateUserAuth(id: string, updateUserDto: UpdateUserDto)
+  updateUserAuth(id: string, updateUserDto: AuthUserDto)
   {
     return this.prismaService.user.update({
       where: {
@@ -62,7 +62,11 @@ export class UsersService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  removeUser(id: string) {
+    return this.prismaService.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

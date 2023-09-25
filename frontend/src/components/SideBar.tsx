@@ -1,38 +1,49 @@
 "use client";
-import { Stack } from '@chakra-ui/react'
-import IconButton from './IconButton'
-import {AiFillHome} from "react-icons/ai"
-import {BiSolidBell} from "react-icons/bi"
-import {FaMedal} from "react-icons/fa"
-import {FaUserGroup} from "react-icons/fa6"
-import {IoMdSettings} from "react-icons/io"
-import Link from 'next/link';
+import { Stack } from "@chakra-ui/react";
+import IconButton from "./IconButton";
+import { AiFillHome } from "react-icons/ai";
+import { BiSolidBell } from "react-icons/bi";
+import { FaMedal } from "react-icons/fa";
+import { FaUserGroup } from "react-icons/fa6";
+import { IoMdSettings } from "react-icons/io";
+import Link from "next/link";
 
 interface Props {
-  bodySetter?: React.Dispatch<React.SetStateAction<number>>
+  currentSection: Section;
+  sectionSetter: (section: Section) => void;
 }
 
-const SideBar:React.FC<Props> = ({bodySetter}) => {
-  const size = "35px";
+const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
+  const size = "25px";
+  const links = new Map<Section, React.ElementType> ();
+
+  links.set ("lobby", AiFillHome)
+  links.set ("notifications", BiSolidBell)
+  links.set ("achievements", FaMedal)
+  links.set ("friends", FaUserGroup)
+  links.set ("settings", IoMdSettings)
+
   return (
-    <Stack spacing={10}>
-      <Link href='/'>
-        <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)} } icon={AiFillHome} size={size}/> 
-      </Link>
-      <Link href='/notifications'> 
-        <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (0)} }icon={BiSolidBell} size={size}/>
-      </Link>
-      <Link href='/acheivements'>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (1)}}icon={FaMedal} size={size}/>
-      </Link>
-      <Link href='/chat'>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (2)}}icon={FaUserGroup} size={size}/>
-      </Link>
-      <Link href='/settings'>
-      <IconButton color='#5B6171' onClick={()=>{bodySetter && bodySetter (3)}}icon={IoMdSettings} size={size}/>
-      </Link>
+    <Stack
+      spacing={{sm:8, md:10, lg:12, xl:14}}
+      w='100%'
+      h='100%'
+      justifyContent='center'
+      alignItems='center'
+    >
+      {Array.from (links).map (([section, icon]) => (
+        <IconButton 
+          color={currentSection === section ? "#DC585B" : "#5B6171"}
+          onClick={() => sectionSetter (section)}
+          icon={icon}
+          size={currentSection === section ? "35px" : size}
+          key={section}
+        />
+      ))
+          }
+      
     </Stack>
-  )
-}
+  );
+};
 
-export default SideBar
+export default SideBar;

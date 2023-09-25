@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React from 'react'
 import ScrollableStack from '@/components/ScrollableStack';
 import NavBar from '@/components/NavBar';

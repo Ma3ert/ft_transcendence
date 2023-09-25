@@ -10,7 +10,7 @@ type Props = {
 
 const PageBody = ({navBar, tabs, bodys}: Props) => {
   return (
-    <Stack spacing={1}   w={'100%'} align={"center"} justify={'center'} border="1px" borderColor='red'  h={'auto'}>
+    <Stack spacing={1}   w={'100%'} align={"center"} justify={'center'}  h={'auto'}>
         <Tabs isFitted variant={"default"} align='center'>
             <TabList  w={"180px"} h={"45px"} >
                  {tabs.map((tab, index) => (<Tab key={index}>{tab}</Tab>))}
