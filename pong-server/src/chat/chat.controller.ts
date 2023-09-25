@@ -105,6 +105,7 @@ export class ChatController {
         }
     }
 
+    // upgrade user to admin
     @Patch('/channels/:channelId/upgrade/:upgradeuser')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
@@ -123,6 +124,7 @@ export class ChatController {
         }
     }
 
+    // down grade user to member
     @Patch('/channels/:channelId/downgrade/:downgradeuser')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)

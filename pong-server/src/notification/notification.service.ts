@@ -6,111 +6,94 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotificationService {
-    constructor (private prismaService:PrismaService,
-                 private chatService:ChatService){}
+    constructor (
+        private prismaService:PrismaService,
+        private chatService:ChatService){}
 
-    async createNotification(sender:string, receiver:string, type:NotificationType)
+    
+    async createFriendInviteNotification(sender:string, receiver:string)
     {
         await this.prismaService.notification.create({
             data:{
+                userId:receiver,
                 senderId:sender,
-                receiverId:receiver,
-                type:type,
-                read:false
+                type:NotificationType.FRIENDINVITE,
             }
         })
     }
 
-    async getChatNotification(user:string)
+    async createChannelInviteNotification(sender:string, receiver:string, channel:string)
     {
-        const chatNotification = await this.prismaService.notification.findMany({
-            where:{
-                OR:[
-                    {type: NotificationType.CMESSAGE},
-                    {type: NotificationType.DMESSAGE},
-                ],
-                receiverId:user,
-                read:false,
+        await this.prismaService.notification.create({
+            data:{
+                userId:receiver,
+                senderId:sender,
+                type:NotificationType.CHANNELINVITE,
+                channelId:channel
             }
         })
-        return (chatNotification);
+    }
+
+    async createDirectMessageNotification(sender:string, receiver:string)
+    {
+        await this.prismaService.notification.create({
+            data:{
+                userId:receiver,
+                senderId:sender,
+                type:NotificationType.DMESSAGE
+            }
+        })
+    }
+
+    async createChannelMessageNotification(sender:string, channel:string)
+    {
+        const channelMembers = await this.chatService.getChannelMembers(channel, sender);
+        for (const member of channelMembers)
+        {
+            await this.prismaService.notification.create({
+                data:{
+                    userId:member.userId,
+                    senderId:sender,
+                    type:NotificationType.CMESSAGE,
+                    channelId:channel
+                }
+            })
+        }
     }
 
     async getUserNotification(user:string)
     {
-        const userNotification = await this.prismaService.notification.findMany({
+        return await this.prismaService.notification.findMany({
             where:{
+                userId:user,
                 OR:[
-                    {type: NotificationType.FRIENDREQUEST},
-                    {type: NotificationType.CHANNELINVITE},
+                    {type:NotificationType.FRIENDINVITE},
+                    {type:NotificationType.CHANNELINVITE},
                 ],
-                receiverId:user,
+                read:false
+            },
+            select:{
+                id:false,
+                created_at:false
+            }
+        });
+    }
+
+    async readUserNotification(user:string)
+    {
+        const userNotification = await this.getUserNotification(user);
+        await this.prismaService.notification.updateMany({
+            where:{
+                userId:user,
+                OR:[
+                    {type:NotificationType.FRIENDINVITE},
+                    {type:NotificationType.CHANNELINVITE},
+                ],
                 read:false,
+            },
+            data:{
+                read:true,
             }
         })
-        return (userNotification);      
-    }
-
-    async userCheckNotification(user:string)
-    {
-        const userNotifTypes = {};
-        const uniqueNotificationType = new Set();
-
-        const userNotification = await this.prismaService.notification.findMany({
-            where:{
-                receiverId:user,
-                read:false,
-            },
-            select:{
-                type:true,
-            }
-        });
-
-        for (const notif of userNotification){
-            uniqueNotificationType.add(notif.type);
-        }
-
-        if (uniqueNotificationType.has(NotificationType.CMESSAGE)
-        || uniqueNotificationType.has(NotificationType.DMESSAGE))
-            userNotifTypes['chat'] = true;
-        else
-            userNotifTypes['chat'] = false;
-        if (uniqueNotificationType.has(NotificationType.FRIENDREQUEST)
-        || uniqueNotificationType.has(NotificationType.CHANNELINVITE))
-            userNotifTypes['request'] = true;
-        else
-            userNotifTypes['request'] = false;
-        return userNotifTypes;
-    }
-
-    async checkChatNotification(user:string)
-    {
-        const chatUserNotification = {};
-
-        const DirectMessages = await this.prismaService.notification.findMany({
-            where:{
-                receiverId:user,
-                read:false,
-                type:NotificationType.DMESSAGE
-            },
-            select:{
-                senderId:true,
-            }
-        });
-
-        chatUserNotification['DM'] = Array.from(DirectMessages);
-
-        const ChannelMessages = await this.prismaService.notification.findMany({
-            where:{
-                read:false,
-                type:NotificationType.CMESSAGE,
-            },
-            select:{
-                receiverId:true,
-            }
-        });
-        
-        // const UserCMNotification = this.chatService.UserIsBelongToChannel(user, );
-        // return chatUserNotification;
     }
 }

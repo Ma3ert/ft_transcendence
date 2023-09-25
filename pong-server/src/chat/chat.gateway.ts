@@ -2,6 +2,7 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
@@ -22,7 +23,7 @@ import { NotificationService } from 'src/notification/notification.service';
   },
 })
 
-export class ChatGateway implements OnGatewayInit{
+export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   constructor(private chatService:ChatService,
               private notificationService:NotificationService,
               ) {}
@@ -38,9 +39,13 @@ export class ChatGateway implements OnGatewayInit{
     client.use(SocketAuthMiddlware() as any);
   }
 
+  handleDisconnect(client: AuthSocket) {
+    
+  }
+
   @SubscribeMessage('userLoggedIn')
-  async userLoggeIn(client:AuthSocket, data:{userId:string, userSocket:AuthSocket}){
-    const user = client.user.id;
+  async userLoggeIn(client:AuthSocket, data:{userId:string}){
+    const user : string = client.user.id;
 
     if (this.LoggedInUsers.has(user)){
       this.LoggedInUsers.get(user).push(client);
@@ -48,9 +53,21 @@ export class ChatGateway implements OnGatewayInit{
     else{
       this.LoggedInUsers.set(user, [client]);
     }
-    data.userSocket.join(data.userId);
-    this.userJoinHisChannel(data.userId, data.userSocket);
+    client.join(data.userId);
+    this.userJoinHisChannel(data.userId, client);
     // await this.checkUserNotification(user, data.userSocket);
+  }
+
+  @SubscribeMessage('userLoggedOut')
+  async userLoggedOut(client:AuthSocket)
+  {
+    const user:string = client.user.id;
+    if (this.LoggedInUsers.has(user))
+    {
+      // delete all logged and active socket from the map
+      this.LoggedInUsers.delete(user);
+      this.activeUsers.delete(user);
+    }
   }
 
   // user join room contains the channel id of his channels
@@ -69,11 +86,11 @@ export class ChatGateway implements OnGatewayInit{
 
 
   @SubscribeMessage('userIsActive')
-  async userIsActive(client:AuthSocket, data:{userId:string, socketId:AuthSocket}){
+  async userIsActive(client:AuthSocket, data:{userId:string}){
     if (this.activeUsers.has(data.userId))
-      this.activeUsers.get(data.userId).push(data.socketId);
+      this.activeUsers.get(data.userId).push(client);
     else
-      this.activeUsers.set(data.userId, [data.socketId]);
+      this.activeUsers.set(data.userId, [client]);
     // await this.checkChatNotification(data.socketId);
   }
 
@@ -86,7 +103,7 @@ export class ChatGateway implements OnGatewayInit{
   @SubscribeMessage('checkStatus')
   async checkStatus(client:AuthSocket, data:{userId:string})
   {
-    let status = "OFFLINE";
+    let status:string = "OFFLINE";
 
     if (this.activeUsers.has(data.userId))
       status = "ONLINE";
@@ -94,16 +111,16 @@ export class ChatGateway implements OnGatewayInit{
   }
 
   @SubscribeMessage('userIsNotActive')
-  async UserIsNotActive(client:AuthSocket, data:{userId:string, Usersocket:AuthSocket})
+  async UserIsNotActive(client:AuthSocket, data:{userId:string})
   {
     if (this.activeUsers.has(data.userId))
     {
+      // delete the user socket from the activeUsers sockets.
       const userSockets = this.activeUsers.get(data.userId);
-      const socketToDelete = userSockets.indexOf(data.Usersocket);
+      const socketToDelete = userSockets.indexOf(client);
 
       if (socketToDelete !== -1)
       {
-        // what does splice do ?
         userSockets.splice(socketToDelete, 1);
         this.activeUsers.set(data.userId, userSockets);
       }
@@ -135,98 +152,21 @@ export class ChatGateway implements OnGatewayInit{
     this.server.to(data.channel).emit("CM", data);
   }
 
+  @SubscribeMessage('readChatNotification')
+  async readChatNotification(client: AuthSocket, data:{type:string, Id:string})
+  {
+    // check the notification table and change the read field from false to true.
+
+  }
+  // To-Do Setup events
+  // userLoggedIn
+  // userLoggedOut
+  // checkNotification
+  // userIsActive
+  // userisNotActive
+  // checkStatus
+  // DM
+  // CM
+  // checkChatNotification
+  // readChatNotification {type:CM, DM, id:}
 }
-
-  // handleConnection(client:AuthSocket) {
-  //   const user = client.user;
-
-    // if (!user)
-    //   client.disconnect();
-
-    // if (this.LoggedInUsers.has(user)){
-    //   this.LoggedInUsers.get(user).push(client);
-    // }
-    // else{
-    //   this.LoggedInUsers.set(user, [client]);
-    // }
-    
-    // client.on("userLoggedIn", (data:{userId:string, socketId:Socket}) => {
-    //   // emit the checkNotification event to all the users that belong the same socket
-    //   // as the socketId.
-    // })
-
-
-    // on disconnect user 
-  //   client.on("disconnect",() => {
-  //     console.log(`the client with the socketID: ${client.id} is disconnected.`);
-  //     console.log(this.LoggedInUsers);
-  //     for (const [user, sockets] of this.LoggedInUsers.entries()){
-  //       if (sockets.includes(client)){
-  //         const index = sockets.indexOf(client);
-  //         if (index !== -1){
-  //           sockets.splice(index, 1);
-  //           if (sockets.length === 0){
-  //             this.LoggedInUsers.delete(user);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   })
-  // }
-
-  // @SubscribeMessage('DM')
-  // async sendDM(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
-  //   from:string,
-  //   to:string,
-  //   message:string,
-  //   game:boolean
-  // })
-  // {
-    // const RoomId = this.chatService.CreateRoomId(data.from, data.to);
-    // const sender = this.connectedUsers.get(data.from);
-    // const receiver = this.connectedUsers.get(data.to);
-    // for (const socket of sender){
-    //   socket.join(RoomId);
-    // }
-    // for (const socket of receiver){
-    //   socket.join(RoomId);
-    // }
-    // if (!data.game){
-    //   await this.chatService.createDirectMessage(data.from, data.to, data.message);
-    // }
-    // client.to(RoomId).emit("sendDM", data);
-  // }
-
-  // @SubscribeMessage('CM')
-  // async SendChannelM(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
-  //   from:string,
-  //   channel:string,
-  //   message:string
-  // }){
-    // const channelUsers = await this.chatService.getAllchannelMembers(data.channel);
-    // for (const user of channelUsers){
-    //   if (this.connectedUsers.has(user.userId)){
-    //     const sockets = this.connectedUsers.get(user.userId);
-    //     for (const socket of sockets){
-    //       socket.join(data.channel);
-    //     }
-    //   }
-    // }
-    // await this.chatService.createChannelMessage(data.from, data.channel, data.message);
-    // client.to(data.channel).emit("sendCM", data);
-  // }
-
-  // @SubscribeMessage('userIsActive')
-  // async userIsActive(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
-  // })
-
-  // @SubscribeMessage('checkStatus')
-  // async userIsActive(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
-  // })
-  
-  // @SubscribeMessage('userIsNotactive')
-  // async userIsActive(@ConnectedSocket() client:AuthSocket, @MessageBody() data:{
-  // })
-
-  // in case of new message emit the event of checkChatNotification
-// }

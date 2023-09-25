@@ -16,6 +16,25 @@ enum UserStatus {
   INMATCH
 }
 
+enum NotificationType {
+  FRIENDINVITE
+  CHANNELINVITE
+  CMESSAGE
+  DMESSAGE
+}
+
+enum Type {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+}
+
+enum Role {
+  OWNER
+  MEMBER
+  ADMIN
+}
+
 model User {
   id             String     @id @default(uuid())
   username       String     @unique
@@ -91,25 +110,27 @@ model ChannelMessage {
 }
 
 model Channel {
-  id       String  @id @default(uuid())
-  name     String
-  type     Type
-  password String?
-  avatar   String?
+  id                    String  @id @default(uuid())
+  name                  String
+  type                  Type
+  password              String?
+  avatar                String?
 
-  messages ChannelMessage[] @relation("channelMsg")
+  messages              ChannelMessage[] @relation("channelMsg")
 
-  members ChannelUser[] @relation("channelMembers")
+  members               ChannelUser[] @relation("channelMembers")
 
-  bannedUsers ChannelBan[] @relation("ChannelBannedUser")
+  bannedUsers           ChannelBan[] @relation("ChannelBannedUser")
 
-  mutedUsers ChannelMute[] @relation("ChannelMutedUser")
+  mutedUsers            ChannelMute[] @relation("ChannelMutedUser")
 
-  channelInvitation ChannelInvite[] @relation("channelInvite")
+  channelInvitation     ChannelInvite[] @relation("channelInvite")
 
-  created_at DateTime @default(now())
+  channelNotification   Notification[] @relation("NotificationChannel")
 
-  updated_at DateTime @updatedAt
+  created_at            DateTime @default(now())
+
+  updated_at            DateTime @updatedAt
 }
 
 model ChannelUser {
@@ -136,13 +157,13 @@ model ChannelBan {
 }
 
 model ChannelMute {
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserMutedInchannel")
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserMutedInchannel")
 
-  channelId String
-  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "ChannelMutedUser")
+  channelId   String
+  channel     Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "ChannelMutedUser")
 
-  created_at DateTime @default(now())
+  created_at  DateTime @default(now())
 
   @@id([userId, channelId], name: "userId_channelId")
 }
@@ -165,35 +186,18 @@ model ChannelInvite {
 model Notification {
   id          String @id @default(uuid())
 
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], name: "NotificationReceived")
+
   senderId    String
   sender      User   @relation(fields: [senderId], references: [id], name: "NotificationSent")
 
-  receiverId  String
-  receiver    User   @relation(fields: [receiverId], references: [id], name: "NotificationReceived")
+  channelId   String?
+  channel     Channel? @relation(fields: [channelId], references: [id], name: "NotificationChannel")
 
   type        NotificationType
 
-  read        Boolean
+  read        Boolean @default(false)
 
   created_at  DateTime @default(now())
-}
-
-
-enum NotificationType {
-  FRIENDREQUEST
-  CHANNELINVITE
-  CMESSAGE
-  DMESSAGE
-}
-
-enum Type {
-  PUBLIC
-  PRIVATE
-  PROTECTED
-}
-
-enum Role {
-  OWNER
-  MEMBER
-  ADMIN
 }
