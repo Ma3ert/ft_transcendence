@@ -2,7 +2,8 @@ import { ForbiddenException, Injectable, InternalServerErrorException, Unauthori
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { Role, Type } from '@prisma/client';
+import { NotificationType, Role, Type } from '@prisma/client';
+import { type } from 'os';
 
 @Injectable()
 export class ChatService {
@@ -450,18 +451,7 @@ export class ChatService {
         return Array.from(new Set(conversationsUsers));
     }
 
-    async createNotification()
-    {
+    // async UserIsBelongToChannel(user:string, channels:[string]){
 
-    }
-
-    async getMessageNotification()
-    {
-
-    }
-
-    async getUserNotification()
-    {
-        
-    }
+    // }
 }

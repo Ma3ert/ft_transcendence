@@ -9,6 +9,7 @@ import { memoryStorage } from 'multer';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
 import { FriendslistModule } from './invites/invite.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { FriendslistModule } from './invites/invite.module';
     GameModule,
     ChatModule,
     FriendslistModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
