@@ -1,20 +1,27 @@
 import { Image } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { Point } from './gameEngine';
-import io from "socket.io-client"
+import { Socket } from "socket.io-client"
+
+interface KeyEvent {
+    player: number; // The players who's emitting the event
+    key: string; // these are obvious
+    room: string; // The id of the room that you will change its based on the key you've received
+}
 
 type Props = {
+    socket: Socket;
     w: string;
     h: string;
     x: number;
     y: number;
+    state: string;
     src: string;
     setxPosition:React.Dispatch<React.SetStateAction<number>>
 }
 
-const socket = io("http://localhost:3001", {autoConnect: false})
 
-const FirstRaquette = ({w, h, x, y, src, setxPosition}: Props) => {
+const FirstRaquette = ({socket, w, h, x, y, src, state}: Props) => {
     socket.connect();
     const activeKeys: Record<string, boolean> = {};
     console.log("the xCord: ", x)
@@ -24,37 +31,40 @@ const FirstRaquette = ({w, h, x, y, src, setxPosition}: Props) => {
         {
             console.log("if fires ", event.key)
             if (activeKeys["ArrowUp"] && activeKeys["ArrowLeft"])
-                socket.emit("shooting-pos", 6)
-                // console.log("6");
-                // setEvent(6)
+            {
+                const keyEvent: KeyEvent = {player: 1, key: "LeftUp", room: "chihaja"};
+                socket.emit("keyEvent", keyEvent)
+            }
             else if (activeKeys["ArrowUp"] && activeKeys["ArrowRight"])
-                socket.emit("shooting-pos", 8)
-                // console.log("8");
-                // setEvent(8)
+            {
+                const keyEvent: KeyEvent = {player: 1, key: "UpRight", room: "chihaja"};
+                socket.emit("keyEvent", keyEvent)
+            }
             else if (activeKeys["ArrowRight"])
-                socket.emit("shooting-pos", 9)
-                // console.log("9");
-                // setEvent(9)
+            {
+                const keyEvent: KeyEvent = {player: 1, key: "Right", room: "chihaja"};
+                socket.emit("keyEvent", keyEvent)
+            }
             else if (activeKeys["ArrowLeft"])
-                socket.emit("shooting-pos", 5)
-                // console.log("5");
-                // setEvent(5)
+            {
+                const keyEvent: KeyEvent = {player: 1, key: "Left", room: "chihaja"};
+                socket.emit("keyEvent", keyEvent)
+            }
             else if (activeKeys["ArrowUp"])
-                socket.emit("shooting-pos", 7)
-                // console.log("7");
-                // setEvent(7)
+            {
+                const keyEvent: KeyEvent = {player: 1, key: "Up", room: "chihaja"};
+                socket.emit("keyEvent", keyEvent)
+            }
         }
-        else if (event.key === "a")
+        else if (event.key === "a" && state === "gameStarted")
         {
-            socket.emit("player-move", "a")
-            // console.log("a")
-            // setxPosition(200)
+            const keyEvent: KeyEvent = {player: 1, key: "A", room: "chihaja"};
+            socket.emit("keyEvent", keyEvent)
         }
-        else if (event.key === "d")
+        else if (event.key === "d" && state === "gameStarted")
         {
-            socket.emit("player-move", "d")
-            // console.log("d")
-            // setxPosition(300)
+            const keyEvent: KeyEvent = {player: 1, key: "D", room: "chihaja"};
+            socket.emit("keyEvent", keyEvent)
         }
     }
     useEffect(() => {

@@ -1,11 +1,18 @@
 "use client"
 import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import io from "socket.io-client"
+import io, { Socket } from "socket.io-client"
 import { Point } from "./gameEngine"
 
+interface BallEvent {
+	room: string; // we've used this one before
+	event: string;
+}
+
 type Props = {
+	socket: Socket;
 	points: Point[]
+	state: string;
 	box: number;
 	distance: number;
 	velocity: number;
@@ -13,15 +20,13 @@ type Props = {
 	setIndexEnd: (n: number) => void;
 }
 
-const socket = io("http://localhost:3001", {autoConnect : false})
-
-const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd }: Props) => {
+const Ball = ({ socket, state, points, box, distance, velocity, setIndexStart, setIndexEnd }: Props) => {
 	const [scale, setScale] = useState(points[0].y / 500);
 	const [index, setIndex] = useState(1);
-	const [turn, setTurn] = useState(0);
+	// const [turn, setTurn] = useState(0);
 	var boxSize = scale * box
 	const handleMovement = () => {
-		if (index < points.length - 1)
+		if (state === "gameStarted" && index < points.length - 2)
 		{
 			setIndex(index + 1);
 			setScale(points[index].y /500);
@@ -29,56 +34,56 @@ const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd }: P
 		}
 		else
 		{
-			socket.emit("end", {});
-			if (turn === 0)
-			{
-				setIndexStart(7);
-				setIndexEnd(3);
-				setTurn(turn + 1);
-			}
-			else if (turn === 1)
-			{
-				setIndexStart(3);
-				setIndexEnd(5);
-				setTurn(turn + 1);
-			}
-			else if (turn === 2)
-			{
-				setIndexStart(5);
-				setIndexEnd(0);
-				setTurn(turn + 1);
-			}
-			else if (turn === 3)
-			{
-				setIndexStart(0);
-				setIndexEnd(9);
-				setTurn(turn + 1);
-			}
-			else if (turn === 4)
-			{
-				setIndexStart(9);
-				setIndexEnd(1);
-				setTurn(turn + 1);
-			}
-			else if (turn === 5)
-			{
-				setIndexStart(1);
-				setIndexEnd(8);
-				setTurn(turn + 1);
-			}
-			else if (turn === 6)
-			{
-				setIndexStart(8);
-				setIndexEnd(0);
-				setTurn(turn + 1);
-			}
-			else
-			{
-				setIndexStart(0);
-				setIndexEnd(7);
-				setTurn(0);
-			}
-			setIndex(0);
+			const ballEvent: BallEvent = {room: "chi haja", event: "ballReachesEnd"}
+			socket.emit("ballReachesEnd", ballEvent);
+			// if (turn === 0)
+			// {
+			// 	setIndexStart(7);
+			// 	setIndexEnd(3);
+			// 	setTurn(turn + 1);
+			// }
+			// else if (turn === 1)
+			// {
+			// 	setIndexStart(3);
+			// 	setIndexEnd(5);
+			// 	setTurn(turn + 1);
+			// }
+			// else if (turn === 2)
+			// {
+			// 	setIndexStart(5);
+			// 	setIndexEnd(0);
+			// 	setTurn(turn + 1);
+			// }
+			// else if (turn === 3)
+			// {
+			// 	setIndexStart(0);
+			// 	setIndexEnd(9);
+			// 	setTurn(turn + 1);
+			// }
+			// else if (turn === 4)
+			// {
+			// 	setIndexStart(9);
+			// 	setIndexEnd(1);
+			// 	setTurn(turn + 1);
+			// }
+			// else if (turn === 5)
+			// {
+			// 	setIndexStart(1);
+			// 	setIndexEnd(8);
+			// 	setTurn(turn + 1);
+			// }
+			// else if (turn === 6)
+			// {
+			// 	setIndexStart(8);
+			// 	setIndexEnd(0);
+			// 	setTurn(turn + 1);
+			// }
+			// else
+			// {
+			// 	setIndexStart(0);
+			// 	setIndexEnd(7);
+			// 	setTurn(0);
+			// }
 		}
 	}
 	useEffect(() => {

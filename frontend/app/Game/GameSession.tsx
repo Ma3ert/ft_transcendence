@@ -5,6 +5,9 @@ import FirstRaquette from './FirstRaquette'
 import { Game, Point, checkDirection, distCalculation, getBallPositions, getBallTrajectory, getOtherPosition } from './gameEngine'
 import SecondRaquette from './SecondRaquette'
 import { Box } from '@chakra-ui/react'
+import io from "socket.io-client"
+
+
 
 const player:Game = {
   id: 0,
@@ -35,6 +38,8 @@ const player:Game = {
   other: ""
 }
 
+const socket = io("http://localhost:3001", {})
+
 const GameSession = () => {
   const [indexEnd, setIndexEnd] = useState(player.indexEnd);
   const [indexStart, setIndexStart] = useState(player.indexStart);
@@ -60,14 +65,18 @@ const GameSession = () => {
         </Box>
       ))}
       <Ball
+        socket={socket}
         points={trajectory}
+        state={""}
         box={70}
         distance={distCalculation(player.ballPositions, indexStart, indexEnd)}
         velocity={player.velocity}
         setIndexEnd={(end) => (setIndexEnd(end))}
         setIndexStart={(start) => (setIndexStart(start))}
-      />
+       />
       <FirstRaquette
+        socket={socket}
+        state={""}
         w={player.playerW.toString() + "px"}
         h={player.playerH.toString() + "px"}
         x={player.playerPosition.x}
