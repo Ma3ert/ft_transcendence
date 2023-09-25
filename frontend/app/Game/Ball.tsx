@@ -1,9 +1,8 @@
 "use client"
-import React from 'react'
 import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import {Point, checkBounce, getBallTrajectory} from "./gameEngine"
 import io from "socket.io-client"
+import { Point } from "./gameEngine"
 
 type Props = {
 	points: Point[]
@@ -14,18 +13,18 @@ type Props = {
 	setIndexEnd: (n: number) => void;
 }
 
-const socket = io("http://localhost:3001", {autoConnect: false})
+const socket = io("http://localhost:3001", {autoConnect : false})
 
-const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd}: Props) => {
-	const [scale, setScale] = useState(points[0].y / 500)
-	const [index, setIndex] = useState(1)
+const Ball = ({ points, box, distance, velocity, setIndexStart, setIndexEnd }: Props) => {
+	const [scale, setScale] = useState(points[0].y / 500);
+	const [index, setIndex] = useState(1);
 	const [turn, setTurn] = useState(0);
 	var boxSize = scale * box
 	const handleMovement = () => {
 		if (index < points.length - 1)
 		{
 			setIndex(index + 1);
-			setScale(points[index].y /500)
+			setScale(points[index].y /500);
 			boxSize = scale * box
 		}
 		else
