@@ -92,15 +92,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       this.activeUsers.get(data.userId).push(client);
     else
       this.activeUsers.set(data.userId, [client]);
-    await this.checkChatNotification(client);
+    await this.chatNotification(data.userId);
   }
 
   // check chat notification
-  async checkChatNotification(UserSocket:AuthSocket)
+  async chatNotification(room:string)
   {
-    const userId = UserSocket.user.id;
-    const data:{DM:[string], CM:[string]} = await this.notificationService.checkChatNotification(userId);
-    this.server.to(userId).emit("checkChatNotification", data);
+    const data:{DM:[string], CM:[string]} = await this.notificationService.chatNotification(room);
+    this.server.to(room).emit("ChatNotification", data);
   }
 
   // online | offline | blocked | banned
@@ -144,10 +143,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       await this.chatService.createDirectMessage(data.from, data.to, data.message);
       await this.notificationService.createDirectMessageNotification(data.from, data.to);
       //if user is logged in i will sent a checkNotificatoin event to all loggedIn users.
+      this.server.to(data.from).emit("DM", data);
+      this.server.to(data.to).emit("DM", data);
       this.checkUserNotification(data.to);
+      this.chatNotification(data.to);
     }
-    this.server.to(data.from).emit("DM", data);
-    this.server.to(data.to).emit("DM", data);
+    else
+    {
+      this.server.to(data.from).emit("DM", data);
+      this.server.to(data.to).emit("DM", data);
+    }
   }
 
   @SubscribeMessage('CM')
@@ -159,7 +164,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   {
     await this.chatService.createChannelMessage(data.from, data.channel, data.message);
     await this.notificationService.createChannelMessageNotification(data.from, data.channel);
+    const channelMembers = await this.chatService.getChannelMembers(data.channel, data.from);
     this.server.to(data.channel).emit("CM", data);
+    for (const user of channelMembers)
+    {
+      this.checkUserNotification(user.userId);
+      this.chatNotification(data.channel);
+    }
   }
 
   @SubscribeMessage('readChatNotification')
@@ -171,15 +182,4 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     else
       await this.notificationService.readDirectNotification(client.user.id, data.Id);
   }
-  // To-Do Setup events
-  // userLoggedIn
-  // userLoggedOut
-  // checkNotification
-  // userIsActive
-  // userisNotActive
-  // checkStatus
-  // DM
-  // CM
-  // checkChatNotification
-  // readChatNotification {type:CM, DM, id:}
 }

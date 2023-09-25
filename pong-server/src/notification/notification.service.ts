@@ -119,7 +119,7 @@ export class NotificationService {
     }
 
     // check the chat notification channel/directMessage for a specific user
-    async checkChatNotification(user:string)
+    async chatNotification(user:string)
     {
         let chatNotif:Set<chatNotification> = new Set();
         let allNotification:{DM:[string], CM:[string]};
