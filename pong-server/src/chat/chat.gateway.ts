@@ -55,7 +55,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     }
     client.join(data.userId);
     this.userJoinHisChannel(data.userId, client);
-    // await this.checkUserNotification(user, data.userSocket);
+    await this.checkUserNotification(user, client);
   }
 
   @SubscribeMessage('userLoggedOut')
@@ -80,7 +80,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
 
   async checkUserNotification(user:string, userSocket:AuthSocket)
   {
-    const data = await this.notificationService.userCheckNotification(user);
+    const data:{invites:boolean, chat:boolean} = await this.notificationService.checkUserNotification(user);
     userSocket.emit("checkNotification",{userId:user, data});
   }
 
@@ -91,14 +91,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       this.activeUsers.get(data.userId).push(client);
     else
       this.activeUsers.set(data.userId, [client]);
-    // await this.checkChatNotification(data.socketId);
+    await this.checkChatNotification(client);
   }
 
   // check chat notification
-  // async checkChatNotification(UserSocket:AuthSocket)
-  // {
-
-  // }
+  async checkChatNotification(UserSocket:AuthSocket)
+  {
+    const userId = UserSocket.user.id;
+    const data:{DM:[string], CM:[string]} = await this.notificationService.checkChatNotification(userId);
+    this.server.to(userId).emit("checkChatNotification", data);
+  }
 
   @SubscribeMessage('checkStatus')
   async checkStatus(client:AuthSocket, data:{userId:string})
@@ -153,10 +155,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   }
 
   @SubscribeMessage('readChatNotification')
-  async readChatNotification(client: AuthSocket, data:{type:string, Id:string})
+  async readChatNotification(client: AuthSocket, data:{type:boolean, Id:string})
   {
     // check the notification table and change the read field from false to true.
-
+    
   }
   // To-Do Setup events
   // userLoggedIn
