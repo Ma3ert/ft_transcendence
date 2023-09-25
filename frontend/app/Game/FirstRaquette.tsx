@@ -20,7 +20,6 @@ type Props = {
     setxPosition:React.Dispatch<React.SetStateAction<number>>
 }
 
-
 const FirstRaquette = ({socket, w, h, x, y, src, state}: Props) => {
     socket.connect();
     const activeKeys: Record<string, boolean> = {};
