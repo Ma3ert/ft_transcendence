@@ -21,11 +21,11 @@ export class ChatController {
         try{
             const userId = req.user['id'] as string;
             const channel = await this.chatService.createChannel(userId, createChannelDto);
-            return channel;
+            return {status:"success", message:"create channel successfully"};
         } catch(error){
             throw new HttpException({
-                error:`${error}`,
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message:"Creation Channel Error"
             },HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -40,6 +40,7 @@ export class ChatController {
         {
             const userId = req.user['id'] as string;
             await this.chatService.deleteChannelById(userId, channel);
+            return {status:"success", message:"delete channel successfully"};
         }
         catch(error)
         {
@@ -58,6 +59,7 @@ export class ChatController {
         try{
             const userId = req.user['id'] as string;
             await this.chatService.userJoinChannel(userId, channelId, joinchannelDto.password);
+            return {status:"success", message:"joined channel successfully"};
         }
         catch(error){
             throw new HttpException({
@@ -77,6 +79,7 @@ export class ChatController {
         {
             const userId = req.user['id'] as string;
             await this.chatService.leaveChannel(channelId, userId);
+            return {status:"success", message:"left successfully"};
         }
         catch(error)
         {
@@ -105,6 +108,7 @@ export class ChatController {
         }
     }
 
+    // upgrade user to admin
     @Patch('/channels/:channelId/upgrade/:upgradeuser')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
@@ -123,6 +127,7 @@ export class ChatController {
         }
     }
 
+    // down grade user to member
     @Patch('/channels/:channelId/downgrade/:downgradeuser')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
@@ -263,7 +268,7 @@ export class ChatController {
     }
 
     // sent invite
-    @Post('/channels/:channelId/invitesent/:userId')
+    @Post('/channels/:channelId/sent/:userId')
     @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -282,14 +287,14 @@ export class ChatController {
     }
 
     // accept invite
-    @Delete('/channels/:channelId/inviteaccept/:userId')
-    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @Post('/channels/:channelId/accept/')
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async acceptInvite(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+    async acceptInvite(@Param('channelId') channelId:string, @Body() joinchannelDto:joinChannelDto, @Req() req:Request){
         try{
             const user = req.user['id'] as string;
-            await this.chatService.deleteChannelInvite(user, userId, channelId);
+            await this.chatService.userJoinChannel(user, channelId, joinchannelDto.password);
+            await this.chatService.deleteChannelInvite(user, channelId);
         }
         catch(error)
         {
@@ -302,14 +307,13 @@ export class ChatController {
 
 
     // decline
-    @Delete('/channels/:channelId/invitedecline/:userId')
-    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @Delete('/channels/:channelId/decline/')
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async declineInvite(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+    async declineInvite(@Param('channelId') channelId:string, @Req() req:Request){
         try{
             const user = req.user['id'] as string;
-            await this.chatService.deleteChannelInvite(user, userId, channelId);
+            await this.chatService.deleteChannelInvite(user, channelId);
         }
         catch(error)
         {

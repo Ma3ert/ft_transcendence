@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, Unauthori
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { NotificationType, Role, Type } from '@prisma/client';
+import { ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
 
 @Injectable()
@@ -52,15 +52,28 @@ export class ChatService {
         return channel;
     }
 
+
     // User join the Channel
     // if it is public or private or protected
-    async userJoinChannel(userId:string, channel:string, password:string){
-        const user = await this.prismaService.user.findFirstOrThrow({
-            where:{
-                id:userId,
-            }
-        });
+    // check if the user have an invitation to this channel
+    // 
 
+    async userhasInvitation(user:string, channel:string){
+        return await this.prismaService.channelInvite.findFirst({
+            where:{
+                channelId:channel,
+                receiverId:user
+            }
+        })
+    }
+
+
+    async userJoinChannel(user:string, channel:string, password:string){
+        const userInvite = !!await this.userhasInvitation(user, channel);
+
+        if (!userInvite)
+            throw new InternalServerErrorException("User dosen't have invitation to this channel");
+        // get user
         const Channel = await this.prismaService.channel.findFirst({
             where:{
                 id:channel,
@@ -79,7 +92,7 @@ export class ChatService {
 
         await this.prismaService.channelUser.create({
             data:{
-                userId:userId,
+                userId:user,
                 channelId:channel,
                 role:Role.MEMBER,
             }
@@ -375,24 +388,13 @@ export class ChatService {
         })
     }
 
-    async deleteChannelInvite(sender:string, receiver:string, channel:string)
+    async deleteChannelInvite(user:string, channel:string)
     {
-        const found = await this.prismaService.channelInvite.findFirst({
+        const found = await this.prismaService.channelInvite.deleteMany({
             where:{
-                senderId:sender,
-                receiverId:receiver,
+                receiverId:user,
                 channelId:channel
             },
-            select:{
-                id:true,
-            }
-        })
-        if (!found)
-            return ;
-        await this.prismaService.channelInvite.delete({
-            where:{
-                id:found.id,
-            }
         })
     }
 

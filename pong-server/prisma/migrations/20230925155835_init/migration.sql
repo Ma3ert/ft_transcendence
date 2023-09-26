@@ -2,7 +2,7 @@
 CREATE TYPE "UserStatus" AS ENUM ('ONLINE', 'OFFLINE', 'INMATCH');
 
 -- CreateEnum
-CREATE TYPE "NotificationType" AS ENUM ('FRIENDREQUEST', 'CHANNELINVITE', 'CMESSAGE', 'DMESSAGE');
+CREATE TYPE "NotificationType" AS ENUM ('FRIENDINVITE', 'CHANNELINVITE', 'CMESSAGE', 'DMESSAGE');
 
 -- CreateEnum
 CREATE TYPE "Type" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
@@ -113,10 +113,11 @@ CREATE TABLE "ChannelInvite" (
 -- CreateTable
 CREATE TABLE "Notification" (
     "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
-    "receiverId" TEXT NOT NULL,
+    "channelId" TEXT,
     "type" "NotificationType" NOT NULL,
-    "read" BOOLEAN NOT NULL,
+    "read" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
@@ -186,10 +187,13 @@ ALTER TABLE "ChannelInvite" ADD CONSTRAINT "ChannelInvite_receiverId_fkey" FOREI
 ALTER TABLE "ChannelInvite" ADD CONSTRAINT "ChannelInvite_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
