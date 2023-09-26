@@ -7,10 +7,13 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: ['*'],
+  });
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cookieParser())
+  app.use(cookieParser());
   app.use(passport.initialize());
-  app.useWebSocketAdapter(new IoAdapter(app))
+  app.useWebSocketAdapter(new IoAdapter(app));
   await app.listen(3000);
 }
 bootstrap();
