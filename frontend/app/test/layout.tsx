@@ -33,7 +33,7 @@ export default function RootLayout({
       <body>
         <ChakraProvider theme={theme}>
           <AppNavigationProvider>
-            <ChatProvider>
+            {/* <ChatProvider> */}
               <Grid templateRows={"15vh 85vh"} w="100%" h="100%">
                 <GridItem
                   w="100%"
@@ -47,7 +47,7 @@ export default function RootLayout({
                   {children}
                 </GridItem>
               </Grid>
-            </ChatProvider>
+            {/* </ChatProvider> */}
           </AppNavigationProvider>
         </ChakraProvider>
       </body>

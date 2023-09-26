@@ -10,14 +10,14 @@ type Props = {}
 
 export default function Home() {
   
-  const positions: Point[] = getBallPositions({x: 270, y: 803}, {x: 460, y: 339}, 900, 400);
-  const trajectory: Point[] = getBallTrajectory(positions[0], positions[7], 10)
-  const trajectory2: Point[] = getBallTrajectory(positions[7], positions[4], 10)
-  const trajectory3: Point[] = getBallTrajectory(positions[4], positions[5], 10)
-  const trajectory4: Point[] = getBallTrajectory(positions[5], positions[2], 10)
-  const [Px, setPlayerX] = useState(100);
+  // const positions: Point[] = getBallPositions({x: 270, y: 803}, {x: 460, y: 339}, 900, 400);
+  // const trajectory: Point[] = getBallTrajectory(positions[0], positions[7], 10)
+  // const trajectory2: Point[] = getBallTrajectory(positions[7], positions[4], 10)
+  // const trajectory3: Point[] = getBallTrajectory(positions[4], positions[5], 10)
+  // const trajectory4: Point[] = getBallTrajectory(positions[5], positions[2], 10)
+  // const [Px, setPlayerX] = useState(100);
   // const [Ox, setOtherX] = useState(getOtherPosition({x: 120, y: 200}, {x: 100, y: 100}, {x: Px, y:200}, 100, 60));
-  const table: Point[][] = [trajectory, trajectory2, trajectory3, trajectory4];
+  // const table: Point[][] = [trajectory, trajectory2, trajectory3, trajectory4];
 
   // const handleKeyDown = (event: KeyboardEvent) => {
   //   if (event.key === 'a')

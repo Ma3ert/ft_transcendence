@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { Server }  from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import http from "http";
@@ -6,15 +6,17 @@ import http from "http";
 const express = require("express");
 const app = express();
 
-const server = http.createServer(app);
-const io = new Server(server);
 
 app.use(
   cors({
     origin: "*",
+    credentials:true,
   })
 );
 
+  const server = http.createServer(app);
+  const io = new Server(server);
+  
 export interface Point {
 	x: number;
 	y: number;
@@ -26,6 +28,7 @@ interface Player {
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
 	ballTrajectory: Point[]; // the trajectory of the ball
 	ballPositions: Point[]; // the position of shooting and receiving the ball
+  ballSize: number; // the size of the ball it most responsive
 	indexStart: number; // the index from the ball is going
 	indexEnd: number; // the index of where the ball is gonna end up
 	state: "R" | "S"; // to decide whether the player is a sender or receiver
@@ -50,7 +53,7 @@ interface Player {
   distance: number;
 }
 
-interface Room {
+export interface Room {
   id: string;
   players: Player[];
   gameState: string;
@@ -280,7 +283,8 @@ const createPlayer = (id: number) => {
         velocity: 40,
         you : "",
         other: "",
-        distance: 0
+        distance: 0,
+        ballSize: 10
 	};
 	return player;
   }
@@ -311,13 +315,14 @@ const createPlayer = (id: number) => {
 		velocity: 40,
 		you : "",
 		other: "",
-		distance: 0
+		distance: 0,
+    ballSize: 10
 	};
 	return player;
 };
 
 io.on("connection", (socket) => {
-  console.log("New user connected");
+  console.log(`New user connected ${socket.id}`);
   socket.on("join", () => {
     let room: Room | undefined;
     //   Get the last room in the rooms array and check if the length of the last item is 1
@@ -399,7 +404,7 @@ socket.on("keyEvent", (event: KeyEvent) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log("user disconnected: ", socket.id);
   });
 });
 

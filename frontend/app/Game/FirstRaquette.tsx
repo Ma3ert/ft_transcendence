@@ -15,18 +15,17 @@ type Props = {
     h: string;
     x: number;
     y: number;
-    state: string;
+    gameState: string;
     src: string;
-    setxPosition:React.Dispatch<React.SetStateAction<number>>
+    playerState: string;
 }
 
-const FirstRaquette = ({socket, w, h, x, y, src, state}: Props) => {
-    socket.connect();
+const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState}: Props) => {
     const activeKeys: Record<string, boolean> = {};
     console.log("the xCord: ", x)
     const handleKeyDown = (event: KeyboardEvent) => {
         activeKeys[event.key] = true
-        if (event.key.includes("Arrow"))
+        if (event.key.includes("Arrow") && playerState === "R")
         {
             console.log("if fires ", event.key)
             if (activeKeys["ArrowUp"] && activeKeys["ArrowLeft"])
@@ -55,12 +54,12 @@ const FirstRaquette = ({socket, w, h, x, y, src, state}: Props) => {
                 socket.emit("keyEvent", keyEvent)
             }
         }
-        else if (event.key === "a" && state === "gameStarted")
+        else if (event.key === "a" && gameState === "gameStarted")
         {
             const keyEvent: KeyEvent = {player: 1, key: "A", room: "chihaja"};
             socket.emit("keyEvent", keyEvent)
         }
-        else if (event.key === "d" && state === "gameStarted")
+        else if (event.key === "d" && gameState === "gameStarted")
         {
             const keyEvent: KeyEvent = {player: 1, key: "D", room: "chihaja"};
             socket.emit("keyEvent", keyEvent)

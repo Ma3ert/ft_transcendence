@@ -16,14 +16,11 @@ type Props = {
 	box: number;
 	distance: number;
 	velocity: number;
-	setIndexStart: (n: number) => void;
-	setIndexEnd: (n: number) => void;
 }
 
-const Ball = ({ socket, state, points, box, distance, velocity, setIndexStart, setIndexEnd }: Props) => {
+const Ball = ({ socket, state, points, box, distance, velocity }: Props) => {
 	const [scale, setScale] = useState(points[0].y / 500);
 	const [index, setIndex] = useState(1);
-	// const [turn, setTurn] = useState(0);
 	var boxSize = scale * box
 	const handleMovement = () => {
 		if (state === "gameStarted" && index < points.length - 2)
@@ -36,54 +33,6 @@ const Ball = ({ socket, state, points, box, distance, velocity, setIndexStart, s
 		{
 			const ballEvent: BallEvent = {room: "chi haja", event: "ballReachesEnd"}
 			socket.emit("ballReachesEnd", ballEvent);
-			// if (turn === 0)
-			// {
-			// 	setIndexStart(7);
-			// 	setIndexEnd(3);
-			// 	setTurn(turn + 1);
-			// }
-			// else if (turn === 1)
-			// {
-			// 	setIndexStart(3);
-			// 	setIndexEnd(5);
-			// 	setTurn(turn + 1);
-			// }
-			// else if (turn === 2)
-			// {
-			// 	setIndexStart(5);
-			// 	setIndexEnd(0);
-			// 	setTurn(turn + 1);
-			// }
-			// else if (turn === 3)
-			// {
-			// 	setIndexStart(0);
-			// 	setIndexEnd(9);
-			// 	setTurn(turn + 1);
-			// }
-			// else if (turn === 4)
-			// {
-			// 	setIndexStart(9);
-			// 	setIndexEnd(1);
-			// 	setTurn(turn + 1);
-			// }
-			// else if (turn === 5)
-			// {
-			// 	setIndexStart(1);
-			// 	setIndexEnd(8);
-			// 	setTurn(turn + 1);
-			// }
-			// else if (turn === 6)
-			// {
-			// 	setIndexStart(8);
-			// 	setIndexEnd(0);
-			// 	setTurn(turn + 1);
-			// }
-			// else
-			// {
-			// 	setIndexStart(0);
-			// 	setIndexEnd(7);
-			// 	setTurn(0);
-			// }
 		}
 	}
 	useEffect(() => {
