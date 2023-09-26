@@ -8,18 +8,29 @@ import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
-import { FriendslistModule } from './invites/invite.module';
+import { InvitesModule } from './invites/invite.module';
 import { NotificationModule } from './notification/notification.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MulterModule.register({ storage: memoryStorage() }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp-relay.brevo.com',
+        port: 587,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      },
+    }),
     AuthModule,
     PassportModule.register({ session: true }),
     GameModule,
     ChatModule,
-    FriendslistModule,
+    InvitesModule,
     NotificationModule,
   ],
   controllers: [AppController],

@@ -60,12 +60,9 @@ export class AuthController {
   async requestTwoFactorPin(@Req() request: any) {
     const pin = await this.authService.generateTwoFactorPin(request.user);
     if (!pin)
-      throw new HttpException(
-        'You do not have enough permission please login again.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    //! Should change this response and remove the pin
-    return { status: 'success', pinNumber: pin };
+      throw new HttpException('Failed to generate two factor code, please retry.', HttpStatus.UNAUTHORIZED);
+    const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
+    if (email) return { status: 'success', message: 'Two factor code sent to your email.' };
   }
 
   @Post('/twoFactor')

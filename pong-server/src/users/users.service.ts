@@ -31,6 +31,9 @@ export class UsersService {
       where: {
         id,
       },
+      include: {
+        friendsList: true,
+      }
     });
   }
 
