@@ -24,17 +24,15 @@ type EventName =
   |  "serverSayHello"
   | "readChatNotification"
 
-
-
-type ServerNotificationMessage = {
-    username?: string;
-    userid?: number;
-  socktid: string;
+type checkStatus = {
+  userid?: number;
 }
 
+type ServerNotificationMessage = checkStatus | checkChatNotification | ReadChatNotification
+
 type  DirectMessage = {
-    to?: number;
-    from?: number;
+    to?: string;
+    from?: string;
     username?:string;
     message?: string;
     socketid?: string;
@@ -42,8 +40,8 @@ type  DirectMessage = {
 }
 
 type ChannelMessage ={
-    from?:number
-    channelid?:number
+    from?:string
+    channelid?:string
     message?:string
 }
 
@@ -60,14 +58,30 @@ type Tab = {
   action: () => void;
   value: JSX.Element;
 };
+
+
+
 type User = {
-  imageUrl: string;
+  avatar: string;
   username: string;
-  online: boolean;
-  level: number;
-  id: number;
+  id: string;
+  email: string;
+  status: string;
+  created_at: string;
+  twoFactor: boolean;
+  twoFactorPin:string | null;
+  activated: boolean;
+  pinValidated: boolean;
+  twoFactorRetry: number;
+  friendList: User[];
 };
 
+type meResponse = {
+  status: string;
+  data: User;
+};
+
+type UsersResponse = User []
 
 type ChannelMessage = {
   from: number
@@ -85,8 +99,8 @@ type Channel = {
   membersCount: number;
   imageUrl?: string;
   createdAt?: string;
- s?: ChannelMessage[];
-  id?: number;
+  messages?: ChannelMessage[];
+  id?: string;
 };
 
 type friendAction = {
@@ -122,8 +136,8 @@ interface ChatContext {
   setDirectMessages?: (value: DirectMessage[]) => void;
   joinGameStatus?: boolean;
   setJoinGameStatus?: (value: boolean) => void;
-  GameInvitation?: GameInvitation | null;
-  setGameInvitation?: React.Dispatch<React.SetStateAction<GameInvitation | null>>; 
+  GameEnvitation?: GameEnvitation | null;
+  setGameEnvitation?: React.Dispatch<React.SetStateAction<GameEnvitation | null>>; 
   chatNotification?: boolean
   setChatNotification?: React.Dispatch<React.SetStateAction<boolean>>
   requestNotification?: boolean
@@ -187,24 +201,28 @@ type MutationArgs = {
 
 
 type GlobalContext = {
-  Users?: User[];
   socket?: Socket;
   authenticated?: boolean;
   setAuthenticated?: (value: boolean) => void;
 }
 
 
-
+type UsersContext ={
+  Users?: User[]
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>
+  loggedInUser?: User;
+  setLoggedInUser?: React.Dispatch<React.SetStateAction<User>>;
+}
 // Chat Events Types
 
-type GameInvitation = {
-  from: number;
-  to: number;
+type GameEnvitation = {
+  from: string;
+  to: string;
 }
 
 type ReadChatNotification = {
   channel?: boolean
-  id?: number
+  id?: string
 }
 
 type CheckChatNotification = {
@@ -217,3 +235,11 @@ type EventMessage = ServerNotification | DirectMessage
 type userStatus = "online" | "offline" | "blocked" | "BlockingYou"
 
 type notificationType = "request" | "activeChat" | "unactiveChat"
+
+
+type CheckNotificationMessage = {
+  requestNotifications: boolean;
+  chatNotifications: boolean;
+}
+
+type EventHandler = (data: EventMessage) => void

@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5002/api/v1/",
+  baseURL: "http://localhost:3000",
 });
 
 class apiClient<T> {
+  
   endPoint: string;
   constructor(endPoint: string) {
     this.endPoint = endPoint;

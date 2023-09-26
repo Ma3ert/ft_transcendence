@@ -1,20 +1,27 @@
-import React, { useState, useEffect , useContext} from "react";
-import { Button, FormControl, HStack, Input , Image} from "@chakra-ui/react";
+import React, { useState, useEffect, useContext } from "react";
+import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 import { Socket, io } from "socket.io-client";
 import { ChatContext, GlobalContext } from "@/context/Contexts";
-import {SendMessage} from "../../../utils/eventHandlers";
-import { PRIVATE , loggedIndUser} from "../../../contstants";
+import { SendMessage } from "../../../utils/eventHandlers";
+import { PRIVATE, loggedIndUser } from "../../../contstants";
+import useMessageSender from "@/hooks/useMessageSender";
 interface ChatInputBoxProps {
   // socket: Socket;
 }
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
-
   const [message, setMessage] = useState("");
-  const {activePeer, joinGameStatus, setJoinGameStatus, chatType, activeChannel} = useContext (ChatContext)
-  const {socket} = useContext (GlobalContext)
-  
+  const {
+    activePeer,
+    joinGameStatus,
+    setJoinGameStatus,
+    chatType,
+    activeChannel,
+  } = useContext(ChatContext);
+  const { socket } = useContext(GlobalContext);
+  const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
+
   return (
     <HStack
       borderRadius={"29px"}
@@ -28,24 +35,19 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       <Button
         isDisabled={joinGameStatus}
         onClick={() => {
-          const messageBody = {
-            message: message,
-            to:activePeer!.id,
-            from:0,
-            game:true
-          }
+          
           // setJoinGameStatus! (true);
-          console.log ('sending game invitation')
-          SendMessage (socket, messageBody , "directMessage")
+          console.log("sending game invitation");
+          SendMessage();
         }}
         bg="transparent"
-        border='none'
+        border="none"
         outline={"none"}
         _hover={{ opacity: 0.8 }}
-        _active={{transform:'scale(1.1)'}}
-        >
-          <Image src={'/LightSolidLogo.png'} alt={'envite'} w={6} h={'auto'}  />
-        </Button>
+        _active={{ transform: "scale(1.1)" }}
+      >
+        <Image src={"/LightSolidLogo.png"} alt={"envite"} w={6} h={"auto"} />
+      </Button>
 
       <FormControl flex={1}>
         <Input
@@ -76,25 +78,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-
-          if (chatType == PRIVATE)
-          {
-            const messageBody:DirectMessage = {
-              message: message,
-              to:activePeer!.id,
-              from:loggedIndUser!.id
-            }
-            SendMessage (socket, messageBody , "directMessage")
-          }
-          else
-          {
-            const messageBody:ChannelMessage = {
-              message: message,
-              channelid:activeChannel!.id!,
-              from:loggedIndUser!.id
-            }
-            SendMessage (socket, messageBody , "channelMessage")
-          }
+          SendMessage(message);
           setMessage("");
         }}
       >

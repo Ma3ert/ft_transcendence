@@ -14,7 +14,7 @@ const UserChannelHeader: React.FC<UserChannelHeaderProps> = ({ status }) => {
       <Avatar
         borderRadius={chatType == CHANNEL ? "15px" : "full"}
         src={
-          chatType == PRIVATE ? activePeer?.imageUrl : activeChannel?.imageUrl
+          chatType == PRIVATE ? activePeer?.avatar : activeChannel?.imageUrl
         }
         name={chatType == PRIVATE ? activePeer?.username : activeChannel?.name}
         size="sm"

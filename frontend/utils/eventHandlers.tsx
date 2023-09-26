@@ -5,5 +5,7 @@ export const SendMessage = (
   message: DirectMessage | ChannelMessage,
   event: EventName
 ) => {
-  socket.emit(event, message);
+  socket!.emit(event, message);
 };
+
+
