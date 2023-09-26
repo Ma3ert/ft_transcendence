@@ -7,51 +7,39 @@ import { Role } from '@prisma/client';
 import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { RoleGuard } from './role.guard';
+import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 
 
 @Controller('chat')
 export class ChatController {
     constructor(private chatService:ChatService) {}
 
-    // create Channel
+    // create Channel !! clean
     @Post('/channels')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
     async CreateChannel(@Body() createChannelDto:createChannelDto, @Req() req:Request){
         try{
             const userId = req.user['id'] as string;
-            const channel = await this.chatService.createChannel(userId, createChannelDto);
+            await this.chatService.createChannel(userId, createChannelDto);
             return {status:"success", message:"create channel successfully"};
         } catch(error){
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message:"Creation Channel Error"
-            },HttpStatus.INTERNAL_SERVER_ERROR);
+            return {status:"failure", message:`${error}`};
         }
     }
     
-    // delete Channel
+    // delete Channel !! clean
     @Delete('/channels/:channelId')
     @Roles(Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async deleteChannel(@Param('channelId') channel:string, @Req() req:Request){
-        try
-        {
-            const userId = req.user['id'] as string;
-            await this.chatService.deleteChannelById(userId, channel);
-            return {status:"success", message:"delete channel successfully"};
-        }
-        catch(error)
-        {
-            throw new HttpException({
-                error:"You cannot delete This Channel",
-                status: HttpStatus.FORBIDDEN
-            }, HttpStatus.FORBIDDEN);
-        }
+        const userId = req.user['id'] as string;
+        await this.chatService.deleteChannelById(userId, channel);
+        return {status:"success", message:"delete channel successfully"};
     }
 
-    // User Join a Channel
+    // User Join a Channel !! Clean
     @Post('/channels/:channelId/join/')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
@@ -62,58 +50,42 @@ export class ChatController {
             return {status:"success", message:"joined channel successfully"};
         }
         catch(error){
-            throw new HttpException({
-                error: `You cannot Join this Channel`,
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-            }, HttpStatus.INTERNAL_SERVER_ERROR)
+            return {status:"failure", message:`${error}`};
         }
     }
 
-    // leave channel
+    // leave channel !!Clean
     @Delete('/channels/:channelId/leave')
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
-        try
-        {
-            const userId = req.user['id'] as string;
-            await this.chatService.leaveChannel(channelId, userId);
-            return {status:"success", message:"left successfully"};
-        }
-        catch(error)
-        {
-            throw new HttpException(
-                'You are not belonging to this channel',
-                HttpStatus.NOT_FOUND
-            )
-        }
+        const userId = req.user['id'] as string;
+        await this.chatService.leaveChannel(channelId, userId);
+        return {status:"success", message:"left successfully"};
     }
 
-    // get channel Members
+    // get channel Members !!Clean
     @Get('/channels/:channelId/members/')
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async channelMembers(@Param('channelId') channelId:string, @Req() req:Request){
-        try{
+    async channelMembers(
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
             const userId = req.user['id'] as string;
             return await this.chatService.getChannelMembers(channelId, userId);
-        }
-        catch(error)
-        {
-            throw new HttpException(
-                "You don't have the previliege to get cahnnel members",
-                HttpStatus.FORBIDDEN)
-        }
     }
 
-    // upgrade user to admin
+    // upgrade user to admin !!Clean
     @Patch('/channels/:channelId/upgrade/:upgradeuser')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async changePermission(@Param('channelId') channelId:string, @Param('upgradeuser') upgradeuser:string, @Req() req:Request){
+    async changePermission(
+        @Param('channelId') channelId:string,
+        @Param('upgradeuser') upgradeuser:string,
+        @Req() req:Request){
         try{
             const user = req.user['id'] as string;
             await this.chatService.upgradeUser(user, upgradeuser, channelId);
@@ -121,18 +93,19 @@ export class ChatController {
         }
         catch (error)
         {
-            throw new HttpException(
-                `${error}`,
-                HttpStatus.UNAUTHORIZED)
+            return {status:"failure", message:`${error}`};
         }
     }
 
-    // down grade user to member
+    // down grade user to member !!Clean
     @Patch('/channels/:channelId/downgrade/:downgradeuser')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async downGradePersmission(@Param('channelId') channelId:string, @Param('downgradeuser') downgradeuser:string, @Req() req:Request)
+    async downGradePersmission(
+        @Param('channelId') channelId:string,
+        @Param('downgradeuser') downgradeuser:string,
+        @Req() req:Request)
     {
         try{
             const user = req.user['id'] as string;
@@ -141,36 +114,25 @@ export class ChatController {
         }
         catch (error)
         {
-            throw new HttpException(
-                `${error}`,
-                HttpStatus.UNAUTHORIZED)
+            return {status:"failure", message:`${error}`};
+
         }
     }
 
-    // get channel messages
+    // get channel messages !!Clean
     @Get('/channels/:channelId/messages/')
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
-    @UseGuards(RoleGuard)
-    @UseGuards(LoggedInGuard)
+    @UseGuards(LoggedInGuard, RoleGuard)
     async getChannelmessage(
         @Query('skip', ParseIntPipe) skip:number,
         @Query('take', ParseIntPipe) take:number,
         @Param('channelId') channelId:string,
         @Req() req:Request){
-            try
-            {
-                const userId = req.user['id'] as string;
-                return this.chatService.getChannelMessages(skip, take, channelId);
-            }
-            catch(error)
-            {
-                throw new HttpException(
-                    "You can't get channel messages.",
-                HttpStatus.INTERNAL_SERVER_ERROR)
-            }
+            const userId = req.user['id'] as string;
+            return this.chatService.getChannelMessages(skip, take, channelId);
     }
 
-    // get direct message of a conversation
+    // get direct message of a conversation Not yet (after matich complete the block and friend Request)
     @Get('/direct/:friendId/messages/')
     @UseGuards(LoggedInGuard)
     async getDirectMessage(
@@ -178,35 +140,27 @@ export class ChatController {
         @Query('take', ParseIntPipe) take:number,
         @Param('friendId') friend:string,
         @Req() req:Request){
-            try
-            {
-                const userId = req.user['id'] as string;
-                return this.chatService.getDMs(userId,friend, skip, take);
-            }
-            catch(error)
-            {
-                throw new HttpException(
-                    "You can't get the Direct messages of this conversation",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-                )
-            }
+            const userId = req.user['id'] as string;
+        return this.chatService.getDMs(userId,friend, skip, take);
     }
 
+
     @Delete('/channels/:channelId/unban/:userId')
-    @HttpCode(HttpStatus.NO_CONTENT)
     @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async unBanUserFromChannel(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+    async unBanUserFromChannel(
+        @Param('channelId') channelId:string,
+        @Param('userId') userId:string,
+        @Req() req:Request){
         try
         {
             const user = req.user['id'] as string;
             await this.chatService.unbanUser(user, userId, channelId);
+            return {status:"success", message:"unbanned successfully"};
         }
         catch(error){
-            throw new HttpException(
-                `${error}`,
-                HttpStatus.FORBIDDEN);
+            return {status:"failure", message:`${error}`};
         }
     }
 
@@ -215,17 +169,19 @@ export class ChatController {
     @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async banUserFromChannel(@Param('userId') bannedId:string, @Param ('channelId') channelId:string, @Req() req:Request){
+    async banUserFromChannel(
+        @Param('userId') bannedId:string,
+        @Param ('channelId') channelId:string,
+        @Req() req:Request){
         try
         {
             const userId = req.user['id'] as string;
             await this.chatService.banUser(userId, bannedId, channelId);
+            return {status:"success", message:"banned successfully"};
         }
         catch(error)
         {
-            throw new HttpException(
-                "You cannot Ban This User",
-                HttpStatus.FORBIDDEN);
+            return {status:"failure", message:`${error}`};
         }
     }
 
@@ -234,18 +190,11 @@ export class ChatController {
     @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async kickUser(@Param('channelId') channelId:string, @Param('userid') userId:string,@Req() req:Request){
-        try{
-            const userId = req.user['id'] as string;
-            await this.chatService.leaveChannel(channelId, userId);
-        }
-        catch (error)
-        {
-            throw new HttpException(
-                'The User you are Trying to kick is not in the channel.',
-                HttpStatus.NOT_FOUND
-            )
-        }
+    async kickUser(
+        @Param('channelId') channelId:string,
+        @Param('userid') userId:string,
+        @Req() req:Request){
+        await this.chatService.leaveChannel(channelId, userId);
     }
 
     // Mute User
@@ -253,18 +202,18 @@ export class ChatController {
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async MuteUser(@Param('channelId') channelId:string, @Param('userid') mutedId:string, @Req() req:Request){
-        try{
-            const userId = req.user['id'] as string;
-            await this.chatService.muteUser(userId, mutedId, channelId);
-        }
-        catch(error)
-        {
-            throw new HttpException(
-                'You cannot Mute This User.',
-                HttpStatus.FORBIDDEN
-            )
-        }
+    async MuteUser(
+        @Param('channelId') channelId:string,
+        @Param('userid') mutedId:string,
+        @Req() req:Request){
+            try{
+                await this.chatService.muteUser(mutedId, channelId);
+                return {status:"success", message:"Muted successfully"};
+            }
+            catch(error)
+            {
+                return {status:"failure", message:`${error}`};
+            }
     }
 
     // sent invite
@@ -272,17 +221,18 @@ export class ChatController {
     @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async sendInvite(@Param('channelId') channelId:string, @Param('userId') userId:string, @Req() req:Request){
+    async sendInvite(
+        @Param('channelId') channelId:string,
+        @Param('userId') userId:string,
+        @Req() req:Request){
         try{
             const user = req.user['id'] as string;
             await this.chatService.createChannelInvite(user, userId, channelId);
+            return {status:"success", message:"Invite sent successfully"};
         }
         catch(error)
         {
-            throw new HttpException(
-                `${error}`,
-                HttpStatus.FORBIDDEN
-            )
+            return {status:"failure", message:`${error}`};
         }
     }
 
@@ -290,18 +240,19 @@ export class ChatController {
     @Post('/channels/:channelId/accept/')
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async acceptInvite(@Param('channelId') channelId:string, @Body() joinchannelDto:joinChannelDto, @Req() req:Request){
+    async acceptInvite(
+        @Param('channelId') channelId:string,
+        @Body() joinchannelDto:joinChannelDto,
+        @Req() req:Request){
         try{
             const user = req.user['id'] as string;
             await this.chatService.userJoinChannel(user, channelId, joinchannelDto.password);
             await this.chatService.deleteChannelInvite(user, channelId);
+            return {status:"success", message:"Invite accepted"};
         }
         catch(error)
         {
-            throw new HttpException(
-                `${error}`,
-                HttpStatus.FORBIDDEN
-            )
+            return {status:"failure", message:`${error}`};
         }
     }
 
@@ -310,18 +261,11 @@ export class ChatController {
     @Delete('/channels/:channelId/decline/')
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
-    async declineInvite(@Param('channelId') channelId:string, @Req() req:Request){
-        try{
+    async declineInvite(
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
             const user = req.user['id'] as string;
             await this.chatService.deleteChannelInvite(user, channelId);
-        }
-        catch(error)
-        {
-            throw new HttpException(
-                `${error}`,
-                HttpStatus.FORBIDDEN
-            )
-        }
     }
 
     @Get('/channels/')
@@ -341,4 +285,49 @@ export class ChatController {
         const user = req.user['id'] as string;
         return this.chatService.getUserConversations(user);
     }
+
+    @Patch('/channels/:channelId/change-password')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async changeChannelPassword(
+        @Body() changePasswordDto:changeChannelPasswordDto,
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
+            try{
+                await this.chatService.changeChannelPassword(channelId, changePasswordDto);
+                return {status:"success", message:"password changed Successfully"};
+            }
+            catch(error){
+                return {status:"failure", message:`${error}`};
+            }
+    }
+
+    @Patch('/channels/:channelId/remove-password')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async removeChannelPassword(
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
+            await this.chatService.removeChannelPassword(channelId);
+            return {status:"success", message:"password removed Successfully"};
+    }
+
+    @Patch('/channels/:channelId/set-password')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async setChannelPassword(
+        @Body() changePasswordDto:setPasswordDto,
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
+            await this.chatService.setChannelPassword(channelId, changePasswordDto.password);
+            return {status:"success", message:"password set Successfully"};
+    }
+
+    // change avatar upload avatar.
+
+    // change name.
+
 }
