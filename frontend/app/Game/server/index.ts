@@ -285,7 +285,7 @@ const createPlayer = (id: number) => {
         other: "",
         distance: 0,
         ballSize: 10
-	};
+	  };
 	return player;
   }
   const player: Player = {
@@ -332,6 +332,7 @@ io.on("connection", (socket) => {
     }
     // if the room exists just join the second player.
     if (room) {
+      console.log("the second player just arrived")
       socket.join(room.id);
       socket.emit("player", 2);
 
@@ -344,11 +345,16 @@ io.on("connection", (socket) => {
       io.to(room.id).emit("startingGame");
       setTimeout(() => {
         // Here we're giving you a 5 seconds window in case you wanna go jurk it off (practice l3isawiya) or something
-        if (room) io.to(room.id).emit("startedGame", room);
+        if (room) 
+        {
+          room.gameState = "startedGame"
+          io.to(room.id).emit("startedGame", room);
+        }
         // this function should contain the loop that will run the game
         startGame(room);
       }, 5000);
     } else {
+      console.log("the first player just arrived")
       room = {
         id: uuidv4(),
         players: [createPlayer(0)],

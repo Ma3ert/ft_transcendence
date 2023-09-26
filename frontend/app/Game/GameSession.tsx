@@ -4,24 +4,28 @@ import Ball from './Ball'
 import FirstRaquette from './FirstRaquette'
 import SecondRaquette from './SecondRaquette'
 import { Box } from '@chakra-ui/react'
-import io from "socket.io-client"
+import { Socket } from "socket.io-client"
 import {Room} from "./server/index"
+import { Point } from './gameEngine';
 
-const socket = io("http://localhost:3000", { transports: ['websocket', 'polling', 'flashsocket']})
+interface Props {
+  room: Room;
+  playerIndex: number
+  socket: Socket; 
+}
 
-const GameSession = () => {
+const GameSession = ({room, playerIndex, socket}: Props) => {
   const [player, setPlayerState] = useState(room.players[playerIndex]);
   const [gameState, setGameState] = useState(room.gameState);
   useEffect(() => {
-    console.log("machi hna")
     socket.on("updateGame", (data: Room) => {
-      setPlayerState(data.players[playerIndex])
-      setGameState(data.gameState);
+    setPlayerState(data.players[playerIndex])
+    setGameState(data.gameState);
   })
   },[player, gameState])
   return (
     <>
-      {/* {player.ballPositions.map((point) => (
+      {player.ballPositions.map((point: Point) => (
         <Box
           bg={"#fff"}
           position={"absolute"}
@@ -56,7 +60,7 @@ const GameSession = () => {
         x={player.otherPosition.x}
         y={player.otherPosition.y}
         src={player.otherSrc}
-      /> */}
+      />
     </>
   )
 }
