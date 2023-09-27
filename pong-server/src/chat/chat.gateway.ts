@@ -22,6 +22,7 @@ import { UsersService } from 'src/users/users.service';
     origin: ['http://localhost:3001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    allowedHeaders: ['Access-Control-Allow-Origin']
   },
 })
 
