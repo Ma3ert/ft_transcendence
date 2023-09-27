@@ -16,7 +16,7 @@ import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { NotificationService } from 'src/notification/notification.service';
 import { UsersService } from 'src/users/users.service';
 
-@UseGuards(WsLoggedInGuard)
+@UseGuards(WsLoggedInGuard) 
 @WebSocketGateway({
   cors: {
     origin: ['*'],
@@ -46,7 +46,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   }
 
   @SubscribeMessage('userLoggedIn')
-  async userLoggeIn(client:AuthSocket, data:{userId:string}){
+  async userLoggeIn(client:AuthSocket){
     const user : string = client.user.id;
 
     if (this.LoggedInUsers.has(user)){
@@ -55,8 +55,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     else{
       this.LoggedInUsers.set(user, [client]);
     }
-    client.join(data.userId);
-    this.userJoinHisChannel(data.userId, client);
+    client.join(user);
+    this.userJoinHisChannel(user, client);
     await this.checkUserNotification(user);
   }
 
@@ -87,12 +87,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   }
 
   @SubscribeMessage('userIsActive')
-  async userIsActive(client:AuthSocket, data:{userId:string}){
-    if (this.activeUsers.has(data.userId))
-      this.activeUsers.get(data.userId).push(client);
+  async userIsActive(client:AuthSocket){
+    const user = client.user.id;
+  
+    if (this.activeUsers.has(user))
+      this.activeUsers.get(user).push(client);
     else
-      this.activeUsers.set(data.userId, [client]);
-    await this.chatNotification(data.userId);
+      this.activeUsers.set(user, [client]);
+    await this.chatNotification(user);
   }
 
   // check chat notification
@@ -114,20 +116,22 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   }
 
   @SubscribeMessage('userIsNotActive')
-  async UserIsNotActive(client:AuthSocket, data:{userId:string})
+  async UserIsNotActive(client:AuthSocket)
   {
-    if (this.activeUsers.has(data.userId))
+    const user = client.user.id;
+    if (this.activeUsers.has(user))
     {
       // delete the user socket from the activeUsers sockets.
-      const userSockets = this.activeUsers.get(data.userId);
+      const userSockets = this.activeUsers.get(user);
       const socketToDelete = userSockets.indexOf(client);
 
       if (socketToDelete !== -1)
       {
         userSockets.splice(socketToDelete, 1);
-        this.activeUsers.set(data.userId, userSockets);
+        this.activeUsers.set(user, userSockets);
       }
     }
+    this.activeUsers.delete(user);
   }
 
   @SubscribeMessage('DM')

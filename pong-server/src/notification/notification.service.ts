@@ -122,7 +122,8 @@ export class NotificationService {
     async chatNotification(user:string)
     {
         let chatNotif:Set<chatNotification> = new Set();
-        let allNotification:{DM:[string], CM:[string]};
+        let allNotification:{DM:[string], CM:[string]} = {DM:[null], CM:[null]};
+
 
         // get the user notification related to channel/direct messages
         const chatUserNotification = await this.prismaService.notification.findMany({
@@ -138,17 +139,18 @@ export class NotificationService {
         // get unique of them by pushing them into a set.
         for (const chat of chatUserNotification){
             if (chat.type === NotificationType.CMESSAGE)
-                chatNotif.add(new chatNotification(chat.channelId, NotificationType.CMESSAGE));
-            else
-                chatNotif.add(new chatNotification(chat.senderId, NotificationType.DMESSAGE));
+            chatNotif.add(new chatNotification(chat.channelId, NotificationType.CMESSAGE));
+        else
+        chatNotif.add(new chatNotification(chat.senderId, NotificationType.DMESSAGE));
         };
         // filter the result.
-        chatNotif.forEach((value) => {
+        for(const value of chatNotif)
+        {
             if (value.type === NotificationType.CMESSAGE)
                 allNotification['CM'].push(value.id);
             else
                 allNotification['DM'].push(value.id);
-        })
+        }
         return allNotification;
     }
 
