@@ -243,3 +243,9 @@ type CheckNotificationMessage = {
 }
 
 type EventHandler = (data: EventMessage) => void
+
+type UserChannel = {
+  channelid?: string;
+  userid?: string;
+  password?: string;
+}
