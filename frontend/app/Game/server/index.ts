@@ -14,8 +14,8 @@ app.use(
   })
 );
 
-  const server = http.createServer(app);
-  const io = new Server(server);
+const server = http.createServer(app);
+const io = new Server(server);
   
 export interface Point {
 	x: number;
@@ -332,7 +332,7 @@ io.on("connection", (socket) => {
     }
     // if the room exists just join the second player.
     if (room) {
-      console.log("the second player just arrived")
+      console.log("the second player just arrived: ", room.id)
       socket.join(room.id);
       socket.emit("player", 2);
 
@@ -354,12 +354,12 @@ io.on("connection", (socket) => {
         startGame(room);
       }, 5000);
     } else {
-      console.log("the first player just arrived")
       room = {
         id: uuidv4(),
         players: [createPlayer(0)],
         gameState: "init"
       };
+      console.log("the first player just arrived: ", room.id)
       room.players[0].roomId = room.id;
       rooms.push(room);
       socket.join(room.id);
@@ -405,13 +405,13 @@ socket.on("keyEvent", (event: KeyEvent) => {
     if (room) io.to(room.id).emit("updateGame", room);
   });
 
-  socket.on("leave", (roomID) => {
-    socket.leave(roomID);
-  });
+socket.on("leave", (roomID) => {
+  socket.leave(roomID);
+});
 
-  socket.on("disconnect", () => {
-    console.log("user disconnected: ", socket.id);
-  });
+socket.on("disconnect", () => {
+  console.log("user disconnected: ", socket.id);
+});
 });
 
 const startGame = (room: Room | undefined) => {
@@ -420,6 +420,6 @@ const startGame = (room: Room | undefined) => {
   while (room?.gameState !== "gameFinished");
 };
 
-server.listen(3000, () => {
-  console.log("Server listenning on port 3000");
+server.listen(6000, () => {
+  console.log("Server listenning on port 10000000");
 });
