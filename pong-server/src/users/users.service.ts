@@ -31,14 +31,29 @@ export class UsersService {
       where: {
         id,
       },
+      include: {
+        friendsList: true,
+      },
     });
   }
 
   findAll() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+        email: true,
+        activated: true,
+        twoFactor: true,
+        pinValidated: true
+      }
+    });
   }
 
   updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const user = this.prismaService.user.findUnique({ where: { id } });
+    if (!user) return null;
     return this.prismaService.user.update({
       where: {
         id,
@@ -47,17 +62,23 @@ export class UsersService {
         username: updateUserDto.username,
         avatar: updateUserDto.avatar,
       },
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+        activated: true,
+        email: true
+      }
     });
   }
 
-  updateUserAuth(id: string, updateUserDto: AuthUserDto)
-  {
+  updateUserAuth(id: string, updateUserDto: AuthUserDto) {
     return this.prismaService.user.update({
       where: {
         id,
       },
       data: {
-        ...updateUserDto
+        ...updateUserDto,
       },
     });
   }

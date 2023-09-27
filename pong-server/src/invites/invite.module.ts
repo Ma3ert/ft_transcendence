@@ -12,4 +12,4 @@ import { JwtService } from '@nestjs/jwt';
   controllers: [InviteController],
   providers: [InviteService, PrismaService, UsersService, AuthService, JwtService],
 })
-export class FriendslistModule {}
+export class InvitesModule {}

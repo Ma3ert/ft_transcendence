@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import * as bcrypt from 'bcryptjs';
+import * as pug from 'pug';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { MailerService } from '@nestjs-modules/mailer';
 import { AuthUserDto } from 'src/users/dto/auth-user.dto';
 
 @Injectable()
@@ -10,12 +12,12 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
   ) {}
   async validateUser(userData: User) {
     let user = await this.usersService.findOne(userData.email);
     if (!user) user = await this.usersService.createUser(userData);
-    if (user)
-      await this.usersService.updateUserAuth(user.id, { status: 'ONLINE' });
+    if (user) await this.usersService.updateUserAuth(user.id, { status: 'ONLINE' });
     return user;
   }
 
@@ -27,17 +29,30 @@ export class AuthService {
   async verifyAccessToken(token: string) {
     //! Should do the necessary check for user validaion
     try {
-      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET});
+      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });
     } catch (e) {
       return null;
     }
   }
 
-  async getTokenUser(authorization: string)
-  {
+  async sendTwoFactorToken(token: string, user: User) {
+    const html = pug.renderFile(process.cwd() + '/public/template/twofactor.pug', {
+      twoFactorCode: token,
+    });
+
+    const email = await this.mailerService.sendMail({
+      to: user.email,
+      from: 'support@mightypong.com',
+      subject: 'Two factor verification code',
+      html,
+      text: `Your verfication code: ${token}`,
+    });
+    return email;
+  }
+
+  async getTokenUser(authorization: string) {
     const token = authorization.split(' ')[1];
-    if (!token)
-        return null;
+    if (!token) return null;
     const decoded = await this.verifyAccessToken(token);
     const user = await this.usersService.findById(decoded.sub);
     return user;
@@ -50,19 +65,16 @@ export class AuthService {
     const Pin = await bcrypt.hash(rawPin.toString(), 12);
 
     // Save it to the database
-    await this.usersService.updateUserAuth(userData.id, {
+    const update = await this.usersService.updateUserAuth(userData.id, {
       twoFactorPin: Pin,
+      twoFactorPinExpires: new Date(Date.now() + 600000),
     });
     // Send it to the user email
     return rawPin;
   }
 
-  async alterTwoFactorStatus(status: boolean, userReq: User)
-  {
-    const user = await this.usersService.findById(userReq.id);
-    if (user.twoFactor && !user.pinValidated)
-      return null;
-    return await this.usersService.updateUserAuth(user.id, { twoFactor: status })
+  async alterTwoFactorStatus(status: boolean, userReq: User) {
+    return await this.usersService.updateUserAuth(userReq.id, { twoFactor: status, pinValidated: false });
   }
 
   async validateTwoFactorPin(pin: string, user: AuthUserDto) {
@@ -77,7 +89,9 @@ export class AuthService {
     // Alter the the pinValidation status if the pin is validated
     return await this.usersService.updateUserAuth(user.id, {
       pinValidated: true,
-      twoFactorPin: undefined,
+      twoFactorPin: null,
+      twoFactorPinExpires: undefined,
+      twoFactorRetry: 0,
     });
   }
 }

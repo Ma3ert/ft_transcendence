@@ -1,9 +1,10 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { NotificationType, Role, Type } from '@prisma/client';
+import { ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
+import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 
 @Injectable()
 export class ChatService {
@@ -14,20 +15,11 @@ export class ChatService {
         let hashedPassword = null;
 
         if (!createChannelDto.password && createChannelDto.type == Type.PROTECTED)
-            throw new InternalServerErrorException('password not set for protected channel');
+            throw new InternalServerErrorException('Password not set for protected channel');
         
         if (createChannelDto.type === "PROTECTED"){
             hashedPassword = await bcrypt.hash(createChannelDto.password.toString(), 10);
         }
-
-        const ownerId = await this.prismaService.user.findFirstOrThrow({
-            where:{
-                id:owner,
-            },
-            select:{
-                id:true,
-            }
-        })
 
         const channel = await this.prismaService.channel.create({
             data:{
@@ -37,7 +29,7 @@ export class ChatService {
                 avatar:createChannelDto.avatar,
                 members:{
                     create:[
-                        {userId:ownerId.id, role:Role.OWNER},
+                        {userId:owner, role:Role.OWNER},
                     ]
                 }
             },
@@ -48,18 +40,36 @@ export class ChatService {
                 id:true,
             }
         })
-
-        return channel;
     }
 
-    // User join the Channel
-    // if it is public or private or protected
-    async userJoinChannel(userId:string, channel:string, password:string){
-        const user = await this.prismaService.user.findFirstOrThrow({
+    async userhasInvitation(user:string, channel:string){
+        return await this.prismaService.channelInvite.findFirst({
             where:{
-                id:userId,
+                channelId:channel,
+                receiverId:user
             }
-        });
+        })
+    }
+
+
+    async userJoinChannel(user:string, channel:string, password:string){
+        const userExist = await this.prismaService.channelUser.findUnique({
+            where:{
+                userId_channelId:
+                {
+                    userId:user,
+                    channelId:channel,
+                }
+            }
+        })
+
+        if (userExist)
+            throw new ForbiddenException("The User Already Joined the Channel.");
+
+        const userInvite = !!await this.userhasInvitation(user, channel);
+
+        if (!userInvite)
+            throw new InternalServerErrorException("User dosen't have invitation to this channel");
 
         const Channel = await this.prismaService.channel.findFirst({
             where:{
@@ -68,7 +78,7 @@ export class ChatService {
         })
 
         if (Channel.type === Type.PROTECTED && !password)
-            throw new InternalServerErrorException('the channel required password');
+            throw new InternalServerErrorException('The channel required password');
 
         if (password)
         {
@@ -79,7 +89,7 @@ export class ChatService {
 
         await this.prismaService.channelUser.create({
             data:{
-                userId:userId,
+                userId:user,
                 channelId:channel,
                 role:Role.MEMBER,
             }
@@ -176,16 +186,6 @@ export class ChatService {
 
     // Delete Channel
     async deleteChannelById(user:string, channel:string){
-        const owner = await this.prismaService.channelUser.findUniqueOrThrow({
-            where:{
-                userId_channelId:{
-                    userId:user,
-                    channelId:channel,
-                }
-            }
-        })
-        if (owner.role != Role.OWNER)
-            throw new ForbiddenException('You are not the owner of the channel');
         const deletedChannel = await this.prismaService.channel.delete({
             where:{
                 id:channel,
@@ -195,13 +195,6 @@ export class ChatService {
 
     // leave channel
     async leaveChannel(channel:string, user:string){
-        const isInChannel = !!await this.prismaService.channelUser.findFirstOrThrow({
-            where:{
-                userId:user,
-                channelId:channel
-            }
-        })
-
         await this.prismaService.channelUser.delete({
             where:{
                 userId_channelId:{
@@ -232,9 +225,11 @@ export class ChatService {
                 channelId:channel
             }});
         if (!user)
-            throw new InternalServerErrorException('user is not belong to the same channel as the owner.');
+            throw new ForbiddenException('user is not belong to the same channel as the owner.');
+
         if (user.role != Role.MEMBER)
-            throw new InternalServerErrorException("you can't upgrade an owner or admin user");
+            throw new ForbiddenException("you can't upgrade an owner or admin user");
+
         await this.prismaService.channelUser.update({
             where:{
                 userId_channelId:{
@@ -255,9 +250,9 @@ export class ChatService {
                 channelId:channel
             }});
         if (!user)
-            throw new InternalServerErrorException('user is not belong to the same channel as the owner.');
+            throw new ForbiddenException('The User is not belong to the same channel as the owner.');
         if (user.role != Role.ADMIN)
-            throw new InternalServerErrorException("you can't downgrade an owner or member user");
+            throw new ForbiddenException("You can't downgrade an owner or member user");
         await this.prismaService.channelUser.update({
             where:{
                 userId_channelId:{
@@ -273,13 +268,33 @@ export class ChatService {
 
     async banUser(banner:string, banned:string, channel:string)
     {
-        const user = await this.prismaService.channelUser.findUniqueOrThrow({where:{userId_channelId:{userId:banned, channelId:channel}}});
-        const UserBanned = !! await this.prismaService.channelBan.findFirst({where:{userId:banned,channelId:channel,}});
-        if (UserBanned)
-            throw new InternalServerErrorException('The User is already banned');
+        const bannedUser = await this.prismaService.channelUser.findUnique({
+            where:{
+                userId_channelId:{
+                    userId:banned,
+                    channelId:channel,
+                }
+            }
+        })
+        if (!bannedUser)
+            throw new ForbiddenException("The user to banned is not in the Channel.");
 
-        if (user.role == Role.OWNER)
-            throw new InternalServerErrorException('You cannot ban The Owner of The Channel');
+        if (bannedUser.role == Role.OWNER)
+            throw new ForbiddenException('You cannot ban The Owner of The Channel');
+
+        const UserBanned = await this.prismaService.channelBan.findUnique({
+            where:{
+                userId_channelId:
+                {
+                    userId:banned,
+                    channelId:channel
+                }
+            }
+        });
+
+        if (UserBanned)
+            throw new ForbiddenException('The User is already banned');
+
 
         await this.prismaService.channelBan.create({
             data:{
@@ -300,16 +315,21 @@ export class ChatService {
 
     async unbanUser(unbanner:string, banned:string, channel:string)
     {
-        const user = await this.prismaService.channelUser.findFirst({where:{userId:banned, channelId:channel}});
+        const user = await this.prismaService.channelUser.findUnique({
+            where:{
+                userId_channelId:{
+                    userId:banned,
+                    channelId:channel}
+                }
+            });
+
         if (!user)
-            throw new  InternalServerErrorException("The User is not belong to the same channel.");
+            throw new  ForbiddenException("The User is not belong to the same channel.");
 
-        const isbanned = !!await this.prismaService.channelBan.findFirst({where:{userId:banned, channelId:channel}});
+        const isbanned = await this.prismaService.channelBan.findFirst({where:{userId:banned, channelId:channel}});
+
         if (!isbanned)
-            throw new InternalServerErrorException('The User to unban is not banned.');
-
-        if (user.role == Role.OWNER)
-            throw new InternalServerErrorException('You cannot unban The Owner of The Channel');
+            throw new ForbiddenException('The User to unban is not banned.');
 
         await this.prismaService.channelBan.delete({
             where:{
@@ -321,7 +341,7 @@ export class ChatService {
         })
     }
 
-    async muteUser(muter:string, muted:string, channel:string)
+    async muteUser(muted:string, channel:string)
     {
         const mutedId = await this.prismaService.channelUser.findFirst({
             where:{
@@ -331,8 +351,19 @@ export class ChatService {
         });
 
         if (!mutedId || mutedId.role == Role.OWNER)
-            throw new InternalServerErrorException('You cannot Mute this user');
+            throw new ForbiddenException('You cannot Mute this user');
 
+        const isMuted = await this.prismaService.channelMute.findUnique({
+            where:{
+                userId_channelId:{
+                    userId:muted,
+                    channelId:channel
+                }
+            }
+        })
+
+        if (isMuted)
+            throw new ForbiddenException("User is already muted");
         await this.prismaService.channelMute.create({
             data:{
                 userId:muted,
@@ -352,47 +383,68 @@ export class ChatService {
         }, 50000);
     }
 
-    async createChannelInvite(sender:string, receiver:string, channel:string)
+    async createChannelInvite(sender:string, receiver:string, channelId:string)
     {
+        const senderUser = await this.prismaService.channelUser.findUnique({
+            where:{
+                userId_channelId:{
+                    userId:sender,
+                    channelId:channelId,
+                }
+            }
+        });
+
+        const channel = await this.prismaService.channel.findFirst({
+            where:{
+                id:channelId,
+            }
+        })
+
+        if (senderUser.role === Role.MEMBER && (channel.type == Type.PRIVATE || channel.type == Type.PROTECTED))
+            throw new ForbiddenException("The User doesn't have the permission to invite a user to this type of channel.");
+
         const UserExist = await this.prismaService.user.findFirst({
             where:{
                 id:receiver,
             }
         })
-        if (!UserExist)
-            throw new InternalServerErrorException("The User invited doesn't exist.");
-        const User = await this.prismaService.channelInvite.findFirst({where:{receiverId:receiver, channelId:channel}});
 
-        if (User)
+        if (!UserExist)
+            throw new ForbiddenException("The invited User  doesn't exist.");
+
+        const UserInviteExist = await this.prismaService.channelInvite.findFirst({where:{receiverId:receiver, channelId:channelId}});
+
+        if (UserInviteExist)
             throw new InternalServerErrorException("The Invite is already sent to the user.");
+
+        const userInChannel = await this.prismaService.channelUser.findUnique({
+            where:{
+                userId_channelId:{
+                    userId:receiver,
+                    channelId:channelId,
+                }
+            }
+        })
+
+        if (userInChannel)
+            throw new ForbiddenException("The User already joined the Channel.");
 
         await this.prismaService.channelInvite.create({
             data:{
                 senderId:sender,
                 receiverId:receiver,
-                channelId:channel,
+                channelId:channelId,
             }
         })
     }
 
-    async deleteChannelInvite(sender:string, receiver:string, channel:string)
+    async deleteChannelInvite(user:string, channel:string)
     {
-        const found = await this.prismaService.channelInvite.findFirst({
+        const found = await this.prismaService.channelInvite.deleteMany({
             where:{
-                senderId:sender,
-                receiverId:receiver,
+                receiverId:user,
                 channelId:channel
             },
-            select:{
-                id:true,
-            }
-        })
-        if (!found)
-            return ;
-        await this.prismaService.channelInvite.delete({
-            where:{
-                id:found.id,
-            }
         })
     }
 
@@ -451,7 +503,55 @@ export class ChatService {
         return Array.from(new Set(conversationsUsers));
     }
 
-    // async UserIsBelongToChannel(user:string, channels:[string]){
 
-    // }
+    // Not tested Yet.
+    async changeChannelPassword(channel:string, changeChannelPassword:changeChannelPasswordDto)
+    {
+        const Channel = await this.prismaService.channel.findFirst({
+            where:{
+                id:channel,
+            }
+        });
+
+        if (Channel.type != Type.PROTECTED)
+            throw new ForbiddenException("Channel is not Protected By a password");
+
+        const isMatch = await bcrypt.compare(changeChannelPassword.currentPassword, Channel.password);
+        if (!isMatch)
+            throw new ForbiddenException("wrong password.");
+        const newPasswordHashed = await bcrypt.hash(changeChannelPassword.newPassword, 10);
+        await this.prismaService.channel.update({
+            where:{
+                id:channel,
+            },
+            data:{
+                password:newPasswordHashed,
+            }
+        });
+    }
+
+    async removeChannelPassword(channel:string){
+        await this.prismaService.channel.update({
+            where:{
+                id:channel,
+            },
+            data:{
+                type:Type.PUBLIC,
+                password:null,
+            }
+        })
+    }
+
+    async setChannelPassword(channel:string, password:string){
+        const hash = await bcrypt.hash(password, 10);
+        await this.prismaService.channel.update({
+            where:{
+                id:channel
+            },
+            data:{
+                type:Type.PROTECTED,
+                password:hash,
+            }
+        })
+    }
 }
