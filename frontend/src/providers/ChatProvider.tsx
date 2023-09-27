@@ -20,6 +20,10 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [activePeer, setActivePeer] = useState<User>(Friends[0]);
   const [activeChannel, setActiveChannel] = useState<Channel>(Channels[0]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
+  const [directConversations, setDirectConversations] = useState<string[]>([])
+  const [channelConversations, setChannelConversations] = useState<string[]>([])
+  const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
+  const [activePeerStatus, setActivePeerStatus] = useState<boolean>(false)
   const [GameEnvitation, setGameEnvitation] = useState<GameEnvitation | null>(
     null
   );
