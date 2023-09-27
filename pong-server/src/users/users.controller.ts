@@ -65,7 +65,9 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     if (image) updateUserDto.avatar = image;
-    return await this.usersService.updateUser(id, updateUserDto);
+    const user = await this.usersService.updateUser(id, updateUserDto);
+    //! Should add a function that will filter out
+    if (user) return { status: "success", user}
   }
 
   @Delete(':id')

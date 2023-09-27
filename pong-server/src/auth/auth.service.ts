@@ -65,17 +65,16 @@ export class AuthService {
     const Pin = await bcrypt.hash(rawPin.toString(), 12);
 
     // Save it to the database
-    await this.usersService.updateUserAuth(userData.id, {
+    const update = await this.usersService.updateUserAuth(userData.id, {
       twoFactorPin: Pin,
+      twoFactorPinExpires: new Date(Date.now() + 600000),
     });
     // Send it to the user email
     return rawPin;
   }
 
   async alterTwoFactorStatus(status: boolean, userReq: User) {
-    const user = await this.usersService.findById(userReq.id);
-    if (user.twoFactor && !user.pinValidated) return null;
-    return await this.usersService.updateUserAuth(user.id, { twoFactor: status });
+    return await this.usersService.updateUserAuth(userReq.id, { twoFactor: status, pinValidated: false });
   }
 
   async validateTwoFactorPin(pin: string, user: AuthUserDto) {
@@ -90,7 +89,9 @@ export class AuthService {
     // Alter the the pinValidation status if the pin is validated
     return await this.usersService.updateUserAuth(user.id, {
       pinValidated: true,
-      twoFactorPin: undefined,
+      twoFactorPin: null,
+      twoFactorPinExpires: undefined,
+      twoFactorRetry: 0,
     });
   }
 }

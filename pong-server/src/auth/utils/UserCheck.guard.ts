@@ -4,7 +4,7 @@ import { AuthService } from '../auth.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class LoggedInGuard implements CanActivate {
+export class UserCheck implements CanActivate {
   constructor(private readonly authService: AuthService, private readonly userService: UsersService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -13,12 +13,11 @@ export class LoggedInGuard implements CanActivate {
       return false;
     }
     const decoded = await this.authService.verifyAccessToken(req.cookies.jwt);
-    if (!decoded) return false;
+    if (!decoded) {
+      return false;
+    }
     const user = await this.userService.findById(decoded.sub);
     req.user = user;
-    if (!user.twoFactor) {
-      return true;
-    }
-    return user.pinValidated;
+    return user ? true : false;
   }
 }

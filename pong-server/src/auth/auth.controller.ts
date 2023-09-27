@@ -15,6 +15,7 @@ import { AuthService } from './auth.service';
 import { LoggedInGuard } from './utils/LoggedIn.guard';
 import { UsersService } from 'src/users/users.service';
 import { AuthGuard } from '@nestjs/passport';
+import { UserCheck } from './utils/UserCheck.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -35,10 +36,13 @@ export class AuthController {
   }
 
   @Get('42/logout')
-  handleLogout(@Res() res: Response) {
-    //TODO: should set the 2FA validation to false.
+  @UseGuards(LoggedInGuard)
+  async handleLogout(@Res() res: Response, @Req() req: any) {
+    const user = await this.usersService.updateUserAuth(req.user.id, {
+      pinValidated: false,
+    });
     res.cookie('jwt', '');
-    return { status: 'success', message: 'User logout successfully.' };
+    res.status(200).json({ message: 'User logged out successfully.' });
   }
 
   @Post('local/login')
@@ -51,28 +55,34 @@ export class AuthController {
 
   @Patch('/twoFactor')
   @UseGuards(LoggedInGuard)
-  async updateTwoFactorStatus(@Req() req: any, @Body('twoFactor') status: boolean) {
-    this.authService.alterTwoFactorStatus(status, req.user);
+  async updateTwoFactorStatus(@Req() req: any, @Body('activate') status: boolean) {
+    if (this.authService.alterTwoFactorStatus(status, req.user))
+      return { status: 'success', message: `two factor authentification ${status ? 'enabled' : 'disabled'}` };
   }
 
   @Get('/twoFactor')
-  @UseGuards(LoggedInGuard)
+  @UseGuards(UserCheck)
   async requestTwoFactorPin(@Req() request: any) {
     const pin = await this.authService.generateTwoFactorPin(request.user);
     if (!pin)
       throw new HttpException('Failed to generate two factor code, please retry.', HttpStatus.UNAUTHORIZED);
     const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
-    if (email) return { status: 'success', message: 'Two factor code sent to your email.' };
+    if (email)
+      return {
+        status: 'success',
+        message: 'Two factor code sent to your 42 intra email, please check your mailbox.',
+      };
   }
 
   @Post('/twoFactor')
+  @UseGuards(UserCheck)
   async validateTwoFactorPin(@Req() request: any, @Body('pin') pin: string) {
-    if (!request.user)
+    const user = await this.usersService.findById(request.user.id);
+    if (user.twoFactorPinExpires <= new Date(Date.now()))
       throw new HttpException(
-        'You do not have enough permission please login again.',
+        'The Token you have provided is expired please request a new one.',
         HttpStatus.UNAUTHORIZED,
       );
-    const user = await this.usersService.findById(request.user.id);
     if (user.twoFactorRetry >= 3)
       throw new HttpException(
         'You have reached maxium numbers of retires please contact an adminstrator to unlock you account.',
@@ -81,6 +91,6 @@ export class AuthController {
     const result = await this.authService.validateTwoFactorPin(pin, request.user);
     if (!result)
       throw new HttpException('Invalid 2FA Pin number please provide a valid one.', HttpStatus.UNAUTHORIZED);
-    return { status: 'success', message: 'Pin validated succesfully.' };
+    return { status: 'success', message: 'Pin validated successfully.' };
   }
 }
