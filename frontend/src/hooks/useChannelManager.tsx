@@ -34,8 +34,8 @@ const useChannelManager = () => {
     })
     
 
-    function createChannel (channelName:string, channelType:string ){
-        newChannelMutation.mutate({name: channelName, type: channelType})
+    function createChannel (channelName:string, channelType:string , channlPass?:string){
+        newChannelMutation.mutate({name: channelName, type: channelType, password: channlPass!})
     }
 
     function removeChannel (channelId: string){

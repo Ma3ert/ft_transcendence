@@ -117,7 +117,17 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
       </FormControl>
 
       <Button variant="secondary" px={6} borderRadius={"xl"} fontSize="sm" onClick={()=>{
-        channelManager.createChannel (channelName, "PUBLIC")
+        
+
+        if (isPrivate) {
+          channelManager.createChannel (channelName, "PRIVATE")
+        }
+        else if (isProtected) {
+          channelManager.createChannel (channelName, "PROTECTED", channelPassword)
+        }
+        else {
+          channelManager.createChannel (channelName, "PUBLIC")
+        }
       }}>
         done
       </Button>
