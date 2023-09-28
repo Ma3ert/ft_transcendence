@@ -355,5 +355,22 @@ export class ChatController {
             return {status:"success", message:"Channel Name Changed Successfully"};
     }
 
+    @Get('/channels/:channelId/role')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async getUserRole(@Param('channelId') channelId:string, @Req() req:Request)
+    {
+        const user = req.user['id'] as string;
+        return await this.chatService.getUserRoleInCahannel(channelId, user);
+    }
 
+    @Get('/channels/:channelId')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async getChannel(@Param('channelId') channelId:string, @Req() req:Request)
+    {
+        return await this.chatService.getChannelById(channelId);
+    }
 }
