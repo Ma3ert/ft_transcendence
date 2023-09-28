@@ -46,8 +46,8 @@ export class UsersService {
         email: true,
         activated: true,
         twoFactor: true,
-        pinValidated: true
-      }
+        pinValidated: true,
+      },
     });
   }
 
@@ -67,8 +67,8 @@ export class UsersService {
         username: true,
         avatar: true,
         activated: true,
-        email: true
-      }
+        email: true,
+      },
     });
   }
 
@@ -81,6 +81,76 @@ export class UsersService {
         ...updateUserDto,
       },
     });
+  }
+
+  async blockFriend(userId: string, friendId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: friendId,
+      },
+    });
+
+    if (user) {
+      return await this.prismaService.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          friendsList: {
+            disconnect: {
+              id: friendId,
+            },
+          },
+          blocked: {
+            connect: {
+              id: friendId,
+            },
+          },
+        },
+      });
+    }
+  }
+
+  async unblockFriend(userId: string, friendId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: friendId,
+      },
+    });
+
+    if (user) {
+      return await this.prismaService.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          blocked: {
+            disconnect: {
+              id: friendId,
+            },
+          },
+          friendsList: {
+            connect: {
+              id: friendId,
+            },
+          },
+        },
+      });
+    }
+  }
+
+  async checkBlocked(userId: string, friendId: string) {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        id: userId
+      },
+      include: {
+        blocked: true
+      }
+    });
+
+    const blockedUsers = user.blocked.map((blockedUser) => blockedUser.id);
+    return blockedUsers.includes(friendId);
   }
 
   removeUser(id: string) {

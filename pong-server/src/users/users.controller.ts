@@ -30,6 +30,21 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
+  @Post('/block')
+  blockUser(@Body('userId') user: string, @Req() req: any) {
+    return this.usersService.blockFriend(req.user.id, user);
+  }
+
+  @Patch('/block')
+  unblockUser(@Body('userId') user: string, @Req() req: any) {
+    return this.usersService.unblockFriend(req.user.id, user);
+  }
+
+  @Get('/block/:id')
+  checkUserBlocked(@Param('id') user: string, @Req() req: any) {
+    return this.usersService.checkBlocked(req.user.id, user);
+  }
+
   @Get('me')
   @UseGuards(LoggedInGuard)
   getCurrentUser(@Req() req) {
@@ -67,7 +82,7 @@ export class UsersController {
     if (image) updateUserDto.avatar = image;
     const user = await this.usersService.updateUser(id, updateUserDto);
     //! Should add a function that will filter out
-    if (user) return { status: "success", user}
+    if (user) return { status: 'success', user };
   }
 
   @Delete(':id')
