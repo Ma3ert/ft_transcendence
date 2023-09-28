@@ -554,4 +554,57 @@ export class ChatService {
             }
         })
     }
+
+    async changeChannelName(channel:string, newName:string)
+    {
+        await this.prismaService.channel.update({
+            where:{
+                id:channel
+            },
+            data:{
+                name:newName,
+            }
+        })
+    }
+
+    async getUserRoleInCahannel(channel:string, user:string)
+    {
+        return await this.prismaService.channelUser.findUnique({
+            where:{
+                userId_channelId:{
+                    userId:user,
+                    channelId:channel,
+                }
+            },
+            select:{
+                userId:true,
+                role:true,
+            }
+        })
+    }
+
+    async getChannelById(channel:string)
+    {
+        const Channelmembers = await this.prismaService.channel.findUnique({
+            where:{
+                id:channel,
+            },
+            include:{
+                members:true,
+            }
+        });
+    
+        const chan = await this.prismaService.channel.findUnique({
+            where:{
+                id:channel,
+            },
+            select:{
+                name:true,
+                type:true,
+                avatar:true,
+            }
+        });
+        chan['members'] = Channelmembers.members.length;
+        return chan;
+    }
 }

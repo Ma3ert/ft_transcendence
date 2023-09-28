@@ -26,6 +26,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
         },
       },
     }),
+    
     AuthModule,
     PassportModule.register({ session: true }),
     GameModule,
@@ -36,4 +37,5 @@ import { MailerModule } from '@nestjs-modules/mailer';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+}

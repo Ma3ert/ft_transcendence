@@ -1,4 +1,20 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpException,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+    Req,
+    Res,
+    UseGuards
+} from '@nestjs/common';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { createChannelDto } from './dto/channel.create.dto';
 import { ChatService } from './chat.service';
@@ -8,6 +24,7 @@ import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { RoleGuard } from './role.guard';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
+import { changeChannelName } from './dto/changeChannelName.dto';
 
 
 @Controller('chat')
@@ -326,8 +343,34 @@ export class ChatController {
             return {status:"success", message:"password set Successfully"};
     }
 
-    // change avatar upload avatar.
+    @Patch('/channels/:channelId/change-name')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async changeChannelName(
+        @Body() changeChannelName:changeChannelName,
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
+            await this.chatService.changeChannelName(channelId, changeChannelName.name);
+            return {status:"success", message:"Channel Name Changed Successfully"};
+    }
 
-    // change name.
+    @Get('/channels/:channelId/role')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async getUserRole(@Param('channelId') channelId:string, @Req() req:Request)
+    {
+        const user = req.user['id'] as string;
+        return await this.chatService.getUserRoleInCahannel(channelId, user);
+    }
 
+    @Get('/channels/:channelId')
+    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async getChannel(@Param('channelId') channelId:string, @Req() req:Request)
+    {
+        return await this.chatService.getChannelById(channelId);
+    }
 }
