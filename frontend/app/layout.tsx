@@ -1,13 +1,16 @@
 "use client";
-import "../src/theme/styles.css"
-import { Button, ChakraProvider, Input, Stack, Wrap } from '@chakra-ui/react'
-import { Inter } from 'next/font/google'
+import "../src/theme/styles.css";
+import React, { useEffect } from "react";
+import { Button, ChakraProvider, Input, Stack, Wrap } from "@chakra-ui/react";
+import { Inter } from "next/font/google";
 import theme from "@/theme/theme";
-import {FaArrowCircleRight} from "react-icons/fa"
-import IconButton from '@/components/IconButton';
-import localFont from '@next/font/local'
+import { FaArrowCircleRight } from "react-icons/fa";
+import IconButton from "@/components/IconButton";
+import localFont from "@next/font/local";
+import GlobalProvider from "@/providers/GlobalProvider";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 // const visbyRound = localFont({
 //   src: [
@@ -22,15 +25,18 @@ const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
+  const queryClient = new QueryClient();
   return (
     <html lang="en">
       <body>
-        <ChakraProvider theme={theme}>
-          {children}
-        </ChakraProvider>
+        <QueryClientProvider client={queryClient}>
+          <ChakraProvider theme={theme}>
+            <GlobalProvider>{children}</GlobalProvider>
+          </ChakraProvider>
+        </QueryClientProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -100,7 +100,7 @@ const ButtonStyle: ComponentStyleConfig = {
   variants: {
     primary: {
       bg: "#DC585B",
-      fontSize: "20px",
+      fontSize: "sm",
       borderRadius: "50px",
       color: "#F5F5F5",
       py: "7px",
@@ -113,7 +113,7 @@ const ButtonStyle: ComponentStyleConfig = {
     },
     secondary: {
       bg: "#F5F5F5",
-      fontSize: "20px",
+      fontSize: "sm",
       borderRadius: "50px",
       color: "#DC585B",
       py: "7px",
@@ -127,7 +127,7 @@ const ButtonStyle: ComponentStyleConfig = {
     ghost: {
       bg: "transparent",
       color: "#5B6171",
-      fontsize: "20px",
+      fontsize: "sm",
       alignContent: "center",
       py: "7px",
       px: "20px",
@@ -192,11 +192,9 @@ const ButtonStyle: ComponentStyleConfig = {
         opacity: "0.8",
       },
       _active: {
-        bg:'#D9D9D9',
-        color:'#DC585B',
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
-      w:'100%',
+      w:'95%',
       fontSize:'sm',
     },
     largeSecondary:{
@@ -207,11 +205,10 @@ const ButtonStyle: ComponentStyleConfig = {
         opacity: "0.8",
       },
       _active: {
-        bg:'#DC585B',
-        color:'#D9D9D9',
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
-      w:'100%',
+      w:'95%',
+      maxWidth:'320px',
       fontSize:'sm',
     },
     menuItemImportant: {

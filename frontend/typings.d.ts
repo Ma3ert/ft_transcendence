@@ -201,7 +201,8 @@ type MutationArgs = {
 
 
 type GlobalContext = {
-  socket?: Socket;
+  socket?: Socket | null;
+  setSocket?:React.Dispatch<React.SetStateAction<Socket | null>>
   authenticated?: boolean;
   setAuthenticated?: (value: boolean) => void;
 }

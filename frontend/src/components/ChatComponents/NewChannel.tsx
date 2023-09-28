@@ -1,17 +1,53 @@
-import { Icon, Stack, Box, FormControl, Input , Button, Text, HStack, Modal, ModalContent, ModalCloseButton, ModalBody, useDisclosure} from "@chakra-ui/react";
+import {
+  Icon,
+  Stack,
+  Box,
+  FormControl,
+  Input,
+  Button,
+  Text,
+  HStack,
+  Modal,
+  ModalContent,
+  ModalCloseButton,
+  ModalBody,
+  useDisclosure,
+  Checkbox,
+} from "@chakra-ui/react";
 import { FaUserGroup } from "react-icons/fa6";
 import { SlArrowRight } from "react-icons/sl";
-import {HiOutlineX} from "react-icons/hi";
-
+import { HiOutlineX } from "react-icons/hi";
+import { useState } from "react";
+import { LockIcon, ViewOffIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import CostumCheckBox from "./CostumCheckBox";
+import { useEffect } from "react";
+import { z } from "zod";
+import InputWrapper from "../Wrappers/InputWrapper";
+import useChannelManager from "@/hooks/useChannelManager";
 
 interface NewChannelProps {}
 const NewChannel: React.FC<NewChannelProps> = ({}) => {
+  const [isProtected, setIsProtected] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [channelName, setChannelName] = useState("");
+  const [channelPassword, setChannelPassword] = useState("");
+  const channelNameSchema = z.string().min(3).max(20).refine((val) => val !== "");
+  const channelManager = useChannelManager();
   return (
     <Stack spacing={6} justify={"center"} alignItems={"center"}>
-      <Box position="relative" bg='#1D222C' borderRadius={'full'} p={8} display='flex' justifyContent='center' alignItems='center'>
-        <Icon as={FaUserGroup} w={16} h='auto' color={'#5B6171'} />
+      <Box
+        position="relative"
+        bg="#1D222C"
+        borderRadius={"full"}
+        p={8}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        _hover={{ bg: "#181D25" }}
+      >
+        <Icon as={FaUserGroup} w={16} h="auto" color={"#5B6171"} />
         <Icon
-          as={HiOutlineX}
+          as={SmallCloseIcon}
           position="absolute"
           bottom="12px"
           right="12px"
@@ -26,44 +62,67 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
           _hover={{ opacity: 0.8 }}
         />
       </Box>
-      <FormControl w='100%' display={'flex'} flexDir={'column'} justifyContent={'center'} alignItems='center'>
-        <Input variant='default' placeholder="channel's name" w='70%' />
-        <Button variant='ghost' p={6}>
-            <HStack spacing={4}>
-                <Text fontSize='sm' color='#5B6171' >
-                    Add member 
-                </Text>
-                <Icon as={SlArrowRight} color={'#5B6171'} size='sm' />
+      <FormControl
+        w="100%"
+        display={"flex"}
+        flexDir={"column"}
+        justifyContent={"center"}
+        alignItems="center"
+      >
+        <Stack w="100%" spacing={6} justify={"center"} alignItems="center">
+          <InputWrapper
+            scheme={channelNameSchema}
+            state={channelName}
+            setState={setChannelName}
+            placeholder="channel's name"
+          />
+          <HStack w="85%" justifyContent="center" spacing={8} alignItems="center">
+            <HStack spacing={3}>
+              <Text color="#5B6171" fontSize="sm" fontWeight="bold">
+                Private
+              </Text>
+              <CostumCheckBox
+                isChecked={isPrivate}
+                action={() => {
+                  setIsPrivate(!isPrivate);
+                  setIsProtected(false);
+                }}
+                icon={ViewOffIcon}
+              />
             </HStack>
-        </Button>
+            <HStack spacing={3}>
+              <Text color="#5B6171" fontSize="sm" fontWeight="bold">
+                Protected
+              </Text>
+              <CostumCheckBox
+                isChecked={isProtected}
+                action={() => {
+                  setIsProtected(!isProtected);
+                  setIsPrivate(false);
+                }}
+                icon={LockIcon}
+              />
+            </HStack>
+          </HStack>
+          {isProtected && (
+            <Input
+              onChange={(e) => setChannelPassword(e.target.value)}
+              variant="default"
+              _placeholder={{ fontSize: "sm" }}
+              placeholder="channel's password"
+              w="100%"
+            />
+          )}
+        </Stack>
       </FormControl>
 
-      <Button variant='secondary' px={6} borderRadius={'xl'} fontSize='sm'>
+      <Button variant="secondary" px={6} borderRadius={"xl"} fontSize="sm" onClick={()=>{
+        channelManager.createChannel (channelName, "PUBLIC")
+      }}>
         done
       </Button>
     </Stack>
   );
 };
 
-interface NewChannelModalProps {}
-
-const NewChannelModal:React.FC<NewChannelModalProps> = ({})=>{
-    const {isOpen, onClose, onOpen} = useDisclosure ()
-    return (
-       <>
-        <Button variant="secondary" px={4} fontSize={'sm'} onClick={onOpen}>
-          create a channel
-        </Button>
-        <Modal isOpen={isOpen} onClose={onClose}  variant='default'>
-            <ModalContent>
-                <ModalCloseButton/>
-                <ModalBody>
-                    <NewChannel />
-                </ModalBody>
-            </ModalContent>
-        </Modal>
-       </>
-    )
-}
-
-export default NewChannelModal;
+export default NewChannel;

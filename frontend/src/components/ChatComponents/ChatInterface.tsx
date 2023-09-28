@@ -1,18 +1,20 @@
-import React, {useEffect, useContext} from "react";
-import { Grid, GridItem } from "@chakra-ui/react";
+import React, { useEffect, useContext } from "react";
+import { Grid, GridItem, Stack, Button, Text } from "@chakra-ui/react";
 import ChatBox from "../ChatComponents/chatBox";
 import ChatNavigation from "../ChatComponents/ChatNavigation";
 import ChannelSettings from "../ChatComponents/ChannelSettings";
 import EventListener from "../../../utils/EventListener";
-import { GlobalContext } from "@/context/Contexts";
+import { GlobalContext, ChatContext } from "@/context/Contexts";
+import { CHANNEL } from "../../../contstants";
+import { ModalWrapper } from "../Wrappers/ModalWrapper";
+import NewChannel from "./NewChannel";
 
 const ChatInterface: React.FC = ({}) => {
-
-  const {socket} = useContext (GlobalContext)
+  const { socket } = useContext(GlobalContext);
+  const { chatType } = useContext(ChatContext);
   useEffect (()=>{
-       EventListener (socket,'checkChatNotification',  (msg:any)=>{
-          console.log (`${msg} from server`)
-      })
+      const type = chatType == CHANNEL ? "channelMessage" : "directMessage"
+       console.log (type)
   }
   ,[])
   return (
@@ -33,7 +35,15 @@ const ChatInterface: React.FC = ({}) => {
         <ChatBox />
       </GridItem>
       <GridItem justifyContent="center" alignItems="center" w={"100%"} h="100%">
-        <ChannelSettings />
+        {chatType == CHANNEL ? (
+          <ChannelSettings />
+        ) : (
+          <Stack justify={'end'} alignItems={'center'} w='100%' h='90%'>
+            <ModalWrapper type='regular' buttonVariant="largeSecondary" buttonValue={<Text>Create channel</Text>}>
+              <NewChannel />
+            </ModalWrapper>
+          </Stack>
+        )}
       </GridItem>
     </Grid>
   );

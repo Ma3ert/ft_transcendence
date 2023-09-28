@@ -12,6 +12,7 @@ export const SocketAuthMiddlware = (): SocketIOMiddlware => {
     try {
       let payload;
       const { authorization } = client.handshake.headers;
+
       if (!authorization) throw new Error('Could not find the authroization token');
       const token = authorization.split(' ')[1];
       if (token) payload = verify(token, process.env.JWT_SECRET);

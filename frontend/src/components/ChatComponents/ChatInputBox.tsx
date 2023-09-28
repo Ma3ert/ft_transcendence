@@ -38,7 +38,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
           
           // setJoinGameStatus! (true);
           console.log("sending game invitation");
-          SendMessage();
+          // SendMessage();
         }}
         bg="transparent"
         border="none"
@@ -78,7 +78,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-          SendMessage(message);
+          // SendMessage(message);
           setMessage("");
         }}
       >

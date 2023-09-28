@@ -41,12 +41,12 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     setFriends(friends)
     setChannels(Channels);
     console.log(`chat provider mounted socket id : ${socket?.id}`);
-    NotifyServer(socket, "userIsActive", loggedInUser!);
+    // NotifyServer(socket, "userIsActive", loggedInUser!);
     
 
     return () => {
       // emit user is not active event
-      NotifyServer(socket, "userIsNotActive", loggedInUser!);
+      // NotifyServer(socket, "userIsNotActive", loggedInUser!);
       // cleanup
       // cleanup event listeners
     };

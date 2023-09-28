@@ -38,24 +38,24 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
     // if direct messaeges fetch active peer messages
     // if channel fetch channel messages
     console.log(`activePeer is ${activePeer?.username}`);
-    if (chatType == PRIVATE) {
-      NotifyServer(socket!, "checkStatus", activePeer!);
-      NotifyServer(socket!, "readChatNotification",activePeer!,  false);
-      EventListener(socket!, "checkStatus", (msg: any) => {
-        // set peer status
-        console.log(`${msg} from server`);
-      });
+    // if (chatType == PRIVATE) {
+    //   NotifyServer(socket!, "checkStatus", activePeer!);
+    //   NotifyServer(socket!, "readChatNotification",activePeer!,  false);
+    //   EventListener(socket!, "checkStatus", (msg: any) => {
+    //     // set peer status
+    //     console.log(`${msg} from server`);
+    //   });
 
-      listener("directMessage", (message: EventMessage) => {
-        if (message.game)
-          console.log("game envitation");
-          // gameEnviteHandler(message.from, message.to)
-        else setDirectMessages!([...directMessages!, message]);
-      });
-    } else {
-      NotifyServer(socket!, "readChatNotification", activePeer!, true, activeChannel!);
+    //   listener("directMessage", (message: EventMessage) => {
+    //     if (message.game)
+    //       console.log("game envitation");
+    //       // gameEnviteHandler(message.from, message.to)
+    //     else setDirectMessages!([...directMessages!, message]);
+    //   });
+    // } else {
+      // NotifyServer(socket!, "readChatNotification", activePeer!, true, activeChannel!);
 
-    }
+    // }
   }, [directMessages, activePeer, activeChannel, chatType]);
   return (
     <Stack
