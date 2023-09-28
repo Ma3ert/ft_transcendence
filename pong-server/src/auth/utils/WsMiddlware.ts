@@ -10,14 +10,13 @@ export const SocketAuthMiddlware = (): SocketIOMiddlware => {
   const prisma = new PrismaService();
   return async (client: AuthSocket, next) => {
     try {
-      let payload;
-      const { authorization } = client.handshake.auth.token;
-      if (!authorization) throw new Error('Could not find the authroization token');
-      const token = authorization.split(' ')[1];
-      if (token) payload = verify(token, process.env.JWT_SECRET);
+      const { authorization } = client.handshake.headers;
+      const token = (authorization || client.handshake.auth.token).split(' ')[1];
+      if (!token) throw new Error('Could not find the authorization token');
+      const payload = verify(token, process.env.JWT_SECRET);
       const user = await prisma.user.findUnique({
         where: {
-          id: payload.sub,
+          id: payload.sub as string,
         },
       });
       if (user) client.user = user;
