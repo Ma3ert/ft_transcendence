@@ -554,4 +554,16 @@ export class ChatService {
             }
         })
     }
+
+    async changeChannelName(channel:string, newName:string)
+    {
+        await this.prismaService.channel.update({
+            where:{
+                id:channel
+            },
+            data:{
+                name:newName,
+            }
+        })
+    }
 }

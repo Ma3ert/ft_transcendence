@@ -24,6 +24,7 @@ import { Roles } from './decorator/role.decorator';
 import { Request } from 'express';
 import { RoleGuard } from './role.guard';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
+import { changeChannelName } from './dto/changeChannelName.dto';
 
 
 @Controller('chat')
@@ -342,8 +343,17 @@ export class ChatController {
             return {status:"success", message:"password set Successfully"};
     }
 
-    // change avatar upload avatar.
+    @Patch('/channels/:channelId/change-name')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async changeChannelName(
+        @Body() changeChannelName:changeChannelName,
+        @Param('channelId') channelId:string,
+        @Req() req:Request){
+            await this.chatService.changeChannelName(channelId, changeChannelName.name);
+            return {status:"success", message:"Channel Name Changed Successfully"};
+    }
 
-    // change name.
 
 }
