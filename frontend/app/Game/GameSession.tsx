@@ -15,17 +15,18 @@ interface Props {
 }
 
 const GameSession = ({room, playerIndex, socket}: Props) => {
-  const [player, setPlayerState] = useState(room.players[playerIndex]);
+  const [newRoom, setRoom] = useState(room);
   const [gameState, setGameState] = useState(room.gameState);
+  console.log("the game session is redered");
   useEffect(() => {
     socket.on("updateGame", (data: Room) => {
-    setPlayerState(data.players[playerIndex])
-    setGameState(data.gameState);
+      setRoom(data)
+      setGameState(data.gameState);
   })
-  },[player, gameState])
+  },[newRoom, gameState])
   return (
     <>
-      {player.ballPositions.map((point: Point) => (
+      {newRoom.players[playerIndex].ballPositions.map((point: Point) => (
         <Box
           bg={"#fff"}
           position={"absolute"}
@@ -38,28 +39,31 @@ const GameSession = ({room, playerIndex, socket}: Props) => {
       ))}
       <Ball
         socket={socket}
-        points={player.ballTrajectory}
+        points={newRoom.players[playerIndex].ballTrajectory}
         state={gameState}
-        box={player.ballSize}
-        distance={player.distance}
-        velocity={player.velocity}
+        box={newRoom.players[playerIndex].ballSize}
+        distance={newRoom.players[playerIndex].distance}
+        velocity={newRoom.players[playerIndex].velocity}
+        roomId={newRoom.players[playerIndex].roomId}
        />
       <FirstRaquette
         socket={socket}
         gameState={gameState}
-        playerState={player.state}
-        w={player.playerW.toString() + "px"}
-        h={player.playerH.toString() + "px"}
-        x={player.playerPosition.x}
-        y={player.playerPosition.y}
-        src={player.playerSrc}
+        playerState={newRoom.players[playerIndex].state}
+        w={newRoom.players[playerIndex].playerW.toString() + "px"}
+        h={newRoom.players[playerIndex].playerH.toString() + "px"}
+        x={newRoom.players[playerIndex].playerPosition.x}
+        y={newRoom.players[playerIndex].playerPosition.y}
+        src={newRoom.players[playerIndex].playerSrc}
+        roomId={newRoom.players[playerIndex].roomId}
+        playerIndex={playerIndex}
       />
       <SecondRaquette
-        w={player.otherW.toString() + "px"}
-        h={player.otherH.toString() + "px"}
-        x={player.otherPosition.x}
-        y={player.otherPosition.y}
-        src={player.otherSrc}
+        w={newRoom.players[playerIndex].otherW.toString() + "px"}
+        h={newRoom.players[playerIndex].otherH.toString() + "px"}
+        x={newRoom.players[playerIndex].otherPosition.x}
+        y={newRoom.players[playerIndex].otherPosition.y}
+        src={newRoom.players[playerIndex].otherSrc}
       />
     </>
   )

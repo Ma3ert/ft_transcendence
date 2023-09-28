@@ -18,11 +18,13 @@ type Props = {
     gameState: string;
     src: string;
     playerState: string;
+    roomId: string;
+    playerIndex: number;
 }
 
-const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState}: Props) => {
+const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState, roomId, playerIndex}: Props) => {
     const activeKeys: Record<string, boolean> = {};
-    console.log("the xCord: ", x)
+    console.log("player Position and state");
     const handleKeyDown = (event: KeyboardEvent) => {
         activeKeys[event.key] = true
         if (event.key.includes("Arrow") && playerState === "R")
@@ -30,39 +32,44 @@ const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState}: Props)
             console.log("if fires ", event.key)
             if (activeKeys["ArrowUp"] && activeKeys["ArrowLeft"])
             {
-                const keyEvent: KeyEvent = {player: 1, key: "LeftUp", room: "chihaja"};
+                const keyEvent: KeyEvent = {player: playerIndex, key: "LeftUp", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowUp"] && activeKeys["ArrowRight"])
             {
-                const keyEvent: KeyEvent = {player: 1, key: "UpRight", room: "chihaja"};
+                const keyEvent: KeyEvent = {player: playerIndex, key: "UpRight", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowRight"])
             {
-                const keyEvent: KeyEvent = {player: 1, key: "Right", room: "chihaja"};
+                const keyEvent: KeyEvent = {player: playerIndex, key: "Right", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowLeft"])
             {
-                const keyEvent: KeyEvent = {player: 1, key: "Left", room: "chihaja"};
+                const keyEvent: KeyEvent = {player: playerIndex, key: "Left", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowUp"])
             {
-                const keyEvent: KeyEvent = {player: 1, key: "Up", room: "chihaja"};
+                const keyEvent: KeyEvent = {player: playerIndex, key: "Up", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
         }
-        else if (event.key === "a" && gameState === "gameStarted")
+        else if (event.key === "a" && (gameState === "gameStarted" || playerState === "R"))
         {
-            const keyEvent: KeyEvent = {player: 1, key: "A", room: "chihaja"};
+            const keyEvent: KeyEvent = {player: playerIndex, key: "A", room: roomId};
             socket.emit("keyEvent", keyEvent)
         }
-        else if (event.key === "d" && gameState === "gameStarted")
+        else if (event.key === "d" && (gameState === "gameStarted" || playerState === "R"))
         {
-            const keyEvent: KeyEvent = {player: 1, key: "D", room: "chihaja"};
+            const keyEvent: KeyEvent = {player: playerIndex, key: "D", room: roomId};
             socket.emit("keyEvent", keyEvent)
+        }
+        else if (event.key === "Space" && playerState === "S")
+        {
+            const keyEvent: KeyEvent = {player: playerIndex, key: "space", room: roomId};
+            socket.emit("keyEvent", keyEvent);
         }
     }
     useEffect(() => {

@@ -22,7 +22,7 @@ export interface Point {
 	y: number;
 }
 
-interface Player {
+export interface Player {
 	id: number; // the id of the player whether he's the first to shoot or not
 	playerPosition: Point; // the position of the player update by the keystrok from the user
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
@@ -257,7 +257,7 @@ const createPlayer = (id: number) => {
   if (id === 1)
   {
       const player: Player = {
-        id: 0,
+        id: 1,
         playerPosition: {x: 270, y: 803},
         otherPosition: {x: 0, y: 339},
         bottomLeft: {x: 270, y: 803},
@@ -289,7 +289,7 @@ const createPlayer = (id: number) => {
 	return player;
   }
   const player: Player = {
-		id: 1,
+		id: 0,
 		playerPosition: {x: 270, y: 803},
 		otherPosition: {x: 0, y: 339},
 		bottomLeft: {x: 270, y: 803},
@@ -340,14 +340,14 @@ io.on("connection", (socket) => {
       room.players.push(createPlayer(1));
       room.players[1].roomId = room.id;
       room = gameInitializer(room, 0, 1);
-
+      
       // send the startingGame event to the room the players that the game is starting
+      room.gameState = "starting";
       io.to(room.id).emit("startingGame");
       setTimeout(() => {
         // Here we're giving you a 5 seconds window in case you wanna go jurk it off (practice l3isawiya) or something
         if (room) 
         {
-          room.gameState = "startedGame"
           io.to(room.id).emit("startedGame", room);
         }
         // this function should contain the loop that will run the game
@@ -371,6 +371,7 @@ socket.on("ballReachesEnd", (event: BallEvent) => {
     let room: any = rooms.find((room: any) => room.id === event.room);
     // Here you might wanna check if the ball has reached the end
     // and check if the player is in the correct position
+    console.log("recived a key event: ", event);
     if (room){
         room = serveBallAction(event, room);
     }
@@ -389,6 +390,7 @@ socket.on("keyEvent", (event: KeyEvent) => {
     let room: any = rooms.find((room: any) => room.id === event.room);
     
     /// The following room.players[event.player - 1].y is just an example for you to follow
+    console.log("recived a key event: ", event.player);
     if (room) {
         room = servePlayerAction(event, room);
     }
@@ -405,19 +407,24 @@ socket.on("keyEvent", (event: KeyEvent) => {
     if (room) io.to(room.id).emit("updateGame", room);
   });
 
-socket.on("leave", (roomID) => {
-  socket.leave(roomID);
-});
+  socket.on("leave", (roomID) => {
+    socket.leave(roomID);
+  });
 
-socket.on("disconnect", () => {
-  console.log("user disconnected: ", socket.id);
-});
+  socket.on("disconnect", () => {
+    console.log("user disconnected: ", socket.id);
+  });
+
 });
 
 const startGame = (room: Room | undefined) => {
   // here should be an infinite loop or an interval that will monitor the game and
   // update the players score'
-  while (room?.gameState !== "gameFinished");
+  console.log("the game Started")
+  const interval:NodeJS.Timeout = setInterval(() => {
+    if (room?.gameState === "gameFinished")
+      clearInterval(interval);
+  }, 10);
 };
 
 server.listen(6000, () => {
