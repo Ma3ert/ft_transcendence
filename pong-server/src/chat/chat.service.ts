@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
+import { Channel, ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 
@@ -606,5 +606,28 @@ export class ChatService {
         });
         chan['members'] = Channelmembers.members.length;
         return chan;
+    }
+
+    async getAllUserChannels(user: string)
+    {
+        const userChannels = await this.prismaService.channelUser.findMany({
+            where: {
+                userId: user,
+            },
+            select:
+            {
+                channelId: true,
+            }
+        });
+        let channels:Channel[] = [];
+        for (const channel of userChannels) {
+            const chan = await this.prismaService.channel.findUnique({
+                where: {
+                    id: channel.channelId,
+                }
+            });
+            channels.push(chan);
+        }
+        return channels;
     }
 }
