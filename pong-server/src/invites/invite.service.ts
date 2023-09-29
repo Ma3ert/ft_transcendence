@@ -25,9 +25,13 @@ export class InviteService {
       },
       include: {
         friendsList: true,
+        friendOf: true,
       },
     });
-    const friendsList = user.friendsList.map((friend) => friend.id);
+    const friendsList = [
+      ...user.friendsList.map((friend) => friend.id),
+      ...user.friendOf.map((friend) => friend.id),
+    ];
     if (friendsList.includes(inviteBody.invitedUserId)) {
       return null;
     }
@@ -55,8 +59,22 @@ export class InviteService {
         },
       },
       include: {
-        invitedUser: true,
-        inviteOwner: true,
+        invitedUser: {
+          select: {
+            id: true,
+            avatar: true,
+            status: true,
+            username: true,
+          },
+        },
+        inviteOwner: {
+          select: {
+            id: true,
+            avatar: true,
+            status: true,
+            username: true,
+          },
+        },
       },
     });
   }
@@ -73,18 +91,19 @@ export class InviteService {
 
   async getInviteReadyList(userId: string) {
     // List all the users that i can send a friend request to.
-    const invites: Invite[] = await this.getSendInvites(userId);
+    const invites: any[] = await this.getSendInvites(userId);
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
       },
       include: {
         friendsList: true,
+        friendOf: true,
       },
     });
     const users = await this.prismaService.user.findMany();
     const invitesUsers = invites.map((invite) => invite.inviteUserId);
-    const userFriends = user.friendsList.map((user) => user.id);
+    const userFriends = [...user.friendsList.map((user) => user.id), ...user.friendOf.map((user) => user.id)];
     const excludedUsers = [user.id, ...invitesUsers, ...userFriends];
 
     return users.filter((user) => !excludedUsers.includes(user.id));
@@ -102,18 +121,6 @@ export class InviteService {
     const invite: UserInvite = await this.checkInviteById(inviteId);
     // Check the current user is authorized to accept the invite.
     if (invite.inviteUserId !== inviteUserId) return null;
-    await this.prismaService.user.update({
-      where: {
-        id: invite.inviteUserId,
-      },
-      data: {
-        friendsList: {
-          connect: {
-            id: invite.inviteOwnerId,
-          },
-        },
-      },
-    });
     await this.prismaService.user.update({
       where: {
         id: invite.inviteOwnerId,

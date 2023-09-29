@@ -24,8 +24,8 @@ export class InviteController {
       invitedUserId,
       inviteOwnerId: req.user.id,
     });
-    if (!invite) return { status: 'failure', message: 'Could not create invite.' };
-    return { status: 'success', message: 'Invite created successfully.' };
+    if (!invite) return { status: 'failure', message: 'could not create invite.' };
+    return { status: 'success', message: 'invite created successfully.' };
   }
 
   @Post('accept')
@@ -36,7 +36,7 @@ export class InviteController {
         status: 'failure',
         message: 'you are not authrized to accept this invite.',
       };
-    return { status: 'success', message: 'invite accepted succesfully.' };
+    return { status: 'success', message: 'invite accepted successfully.' };
   }
 
   @Get('received')
@@ -58,6 +58,6 @@ export class InviteController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {
     const deletedInvite = await this.inviteService.removeInvite(id, req.user.id);
-    if (deletedInvite) return { status: 'success', message: 'invite deleted succesfully.' };
+    if (deletedInvite) return { status: 'success', message: 'invite deleted successfully.' };
   }
 }

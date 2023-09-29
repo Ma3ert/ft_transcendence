@@ -144,7 +144,7 @@ export class GameService {
         staggedPlayer: undefined,
       });
     }
-    // Dispay invite state
+    // Display invite state
     console.log(this.gameInvites.get(gameInviteId));
 
     // When the user accept add this user to users array
