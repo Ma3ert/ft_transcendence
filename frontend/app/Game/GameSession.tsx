@@ -10,14 +10,14 @@ import { Point } from './gameEngine';
 
 interface Props {
   room: Room;
-  playerIndex: number
+  playerIndex: number;
   socket: Socket; 
 }
 
 const GameSession = ({room, playerIndex, socket}: Props) => {
   const [newRoom, setRoom] = useState(room);
   const [gameState, setGameState] = useState(room.gameState);
-  console.log("the game session is redered");
+  console.log("the game session is rendered: ", room);
   useEffect(() => {
     socket.on("updateGame", (data: Room) => {
       setRoom(data)

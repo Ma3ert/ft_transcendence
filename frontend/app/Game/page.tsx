@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import { Box, Text } from "@chakra-ui/react"
-import { Key, ReactNode, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Ball from "./Ball"
 import {getBallTrajectory, getBallPositions, Point, getOtherPosition} from "./gameEngine"
 import FirstRaquette from "./FirstRaquette"
 import GameSession from "./GameSession"
-import io from "socket.io-client"
+import io, { Socket } from "socket.io-client"
 
 import {Room, Player} from "./server/index"
 
@@ -18,7 +18,7 @@ const player: Player = {
   bottomLeft: {x: 270, y: 803},
   topLeft: {x: 460, y: 339},
   ballPositions: getBallPositions({x: 270, y: 803}, {x: 460, y: 339}, 900, 400),
-  ballTrajectory: [{x: 270, y: 803}],
+  ballTrajectory: [{x: 270, y: 803}, {x: 270, y: 803}],
   indexStart: 0,
   indexEnd: 7,
   state: "S",
@@ -42,41 +42,45 @@ const player: Player = {
   ballSize: 10
 };
 
-const roomDzab: Room = {
-  id: "zab",
+const roomD: Room = {
+  id: "",
   players: [player, player],
-  gameState: "zab"
+  gameState: ""
 }
 
-export default function Home() {
-  const [body, setBody] = useState(false)
-  const [data, setData] = useState<Room>(roomDzab);
-  const socket = io("http://localhost:6000", { transports: ['websocket', 'polling', 'flashsocket']})
-  console.log("the component redered: ", data)
-  var playerIndex = -1;
-  var gameState = ""
-  socket.on("connect", () => {
-    socket.emit("join")
-    console.log("I have send the join request");
-    socket.on("player", (n: number) => {
-      console.log("I have got the role")
-      playerIndex = n - 1;
-    })
 
-    socket.on("startedGame", (data: Room) => {
-      console.log("start event is recieved")
-      console.log("index: ", playerIndex)
-      gameState = data.gameState;
-      console.log("gameState: ", data.gameState)
-      console.log("we return the components: ", data.players[playerIndex])
-      setBody(true)
-      setData(data);
-      console.log("the body is updated")
-    })
-  })
+export default function Home() {
+  const [data, setData] = useState<Room>(roomD);
+  const [playerIndex, setIndex] = useState(0);
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:3002");
+
+    console.log("the component rendered");
+    setSocket(newSocket);
+    newSocket.on("connect", () => {
+      newSocket.emit("join");
+      newSocket.on("player", (n: number) => {
+        setIndex(n - 1);
+      });
+      newSocket.on("startedGame", (data: Room) => {
+        console.log("the setter is fired");
+        setData(data);
+      });
+    });
+
+    // Remember to clean up the socket connection when component unmounts
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [setSocket]);
+
+  console.log("before return");
+
   return (
     <>
-      {body ? <Text color={"#fff"}>the game is loading...</Text> : <GameSession room={data} playerIndex={playerIndex} socket={socket}/>}
+      {socket ? <Text color={"#fff"}>the game is loading...</Text> : <GameSession room={data} playerIndex={playerIndex} socket={socket}/>}
     </>
-  )
+  );
 }

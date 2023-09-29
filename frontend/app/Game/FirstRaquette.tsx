@@ -24,7 +24,7 @@ type Props = {
 
 const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState, roomId, playerIndex}: Props) => {
     const activeKeys: Record<string, boolean> = {};
-    console.log("player Position and state");
+    console.log("player Position and state: ", roomId);
     const handleKeyDown = (event: KeyboardEvent) => {
         activeKeys[event.key] = true
         if (event.key.includes("Arrow") && playerState === "R")

@@ -332,7 +332,7 @@ io.on("connection", (socket) => {
     }
     // if the room exists just join the second player.
     if (room) {
-      console.log("the second player just arrived: ", room.id)
+      // console.log("the second player just arrived: ", room.id)
       socket.join(room.id);
       socket.emit("player", 2);
 
@@ -359,7 +359,7 @@ io.on("connection", (socket) => {
         players: [createPlayer(0)],
         gameState: "init"
       };
-      console.log("the first player just arrived: ", room.id)
+      // console.log("the first player just arrived: ", room.id)
       room.players[0].roomId = room.id;
       rooms.push(room);
       socket.join(room.id);
@@ -371,7 +371,7 @@ socket.on("ballReachesEnd", (event: BallEvent) => {
     let room: any = rooms.find((room: any) => room.id === event.room);
     // Here you might wanna check if the ball has reached the end
     // and check if the player is in the correct position
-    console.log("recived a key event: ", event);
+    console.log("recived a ball event: ", event);
     if (room){
         room = serveBallAction(event, room);
     }
@@ -427,6 +427,6 @@ const startGame = (room: Room | undefined) => {
   }, 10);
 };
 
-server.listen(6000, () => {
+server.listen(3002, () => {
   console.log("Server listenning on port 10000000");
 });
