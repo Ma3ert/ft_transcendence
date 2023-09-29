@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { InviteService } from './invite.service';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 
@@ -23,17 +14,18 @@ export class InviteController {
   }
 
   @Post()
-  create(@Body('invitedUser') invitedUserId: string, @Req() req: any) {
+  async create(@Body('invitedUser') invitedUserId: string, @Req() req: any) {
     if (invitedUserId === req.user.id)
       return {
         status: 'failure',
-        message:
-          'invalid invite, the invite owner should differ from the invited user',
+        message: 'invalid invite, the invite owner should differ from the invited user',
       };
-    return this.inviteService.createInvite({
+    const invite = await this.inviteService.createInvite({
       invitedUserId,
       inviteOwnerId: req.user.id,
     });
+    if (!invite) return { status: 'failure', message: 'Could not create invite.' };
+    return { status: 'success', message: 'Invite created successfully.' };
   }
 
   @Post('accept')
@@ -49,9 +41,7 @@ export class InviteController {
 
   @Get('received')
   async getReceived(@Req() req: any) {
-    const receivedInvites = await this.inviteService.getReceivedInvites(
-      req.user.id,
-    );
+    const receivedInvites = await this.inviteService.getReceivedInvites(req.user.id);
     return {
       status: 'success',
       count: receivedInvites.length,
@@ -68,7 +58,6 @@ export class InviteController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {
     const deletedInvite = await this.inviteService.removeInvite(id, req.user.id);
-    if (deletedInvite)
-      return { status: 'success', message: 'invite deleted succesfully.' }
+    if (deletedInvite) return { status: 'success', message: 'invite deleted succesfully.' };
   }
 }

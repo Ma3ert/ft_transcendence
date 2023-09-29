@@ -30,14 +30,24 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
+  @Get()
+  @UseGuards(LoggedInGuard)
+  findAll() {
+    return this.usersService.findAll();
+  }
+
   @Post('/block')
   blockUser(@Body('userId') user: string, @Req() req: any) {
-    return this.usersService.blockFriend(req.user.id, user);
+    const blocked = this.usersService.blockFriend(req.user.id, user);
+    if (!blocked) return { status: 'failure', message: 'User does not exists in your friendslist.' };
+    return { status: 'success', message: `User ${user} has been blocked successfully.` };
   }
 
   @Patch('/block')
   unblockUser(@Body('userId') user: string, @Req() req: any) {
-    return this.usersService.unblockFriend(req.user.id, user);
+    const unblocked = this.usersService.unblockFriend(req.user.id, user);
+    if (!unblocked) return { status: 'failure', message: 'User does not exists in your blockedlist.' };
+    return { status: 'success', message: `User ${user} has been unblocked successfully.` };
   }
 
   @Get('/block/:id')
@@ -51,17 +61,19 @@ export class UsersController {
     return { status: 'success', data: req.user };
   }
 
-  @Get()
+  @Get('friends')
   @UseGuards(LoggedInGuard)
-  findAll() {
-    return this.usersService.findAll();
+  getUserFriends(@Req() req: any) {
+    return this.usersService.getUserFriends(req.user.id);
   }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     //? This route should calculate properties like stats (wins or loses) and get all user game history
     return this.usersService.findOne(id);
   }
+
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('avatar'))
