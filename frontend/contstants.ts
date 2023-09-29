@@ -5,39 +5,29 @@ export const CHANNEL = false
 
 export const loggedIndUser:User = {
     username:'7amid',
-    imageUrl:'https://source.unsplash.com/random/?profile=5',
-    online:false,
-    id:0,
-    level: 12
+    avatar:'https://source.unsplash.com/random/?profile=5',
+    id:'fd451',
 }
 
 export const friendsList:User[] = [{
     username:'7amid',
-    imageUrl:'https://source.unsplash.com/random/?profile',
-    online:false,
-    id:1,
-    level: 12
+    avatar:'https://source.unsplash.com/random/?profile',
+    id:'0',
 }, 
 {
     username:'Rachid',
-    imageUrl:'https://source.unsplash.com/random/?profile=3',
-    online:true,
-    id:2,
-    level: 1
+    avatar:'https://source.unsplash.com/random/?profile=3',
+    id:'2',
 },
 {
     username:'Wa7id45',
-    imageUrl:'https://source.unsplash.com/random/?profile=1',
-    online:true,
-    id:3,
-    level:5
+    avatar:'https://source.unsplash.com/random/?profile=1',
+    id:'3',
 },
 {
     username:'Sami78',
-    imageUrl:'https://source.unsplash.com/random/?profile=2',
-    online:true,
-    id:4,
-    level:22
+    avatar:'https://source.unsplash.com/random/?profile=2',
+    id:'4',
 }
 
 ]

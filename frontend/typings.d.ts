@@ -7,7 +7,7 @@ type Section =
   | "achievements"
   | "notifications"
   | "friends";
-type FriendsSection = "friends" | "requests";
+type FriendsSection = "friends" | "requests" | "channels";
 type AchievementsSection = "achievements" | "leaderboard";
 type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
@@ -65,15 +65,15 @@ type User = {
   avatar: string;
   username: string;
   id: string;
-  email: string;
-  status: string;
-  created_at: string;
-  twoFactor: boolean;
-  twoFactorPin:string | null;
-  activated: boolean;
-  pinValidated: boolean;
-  twoFactorRetry: number;
-  friendList: User[];
+  email?: string;
+  status?: string;
+  created_at?: string;
+  twoFactor?: boolean;
+  twoFactorPin?:string | null;
+  activated?: boolean;
+  pinValidated?: boolean;
+  twoFactorRetry?: number;
+  friendList?: User[];
 };
 
 type meResponse = {
@@ -213,6 +213,7 @@ type UsersContext ={
   setUsers?: React.Dispatch<React.SetStateAction<User[]>>
   loggedInUser?: User;
   setLoggedInUser?: React.Dispatch<React.SetStateAction<User>>;
+  friendsList?: User[];
 }
 // Chat Events Types
 

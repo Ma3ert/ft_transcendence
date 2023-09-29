@@ -12,6 +12,7 @@ interface UsersProviderProps {
 }
 const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [Users, setUsers] = useState<User[]>([]);
+  const [friendsList, setFriendsList] = useState<User[]>([]);
   const [loggedInUser, setLoggedInUser] = useState<User>({
     id: "0066312b-9ce5-4eb4-a4ce-8fcf467f7e9d",
     username: "ochoumou",
@@ -28,6 +29,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   });
   const allUsersClient = new apiClient("/users");
   const meClient = new apiClient("/users/me");
+  const friendsListClient = new apiClient("/users/friends");
   const {socket} = useContext(GlobalContext)
   const listen = useEventHandler (socket)
 
@@ -52,6 +54,15 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     },
   });
 
+  useQuery("friends", {
+    queryFn: () => friendsListClient.getData().then((res) => res.data),
+    onSuccess: (data: User[]) => {
+      setFriendsList(data);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
   useEffect(() => {
     NotifyServer(socket!, "userLoggedIn", loggedInUser!);
     listen("checkNotification", (msg:CheckNotificationMessage) => {
@@ -60,7 +71,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   }, [Users, loggedInUser]);
 
   return (
-    <UsersContext.Provider value={{ Users, loggedInUser }}>
+    <UsersContext.Provider value={{ Users, loggedInUser, friendsList }}>
       {children}
     </UsersContext.Provider>
   );

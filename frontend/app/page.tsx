@@ -12,11 +12,11 @@ import io from "socket.io-client";
 export default function Home() {
   const { authenticated, setSocket } = useContext(GlobalContext);
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYmFiMGVkOS05YWIwLTQ0NzgtOTFiMC1hMDAyNzJjNzhiOGEiLCJ1c2VybmFtZSI6InllbGF0bWFuIiwiaWF0IjoxNjk1OTEzMTIyLCJleHAiOjE2OTY1MTc5MjJ9.d369K6LftaM4x_XNzLlqoiJ8YbggWEGS0YJqsgAJ3rc";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYmFiMGVkOS05YWIwLTQ0NzgtOTFiMC1hMDAyNzJjNzhiOGEiLCJ1c2VybmFtZSI6InllbGF0bWFuIiwiaWF0IjoxNjk1OTk5NTM2LCJleHAiOjE2OTY2MDQzMzZ9.hK3Hpp6Qd1EJVJ70kFellw9fkbMVBR0ckVLueJhM9S8";
 
   useEffect(() => {
     const socket = io("http://localhost:3000", {
-      // autoConnect: false,
+      autoConnect: false,
       transports: ["websocket", "polling"],
       // closeOnBeforeunload: true,
       // reconnection: false,
@@ -24,6 +24,9 @@ export default function Home() {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    socket.auth = { token: `Bearer ${token}` };
+    socket.connect();
     setSocket!(socket);
     socket.on("connect", () => {
       console.log("client connected");

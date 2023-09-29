@@ -1,28 +1,38 @@
 "use client";
-import { Avatar, Button, Wrap, Text } from '@chakra-ui/react';
-import React from 'react'
-import IconButton from './IconButton';
-import {FaMessage} from "react-icons/fa6"
-import {SlOptions} from "react-icons/sl"
+import { Avatar, Button, Wrap, Text, HStack, Icon } from "@chakra-ui/react";
+import React from "react";
+import IconButton from "./IconButton";
+import { FaMessage } from "react-icons/fa6";
+import { SlOptions } from "react-icons/sl";
+import UserAvatar from "./UserAvatar";
+import { FaEllipsis } from "react-icons/fa6";
 
-type Props = {
-    userPic: string;
-    userName: string;
+interface Props {
+  user: User;
 }
 
-const UserField = ({userName, userPic}: Props) => {
+const UserField: React.FC<Props> = ({ user }) => {
   return (
-    <Button variant={"field"} w={"500px"} h={"74px"}>
-      <Wrap align={"center"} spacing={"130px"}>
-        <Avatar src={userPic} boxSize={"50px"}></Avatar>
-        <Text fontSize={"20px"}>{userName}</Text>
-        <Wrap spacing={"8px"} align={"center"}>
-          <IconButton size="20px" icon={FaMessage}/>
-          <IconButton size="20px" icon={SlOptions}/>
-        </Wrap>
-      </Wrap>
-    </Button>
-  )
-}
+    <Button variant={"field"} w={"100%"} h="auto" px={2}>
+      <HStack w="100%" h="100%" justify="space-between" alignItems="center">
+        <HStack
+          spacing={5}
+          w="100%"
+          justify="start"
+          alignItems="center"
+          px={3}
+          py={2}
+        >
+          <UserAvatar user={user} />
+          <Text fontSize="sm">
+            {user.username}
+          </Text>
+        </HStack>
 
-export default UserField
+        <Icon as={FaEllipsis} _hover={{transform:'scale(1.1)'}} fontSize="25px" />
+      </HStack>
+    </Button>
+  );
+};
+
+export default UserField;

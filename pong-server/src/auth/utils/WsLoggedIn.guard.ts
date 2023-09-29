@@ -16,9 +16,9 @@ export class WsLoggedInGuard implements CanActivate {
     if (context.getType() !== 'ws') return true;
 
     const client: AuthSocket = context.switchToWs().getClient();
+
     const { authorization } = client.handshake.headers;
-    if (!authorization) return false;
-    const user = await this.authService.getTokenUser(authorization);
+    const user = await this.authService.getTokenUser(authorization || client.handshake.auth.token);
     if (!user) return false;
     client.user = user;
     return true;
