@@ -5,10 +5,12 @@ import * as bcrypt from 'bcrypt';
 import { Channel, ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ChatService {
-    constructor(private prismaService:PrismaService){}
+    constructor(private prismaService: PrismaService,
+                private usersService:UsersService) { }
     
     // Create Channel
     async createChannel(owner:string, createChannelDto:createChannelDto){
@@ -97,7 +99,12 @@ export class ChatService {
     }
 
     // Create DM
-    async createDirectMessage(sender:string, receiver:string, message:string){
+    async createDirectMessage(sender: string, receiver: string, message: string) {
+        const isBlocked = await this.usersService.checkBlocked(sender, receiver);
+        const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
+
+        if (isBlocked || isBlockedBy)
+            return ;
         await this.prismaService.directMessage.create({
             data:{
                 senderId:sender,
