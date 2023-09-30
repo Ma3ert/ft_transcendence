@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Avatar, HStack, Text, Stack } from "@chakra-ui/react";
-import { ChatContext , UsersContext} from "@/context/Contexts";
+import { ChannelsContext, ChatContext , UsersContext} from "@/context/Contexts";
 import { PRIVATE, CHANNEL } from "@/../contstants";
 
 interface UserChannelHeaderProps {
@@ -8,8 +8,14 @@ interface UserChannelHeaderProps {
 }
 
 const UserChannelHeader: React.FC<UserChannelHeaderProps> = ({ status }) => {
-  const { activeChannel, chatType } = useContext(ChatContext);
+  const { chatType } = useContext(ChatContext);
   const {activePeer} = useContext (UsersContext)
+  const {activeChannel} = useContext (ChannelsContext)
+
+  useEffect(() => {
+    console.log (`active channel ${activeChannel?.name}`)
+    console.log ('chat type ' + chatType)
+  }, [])
   return (
     <HStack spacing={4} alignItems="center">
       <Avatar
@@ -28,7 +34,7 @@ const UserChannelHeader: React.FC<UserChannelHeaderProps> = ({ status }) => {
           fontSize={"xs"}
           color={(chatType == PRIVATE) && (status == "online") ? "green.300" : "#5B6171"}
         >
-          {chatType == PRIVATE ? status : `${activeChannel?.members.length} members`}
+          {chatType == PRIVATE ? status : `${activeChannel?.members?.length || 0} members`}
         </Text>
       </Stack>
     </HStack>

@@ -5,7 +5,7 @@ import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
-import { ChatContext, UsersContext } from "../../context/Contexts";
+import { ChannelsContext, ChatContext, UsersContext } from "../../context/Contexts";
 import { PRIVATE, CHANNEL } from "../../../contstants";
 import { NotificationWrapper } from "./NotificationBadge";
 interface ChatNavigationProps {}
@@ -13,8 +13,9 @@ interface ChatNavigationProps {}
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Channels, setActiveChannel, activeChannel, setCurrentChat } =
+  const { Channels,  setCurrentChat } =
     useContext(ChatContext);
+    const {activeChannel, setActiveChannel} = useContext(ChannelsContext)
   return (
     <>
       {Channels?.map((channel, index) => {

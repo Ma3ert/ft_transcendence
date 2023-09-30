@@ -4,13 +4,6 @@ import ChatInterface from "@/components/ChatComponents/ChatInterface";
 interface ChatProps {}
 
 const Chat: React.FC<ChatProps> = ({}) => {
-
-  return (
-
-    <ChatProvider>
-      <ChatInterface />
-    </ChatProvider>
-   
-  );
+  return <ChatInterface />;
 };
 export default Chat;

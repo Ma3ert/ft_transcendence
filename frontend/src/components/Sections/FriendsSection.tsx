@@ -14,7 +14,6 @@ const FriendsSection: React.FC<FriendsSectionProps> = ({}) => {
   const { friendsSection } = useContext(AppNavigationContext);
 
   return (
-    <ChatProvider>
       <Stack
         w="100%"
         h="100%"
@@ -28,7 +27,6 @@ const FriendsSection: React.FC<FriendsSectionProps> = ({}) => {
       >
         {friendsSection === "friends" ? <FriendsListSection /> : <ChannelsListSection />}
       </Stack>
-    </ChatProvider>
   );
 };
 

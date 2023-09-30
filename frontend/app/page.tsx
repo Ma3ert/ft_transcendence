@@ -6,6 +6,7 @@ import { useContext } from "react";
 import LoginPage from "@/components/Sections/LoginPage";
 import { GlobalContext } from "@/context/Contexts";
 import UsersProvider from "@/providers/UsersProvider";
+import ChatProvider from "@/providers/ChatProvider";
 import { useEffect } from "react";
 import io from "socket.io-client";
 import ChannelsProvider from "@/providers/ChannelsProvider";
@@ -48,11 +49,13 @@ export default function Home() {
     <Box>
       {authenticated ? (
         <UsersProvider>
-          <ChannelsProvider>
-            <HomeSection>
-              <MainSection />
-            </HomeSection>
-          </ChannelsProvider>
+          <ChatProvider>
+            <ChannelsProvider>
+              <HomeSection>
+                <MainSection />
+              </HomeSection>
+            </ChannelsProvider>
+          </ChatProvider>
         </UsersProvider>
       ) : (
         <LoginPage />

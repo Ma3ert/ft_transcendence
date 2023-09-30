@@ -9,7 +9,7 @@ interface ChannelsProviderProps {
 const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) => 
 {
     const [Channels, setChannels] = useState<Channel[]>([])
-    const [activeChannel, setActiveChannel] = useState<Channel>()
+    const [activeChannel, setActiveChannel] = useState<Channel | null>(null)
     const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
     const [channelConversations, setChannelConversations] = useState<string[]>([])
     const userChannelsClient = new apiClient('/chat/channels/')
@@ -31,7 +31,7 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
         // fetch active channel members
         // fetch channel conversations
     }, [])
-    return <ChannelsContext.Provider value={{Channels, activeChannel}}>
+    return <ChannelsContext.Provider value={{Channels, activeChannel, setActiveChannel}}>
         {children}
     </ChannelsContext.Provider>
 }

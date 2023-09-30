@@ -17,7 +17,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [directMessages, setDirectMessages] =
     useState<DirectMessage[]>(messages);
   const [ChannelsList, setChannels] = useState<Channel[]>([]);
-  const [activeChannel, setActiveChannel] = useState<Channel>(Channels[0]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
   const [directConversations, setDirectConversations] = useState<string[]>([])
   const [channelConversations, setChannelConversations] = useState<string[]>([])
@@ -59,10 +58,8 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       value={{
         chatType: currentChat,
         setCurrentChat,
-        setActiveChannel,
         Friends,
         Channels,
-        activeChannel,
         directMessages,
         setDirectMessages,
         joinGameStatus,
