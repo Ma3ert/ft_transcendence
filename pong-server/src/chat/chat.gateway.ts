@@ -106,7 +106,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.server.to(room).emit("ChatNotification", data);
   }
 
-  // online | offline | blocked | banned
   @SubscribeMessage('checkStatus')
   async checkStatus(client:AuthSocket, data:{userId:string})
   {
