@@ -251,15 +251,22 @@ export class GameService {
   }
 
   async endGameSession(gameSessionId: string) {
-    //TODO: Determine the winner
+    const gameSession = this.gameSessions.get(gameSessionId);
+    const playerOne = gameSession.players[0];
+    const playerTwo = gameSession.players[1];
     //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
-    //TODO: Create an entry in the game table <>
-    await this.createGame;
-    //TODO: Remove both players from the players array
     //TODO: Check users status to ONLINE again
-    //TODO: Quit the game session (ROOM)
-    //TODO: Clear the interval for that game sesion
-    //*: Remove the item from the game sessions map
+    // Create an entry in the game table
+    await this.createGame(gameSessionId);
+    // Remove both players from the players array
+    if (this.allPlayers.has(playerOne.user)) this.allPlayers.delete(playerOne.user);
+    if (this.allPlayers.has(playerTwo.user)) this.allPlayers.delete(playerTwo.user);
+    // Quit the game session (ROOM)
+    playerOne.socket.leave(gameSessionId);
+    playerTwo.socket.leave(gameSessionId);
+    // Clear the interval for that game sesion
+    clearInterval(gameSession.updateInterval);
+    // Remove the item from the game sessions map
     this.gameSessions.delete(gameSessionId);
   }
 
