@@ -6,6 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { RoleGuard } from './role.guard';
 import { AuthModule } from 'src/auth/auth.module';
 import { NotificationService } from 'src/notification/notification.service';
 

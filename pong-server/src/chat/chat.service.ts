@@ -6,11 +6,14 @@ import { Channel, ChannelInvite, NotificationType, Role, Type } from '@prisma/cl
 import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 import { UsersService } from '../users/users.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class ChatService {
     constructor(private prismaService: PrismaService,
-                private usersService:UsersService) { }
+        private usersService: UsersService,
+        // private notificationService: NotificationService
+    ) { }
     
     // Create Channel
     async createChannel(owner:string, createChannelDto:createChannelDto){
@@ -443,6 +446,7 @@ export class ChatService {
                 channelId:channelId,
             }
         })
+        // await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
     }
 
     async deleteChannelInvite(user:string, channel:string)
@@ -453,6 +457,7 @@ export class ChatService {
                 channelId:channel
             },
         })
+        // await this.notificationService.readChannelInviteNotification(user, channel);
     }
 
     async getChannelInvite(channel:string, user:string)
