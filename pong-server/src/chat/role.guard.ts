@@ -33,16 +33,6 @@ export class RoleGuard implements CanActivate {
         })
         if (!roles || roles === undefined)
             return false;
-        const isbanned = await this.prismaService.channelBan.findUnique({
-            where:{
-                userId_channelId:{
-                    userId:user,
-                    channelId:channel
-                }
-            }
-        })
-        if(isbanned)
-            return false;
         return requireRole.some((role) => roles.role.includes(role));
     }
 }

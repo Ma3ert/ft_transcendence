@@ -50,11 +50,11 @@ model User {
   friendsList         User[]     @relation("Friendship")
   friendOf            User[]     @relation("Friendship")
 
-  blocked             User[] @relation("BlackedFriends")
-  blockedBy             User[] @relation("BlackedFriends")
+  blocked             User[]     @relation("BlackedFriends")
+  blockedBy           User[]     @relation("BlackedFriends")
 
-  sentInvites     UserInvite[] @relation("sentInvites")
-  receivedInvites UserInvite[] @relation("receivedInvites")
+  sentInvites         UserInvite[] @relation("sentInvites")
+  receivedInvites     UserInvite[] @relation("receivedInvites")
 
   directmessageSent     DirectMessage[] @relation("DMsent")
   directmessageReceived DirectMessage[] @relation("DMreceived")

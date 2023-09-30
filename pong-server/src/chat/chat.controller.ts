@@ -25,6 +25,7 @@ import { Request } from 'express';
 import { RoleGuard } from './role.guard';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 import { changeChannelName } from './dto/changeChannelName.dto';
+import { BanGuard } from './ban.guard';
 
 
 @Controller('chat')
@@ -96,6 +97,7 @@ export class ChatController {
 
     // upgrade user to admin !!Clean
     @Patch('/channels/:channelId/upgrade/:upgradeuser')
+    @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -116,6 +118,7 @@ export class ChatController {
 
     // down grade user to member !!Clean
     @Patch('/channels/:channelId/downgrade/:downgradeuser')
+    @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -163,6 +166,7 @@ export class ChatController {
 
 
     @Delete('/channels/:channelId/unban/:userId')
+    @UseGuards(BanGuard)
     @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -183,6 +187,7 @@ export class ChatController {
 
     @Post('/channels/:channelId/ban/:userId')
     @HttpCode(HttpStatus.CREATED)
+    @UseGuards(BanGuard)
     @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -204,6 +209,7 @@ export class ChatController {
 
     // kick User
     @Delete('/channels/:channelId/kick/:userid')
+    @UseGuards(BanGuard)
     @Roles(Role.ADMIN, Role.OWNER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -216,6 +222,7 @@ export class ChatController {
 
     // Mute User
     @Post('/channels/:channelId/mute/:userid')
+    @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -235,6 +242,7 @@ export class ChatController {
 
     // sent invite
     @Post('/channels/:channelId/sent/:userId')
+    @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -286,13 +294,11 @@ export class ChatController {
     }
 
     @Get('/channels/')
-    @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
-    @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async getUserChannel(@Req() req:Request)
     {
         const user = req.user['id'] as string;
-        return await this.chatService.getUserChannels(user);
+        return await this.chatService.getAllUserChannels(user);
     }
 
     @Get('/direct/')

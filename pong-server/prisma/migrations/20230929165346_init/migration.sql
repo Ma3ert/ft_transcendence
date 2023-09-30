@@ -19,6 +19,7 @@ CREATE TABLE "User" (
     "twoFactorRetry" INTEGER NOT NULL DEFAULT 0,
     "twoFactor" BOOLEAN NOT NULL DEFAULT false,
     "twoFactorPin" TEXT,
+    "twoFactorPinExpires" TIMESTAMP(3),
     "activated" BOOLEAN NOT NULL DEFAULT false,
     "pinValidated" BOOLEAN NOT NULL DEFAULT false,
     "status" "UserStatus" NOT NULL DEFAULT 'ONLINE',
@@ -129,6 +130,12 @@ CREATE TABLE "_Friendship" (
     "B" TEXT NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_BlackedFriends" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
@@ -140,6 +147,12 @@ CREATE UNIQUE INDEX "_Friendship_AB_unique" ON "_Friendship"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_Friendship_B_index" ON "_Friendship"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_BlackedFriends_AB_unique" ON "_BlackedFriends"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_BlackedFriends_B_index" ON "_BlackedFriends"("B");
 
 -- AddForeignKey
 ALTER TABLE "UserInvite" ADD CONSTRAINT "UserInvite_inviteUserId_fkey" FOREIGN KEY ("inviteUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -200,3 +213,9 @@ ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_A_fkey" FOREIGN KEY ("A") 
 
 -- AddForeignKey
 ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_BlackedFriends" ADD CONSTRAINT "_BlackedFriends_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_BlackedFriends" ADD CONSTRAINT "_BlackedFriends_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

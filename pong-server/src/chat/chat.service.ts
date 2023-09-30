@@ -2,13 +2,18 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
+import { Channel, ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
+import { UsersService } from '../users/users.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class ChatService {
-    constructor(private prismaService:PrismaService){}
+    constructor(private prismaService: PrismaService,
+        private usersService: UsersService,
+        // private notificationService: NotificationService
+    ) { }
     
     // Create Channel
     async createChannel(owner:string, createChannelDto:createChannelDto){
@@ -97,7 +102,12 @@ export class ChatService {
     }
 
     // Create DM
-    async createDirectMessage(sender:string, receiver:string, message:string){
+    async createDirectMessage(sender: string, receiver: string, message: string) {
+        const isBlocked = await this.usersService.checkBlocked(sender, receiver);
+        const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
+
+        if (isBlocked || isBlockedBy)
+            return ;
         await this.prismaService.directMessage.create({
             data:{
                 senderId:sender,
@@ -436,6 +446,7 @@ export class ChatService {
                 channelId:channelId,
             }
         })
+        // await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
     }
 
     async deleteChannelInvite(user:string, channel:string)
@@ -446,6 +457,7 @@ export class ChatService {
                 channelId:channel
             },
         })
+        // await this.notificationService.readChannelInviteNotification(user, channel);
     }
 
     async getChannelInvite(channel:string, user:string)
@@ -606,5 +618,28 @@ export class ChatService {
         });
         chan['members'] = Channelmembers.members.length;
         return chan;
+    }
+
+    async getAllUserChannels(user: string)
+    {
+        const userChannels = await this.prismaService.channelUser.findMany({
+            where: {
+                userId: user,
+            },
+            select:
+            {
+                channelId: true,
+            }
+        });
+        let channels:Channel[] = [];
+        for (const channel of userChannels) {
+            const chan = await this.prismaService.channel.findUnique({
+                where: {
+                    id: channel.channelId,
+                }
+            });
+            channels.push(chan);
+        }
+        return channels;
     }
 }
