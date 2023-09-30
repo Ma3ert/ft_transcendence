@@ -7,26 +7,28 @@ import UserRequest from "../UserRequest";
 import ScrollableStack from "../ScrollableStack";
 import FriendsListHeader from "../ChatComponents/FriendsListHeader";
 import FriendsListSection from "./FriendsListSection";
+import ChatProvider from "@/providers/ChatProvider";
+import ChannelsListSection from "./ChannelsListSection";
 interface FriendsSectionProps {}
 const FriendsSection: React.FC<FriendsSectionProps> = ({}) => {
   const { friendsSection } = useContext(AppNavigationContext);
 
   return (
-    <Stack
-      w="100%"
-      h="100%"
-      justify={"center"}
-      alignItems={"center"}
-      border="1px"
-      borderColor="red"
-      spacing={3}
-      align={"center"}
-      justifyContent='center'
-    >
-        
-        {friendsSection === "friends" ? <FriendsListSection/> : ('requests')}
-       
-    </Stack>
+    <ChatProvider>
+      <Stack
+        w="100%"
+        h="100%"
+        justify={"center"}
+        alignItems={"center"}
+        border="1px"
+        borderColor="red"
+        spacing={3}
+        align={"center"}
+        justifyContent="center"
+      >
+        {friendsSection === "friends" ? <FriendsListSection /> : <ChannelsListSection />}
+      </Stack>
+    </ChatProvider>
   );
 };
 

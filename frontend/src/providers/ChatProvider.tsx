@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
+import { AppNavigationContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { friendsList, Channels, PRIVATE } from "../../contstants";
 import { NotifyServer } from "../../utils/eventEmitter";
 import { messages } from "../../contstants";
@@ -17,7 +17,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [directMessages, setDirectMessages] =
     useState<DirectMessage[]>(messages);
   const [ChannelsList, setChannels] = useState<Channel[]>([]);
-  const [activePeer, setActivePeer] = useState<User>(Friends[0]);
   const [activeChannel, setActiveChannel] = useState<Channel>(Channels[0]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
   const [directConversations, setDirectConversations] = useState<string[]>([])
@@ -28,6 +27,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     null
   );
   const { socket } = useContext(GlobalContext);
+  const {setCurrentSection} = useContext (AppNavigationContext)
   const {loggedInUser, Users} = useContext (UsersContext)
   
 
@@ -58,12 +58,10 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     <ChatContext.Provider
       value={{
         chatType: currentChat,
-        setChatType: setCurrentChat,
+        setCurrentChat,
         setActiveChannel,
-        setActivePeer,
         Friends,
         Channels,
-        activePeer,
         activeChannel,
         directMessages,
         setDirectMessages,

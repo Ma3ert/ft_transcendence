@@ -12,6 +12,7 @@ interface UsersProviderProps {
 }
 const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [Users, setUsers] = useState<User[]>([]);
+  const [activePeer, setActivePeer] = useState<User | null >(null);
   const [friendsList, setFriendsList] = useState<User[]>([]);
   const [loggedInUser, setLoggedInUser] = useState<User>({
     id: "0066312b-9ce5-4eb4-a4ce-8fcf467f7e9d",
@@ -64,6 +65,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     },
   });
   useEffect(() => {
+    console.log(`user provider mounted socket id : ${socket?.id}`);
     NotifyServer(socket!, "userLoggedIn", loggedInUser!);
     listen("checkNotification", (msg:CheckNotificationMessage) => {
       console.log(msg)
@@ -71,7 +73,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   }, [Users, loggedInUser]);
 
   return (
-    <UsersContext.Provider value={{ Users, loggedInUser, friendsList }}>
+    <UsersContext.Provider value={{ Users, loggedInUser, friendsList, activePeer, setActivePeer }}>
       {children}
     </UsersContext.Provider>
   );

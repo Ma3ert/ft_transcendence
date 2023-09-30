@@ -24,7 +24,7 @@ const FriendsListSection: React.FC<FriendsListProps> = ({}) => {
     }, [friendsListType])
   return (
     <Stack w={"60%"} h="100%" spacing={5} justifyContent={'center'} alignItems={'center'}>
-      <FriendsListHeader friendsListType={friendsListType} setFriendsListType={setFriendsListType} />
+      <FriendsListHeader friendsListType={friendsListType} setFriendsListType={setFriendsListType} setUsersList={setUsersList} />
       <ScrollableStack>
         {usersList.map((friend, index) => (
             <UserField key={index} user={friend} />

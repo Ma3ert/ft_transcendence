@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Avatar, HStack, Text, Stack } from "@chakra-ui/react";
-import { ChatContext } from "@/context/Contexts";
+import { ChatContext , UsersContext} from "@/context/Contexts";
 import { PRIVATE, CHANNEL } from "@/../contstants";
 
 interface UserChannelHeaderProps {
@@ -8,7 +8,8 @@ interface UserChannelHeaderProps {
 }
 
 const UserChannelHeader: React.FC<UserChannelHeaderProps> = ({ status }) => {
-  const { activePeer, activeChannel, chatType } = useContext(ChatContext);
+  const { activeChannel, chatType } = useContext(ChatContext);
+  const {activePeer} = useContext (UsersContext)
   return (
     <HStack spacing={4} alignItems="center">
       <Avatar

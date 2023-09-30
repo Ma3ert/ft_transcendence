@@ -1,5 +1,5 @@
 import { HStack, Stack, Text } from "@chakra-ui/react";
-import { ChatContext } from "@/context/Contexts";
+import { ChatContext, UsersContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { loggedIndUser } from "../../../contstants";
 interface MessageBoxProps {
@@ -7,7 +7,7 @@ interface MessageBoxProps {
 }
 const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
 
-  const { activePeer } = useContext(ChatContext);
+  const { activePeer } = useContext(UsersContext);
   return (
     <HStack justify={(Message.from != loggedIndUser.id) ? "end" : "start"} w="98%" mx="auto">
       <Stack

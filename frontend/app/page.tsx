@@ -8,11 +8,12 @@ import { GlobalContext } from "@/context/Contexts";
 import UsersProvider from "@/providers/UsersProvider";
 import { useEffect } from "react";
 import io from "socket.io-client";
+import ChannelsProvider from "@/providers/ChannelsProvider";
 
 export default function Home() {
   const { authenticated, setSocket } = useContext(GlobalContext);
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYmFiMGVkOS05YWIwLTQ0NzgtOTFiMC1hMDAyNzJjNzhiOGEiLCJ1c2VybmFtZSI6InllbGF0bWFuIiwiaWF0IjoxNjk1OTk5NTM2LCJleHAiOjE2OTY2MDQzMzZ9.hK3Hpp6Qd1EJVJ70kFellw9fkbMVBR0ckVLueJhM9S8";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYmFiMGVkOS05YWIwLTQ0NzgtOTFiMC1hMDAyNzJjNzhiOGEiLCJ1c2VybmFtZSI6InllbGF0bWFuIiwiaWF0IjoxNjk2MDc2MTYxLCJleHAiOjE2OTY2ODA5NjF9.XJQwSOArXlybMcNUJMuO4JDp212vqxczMPbvHTCagOs";
 
   useEffect(() => {
     const socket = io("http://localhost:3000", {
@@ -47,9 +48,11 @@ export default function Home() {
     <Box>
       {authenticated ? (
         <UsersProvider>
-          <HomeSection>
-            <MainSection />
-          </HomeSection>
+          <ChannelsProvider>
+            <HomeSection>
+              <MainSection />
+            </HomeSection>
+          </ChannelsProvider>
         </UsersProvider>
       ) : (
         <LoginPage />

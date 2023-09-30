@@ -5,7 +5,7 @@ import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
-import { ChatContext } from "../../context/Contexts";
+import { ChatContext, UsersContext } from "../../context/Contexts";
 import { PRIVATE, CHANNEL } from "../../../contstants";
 import { NotificationWrapper } from "./NotificationBadge";
 interface ChatNavigationProps {}
@@ -13,7 +13,7 @@ interface ChatNavigationProps {}
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Channels, setActiveChannel, activeChannel, setChatType } =
+  const { Channels, setActiveChannel, activeChannel, setCurrentChat } =
     useContext(ChatContext);
   return (
     <>
@@ -24,7 +24,7 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
               isChannel={true}
               channel={channel}
               action={() => {
-                setChatType!(CHANNEL);
+                setCurrentChat!(CHANNEL);
                 setActiveChannel!(channel);
               }}
               active={activeChannel!.id == channel.id}
@@ -37,8 +37,9 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Friends, setActivePeer, activePeer, setChatType } =
+  const { Friends, setCurrentChat } =
     useContext(ChatContext);
+    const {activePeer, setActivePeer} = useContext(UsersContext)
   return (
     <>
       {Friends?.map((friend, index) => {
@@ -48,7 +49,7 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
               isChannel={false}
               user={friend}
               action={() => {
-                setChatType!(PRIVATE);
+                setCurrentChat!(PRIVATE);
                 setActivePeer!(friend);
               }}
               active={activePeer?.id == friend.id}
@@ -62,14 +63,14 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const [privateChat, setPrivate] = useState<boolean>(PRIVATE);
-  const { chatType, setChatType } = useContext(ChatContext);
+  const { chatType, setCurrentChat } = useContext(ChatContext);
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         color="#5B6171"
         onClick={() => {
           setPrivate(!privateChat);
-          // setChatType!(privateChat ? PRIVATE : CHANNEL)
+          // setCurrentChat!(privateChat ? PRIVATE : CHANNEL)
         }}
         icon={privateChat ? FaUserGroup : FaUserAlt}
         size={"25px"}

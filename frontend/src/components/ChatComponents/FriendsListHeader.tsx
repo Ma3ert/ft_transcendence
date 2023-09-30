@@ -1,18 +1,25 @@
 import { HStack, Icon, Text, Input, Button } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import { TbArrowBackUp } from "react-icons/tb";
+import { UsersContext } from "@/context/Contexts";
+import { useContext } from "react";
+import filterUsers from "../../../utils/filterUsers";
 
 interface FriendsListHeaderProps {
   friendsListType: "friends" | "search";
   setFriendsListType: React.Dispatch<
     React.SetStateAction<"friends" | "search">
   >;
+  setUsersList?: React.Dispatch<React.SetStateAction<User[]>>;
 }
 
 const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
   friendsListType,
   setFriendsListType,
+  setUsersList,
 }) => {
+ 
+  const {Users} = useContext(UsersContext)
   return (
     <>
       {friendsListType === "friends" ? (
@@ -61,6 +68,7 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
             h={"100%"}
             fontSize={"sm"}
             py={2}
+            onChange={(e) => setUsersList!(filterUsers(e.target.value, Users!))}
           />
 
           <Icon

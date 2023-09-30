@@ -124,10 +124,8 @@ interface AppNavigationContext {
 
 interface ChatContext {
   chatType?: ChatType;
-  setChatType?: (value: ChatType) => void;
-  setActivePeer?: (value: User) => void;
+  setCurrentChat?:React.Dispatch<React.SetStateAction<ChatType>>
   setActiveChannel?: (value: Channel) => void;
-  activePeer?: User;
   activeChannel?: Channel;
   Friends?: User[];
   Channels?: Channel[];
@@ -214,6 +212,9 @@ type UsersContext ={
   loggedInUser?: User;
   setLoggedInUser?: React.Dispatch<React.SetStateAction<User>>;
   friendsList?: User[];
+  setFriendsList?: React.Dispatch<React.SetStateAction<User[]>>;
+  activePeer?: User | null;
+  setActivePeer?: React.Dispatch<React.SetStateAction<User | null>>;
 }
 // Chat Events Types
 
@@ -250,4 +251,11 @@ type UserChannel = {
   channelid?: string;
   userid?: string;
   password?: string;
+}
+
+type ChannelsContext = {
+  Channels?: Channel[];
+  setChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
+  activeChannel?: Channel;
+  setActiveChannel?: React.Dispatch<React.SetStateAction<Channel>>;
 }
