@@ -20,6 +20,16 @@ import {
   JOINED_GAME_QUEUE,
 } from './utils/events';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+export interface Game {
+  id: string;
+  winner?: string;
+  playerOneScore?: number;
+  playerTwoScore?: number;
+  createdAt?: Date;
+}
 
 export interface Player {
   id: number;
@@ -33,7 +43,6 @@ export interface Player {
 }
 
 export interface GameSession {
-  sessionId: string;
   players: Player[];
   updateInterval?: NodeJS.Timeout;
 }
@@ -45,6 +54,8 @@ export interface MatchItem {
 
 @Injectable()
 export class GameService {
+  constructor(private readonly usersService: UsersService, private readonly prismaService: PrismaService) {}
+
   private allPlayers: Map<string, User> = new Map();
   private gameSessions: Map<string, GameSession> = new Map();
   private gameQueue: Map<string, MatchItem> = new Map();
@@ -70,10 +81,12 @@ export class GameService {
     const playerTwo = playersData[1];
 
     this.gameSessions.set(gameSessionID, {
-      sessionId: gameSessionID,
       players: [playerOne, playerTwo],
     });
-    //TODO: Should change the players status to in match just to notify other users
+
+    // Change the player status to in match
+    this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
+    this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
 
     // Emit the player number.
     server.to(playerOne.socket.id).emit('player', playerOne.id);
@@ -119,8 +132,7 @@ export class GameService {
       server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const invite = this.gameInvites.get(gameInviteId);
-    if (invite.players.length == 2)
-      return ;
+    if (invite.players.length == 2) return;
     const receivingPlayer = invite.staggedPlayer;
 
     server.to(receivingPlayer.socket.id).emit(INVITE_CANCELED);
@@ -238,16 +250,38 @@ export class GameService {
     // }, 3000);
   }
 
-  endGameSession(gameSessionId: string) {
-    //TODO: Remove the item from the game sessions map
+  async endGameSession(gameSessionId: string) {
+    //TODO: Determine the winner
+    //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
+    //TODO: Create an entry in the game table <>
+    await this.createGame;
     //TODO: Remove both players from the players array
     //TODO: Check users status to ONLINE again
-    //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
     //TODO: Quit the game session (ROOM)
     //TODO: Clear the interval for that game sesion
+    //*: Remove the item from the game sessions map
+    this.gameSessions.delete(gameSessionId);
+  }
+
+  createGame(gameSessionId: string) {
+    const gameSession = this.gameSessions.get(gameSessionId);
+    const playerOne = gameSession.players[0];
+    const playerTwo = gameSession.players[1];
+    return this.prismaService.game.create({
+      data: {
+        id: gameSessionId,
+        players: {
+          connect: [{ id: playerOne.user }, { id: playerTwo.user }],
+        },
+        playerOneScore: playerOne.score,
+        playerTwoScore: playerTwo.score,
+        winner: playerOne.score > playerTwo.score ? playerOne.user : playerTwo.user,
+      },
+    });
   }
 
   leaveGameSession(player: Socket) {
+    //! This function should be refactored to use the endGameSession with few exceptions.
     // Get the player game session
     const gameSessionId = this.getPlayerSession(player);
     //TODO: Should create an entry in the game table <>
@@ -260,6 +294,5 @@ export class GameService {
     this.gameSessions.delete(gameSessionId);
     // Disconnect the player from the session
     if (gameSessionId) player.leave(gameSessionId);
-    //! Should change the user status to online not in game anymore
   }
 }

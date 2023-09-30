@@ -51,6 +51,19 @@ export class UsersService {
     });
   }
 
+  updateUserAll(id: string, updated: User) {
+    const user = this.prismaService.user.findUnique({ where: { id } });
+    if (!user) return null;
+    return this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updated,
+      },
+    });
+  }
+
   updateUser(id: string, updateUserDto: UpdateUserDto) {
     const user = this.prismaService.user.findUnique({ where: { id } });
     if (!user) return null;
@@ -193,7 +206,10 @@ export class UsersService {
       },
     });
 
-    const blockedUsers = [...user.blocked.map((blockedUser) => blockedUser.id), ...user.blockedBy.map((blockedUser) => blockedUser.id)];
+    const blockedUsers = [
+      ...user.blocked.map((blockedUser) => blockedUser.id),
+      ...user.blockedBy.map((blockedUser) => blockedUser.id),
+    ];
     return blockedUsers.includes(friendId);
   }
 

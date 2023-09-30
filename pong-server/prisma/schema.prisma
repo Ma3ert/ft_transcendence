@@ -50,11 +50,14 @@ model User {
   friendsList         User[]     @relation("Friendship")
   friendOf            User[]     @relation("Friendship")
 
-  blocked             User[] @relation("BlackedFriends")
-  blockedBy             User[] @relation("BlackedFriends")
+  blocked   User[] @relation("BlackedFriends")
+  blockedBy User[] @relation("BlackedFriends")
 
   sentInvites     UserInvite[] @relation("sentInvites")
   receivedInvites UserInvite[] @relation("receivedInvites")
+
+  Game       Game?    @relation(fields: [gameId], references: [id])
+  gameId     String?
 
   directmessageSent     DirectMessage[] @relation("DMsent")
   directmessageReceived DirectMessage[] @relation("DMreceived")
@@ -83,6 +86,15 @@ model UserInvite {
   inviteOwner   User     @relation("sentInvites", fields: [inviteOwnerId], references: [id])
   inviteOwnerId String
   createdAt     DateTime @default(now())
+}
+
+model Game {
+  id             String   @unique
+  players        User[]
+  winner         String?
+  playerOneScore Int      @default(0)
+  playerTwoScore Int      @default(0)
+  createdAt      DateTime @default(now())
 }
 
 model DirectMessage {
