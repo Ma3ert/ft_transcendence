@@ -6,6 +6,7 @@ import {getBallTrajectory, getBallPositions, Point, getOtherPosition} from "./ga
 import FirstRaquette from "./FirstRaquette"
 import GameSession from "./GameSession"
 import io, { Socket } from "socket.io-client"
+import { socket } from "./socket";
 
 import {Room, Player} from "./server/index"
 
@@ -48,39 +49,55 @@ const roomD: Room = {
   gameState: ""
 }
 
-
 export default function Home() {
+  // const [isConnected, setIsConnected] = useState(socket.connected);
   const [data, setData] = useState<Room>(roomD);
   const [playerIndex, setIndex] = useState(0);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const [socket, setSocket] = useState(null);
 
+  // console.log("connection state: ", isConnected)
   useEffect(() => {
-    const newSocket = io("http://localhost:3002");
+    console.log("i get into useEffect");
+    const socket = io("http://localhost:3002", {autoConnect: false, transports: ["websocket"]});
+    socket.connect();
+
+    // function onConnect() {
+    //   setIsConnected(true);
+    // }
+
+    // function onDisconnect() {
+    //   setIsConnected(false);
+    // }
 
     console.log("the component rendered");
-    setSocket(newSocket);
-    newSocket.on("connect", () => {
-      newSocket.emit("join");
-      newSocket.on("player", (n: number) => {
-        setIndex(n - 1);
-      });
-      newSocket.on("startedGame", (data: Room) => {
-        console.log("the setter is fired");
-        setData(data);
-      });
+    socket.on("connect", () => {
+      socket.emit("join");
+      console.log("from the connect")
+    });
+    // socket.on('disconnect', onDisconnect);
+    socket.on("player", (n: number) => {
+      setIndex(n - 1);
+      console.log("listening on the player")
+    });
+    socket.on("startedGame", (data: Room) => {
+      console.log("the setter is fired");
+      setData(data);
+      // onConnect()
     });
 
-    // Remember to clean up the socket connection when component unmounts
     return () => {
-      newSocket.disconnect();
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("player");
+      socket.off("startedGame");
     };
-  }, [setSocket]);
+  }, [data]);
 
   console.log("before return");
 
   return (
     <>
-      {socket ? <Text color={"#fff"}>the game is loading...</Text> : <GameSession room={data} playerIndex={playerIndex} socket={socket}/>}
+      {socket === null ? <Text color={"#fff"}>the game is loading...</Text> : <GameSession room={data} playerIndex={playerIndex} socket={socket}/>}
     </>
   );
 }
