@@ -2,7 +2,6 @@ import { HStack, Stack, Grid, GridItem } from "@chakra-ui/react";
 import FriendsListHeader from "../ChatComponents/FriendsListHeader";
 import ScrollableStack from "../ScrollableStack";
 import UserField from "../UserField";
-import { friendsList } from "../../../contstants";
 import { useState, useEffect, useContext } from "react";
 import { UsersContext } from "@/context/Contexts";
 

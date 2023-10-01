@@ -213,6 +213,9 @@ type UsersContext = {
   setFriendsList?: React.Dispatch<React.SetStateAction<User[]>>;
   activePeer?: User | null;
   setActivePeer?: React.Dispatch<React.SetStateAction<User | null>>;
+  RecievedFriendRequests?: Envite[];
+  SentFriendRequests?: Envite[];
+
 };
 // Chat Events Types
 
@@ -256,3 +259,16 @@ type ChannelsContext = {
   activeChannel?: Channel | null;
   setActiveChannel?: React.Dispatch<React.SetStateAction<Channel|null>>;
 };
+
+
+type MenuOption = {
+  description: string;
+  type: 'critical' | 'normal';
+}
+
+type Envite ={
+  id: string,
+  inviteUserId: string,
+  inviteOwnerId: string,
+  createdAt: string
+}

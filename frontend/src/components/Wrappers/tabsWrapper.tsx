@@ -5,6 +5,7 @@ import { FaUserPlus, FaMedal, FaTrophy } from "react-icons/fa";
 import { BiSolidUser, BiSolidLockAlt } from "react-icons/bi";
 import { FaUserGroup } from "react-icons/fa6";
 import { NotificationWrapper } from "../ChatComponents/NotificationBadge";
+import { BsPersonFillAdd } from "react-icons/bs";
 interface TabsWrapperProps {
   tabs: Tab[];
 }
@@ -93,8 +94,12 @@ const TabsWrapper: React.FC = () => {
     },
     {
       value: <Icon as={FaUserGroup} style={{ fontSize: "23px" }} />,
-      action: () => setFriendsSection && setFriendsSection("requests"),
+      action: () => setFriendsSection && setFriendsSection("channels"),
     },
+    {
+      value: <Icon as={BsPersonFillAdd} style={{ fontSize: "23px" }} />,
+      action: () => setFriendsSection && setFriendsSection("requests"),
+    }
   ];
   const AchievementsTabs: Tab[] = [
     {

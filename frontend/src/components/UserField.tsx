@@ -1,39 +1,40 @@
 "use client";
 import { Avatar, Button, Wrap, Text, HStack, Icon } from "@chakra-ui/react";
-import React , {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import IconButton from "./IconButton";
 import { FaMessage } from "react-icons/fa6";
 import { SlOptions } from "react-icons/sl";
 import UserAvatar from "./UserAvatar";
 import { FaEllipsis } from "react-icons/fa6";
-import { AppNavigationContext, ChatContext, UsersContext } from "@/context/Contexts";
+import {
+  AppNavigationContext,
+  ChatContext,
+  UsersContext,
+} from "@/context/Contexts";
 import { PRIVATE } from "@/../contstants";
+import OptionsMenu from "./ChatComponents/FriendSettingsMenu";
 interface Props {
   user: User;
 }
 
 const UserField: React.FC<Props> = ({ user }) => {
+  const { setCurrentSection } = useContext(AppNavigationContext);
+  const { setCurrentChat } = useContext(ChatContext);
+  const [clicked, setClicked] = useState(false);
+  const { setActivePeer, friendsList } = useContext(UsersContext);
 
-  const {setCurrentSection} = useContext(AppNavigationContext)
-  const {setCurrentChat} = useContext(ChatContext)
-  const [clicked, setClicked] = useState(false)
-  const {setActivePeer} = useContext (UsersContext)
-
-  useEffect (()=>{
-    if (clicked)
-    {
-      setActivePeer!(user)
-      setCurrentSection!('chat')
-      setCurrentChat!(PRIVATE)
-      setClicked(false)
-      console.log ('all state is setted')
+  useEffect(() => {
+    if (clicked) {
+      setActivePeer!(user);
+      setCurrentSection!("chat");
+      setCurrentChat!(PRIVATE);
+      setClicked(false);
+      console.log("all state is setted");
     }
-  }, [clicked])
+  }, [clicked]);
 
   return (
-    <Button variant={"field"} w={"100%"} h="auto" px={2} onClick={()=>{
-      setClicked (true)
-}}>
+    <Button variant={"field"} w={"100%"} h="auto" px={2} onClick={() => {}}>
       <HStack w="100%" h="100%" justify="space-between" alignItems="center">
         <HStack
           spacing={5}
@@ -44,12 +45,19 @@ const UserField: React.FC<Props> = ({ user }) => {
           py={2}
         >
           <UserAvatar user={user} />
-          <Text fontSize="sm">
-            {user.username}
-          </Text>
+          <Text fontSize="sm">{user.username}</Text>
         </HStack>
 
-        <Icon as={FaEllipsis} _hover={{transform:'scale(1.1)'}} fontSize="25px" />
+        <HStack spacing={3}>
+          {friendsList?.find((friend) => friend.id == user.id) && (
+            <Icon
+              onClick={() => setClicked(true)}
+              as={FaMessage}
+              _hover={{ transform: "scale(1.1)" }}
+            />
+          )}
+          <OptionsMenu user={user} type="User" />
+        </HStack>
       </HStack>
     </Button>
   );

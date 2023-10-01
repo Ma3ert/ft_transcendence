@@ -9,10 +9,16 @@ import FriendsListHeader from "../ChatComponents/FriendsListHeader";
 import FriendsListSection from "./FriendsListSection";
 import ChatProvider from "@/providers/ChatProvider";
 import ChannelsListSection from "./ChannelsListSection";
+import EnvitesListSection from "./EnvitesListSection";
 interface FriendsSectionProps {}
 const FriendsSection: React.FC<FriendsSectionProps> = ({}) => {
   const { friendsSection } = useContext(AppNavigationContext);
 
+  const sections = new Map([
+    ["friends", <FriendsListSection />],
+    ["channels", <ChannelsListSection />],
+    ["requests", <EnvitesListSection/>]
+  ]);
   return (
       <Stack
         w="100%"
@@ -25,7 +31,7 @@ const FriendsSection: React.FC<FriendsSectionProps> = ({}) => {
         align={"center"}
         justifyContent="center"
       >
-        {friendsSection === "friends" ? <FriendsListSection /> : <ChannelsListSection />}
+        {sections.get(friendsSection!)}
       </Stack>
   );
 };

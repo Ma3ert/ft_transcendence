@@ -59,11 +59,7 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
 
         <HStack spacing={5}>
             {caseActions.get(channel!.type!)!()}
-          <Icon
-            as={FaEllipsis}
-            _hover={{ transform: "scale(1.1)" }}
-            fontSize="23px"
-          />
+          <Text fontSize="sm">{channel!.type?.toLowerCase ()}</Text>
         </HStack>
       </HStack>
     </Button>

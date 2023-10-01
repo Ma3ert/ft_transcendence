@@ -1,41 +1,49 @@
-import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  Icon,
+} from "@chakra-ui/react";
 import IconButton from "../IconButton";
 import { FaEllipsis } from "react-icons/fa6";
-import { UserSettings } from "../../../contstants";
-import ConfirmationModal from "./ConfirmationModal";
-import MenuModal from "./MenuModal";
-import CostumModal from "./CostumModal";
-import UserProfileModal from "./UserProfileModal";
-interface FriendSettingsMenuProps {
-  user: User;
+import { globalUserOptions, friendOptions } from "../../../contstants";
+import useUserOptions from "@/hooks/useOptions";
+interface OptionsMenuProps {
+  channel?: Channel;
+  user?: User;
+  type: "Friend" | "User";
+  color?: string;
 }
 
-const conditoinalRender = (setting: friendAction, user:User) => {
-  if (setting.important)
-    return (
-      <MenuModal
-        value={setting.actionName}
-        componentName={setting.actionName}
-    
-      />
-    );
-  else if (setting.modal)
-    return (
-      <CostumModal value={setting.actionName}buttonVariant="menuItem" >
-        <UserProfileModal user={user} />
-      </CostumModal>
-    );
-  else return <Button variant="menuItem">{setting.actionName}</Button>;
-};
+const OptionsMenu: React.FC<OptionsMenuProps> = ({ user, type, color }) => {
 
-const FriendSettingsMenu:React.FC<FriendSettingsMenuProps> = ({user}) => {
+  const {EnviteUser} = useUserOptions ()
+  const options = new Map([
+    ["Send friend request", EnviteUser],
+  ]);
+  const caseActions = new Map([
+    [
+      "Friend",
+      () => {
+        return friendOptions;
+      },
+    ],
+    [
+      "User",
+      () => {
+        return globalUserOptions;
+      },
+    ],
+  ]);
   return (
     <Menu>
       <MenuButton bg="transparent" _active={{}} _hover={{}} as={Button}>
-        <IconButton icon={FaEllipsis} color="#5B6171" size="25px" />
+        <Icon as={FaEllipsis} _hover={{transform:'scale(1.1)'}}/>
       </MenuButton>
       <MenuList bg="#181D25" border="none" borderRadius={"xl"}>
-        {UserSettings.map((setting, index) => (
+        {caseActions!.get(type)!().map((setting, index) => (
           <MenuItem
             w="96%"
             borderRadius={"xl"}
@@ -45,9 +53,12 @@ const FriendSettingsMenu:React.FC<FriendSettingsMenuProps> = ({user}) => {
               background: "#252932",
             }}
             bg="#181D25"
-            color={setting.important ? "#DC585B" : "#5B6171"}
+            color={setting.type === "critical" ? "#DC585B" : "#5B6171"}
+            onClick={() => {
+              options.get(setting.description)!(user!);
+            }}
           >
-            {conditoinalRender(setting, user)}
+            {setting.description}
           </MenuItem>
         ))}
       </MenuList>
@@ -55,4 +66,4 @@ const FriendSettingsMenu:React.FC<FriendSettingsMenuProps> = ({user}) => {
   );
 };
 
-export default FriendSettingsMenu;
+export default OptionsMenu;

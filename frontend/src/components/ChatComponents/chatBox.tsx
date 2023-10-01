@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Stack, Text, HStack } from "@chakra-ui/react";
-import { friendsList, loggedIndUser, messages } from "../../../contstants";
+import { loggedIndUser, messages } from "../../../contstants";
 import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
@@ -13,6 +13,7 @@ import EventListener from "../../../utils/EventListener";
 import UserChannelHeader from "./UserChannelHeader";
 import useEventHandler from "@/hooks/useEventHandler";
 import useGameEnvite from "@/hooks/useGameEnvite";
+import OptionsMenu from "./FriendSettingsMenu";
 
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
@@ -79,7 +80,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
         py={2}
       >
         <UserChannelHeader status={"online"} />
-        {chatType == PRIVATE && <FriendSettingsMenu user={activePeer!} />}
+        {chatType == PRIVATE && <OptionsMenu color='#5B6171' user={activePeer!} type='Friend'  />}
       </HStack>
       <MessageStack />
       <Stack w={"100%"} alignItems={"center"}>
