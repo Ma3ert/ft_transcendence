@@ -5,10 +5,15 @@ import * as bcrypt from 'bcrypt';
 import { Channel, ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
+import { UsersService } from '../users/users.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class ChatService {
-    constructor(private prismaService:PrismaService){}
+    constructor(private prismaService: PrismaService,
+        private usersService: UsersService,
+        // private notificationService: NotificationService
+    ) { }
     
     // Create Channel
     async createChannel(owner:string, createChannelDto:createChannelDto){
@@ -97,7 +102,12 @@ export class ChatService {
     }
 
     // Create DM
-    async createDirectMessage(sender:string, receiver:string, message:string){
+    async createDirectMessage(sender: string, receiver: string, message: string) {
+        const isBlocked = await this.usersService.checkBlocked(sender, receiver);
+        const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
+
+        if (isBlocked || isBlockedBy)
+            return ;
         await this.prismaService.directMessage.create({
             data:{
                 senderId:sender,
@@ -436,6 +446,7 @@ export class ChatService {
                 channelId:channelId,
             }
         })
+        // await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
     }
 
     async deleteChannelInvite(user:string, channel:string)
@@ -446,6 +457,7 @@ export class ChatService {
                 channelId:channel
             },
         })
+        // await this.notificationService.readChannelInviteNotification(user, channel);
     }
 
     async getChannelInvite(channel:string, user:string)
@@ -629,5 +641,14 @@ export class ChatService {
             channels.push(chan);
         }
         return channels;
+    }
+
+    async getChannelInvites(user: string)
+    {
+        return await this.prismaService.channelInvite.findMany({
+            where: {
+                receiverId:user,
+            }
+        })
     }
 }

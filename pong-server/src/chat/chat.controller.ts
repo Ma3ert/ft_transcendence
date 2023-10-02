@@ -361,6 +361,14 @@ export class ChatController {
             return {status:"success", message:"Channel Name Changed Successfully"};
     }
 
+    @Get('/channels/invites')
+    @UseGuards(LoggedInGuard)
+    async getChannelsInvites(@Req() req: Request)
+    {
+        const user = req.user['id'] as string;
+        return await this.chatService.getChannelInvites(user);
+    }
+
     @Get('/channels/:channelId/role')
     @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
@@ -379,4 +387,5 @@ export class ChatController {
     {
         return await this.chatService.getChannelById(channelId);
     }
+    
 }

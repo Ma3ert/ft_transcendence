@@ -19,7 +19,7 @@ import { UsersService } from 'src/users/users.service';
 @UseGuards(WsLoggedInGuard) 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3001'],
+    origin: ['*'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Access-Control-Allow-Origin']
@@ -96,17 +96,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       this.activeUsers.get(user).push(client);
     else
       this.activeUsers.set(user, [client]);
+    client.join(user);
+    this.userJoinHisChannel(user, client);
     await this.chatNotification(user);
   }
 
   // check chat notification
   async chatNotification(room:string)
   {
-    const data:{DM:[string], CM:[string]} = await this.notificationService.chatNotification(room);
+    const data:{DM:string[], CM:string[]} = await this.notificationService.chatNotification(room);
     this.server.to(room).emit("ChatNotification", data);
   }
 
-  // online | offline | blocked | banned
   @SubscribeMessage('checkStatus')
   async checkStatus(client:AuthSocket, data:{userId:string})
   {
@@ -174,8 +175,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.server.to(data.channel).emit("CM", data);
     for (const user of channelMembers)
     {
-      this.checkUserNotification(user.userId);
-      this.chatNotification(data.channel);
+      if (user.userId != data.from)
+      {
+        await this.checkUserNotification(user.userId);
+        await this.chatNotification(user.userId);
+      }
     }
   }
 
