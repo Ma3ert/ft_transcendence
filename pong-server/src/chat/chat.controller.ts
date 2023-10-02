@@ -379,4 +379,12 @@ export class ChatController {
     {
         return await this.chatService.getChannelById(channelId);
     }
+    
+    @Get('/channels/invites')
+    @UseGuards(LoggedInGuard)
+    async getChannelsInvites(@Req() req: Request)
+    {
+        const user = req.user['id'] as string;
+        return await this.chatService.getChannelInvites(user);
+    }
 }
