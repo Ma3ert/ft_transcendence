@@ -58,7 +58,7 @@ const UserField: React.FC<Props> = ({ user }) => {
               _hover={{ transform: "scale(1.1)" }}
             />
           )}
-          <OptionsMenu user={user} type="User" />
+          <OptionsMenu user={user} type={friendsList?.find(friend=>friend.id == user.id) ? 'Friend' : 'User'} />
         </HStack>
       </HStack>
     </Button>

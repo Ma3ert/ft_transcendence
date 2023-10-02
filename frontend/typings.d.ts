@@ -10,7 +10,7 @@ type FriendsSection = "friends" | "requests" | "channels";
 type AchievementsSection = "achievements" | "leaderboard";
 type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
-type ModalType = "regular" | "confirmation" | "alert" | "prompt" | "custom";
+type ModalType = "regular" | "confirmation" | "alert" | "prompt" | "custom" | "options";
 type EventName =
   | "userLoggedIn"
   | "userIsActive"
@@ -264,6 +264,7 @@ type ChannelsContext = {
 type MenuOption = {
   description: string;
   type: 'critical' | 'normal';
+  modal?: boolean;
 }
 
 type Envite ={

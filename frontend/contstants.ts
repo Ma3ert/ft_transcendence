@@ -42,34 +42,47 @@ export const friendOptions: MenuOption[] = [
   {
     description: "Invite to game",
     type: "normal",
+    modal:false
+  },
+  {
+    description: "Invite to join channel",
+    type: "normal",
+    modal:true
   },
   {
     description: "See Profile",
     type: "normal",
+    modal:true
   },
   {
     description: "Make party admin",
     type: "normal",
+    modal:false
   },
   {
     description: "Make channel owner",
     type: "normal",
+    modal:false
   },
   {
     description: "Ban from channel",
     type: "critical",
+    modal:false
   },
   {
     description: "Kick from channel",
     type: "critical",
+    modal:false
   },
   {
     description: "Mute",
     type: "critical",
+    modal:false
   },
   {
     description: "Block",
     type: "critical",
+    modal:false
   },
 ];
 
@@ -83,3 +96,5 @@ export const globalUserOptions: MenuOption[] = [
     type: "normal",
   },
 ];
+
+

@@ -10,10 +10,10 @@ const SetPassword:React.FC<SetPasswordProps> =  ({})=>{
                     <Input variant='default' placeholder='your password' w='95%' />
                 </FormControl>
                 <HStack w='100%' spacing={4} justifyContent='center' alignItems='center'>
-                <Button  _hover={{opacity:0.8}} _active={{transform:'scale(1.1)'}} borderRadius={'xl'} bg="#1D222C" color='#5B6171' fontSize='sm'  px={6} py={3}>
+                <Button variant={'modalCancel'}>
                     Cancel
                 </Button> 
-                <Button  _hover={{opacity:0.8}} _active={{transform:'scale(1.1)'}} borderRadius={'xl'} bg="#D9D9D9" color='#DC585B' fontSize='sm'  px={6} py={3}>
+                <Button  variant={'modalConfirm'}  px={6} py={3}>
                     Set password
                 </Button>  
                 </HStack> 

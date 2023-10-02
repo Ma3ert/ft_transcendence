@@ -1,9 +1,11 @@
 import apiClient from "@/services/requestProcessor";
 import { useMutation } from "react-query";
+import { useToast } from "@chakra-ui/react";
+import { useSuccess, useFailure } from "./useAlerts";
 const useChannelSettingsManager = () => {
   const upgradeUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/upgrade/${user.userid}/`);
-  const sentChannelEnviteClient = (user: UserChannel) =>
+  const sendChannelEnviteClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/sent/${user.userid}`);
   const acceptChannelEnviteClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/accept`);
@@ -15,13 +17,22 @@ const useChannelSettingsManager = () => {
     new apiClient(`/chat/channels/${user.channelid}/ban/${user.userid}`);
   const unbanUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/unban/${user.userid}`);
+    const toast = useToast();
+    const Success = useSuccess();
+    const Failure = useFailure();
 
 
-  const sentChannelEnviteMutation = useMutation({
+  const sendChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
-      sentChannelEnviteClient(user).postData(null),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
+      sendChannelEnviteClient(user).postData(null),
+    onSuccess: (data) => {
+      console.log(data);
+      toast (Success ("Envite to channel sent"))
+    },
+    onError: (error) => {
+      console.log(error);
+      toast (Failure ("Envite to channel failed"))
+    },
   });
   const acceptChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
@@ -61,8 +72,8 @@ const useChannelSettingsManager = () => {
     onError: (error) => console.log(error),
   });
 
-  function sentChannelEnvite(user: UserChannel) {
-    sentChannelEnviteMutation.mutate(user);
+  function sendChannelEnvite(user: UserChannel) {
+    sendChannelEnviteMutation.mutate(user);
   }
 
   function acceptChannelEnvite(user: UserChannel) {
@@ -88,7 +99,7 @@ const useChannelSettingsManager = () => {
   }
 
   return {
-    sentChannelEnvite,
+    sendChannelEnvite,
     acceptChannelEnvite,
     declineChannelEnvite,
     acceptProtectedEnvite,

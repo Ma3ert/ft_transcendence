@@ -5,7 +5,7 @@ const useEnviteHandler = () => {
 
         const toast = useToast()
         const queryClient = useQueryClient()
-        const acceptEnvitationClient = new apiClient  ('invites/accept')
+        const acceptEnvitationClient = new apiClient  ('/invites/accept')
         const deleteEnvitationClient = (enviteId:string) => new apiClient (`/invites/${enviteId}`)
         const cancelEnvitationClient = new apiClient ('')
         const acceptChannelEnvitationClient = new apiClient ('')
@@ -14,7 +14,7 @@ const useEnviteHandler = () => {
         const acceptProtectedChannelClient = new apiClient ('')
 
         const acceptEnvitation = async (enviteId:string) => {
-            const response = await acceptEnvitationClient.postData({'enviteId': enviteId})
+            const response = await acceptEnvitationClient.postData({'inviteId': enviteId})
             return response
         }
         const acceptEnvitationMutation = useMutation({
