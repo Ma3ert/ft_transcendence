@@ -24,34 +24,39 @@ type Props = {
 
 const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState, roomId, playerIndex}: Props) => {
     const activeKeys: Record<string, boolean> = {};
-    console.log("player Position and state: ", roomId);
+    console.log("game State from the raquette: ", gameState);
     const handleKeyDown = (event: KeyboardEvent) => {
+        console.log("player State from the raquette: ", playerState);
         activeKeys[event.key] = true
-        if (event.key.includes("Arrow") && playerState === "R")
+        if (event.key.includes("Arrow") && playerState === "S")
         {
-            console.log("if fires ", event.key)
             if (activeKeys["ArrowUp"] && activeKeys["ArrowLeft"])
             {
+                console.log('the new shooting position is sent')
                 const keyEvent: KeyEvent = {player: playerIndex, key: "LeftUp", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowUp"] && activeKeys["ArrowRight"])
             {
+                console.log('the new shooting position is sent')
                 const keyEvent: KeyEvent = {player: playerIndex, key: "UpRight", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowRight"])
             {
+                console.log('the new shooting position is sent')
                 const keyEvent: KeyEvent = {player: playerIndex, key: "Right", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowLeft"])
             {
+                console.log('the new shooting position is sent')
                 const keyEvent: KeyEvent = {player: playerIndex, key: "Left", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
             else if (activeKeys["ArrowUp"])
             {
+                console.log('the new shooting position is sent')
                 const keyEvent: KeyEvent = {player: playerIndex, key: "Up", room: roomId};
                 socket.emit("keyEvent", keyEvent)
             }
@@ -66,7 +71,7 @@ const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState, roomId,
             const keyEvent: KeyEvent = {player: playerIndex, key: "D", room: roomId};
             socket.emit("keyEvent", keyEvent)
         }
-        else if (event.key === "Space" && playerState === "S")
+        else if (event.key === " " && playerState === "S")
         {
             const keyEvent: KeyEvent = {player: playerIndex, key: "space", room: roomId};
             socket.emit("keyEvent", keyEvent);
@@ -76,9 +81,10 @@ const FirstRaquette = ({socket, w, h, x, y, src, gameState, playerState, roomId,
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', (event) => { delete activeKeys[event.key] });
 		return () => {
+            window.removeEventListener('keyup', (event) => { delete activeKeys[event.key] });
 		    window.removeEventListener('keydown', handleKeyDown);
 		};
-    }, [])
+    })
     return (
         <Image
             position={"absolute"}

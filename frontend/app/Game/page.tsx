@@ -50,54 +50,42 @@ const roomD: Room = {
 }
 
 export default function Home() {
-  // const [isConnected, setIsConnected] = useState(socket.connected);
   const [data, setData] = useState<Room>(roomD);
+  const [set, setSetter] = useState(false);
   const [playerIndex, setIndex] = useState(0);
-  const [socket, setSocket] = useState(null);
+  const [clientSocket, setSocket] = useState(socket);
 
-  // console.log("connection state: ", isConnected)
   useEffect(() => {
-    console.log("i get into useEffect");
-    const socket = io("http://localhost:3002", {autoConnect: false, transports: ["websocket"]});
-    socket.connect();
+    clientSocket.connect();
 
-    // function onConnect() {
-    //   setIsConnected(true);
-    // }
-
-    // function onDisconnect() {
-    //   setIsConnected(false);
-    // }
-
-    console.log("the component rendered");
-    socket.on("connect", () => {
-      socket.emit("join");
-      console.log("from the connect")
-    });
-    // socket.on('disconnect', onDisconnect);
-    socket.on("player", (n: number) => {
-      setIndex(n - 1);
-      console.log("listening on the player")
-    });
-    socket.on("startedGame", (data: Room) => {
-      console.log("the setter is fired");
-      setData(data);
-      // onConnect()
+    clientSocket.on("connect", () => {
+      clientSocket.emit("join");
     });
 
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("player");
-      socket.off("startedGame");
-    };
-  }, [data]);
+      clientSocket.off("connect");
+    }
+  }, []);
 
-  console.log("before return");
+  useEffect(() => {
+    clientSocket.on("player", (n: number) => {
+      setIndex(n - 1);
+    });
+
+    clientSocket.on("startedGame", (data: Room) => {
+      setData(data);
+      setSetter(true);
+    });
+
+    return () => {
+      clientSocket.off("player");
+      clientSocket.off("startedGame");
+    };
+  }, [set]);
 
   return (
     <>
-      {socket === null ? <Text color={"#fff"}>the game is loading...</Text> : <GameSession room={data} playerIndex={playerIndex} socket={socket}/>}
+      {!set ? <Text color={"#fff"}>the game is loading...</Text> : <GameSession room={data} playerIndex={playerIndex} socket={socket}/>}
     </>
   );
 }

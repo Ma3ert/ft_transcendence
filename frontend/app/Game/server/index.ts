@@ -72,24 +72,24 @@ interface BallEvent {
 
 export function gameInitializer(game: Room, sender: number, reciever: number)
 {
-    game.gameState = "reInit";
+  game.gameState = "reInit";
 
-    const sStart = game.players[sender].indexStart = 0;
-    const sEnd = game.players[sender].indexEnd = game.players[sender].shootingPosition;
-    game.players[sender].ballTrajectory = getBallTrajectory(game.players[sender].ballPositions[sStart], game.players[sender].ballPositions[sEnd], 10);
-	game.players[sender].distance = distCalculation(game.players[sender].ballPositions, sStart, sEnd);
-    game.players[sender].playerPosition.x = game.players[sender].bottomLeft.x;
-    game.players[sender].state = "S";
-    game.players[sender].otherPosition.x = getOtherPosition(game.players[sender].topLeft, game.players[reciever].bottomLeft, game.players[reciever].playerPosition, game.players[reciever].baseLine, game.players[sender].topLine)
-    
-    const rStart = game.players[reciever].indexStart = 9;
-    const rEnd = game.players[reciever].indexEnd = 9 - game.players[sender].indexEnd;
-    game.players[reciever].ballTrajectory = getBallTrajectory(game.players[reciever].ballPositions[rStart], game.players[reciever].ballPositions[rEnd], 10);
-	game.players[reciever].distance = distCalculation(game.players[reciever].ballPositions, rStart, rEnd);
-    game.players[reciever].otherPosition.x = getOtherPosition(game.players[reciever].topLeft, game.players[sender].bottomLeft, game.players[sender].playerPosition, game.players[sender].baseLine, game.players[reciever].topLine)
-    game.players[reciever].state = "R";
+  const sStart = game.players[sender].indexStart = 0;
+  const sEnd = game.players[sender].indexEnd = game.players[sender].shootingPosition;
+  game.players[sender].ballTrajectory = getBallTrajectory(game.players[sender].ballPositions[sStart], game.players[sender].ballPositions[sEnd], 10);
+  game.players[sender].distance = distCalculation(game.players[sender].ballPositions, sStart, sEnd);
+  game.players[sender].playerPosition.x = game.players[sender].bottomLeft.x;
+  game.players[sender].state = "S";
+  game.players[sender].otherPosition.x = getOtherPosition(game.players[sender].topLeft, game.players[reciever].bottomLeft, game.players[reciever].playerPosition, game.players[reciever].baseLine, game.players[sender].topLine)
 
-    return (game);
+  const rStart = game.players[reciever].indexStart = 9;
+  const rEnd = game.players[reciever].indexEnd = 9 - sEnd;
+  game.players[reciever].ballTrajectory = getBallTrajectory(game.players[reciever].ballPositions[rStart], game.players[reciever].ballPositions[rEnd], 10);
+  game.players[reciever].distance = distCalculation(game.players[reciever].ballPositions, rStart, rEnd);
+  game.players[reciever].otherPosition.x = getOtherPosition(game.players[reciever].topLeft, game.players[sender].bottomLeft, game.players[sender].playerPosition, game.players[sender].baseLine, game.players[reciever].topLine)
+  game.players[reciever].state = "R";
+
+  return (game);
 }
 
 export function checkDirection(start: number, position: number, lineLenght: number): "left" | "right"
@@ -178,7 +178,10 @@ export function servePlayerAction(action: KeyEvent, game: Room) // this function
 	const sender: Player = game.players[0].id === action.player ? game.players[0] : game.players[1];
 	const other: Player = sender.id === game.players[0].id ? game.players[1] : game.players[0];
 	if (action.key === "space" && game.gameState !== "gameStarted")
+  {
+    console.log("the space event is recieved");
 		game.gameState = "gameStarted";
+  }
 	if (action.key === "A" && (game.gameState === "gameStarted" || sender.state === "R"))
 	{
 		if (sender.playerPosition.x - 10 >= sender.bottomLeft.x)
@@ -199,11 +202,46 @@ export function servePlayerAction(action: KeyEvent, game: Room) // this function
 			other.otherDirection = sender.playerDirection === "right" ? "left" : "right";
 		}
 	}
-	else if (action.key === "Left" && sender.state === "R")		sender.shootingPosition = 5; // i think I will have to remove the second condition cus I can check it on the client side of the socket
-	else if (action.key === "LeftUp" && sender.state === "R")		sender.shootingPosition = 6;
-	else if (action.key === "Up" && sender.state === "R")			sender.shootingPosition = 7;
-	else if (action.key === "UpRight" && sender.state === "R")	sender.shootingPosition = 8;
-	else if (action.key === "Right" && sender.state === "R")		sender.shootingPosition = 9;
+	else if (action.key === "Left" && sender.state === "S")		
+  {
+    sender.indexEnd = 5; // i think I will have to remove the second condition cus I can check it on the client side of the socket
+    sender.shootingPosition = 5; // i think I will have to remove the second condition cus I can check it on the client side of the socket
+    sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexStart], sender.ballPositions[sender.indexEnd], 10)
+    other.indexEnd = 9 - sender.indexEnd;
+    other.ballTrajectory = getBallTrajectory(other.ballPositions[other.indexStart], other.ballPositions[other.indexEnd], 10)
+  }
+	else if (action.key === "LeftUp" && sender.state === "S")		
+  {
+    sender.indexEnd = 6;
+    sender.shootingPosition = 6;
+    sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexStart], sender.ballPositions[sender.indexEnd], 10)
+    other.indexEnd = 9 - sender.indexEnd;
+    other.ballTrajectory = getBallTrajectory(other.ballPositions[other.indexStart], other.ballPositions[other.indexEnd], 10)
+  }
+	else if (action.key === "Up" && sender.state === "S")			
+  {
+    sender.indexEnd = 7;
+    sender.shootingPosition = 7;
+    sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexStart], sender.ballPositions[sender.indexEnd], 10)
+    other.indexEnd = 9 - sender.indexEnd;
+    other.ballTrajectory = getBallTrajectory(other.ballPositions[other.indexStart], other.ballPositions[other.indexEnd], 10)
+  }
+	else if (action.key === "UpRight" && sender.state === "S")	
+  {
+    sender.indexEnd = 8;
+    sender.shootingPosition = 8;
+    sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexStart], sender.ballPositions[sender.indexEnd], 10)
+    other.indexEnd = 9 - sender.indexEnd;
+    other.ballTrajectory = getBallTrajectory(other.ballPositions[other.indexStart], other.ballPositions[other.indexEnd], 10)
+  }
+	else if (action.key === "Right" && sender.state === "S")		
+  {
+    sender.indexEnd = 9;
+    sender.shootingPosition = 9;
+    sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexStart], sender.ballPositions[sender.indexEnd], 10)
+    other.indexEnd = 9 - sender.indexEnd;
+    other.ballTrajectory = getBallTrajectory(other.ballPositions[other.indexStart], other.ballPositions[other.indexEnd], 10)
+  }
 	game.players[0].id  === sender.id ? game.players[0] = sender : game.players[0] = other
 	game.players[1].id  === sender.id ? game.players[1] = sender : game.players[1] = other
 	return (game)
@@ -215,28 +253,28 @@ export function serveBallAction(action: BallEvent, game: Room)
 	const sender: Player = game.players[0].state === "S" ? game.players[0] : game.players[1];
 	if (checkBounce(reciever.playerPosition, reciever.ballTrajectory[reciever.ballTrajectory.length - 2]))
 	{
-        reciever.indexStart = reciever.indexEnd;
-        reciever.indexEnd = reciever.shootingPosition;
+    reciever.indexStart = reciever.indexEnd;
+    reciever.indexEnd = reciever.shootingPosition;
 		reciever.ballTrajectory = getBallTrajectory(reciever.ballPositions[reciever.indexStart], reciever.ballPositions[reciever.indexEnd], 10);
 		reciever.distance = distCalculation(reciever.ballPositions, reciever.indexStart, reciever.indexEnd)
-        reciever.state = "S";
+    reciever.state = "S";
 		
-        sender.indexStart = sender.indexEnd;
-        sender.indexEnd = 9 - reciever.indexEnd;
+    sender.indexStart = sender.indexEnd;
+    sender.indexEnd = 9 - reciever.indexEnd;
 		sender.ballTrajectory = getBallTrajectory(sender.ballPositions[sender.indexStart], sender.ballPositions[sender.indexEnd], 10);
 		reciever.distance = distCalculation(sender.ballPositions, sender.indexStart, sender.indexEnd)
-        sender.state = "R";
+    sender.state = "R";
 	}
 	else
-	{
-		sender.score += 1;
-        if (sender.score !== 10)
-			return (gameInitializer(game, reciever.id, sender.id))
-		game.gameState = "gameFinished";
-	}
+  {
+    sender.score += 1;
+    if (sender.score !== 10)
+      return (gameInitializer(game, reciever.id, sender.id))
+    game.gameState = "gameFinished";
+  }
 	game.players[0].id  === sender.id ? game.players[0] = sender : game.players[0] = reciever
 	game.players[1].id  === sender.id ? game.players[1] = sender : game.players[1] = reciever
-    return (game)
+  return (game)
 }
 
 export function distCalculation(points: Point[], start: number, end: number): number
@@ -284,7 +322,7 @@ const createPlayer = (id: number) => {
         you : "",
         other: "",
         distance: 0,
-        ballSize: 10
+        ballSize: 80
 	  };
 	return player;
   }
@@ -316,7 +354,7 @@ const createPlayer = (id: number) => {
 		you : "",
 		other: "",
 		distance: 0,
-    ballSize: 10
+    ballSize: 80
 	};
 	return player;
 };
@@ -389,10 +427,11 @@ socket.on("ballReachesEnd", (event: BallEvent) => {
 socket.on("keyEvent", (event: KeyEvent) => {
     let room: any = rooms.find((room: any) => room.id === event.room);
     
-    /// The following room.players[event.player - 1].y is just an example for you to follow
-    console.log("recived a key event: ", event.player);
+    // The following room.players[event.player - 1].y is just an example for you to follow
+    console.log("received a key event: ", event.player);
     if (room) {
-        room = servePlayerAction(event, room);
+      room = servePlayerAction(event, room);
+      console.log("the player action served: ", room.players[event.player].shootingPosition);
     }
 
     // Here you update the global rooms array which contains every game session state
@@ -404,7 +443,11 @@ socket.on("keyEvent", (event: KeyEvent) => {
       }
     });
 
-    if (room) io.to(room.id).emit("updateGame", room);
+    if (room) 
+    {
+      io.to(room.id).emit("updateGame", room);
+      console.log("the update event is sent");
+    }
   });
 
   socket.on("leave", (roomID) => {

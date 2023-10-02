@@ -16,14 +16,15 @@ interface Props {
 
 const GameSession = ({room, playerIndex, socket}: Props) => {
   const [newRoom, setRoom] = useState(room);
-  const [gameState, setGameState] = useState(room.gameState);
-  console.log("the game session is rendered: ", room);
   useEffect(() => {
     socket.on("updateGame", (data: Room) => {
+      console.log('receive the update event: ', data.gameState)
       setRoom(data)
-      setGameState(data.gameState);
   })
-  },[newRoom, gameState])
+  return () => {
+    socket.off("updateGame");
+  }
+  },[newRoom])
   return (
     <>
       {newRoom.players[playerIndex].ballPositions.map((point: Point) => (
@@ -40,7 +41,7 @@ const GameSession = ({room, playerIndex, socket}: Props) => {
       <Ball
         socket={socket}
         points={newRoom.players[playerIndex].ballTrajectory}
-        state={gameState}
+        state={newRoom.gameState}
         box={newRoom.players[playerIndex].ballSize}
         distance={newRoom.players[playerIndex].distance}
         velocity={newRoom.players[playerIndex].velocity}
@@ -48,7 +49,7 @@ const GameSession = ({room, playerIndex, socket}: Props) => {
        />
       <FirstRaquette
         socket={socket}
-        gameState={gameState}
+        gameState={newRoom.gameState}
         playerState={newRoom.players[playerIndex].state}
         w={newRoom.players[playerIndex].playerW.toString() + "px"}
         h={newRoom.players[playerIndex].playerH.toString() + "px"}
