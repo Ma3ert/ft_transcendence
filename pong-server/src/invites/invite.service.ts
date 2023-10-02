@@ -7,7 +7,6 @@ import { CreateInviteDto } from './dto/create-invite.dto';
 @Injectable()
 export class InviteService {
   constructor(private readonly prismaService: PrismaService) {}
-
   async createInvite(inviteBody: CreateInviteDto) {
     const checkInviteExists = await this.prismaService.userInvite.findMany({
       where: {
@@ -86,12 +85,31 @@ export class InviteService {
           id: inviteUserId,
         },
       },
+      include: {
+        invitedUser: {
+          select: {
+            id: true,
+            avatar: true,
+            status: true,
+            username: true,
+          },
+        },
+        inviteOwner: {
+          select: {
+            id: true,
+            avatar: true,
+            status: true,
+            username: true,
+          },
+        },
+      },
     });
   }
 
   async getInviteReadyList(userId: string) {
     // List all the users that i can send a friend request to.
-    const invites: any[] = await this.getSendInvites(userId);
+    const sentInvites: any[] = await this.getSendInvites(userId);
+    const receivedInvites: any[] = await this.getReceivedInvites(userId);
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -102,7 +120,7 @@ export class InviteService {
       },
     });
     const users = await this.prismaService.user.findMany();
-    const invitesUsers = invites.map((invite) => invite.inviteUserId);
+    const invitesUsers = [...sentInvites.map((invite) => invite.inviteUserId), ...receivedInvites.map((invite) => invite.inviteOwnerId)];
     const userFriends = [...user.friendsList.map((user) => user.id), ...user.friendOf.map((user) => user.id)];
     const excludedUsers = [user.id, ...invitesUsers, ...userFriends];
 
