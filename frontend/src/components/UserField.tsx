@@ -25,9 +25,6 @@ const UserField: React.FC<Props> = ({ user }) => {
 
   useEffect(() => {
     if (clicked) {
-      setActivePeer!(user);
-      setCurrentSection!("chat");
-      setCurrentChat!(PRIVATE);
       setClicked(false);
       console.log("all state is setted");
     }
@@ -51,8 +48,13 @@ const UserField: React.FC<Props> = ({ user }) => {
         <HStack spacing={3}>
           {friendsList?.find((friend) => friend.id == user.id) && (
             <Icon
-              onClick={() => setClicked(true)}
+              onClick={() => {
+                setActivePeer!(user);
+                setCurrentSection!("chat");
+                setCurrentChat!(PRIVATE);
+              }}
               as={FaMessage}
+              fontSize='22px'
               _hover={{ transform: "scale(1.1)" }}
             />
           )}

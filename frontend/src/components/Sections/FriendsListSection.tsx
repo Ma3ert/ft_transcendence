@@ -25,9 +25,15 @@ const FriendsListSection: React.FC<FriendsListProps> = ({}) => {
     >
       <FriendsListHeader type="friends" setUsersList={setUsersList} />
       <ScrollableStack>
-        {usersList.map((friend, index) => (
-          <UserField key={index} user={friend} />
-        ))}
+        {usersList.length ? (
+          usersList.map((friend, index) => (
+            <UserField key={index} user={friend} />
+          ))
+        ) : (
+          <Stack w="100%" h="100%" justifyContent="center" alignItems="center">
+            <p style={{ color: "#5B6171" }}>You have no friends a the moment</p>
+          </Stack>
+        )}
       </ScrollableStack>
     </Stack>
   );
