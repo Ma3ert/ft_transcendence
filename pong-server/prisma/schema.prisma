@@ -56,8 +56,7 @@ model User {
   sentInvites     UserInvite[] @relation("sentInvites")
   receivedInvites UserInvite[] @relation("receivedInvites")
 
-  Game       Game?    @relation(fields: [gameId], references: [id])
-  gameId     String?
+  games       Game[]
 
   directmessageSent     DirectMessage[] @relation("DMsent")
   directmessageReceived DirectMessage[] @relation("DMreceived")
@@ -89,7 +88,7 @@ model UserInvite {
 }
 
 model Game {
-  id             String   @unique
+  id             String   @id @unique
   players        User[]
   winner         String?
   playerOneScore Int      @default(0)
