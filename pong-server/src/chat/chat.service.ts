@@ -642,4 +642,13 @@ export class ChatService {
         }
         return channels;
     }
+
+    async getChannelInvites(user: string)
+    {
+        return await this.prismaService.channelInvite.findMany({
+            where: {
+                receiverId:user,
+            }
+        })
+    }
 }
