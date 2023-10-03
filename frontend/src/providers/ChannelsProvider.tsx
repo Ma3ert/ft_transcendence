@@ -46,7 +46,7 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
         // fetch active channel members
         // fetch channel conversations
     }, [])
-    return <ChannelsContext.Provider value={{Channels, activeChannel, setActiveChannel}}>
+    return <ChannelsContext.Provider value={{Channels, activeChannel, setActiveChannel, channelEnvites}}>
         {children}
     </ChannelsContext.Provider>
 }

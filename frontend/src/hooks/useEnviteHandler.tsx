@@ -21,7 +21,9 @@ const useEnviteHandler = () => {
             mutationFn:acceptEnvitation,
             onSuccess:(data)=>{
                 console.log(data);
-                queryClient.invalidateQueries(['sentEnvites', 'recievedEnvites', 'friends'])
+                queryClient.invalidateQueries('sentEnvites')
+                queryClient.invalidateQueries ('recievedEnvites')
+                queryClient.invalidateQueries ('friends')
                 toast({
                     title: "Friend request accepted.",
                     description: "You have a new friend.",
@@ -51,7 +53,8 @@ const useEnviteHandler = () => {
             mutationFn:deleteEnvitation,
             onSuccess:(data)=>{
                 console.log(data);
-                queryClient.invalidateQueries(['sentEnvites', 'recievedEnvites'])
+                queryClient.invalidateQueries('sentEnvites')
+                queryClient.invalidateQueries ('recievedEnvites')
                 toast({
                     title: "Friend request deleted.",
                     description: "You have deleted a friend request.",

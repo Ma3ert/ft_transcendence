@@ -15,16 +15,17 @@ import { PRIVATE } from "@/../contstants";
 import OptionsMenu from "./ChatComponents/FriendSettingsMenu";
 interface Props {
   user: User;
+  userType?: "Friend" | "User" | "Owner";
 }
 
-const UserField: React.FC<Props> = ({ user }) => {
+const UserField: React.FC<Props> = ({ user, userType = 'User' }) => {
   const { setCurrentSection } = useContext(AppNavigationContext);
   const { setCurrentChat } = useContext(ChatContext);
   const { setActivePeer, friendsList } = useContext(UsersContext);
 
   useEffect(() => {
-   console.log ('friends :')
-   console.table (friendsList) 
+    console.log("friends :");
+    console.table(friendsList);
   }, [friendsList]);
 
   return (
@@ -38,24 +39,36 @@ const UserField: React.FC<Props> = ({ user }) => {
           px={3}
           py={2}
         >
-          <UserAvatar user={user} />
-          <Text fontSize="sm">{user.username}</Text>
+          <UserAvatar user={user!} />
+          <Text fontSize="sm">{user!.username}</Text>
         </HStack>
 
         <HStack spacing={3}>
-          {friendsList!.length && friendsList!.find((friend) => friend.id == user.id) && (
-            <Icon
-              onClick={() => {
-                setActivePeer!(user);
-                setCurrentSection!("chat");
-                setCurrentChat!(PRIVATE);
-              }}
-              as={FaMessage}
-              fontSize='22px'
-              _hover={{ transform: "scale(1.1)" }}
+          {friendsList!.length &&
+            friendsList!.find((friend) => friend.id == user.id) && (
+              <Icon
+                onClick={() => {
+                  setActivePeer!(user);
+                  setCurrentSection!("chat");
+                  setCurrentChat!(PRIVATE);
+                }}
+                as={FaMessage}
+                fontSize="22px"
+                _hover={{ transform: "scale(1.1)" }}
+              />
+            )}
+          {userType == "Owner" ? (
+            <Text fontSize="sm">Owner</Text>
+          ) : (
+            <OptionsMenu
+              user={user!}
+              type={
+                friendsList!.find((friend) => friend.id == user.id)
+                  ? "Friend"
+                  : "User"
+              }
             />
           )}
-          <OptionsMenu user={user} type={friendsList!.find(friend=>friend.id == user.id) ? 'Friend' : 'User'} />
         </HStack>
       </HStack>
     </Button>

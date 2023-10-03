@@ -2,6 +2,7 @@ import apiClient from "@/services/requestProcessor";
 import { useMutation } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
+import { useQueryClient } from "react-query";
 const useChannelSettingsManager = () => {
   const upgradeUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/upgrade/${user.userid}/`);
@@ -20,6 +21,7 @@ const useChannelSettingsManager = () => {
     const toast = useToast();
     const Success = useSuccess();
     const Failure = useFailure();
+    const queryClient = useQueryClient();
 
 
   const sendChannelEnviteMutation = useMutation({
@@ -27,6 +29,7 @@ const useChannelSettingsManager = () => {
       sendChannelEnviteClient(user).postData(null),
     onSuccess: (data) => {
       console.log(data);
+      queryClient.invalidateQueries("channelEnvites");
       toast (Success ("Envite to channel sent"))
     },
     onError: (error) => {
@@ -37,14 +40,29 @@ const useChannelSettingsManager = () => {
   const acceptChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
       acceptChannelEnviteClient(user).postData(null),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries("channelEnvites")
+      toast (Success ("Envite to channel accepted"))
+    },
+    onError: (error) => {
+      console.log(error);
+      toast (Failure ("Envite to channel failed"))
+    },
   });
   const declineChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
       declineChannelEnviteClient(user).deleteData(),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries("channelEnvites")
+      toast (Success ("Envite to channel declined"))
+    },
+    onError: (error) => {
+      console.log(error);
+      toast (Failure ("Envite to channel failed"))
+    },
   });
 
   const acceptProtectedEnviteMutation = useMutation({

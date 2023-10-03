@@ -4,8 +4,9 @@ import "../theme/styles.css";
 
 interface Props {
   children: React.ReactNode;
+  h?: string;
 }
-const ScrollableStack: React.FC<Props> = ({ children }) => {
+const ScrollableStack: React.FC<Props> = ({ children, h='60vh'}) => {
   return (
     <Stack
       className="customScroll"
@@ -13,7 +14,7 @@ const ScrollableStack: React.FC<Props> = ({ children }) => {
       justifyContent="start"
       alignItems="center"
       w={"100%"}
-      h={"60vh"}
+      h={h}
       borderRadius={"20px"}
       maxH={"65vh"}
       bg={"#1D222C"}

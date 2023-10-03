@@ -88,7 +88,7 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({ user, type, color }) => {
               type="options"
               buttonValue={<Text>{setting.description}</Text>}
             >
-              {modals.get(setting.description)!()}
+              {modals.get(setting.description) && modals.get(setting.description)!()}
             </ModalWrapper>
           )
         )}

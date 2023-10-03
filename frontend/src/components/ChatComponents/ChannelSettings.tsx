@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   HStack,
   Stack,
@@ -15,11 +15,47 @@ import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
 import { ModalWrapper } from "@/components/Wrappers/ModalWrapper";
 import { SlArrowRight } from "react-icons/sl";
+import { ChannelsContext, UsersContext } from "@/context/Contexts";
+import { useQuery } from "react-query";
+import apiClient from "@/services/requestProcessor";
 interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   // eslint-disable-next-line react/jsx-key
-  const settings: Array<React.ReactNode> = [<MembersList />, <SetPassword />];
+  const [channelMembers, setChannelMembers] = useState<Member[]> ([])
+  const {activeChannel} = useContext (ChannelsContext)
+  const {loggedInUser} =useContext (UsersContext)
+  const channelMembersClient = (channelId:string) => new apiClient (`/chat/channels/${channelId}/members`)
+  // eslint-disable-next-line react/jsx-key
+  const settings = new Map([[
+    'Members',
+    // eslint-disable-next-line react/jsx-key
+    <MembersList members={channelMembers} />
+  ],[
+    'Set Password',
+    // eslint-disable-next-line react/jsx-key
+    <SetPassword />
+  ]]
+  )
+
+  useQuery ({
+    queryKey: ['channelMembers', activeChannel?.id],
+    queryFn: async ()=> channelMembersClient(activeChannel!.id!).getData().then(res=>res.data) ,
+    onSuccess: (data:any)=> {
+      setChannelMembers(data)
+      console.log (data)
+    },
+    onError: (err)=> {
+      console.log(err)
+    }
+  })
+
+  const loggedInUserRole = ()=>{
+    const user = channelMembers.find(member=>member.userId === loggedInUser!.id)
+    if (user) return user.role
+    return null
+  }
+
 
   return (
     <Stack
@@ -65,13 +101,13 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
                 </Text>
                 <Icon as={SlArrowRight} />
               </HStack>
-            }>{settings[index]}</ModalWrapper>);
+            }>{settings.get(setting)!}</ModalWrapper>);
           })}
         </Stack>
       </Stack>
       <Stack spacing={3}>
           <ModalWrapper type="confirmation" actionDescription="leave this channel" buttonValue={
-            <Text>Leave Channel</Text>
+            <Text>{loggedInUserRole () == 'OWNER' ? 'Delete' : 'Leave'} Channel</Text>
           }
           buttonVariant='largePrimary'/>
         <Button

@@ -5,6 +5,7 @@ import {
   Tab,
   TabPanel,
   TabPanels,
+  Text,
 } from "@chakra-ui/react";
 import ScrollableStack from "../ScrollableStack";
 import "../../theme/styles.css";
@@ -13,18 +14,51 @@ import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import EnviteField from "../ChatComponents/EnviteField";
 import { useContext, useEffect } from "react";
-import { UsersContext } from "@/context/Contexts";
+import { UsersContext, ChannelsContext } from "@/context/Contexts";
 const EnvitesListSection: React.FC = () => {
-  const { RecievedFriendRequests, SentFriendRequests } =
+  const { RecievedFriendRequests, SentFriendRequests, loggedInUser } =
     useContext(UsersContext);
-  const [sentEnvites, setSentEnvites] = useState<Envite[]>([]);
-  const [recievedEnvites, setRecievedEnvites] = useState<Envite[]>([]);
+  const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]>([]);
+  const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]>([]);
+  const { channelEnvites } = useContext(ChannelsContext);
 
-  useEffect (() => {
-    setRecievedEnvites (RecievedFriendRequests!)
-    setSentEnvites (SentFriendRequests!)
+  useEffect(() => {
+    const recievedEnvites: GlobalEnvite[] = RecievedFriendRequests!.map(
+      (envite) => ({
+        isChannelEnvite: false,
+        enviteId: envite.id,
+        senderId: envite.inviteOwnerId,
+        receiverId: envite.inviteUserId,
+        createdAt: envite.createdAt,
+      })
+    );
+    const sentEnvites: GlobalEnvite[] = SentFriendRequests!.map((envite) => ({
+      isChannelEnvite: false,
+      enviteId: envite.id,
+      senderId: envite.inviteOwnerId,
+      receiverId: envite.inviteUserId, // Add receiverId property
+      createdAt: envite.createdAt,
+    }));
+    const ChannelEnvite: GlobalEnvite[] = channelEnvites!.map((envite) => ({
+      isChannelEnvite: true,
+      enviteId: envite.id,
+      senderId: envite.senderId,
+      receiverId: envite.receiverId, // Add receiverId property
+      createdAt: envite.created_at,
+      channelId: envite.channelId,
+    }));
 
-  }, [RecievedFriendRequests, SentFriendRequests])
+    const receivedChannelEnvites: GlobalEnvite[] = ChannelEnvite.filter(
+      (envite) => envite.receiverId === loggedInUser!.id
+    );
+    const sentChannelEnvites: GlobalEnvite[] = ChannelEnvite.filter(
+      (envite) => envite.senderId === loggedInUser!.id
+    );
+
+    setRecievedEnvites([...recievedEnvites, ...receivedChannelEnvites]);
+    setSentEnvites([...sentEnvites, ...sentChannelEnvites]);
+    
+  }, [RecievedFriendRequests, SentFriendRequests, channelEnvites]);
   return (
     <Stack
       fontFamily={"visbyRound"}
@@ -43,7 +77,6 @@ const EnvitesListSection: React.FC = () => {
     >
       <Tabs isFitted variant="enclosed" w="100%">
         <TabList mb="1em" w="100%" border="none">
-         
           <Tab
             border={"none"}
             borderRadius={"15px"}
@@ -70,10 +103,10 @@ const EnvitesListSection: React.FC = () => {
               overflowY="auto"
               className="customScroll"
             >
-              {RecievedFriendRequests!.length ? (
-                RecievedFriendRequests!.map((envite, index) => (
+              {recievedEnvites!.length ? (
+                recievedEnvites!.map((envite, index) =>
                   <EnviteField key={index} type="received" envite={envite} />
-                ))
+                )
               ) : (
                 <Stack
                   w="100%"
@@ -94,8 +127,8 @@ const EnvitesListSection: React.FC = () => {
               overflowY="auto"
               className="customScroll"
             >
-              {SentFriendRequests!.length ? (
-                SentFriendRequests!.map((envite, index) => (
+              {sentEnvites!.length ? (
+                sentEnvites!.map((envite, index) => (
                   <EnviteField key={index} type="sent" envite={envite} />
                 ))
               ) : (

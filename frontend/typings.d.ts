@@ -262,6 +262,7 @@ type ChannelsContext = {
   setChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
   activeChannel?: Channel | null;
   setActiveChannel?: React.Dispatch<React.SetStateAction<Channel|null>>;
+  channelEnvites?: ChannelEnvite[];
 };
 
 
@@ -284,4 +285,18 @@ type ChannelEnvite = {
   id:string,
   receiverId: string,
   senderId: string,
+}
+
+type GlobalEnvite = {
+  isChannelEnvite: boolean,
+  enviteId: string,
+  createdAt: string,
+  senderId: string,
+  receiverId: string,
+  channelId?: string,
+}
+
+type Member = {
+  userId:string
+  role:string
 }
