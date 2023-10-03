@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AppNavigationContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
-import { friendsList, Channels, PRIVATE } from "../../contstants";
+import {Channels, PRIVATE } from "../../contstants";
 import { NotifyServer } from "../../utils/eventEmitter";
 import { messages } from "../../contstants";
 import apiClient from "../services/requestProcessor";
@@ -13,13 +13,9 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [currentChat, setCurrentChat] = useState<ChatType>(PRIVATE);
   const [chatNotification, setChatNotification] = useState<boolean>(true);
   const [requestNotification, setRequestNotification] = useState<boolean>(true);
-  const [Friends, setFriends] = useState<User[]>(friendsList);
   const [directMessages, setDirectMessages] =
     useState<DirectMessage[]>(messages);
-  const [ChannelsList, setChannels] = useState<Channel[]>([]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
-  const [directConversations, setDirectConversations] = useState<string[]>([])
-  const [channelConversations, setChannelConversations] = useState<string[]>([])
   const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
   const [activePeerStatus, setActivePeerStatus] = useState<boolean>(false)
   const [GameEnvitation, setGameEnvitation] = useState<GameEnvitation | null>(
@@ -28,6 +24,8 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const { socket } = useContext(GlobalContext);
   const {setCurrentSection} = useContext (AppNavigationContext)
   const {loggedInUser, Users} = useContext (UsersContext)
+  const [privateConversations, setPrivateConversations] = useState<string[]>([])
+  const [channelConversations, setChannelConversations] = useState<string[]>([])
   
 
   
@@ -37,8 +35,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     // fetch Peers
     // fetch Channels
     const friends = Users!.filter(user => user.id !== loggedInUser!.id)
-    setFriends(friends)
-    setChannels(Channels);
     console.log(`chat provider mounted socket id : ${socket?.id}`);
     // NotifyServer(socket, "userIsActive", loggedInUser!);
     
@@ -58,8 +54,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       value={{
         chatType: currentChat,
         setCurrentChat,
-        Friends,
-        Channels,
         directMessages,
         setDirectMessages,
         joinGameStatus,
@@ -67,7 +61,12 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
         GameEnvitation,
         setGameEnvitation,
         chatNotification,
-        requestNotification
+        requestNotification,
+        privateConversations,
+        channelConversations,
+        setPrivateConversations,
+        setChannelConversations,
+
       }}
     >
       {children}

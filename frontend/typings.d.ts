@@ -140,6 +140,10 @@ interface ChatContext {
   setChatNotification?: React.Dispatch<React.SetStateAction<boolean>>;
   requestNotification?: boolean;
   setRequestNotification?: React.Dispatch<React.SetStateAction<boolean>>;
+  privateConversations?: string[];
+  channelConversations?: string[];
+  setPrivateConversations?: React.Dispatch<React.SetStateAction<string[]>>;
+  setChannelConversations?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 interface ModalWrapperProps {

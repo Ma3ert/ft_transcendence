@@ -1,26 +1,45 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Avatar, Stack, HStack, Text, Button } from "@chakra-ui/react";
 import UserAvatar from "../UserAvatar";
 import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
-import { ChannelsContext, ChatContext, UsersContext } from "../../context/Contexts";
+import {
+  ChannelsContext,
+  ChatContext,
+  UsersContext,
+} from "../../context/Contexts";
 import { PRIVATE, CHANNEL } from "../../../contstants";
 import { NotificationWrapper } from "./NotificationBadge";
+import { setSyntheticTrailingComments } from "typescript";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Channels,  setCurrentChat } =
-    useContext(ChatContext);
-    const {activeChannel, setActiveChannel} = useContext(ChannelsContext)
+  const { setCurrentChat } = useContext(ChatContext);
+  const { activeChannel, setActiveChannel, Channels } =
+    useContext(ChannelsContext);
+  const { channelConversations } = useContext(ChatContext);
+  const [conversations, setConversations] = useState<Channel[]>([]);
+
+  useEffect(() => {
+    const filterdArray = Channels!.filter((channel) => {
+      if (
+        channel.id == activeChannel?.id ||
+        (channel!.id && channelConversations?.includes(channel!.id))
+      )
+        return true;
+      return false;
+    });
+    setConversations (filterdArray)
+  }, [channelConversations]);
   return (
     <>
-      {Channels?.map((channel, index) => {
+      {conversations?.map((channel, index) => {
         return (
-          <NotificationWrapper type='activeChat' status={false} key={index}>
+          <NotificationWrapper type="activeChat" status={false} key={index}>
             <UserAvatar
               isChannel={true}
               channel={channel}
@@ -38,14 +57,28 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Friends, setCurrentChat } =
-    useContext(ChatContext);
-    const {activePeer, setActivePeer} = useContext(UsersContext)
+  const { setCurrentChat } = useContext(ChatContext);
+  const { friendsList } = useContext(UsersContext);
+  const { activePeer, setActivePeer } = useContext(UsersContext);
+  const [conversations, setConversations] = useState<User[]>([]);
+  const {privateConversations, setPrivateConversations} = useContext(ChatContext)
+
+  useEffect (() => {
+    const filterdArray = friendsList!.filter((friend) => {
+      if (
+        friend.id == activePeer?.id ||
+        (friend!.id && privateConversations?.includes(friend!.id))
+      )
+        return true;
+      return false;
+    });
+    setConversations(filterdArray)
+  }, [privateConversations])
   return (
     <>
-      {Friends?.map((friend, index) => {
+      {conversations?.map((friend, index) => {
         return (
-          <NotificationWrapper type='activeChat' status={true} key={index}>
+          <NotificationWrapper type="activeChat" status={true} key={index}>
             <UserAvatar
               isChannel={false}
               user={friend}
@@ -63,17 +96,17 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const [privateChat, setPrivate] = useState<boolean>(PRIVATE);
   const { chatType, setCurrentChat } = useContext(ChatContext);
+
+  
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         color="#5B6171"
         onClick={() => {
-          setPrivate(!privateChat);
-          // setCurrentChat!(privateChat ? PRIVATE : CHANNEL)
+          setCurrentChat!(!chatType);
         }}
-        icon={privateChat ? FaUserGroup : FaUserAlt}
+        icon={chatType ? FaUserGroup : FaUserAlt}
         size={"25px"}
       />
       <Stack
@@ -85,7 +118,7 @@ const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
         spacing={2}
         maxH={"60vh"}
       >
-        {privateChat ? <FriendsNavigation /> : <ChannelsNavigation />}
+        {chatType ? <FriendsNavigation /> : <ChannelsNavigation />}
       </Stack>
     </Stack>
   );

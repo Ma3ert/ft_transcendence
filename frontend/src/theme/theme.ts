@@ -279,18 +279,6 @@ const ButtonStyle: ComponentStyleConfig = {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
     },
-    modalConfirm: {
-      color: "#D9D9D9",
-      fontSize: "sm",
-      bg: "#DC585B",
-      px: "15px",
-      py: "5px",
-      borderRadius: "10px",
-      hover: {
-        opacity: "0.8",
-        transform: "scale(1.1)", // Increase the scale to make it grow
-      },
-    },
     icon: {
       borderRadius: "50px",
       px: "0px",
