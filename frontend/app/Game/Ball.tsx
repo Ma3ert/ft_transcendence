@@ -17,30 +17,27 @@ type Props = {
 	distance: number;
 	velocity: number;
 	roomId: string;
+	index: number
 }
 
-const Ball = ({ socket, state, points, box, distance, velocity, roomId }: Props) => {
+const Ball = ({ socket, state, points, box, distance, velocity, roomId, index }: Props) => {
 	const [scale, setScale] = useState(points[0].y / 500);
-	const [index, setIndex] = useState(1);
 	var boxSize = scale * box
 	console.log("game State from the ball: ", state);
 	const handleMovement = () => {
-		console.log("i get here")
 		if (state === "gameStarted")
 		{
-			console.log(points);
-			if (index < points.length - 2)
+			if (index < points.length - 1)
 			{
-				setIndex(index + 1);
 				setScale(points[index].y / 500);
 				boxSize = scale * box
 			}
-			else
-			{
-				const ballEvent: BallEvent = {room: roomId , event: "ballReachesEnd"}
-				socket.emit("ballReachesEnd", ballEvent);
-				setIndex(1);
-			}
+			// else
+			// {
+			// 	const ballEvent: BallEvent = {room: roomId , event: "ballReachesEnd"}
+			// 	socket.emit("ballReachesEnd", ballEvent);
+			// 	console.log("i reset the index")
+			// }
 		}
 	}
 	useEffect(() => {

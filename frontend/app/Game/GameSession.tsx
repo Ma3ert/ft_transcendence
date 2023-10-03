@@ -19,6 +19,8 @@ const GameSession = ({room, playerIndex, socket}: Props) => {
   useEffect(() => {
     socket.on("updateGame", (data: Room) => {
       console.log('receive the update event: ', data.gameState)
+      console.log('index Start: ', data.players[playerIndex].indexStart)
+      console.log('index end: ', data.players[playerIndex].indexEnd)
       setRoom(data)
   })
   return () => {

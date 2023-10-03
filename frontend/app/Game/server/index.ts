@@ -22,15 +22,21 @@ export interface Point {
 	y: number;
 }
 
+export interface Ball {
+  ballSize: number; // the size of the ball it most responsive
+  indexStart: number; // the index from the ball is going
+  indexEnd: number; // the index of where the ball is gonna end up
+  distance: number;
+  velocity: number; // the velocity of the ball it will increament while the game is progressing
+  ballIndex: number;
+}
+
 export interface Player {
 	id: number; // the id of the player whether he's the first to shoot or not
 	playerPosition: Point; // the position of the player update by the keystrok from the user
 	otherPosition: Point; // the position of the opponent update by the keystrok from the other user
 	ballTrajectory: Point[]; // the trajectory of the ball
 	ballPositions: Point[]; // the position of shooting and receiving the ball
-  ballSize: number; // the size of the ball it most responsive
-	indexStart: number; // the index from the ball is going
-	indexEnd: number; // the index of where the ball is gonna end up
 	state: "R" | "S"; // to decide whether the player is a sender or receiver
 	shootingPosition: number; // the position where the player gonna shoot the ball
 	playerDirection: "left" | "right"; // to decide which side the raquette is facing for the user
@@ -47,10 +53,8 @@ export interface Player {
 	bottomLeft: Point; // the position of the bottomleft corner of the table
 	score: number; // how many point the player scored
 	roomId: string; // the id of the room that the player blongs to
-	velocity: number; // the velocity of the ball it will increament while the game is progressing
 	you: string;
 	other: string;
-  distance: number;
 }
 
 export interface Room {
@@ -253,6 +257,7 @@ export function serveBallAction(action: BallEvent, game: Room)
 	const sender: Player = game.players[0].state === "S" ? game.players[0] : game.players[1];
 	if (checkBounce(reciever.playerPosition, reciever.ballTrajectory[reciever.ballTrajectory.length - 2]))
 	{
+    console.log("it bounce");
     reciever.indexStart = reciever.indexEnd;
     reciever.indexEnd = reciever.shootingPosition;
 		reciever.ballTrajectory = getBallTrajectory(reciever.ballPositions[reciever.indexStart], reciever.ballPositions[reciever.indexEnd], 10);
@@ -267,9 +272,13 @@ export function serveBallAction(action: BallEvent, game: Room)
 	}
 	else
   {
+    console.log("it bounce didn't bounce");
     sender.score += 1;
     if (sender.score !== 10)
+    {
+      console.log("re Init");
       return (gameInitializer(game, reciever.id, sender.id))
+    }
     game.gameState = "gameFinished";
   }
 	game.players[0].id  === sender.id ? game.players[0] = sender : game.players[0] = reciever
@@ -318,11 +327,12 @@ const createPlayer = (id: number) => {
         topLine: 400,
         score: 0,
         roomId: "",
-        velocity: 40,
+        velocity: 30,
         you : "",
         other: "",
         distance: 0,
-        ballSize: 80
+        ballSize: 80,
+        ballIndex: 0 
 	  };
 	return player;
   }
@@ -350,11 +360,12 @@ const createPlayer = (id: number) => {
 		topLine: 400,
 		score: 0,
 		roomId: "",
-		velocity: 40,
+		velocity: 30,
 		you : "",
 		other: "",
 		distance: 0,
-    ballSize: 80
+    ballSize: 80,
+    ballIndex: 0
 	};
 	return player;
 };
@@ -405,7 +416,7 @@ io.on("connection", (socket) => {
     }
   });
 
-socket.on("ballReachesEnd", (event: BallEvent) => {
+  socket.on("ballReachesEnd", (event: BallEvent) => {
     let room: any = rooms.find((room: any) => room.id === event.room);
     // Here you might wanna check if the ball has reached the end
     // and check if the player is in the correct position
