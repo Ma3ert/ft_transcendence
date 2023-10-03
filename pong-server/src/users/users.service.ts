@@ -158,7 +158,7 @@ export class UsersService {
         },
       },
     });
-    return [...user.friendsList, ...user.friendOf];
+    return [...user.friendsList];
   }
 
   async unblockFriend(userId: string, friendId: string) {
