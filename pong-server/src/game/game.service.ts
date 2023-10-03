@@ -96,8 +96,8 @@ export class GameService {
     server.to(gameSessionID).emit(GAME_SESSION_STARTING);
     // Notify the user that we're going to start the session
     setTimeout(() => {
-      console.log("Starting game session");
-      // server.to(gameSessionID).emit(START_GAME_SESSION, this.gameSessions.get(gameSessionID));
+      console.log('Starting game session');
+      server.to(gameSessionID).emit(START_GAME_SESSION);
       this.gameStarted(gameSessionID, server);
     }, 3000);
   }
@@ -129,7 +129,7 @@ export class GameService {
 
   cancelGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
     if (!this.gameInvites.has(gameInviteId)) {
-      server.to(player.id).emit(NO_SUCH_INVITE);
+      return server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const invite = this.gameInvites.get(gameInviteId);
     if (invite.players.length == 2) return;
@@ -295,7 +295,7 @@ export class GameService {
     await this.usersService.updateUserAll(playerTwo.user, { status: 'ONLINE' });
     // Create an entry in the game table
     const result = await this.createGame(gameSessionId);
-    console.log(result)
+    console.log(result);
 
     // Remove both players from the players array
     this.allPlayers.delete(playerOne.user);
