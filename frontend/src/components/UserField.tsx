@@ -20,15 +20,12 @@ interface Props {
 const UserField: React.FC<Props> = ({ user }) => {
   const { setCurrentSection } = useContext(AppNavigationContext);
   const { setCurrentChat } = useContext(ChatContext);
-  const [clicked, setClicked] = useState(false);
   const { setActivePeer, friendsList } = useContext(UsersContext);
 
   useEffect(() => {
-    if (clicked) {
-      setClicked(false);
-      console.log("all state is setted");
-    }
-  }, [clicked]);
+   console.log ('friends :')
+   console.table (friendsList) 
+  }, [friendsList]);
 
   return (
     <Button variant={"field"} w={"100%"} h="auto" px={2} onClick={() => {}}>
@@ -46,7 +43,7 @@ const UserField: React.FC<Props> = ({ user }) => {
         </HStack>
 
         <HStack spacing={3}>
-          {friendsList?.find((friend) => friend.id == user.id) && (
+          {friendsList!.length && friendsList!.find((friend) => friend.id == user.id) && (
             <Icon
               onClick={() => {
                 setActivePeer!(user);
@@ -58,7 +55,7 @@ const UserField: React.FC<Props> = ({ user }) => {
               _hover={{ transform: "scale(1.1)" }}
             />
           )}
-          <OptionsMenu user={user} type={friendsList?.find(friend=>friend.id == user.id) ? 'Friend' : 'User'} />
+          <OptionsMenu user={user} type={friendsList!.find(friend=>friend.id == user.id) ? 'Friend' : 'User'} />
         </HStack>
       </HStack>
     </Button>

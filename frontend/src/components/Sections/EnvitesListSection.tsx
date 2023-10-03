@@ -12,12 +12,19 @@ import { useState } from "react";
 import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import EnviteField from "../ChatComponents/EnviteField";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UsersContext } from "@/context/Contexts";
 const EnvitesListSection: React.FC = () => {
   const { RecievedFriendRequests, SentFriendRequests } =
     useContext(UsersContext);
+  const [sentEnvites, setSentEnvites] = useState<Envite[]>([]);
+  const [recievedEnvites, setRecievedEnvites] = useState<Envite[]>([]);
 
+  useEffect (() => {
+    setRecievedEnvites (RecievedFriendRequests!)
+    setSentEnvites (SentFriendRequests!)
+
+  }, [RecievedFriendRequests, SentFriendRequests])
   return (
     <Stack
       fontFamily={"visbyRound"}

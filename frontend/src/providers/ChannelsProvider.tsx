@@ -12,6 +12,7 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
     const [activeChannel, setActiveChannel] = useState<Channel | null>(null)
     const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
     const [channelConversations, setChannelConversations] = useState<string[]>([])
+    const [channelEnvites, setChannelEnvites] = useState<ChannelEnvite[]>([])
     const userChannelsClient = new apiClient('/chat/channels/')
     const channelEnvitesClient = new apiClient('/chat/channels/invites/')
 
@@ -28,8 +29,9 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
 
     useQuery ('channelEnvites', {
         queryFn: () => channelEnvitesClient.getData().then(res => res.data),
-        onSuccess: (data:Channel[]) => {
+        onSuccess: (data:any) => {
             // setChannels(data)
+            setChannelEnvites(data)
             console.log ('channel envites')
             console.table (data)
         },

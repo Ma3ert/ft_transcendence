@@ -87,8 +87,8 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
 
   useQuery("friends", {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
-    onSuccess: (data: User[]) => {
-      setFriendsList(data);
+    onSuccess: (data: any) => {
+      setFriendsList(data.friends);
     },
     onError: (err) => {
       console.log(err);

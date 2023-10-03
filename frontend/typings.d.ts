@@ -277,3 +277,11 @@ type Envite ={
   inviteOwnerId: string,
   createdAt: string
 }
+
+type ChannelEnvite = {
+  channelId: string,
+  created_at: string,
+  id:string,
+  receiverId: string,
+  senderId: string,
+}
