@@ -17,6 +17,7 @@ interface useModalProps {
   actionDescription?: string;
   buttonValue?: JSX.Element;
   buttonVariant?: string;
+  action?: () => void;
 }
 export const ModalWrapper: React.FC<useModalProps> = ({
   type,
@@ -24,6 +25,7 @@ export const ModalWrapper: React.FC<useModalProps> = ({
   actionDescription,
   buttonValue,
   buttonVariant,
+  action
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -55,6 +57,7 @@ export const ModalWrapper: React.FC<useModalProps> = ({
         </RegularModalWrapper>
       ) : (
         <ConfirmationModalWrapper
+          action={action}
           isOpen={isOpen}
           onClose={onClose}
           onOpen={onOpen}

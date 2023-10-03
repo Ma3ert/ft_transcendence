@@ -34,7 +34,7 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({ user, type, color }) => {
     [
       "Invite to join channel",
       () => {
-        return <InviteToChannels user={user!}/>;
+        return <InviteToChannels user={user!} />;
       },
     ],
   ]);
@@ -54,9 +54,9 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({ user, type, color }) => {
   ]);
   return (
     <Menu>
-      <MenuButton bg="transparent" _active={{}} _hover={{}} as={Button}>
+      <MenuButton bg="transparent" color='#DC585B'  _active={{}} _hover={{}} as={Button}>
         <Icon
-          color={"#5B6171"}
+          
           as={FaEllipsis}
           _hover={{ transform: "scale(1.1)" }}
         />
@@ -88,7 +88,8 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({ user, type, color }) => {
               type="options"
               buttonValue={<Text>{setting.description}</Text>}
             >
-              {modals.get(setting.description) && modals.get(setting.description)!()}
+              {modals.get(setting.description) &&
+                modals.get(setting.description)!()}
             </ModalWrapper>
           )
         )}

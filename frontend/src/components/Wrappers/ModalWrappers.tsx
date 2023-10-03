@@ -21,6 +21,7 @@ export const RegularModalWrapper: React.FC<RegularModalProps> = ({
     onClose,
     isOpen,
     actionDescription,
+    action
   }) => {
     return (
       <Modal isOpen={isOpen} onClose={onClose} variant='default'>
@@ -40,7 +41,7 @@ export const RegularModalWrapper: React.FC<RegularModalProps> = ({
               <Button variant="modalCancel" onClick={onClose}>
                 Cancel
               </Button>
-              <Button variant={"modalConfirm"} onClick={onOpen}>
+              <Button variant={"modalConfirm"} onClick={action}>
                 Confirm
               </Button>
             </ButtonGroup>

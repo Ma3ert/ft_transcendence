@@ -171,6 +171,7 @@ interface ConfirmationModalProps {
   onOpen: () => void;
   onClose: () => void;
   actionDescription: string;
+  action?: () => void;
 }
 interface ModalContext {
   RegularModalWrapper?: React.FC<RegularModalProps>;

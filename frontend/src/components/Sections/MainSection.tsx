@@ -13,10 +13,12 @@ const MainSection: React.FC<MainSectionProps> = ({}) => {
       templateColumns={"8vw 1fr"}
       w="100%"
       h="100%"
-      border="1px"
-      borderColor="blue"
+      // border="1px"
+      // borderColor="blue"
     >
-      <GridItem w="100%" h="100%" border="1px" borderColor="yellow">
+      <GridItem w="100%" h="100%" 
+      // border="1px" borderColor="yellow"
+      >
         <SideBar
           currentSection={
             (getCurrentSectionType && getCurrentSectionType()) || "lobby"
@@ -27,8 +29,8 @@ const MainSection: React.FC<MainSectionProps> = ({}) => {
       <GridItem
         w="100%"
         h="100%"
-        border="1px"
-        borderColor="red"
+        // border="1px"
+        // borderColor="red"
         justifyContent={"center"}
         alignItems="center"
       >
@@ -52,4 +54,4 @@ const MainSection: React.FC<MainSectionProps> = ({}) => {
   );
 };
 
-export default MainSection
+export default MainSection;

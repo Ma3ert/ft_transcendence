@@ -25,8 +25,8 @@ const FriendsSection: React.FC<FriendsSectionProps> = ({}) => {
         h="100%"
         justify={"center"}
         alignItems={"center"}
-        border="1px"
-        borderColor="red"
+        // border="1px"
+        // borderColor="red"
         spacing={3}
         align={"center"}
         justifyContent="center"

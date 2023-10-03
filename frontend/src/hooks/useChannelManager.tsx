@@ -3,6 +3,8 @@ import { useMutation } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
 import { useQueryClient } from "react-query";
+import { AppNavigationContext } from "@/context/Contexts";
+import { useContext } from "react";
 
 
 const useChannelManager = () => {
@@ -14,6 +16,7 @@ const useChannelManager = () => {
     const Success = useSuccess()
     const Failure = useFailure ()
     const queryClient = useQueryClient()
+    const {setCurrentSection} = useContext (AppNavigationContext)
 
     const newChannelMutation = useMutation ({
         mutationFn: (channelBody: any) => channelClient.postData(channelBody),
@@ -33,6 +36,7 @@ const useChannelManager = () => {
         onSuccess: (data) => {
             console.log(data)
             queryClient.invalidateQueries('channels')
+            setCurrentSection!("friends")   
             toast(Success("Channel deleted successfully"))
         },
         onError: (error) => {
@@ -48,6 +52,7 @@ const useChannelManager = () => {
         }),
         onSuccess: (data) =>{
             console.log(data)
+            queryClient.invalidateQueries('channels')
             toast(Success("you joined channel"))
         },
         onError: (error) => {
@@ -60,6 +65,8 @@ const useChannelManager = () => {
         mutationFn: (channelId: string) => leaveChannelClient(channelId).deleteData (),
         onSuccess: (data) => {
             console.log(data)
+            queryClient.invalidateQueries('channels')
+            setCurrentSection!("friends")   
             toast(Success("you left channel"))
         },
         onError: (error) => {

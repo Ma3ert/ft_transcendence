@@ -21,8 +21,8 @@ const ChatInterface: React.FC = ({}) => {
     <Grid
       templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}
       w={{ base: "100%", lg: "100%", xl: "90%", vl: "85%" }}
-      border="1px"
-      borderColor="green"
+      // border="1px"
+      // borderColor="green"
       h="100%"
       mx="auto"
       justifyContent="space-between"

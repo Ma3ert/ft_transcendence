@@ -18,8 +18,8 @@ const HomeSection: React.FC<HomeSectionProps> = ({ children }) => {
           <Header />
         </GridItem>
         <GridItem
-          border="1px"
-          borderColor="green"
+          // border="1px"
+          // borderColor="green"
           w="100%"
           h="100%"
           justifyContent="center"
