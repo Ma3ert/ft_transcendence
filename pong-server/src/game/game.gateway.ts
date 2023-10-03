@@ -80,6 +80,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   afterInit(client: Socket) {
     client.use(SocketAuthMiddlware() as any);
-    this.gameService.gameSessionLauncher(this.server);
+    // this.gameService.gameSessionLauncher(this.server);
   }
 }
