@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserInvite } from '@prisma/client';
-import { Invite } from './entities/invite.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateInviteDto } from './dto/create-invite.dto';
 
@@ -48,6 +47,28 @@ export class InviteService {
         },
       },
     });
+  }
+
+  async checkCanInviteUser(invitedUser: string, requestUser: string) {
+    const users = (await this.getInviteReadyList(requestUser)).map((user) => user.id);
+    if (!users.includes(invitedUser)) {
+      const invite = await this.prismaService.userInvite.findFirst({
+       where: {
+        OR:
+        [{
+            inviteUserId: requestUser,
+            inviteOwnerId: invitedUser,
+          },
+          {
+            inviteUserId: invitedUser,
+            inviteOwnerId: requestUser,
+          },
+        ]
+       } 
+      });
+      if (invite) return invite;
+    }
+    return null;
   }
 
   getSendInvites(inviteOwnerId: string) {
@@ -120,7 +141,10 @@ export class InviteService {
       },
     });
     const users = await this.prismaService.user.findMany();
-    const invitesUsers = [...sentInvites.map((invite) => invite.inviteUserId), ...receivedInvites.map((invite) => invite.inviteOwnerId)];
+    const invitesUsers = [
+      ...sentInvites.map((invite) => invite.inviteUserId),
+      ...receivedInvites.map((invite) => invite.inviteOwnerId),
+    ];
     const userFriends = [...user.friendsList.map((user) => user.id), ...user.friendOf.map((user) => user.id)];
     const excludedUsers = [user.id, ...invitesUsers, ...userFriends];
 
