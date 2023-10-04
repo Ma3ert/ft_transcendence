@@ -361,12 +361,12 @@ export class ChatController {
             return {status:"success", message:"Channel Name Changed Successfully"};
     }
 
-    @Get('/channels/invites')
+    
+    @Get('/channels/invites/recieved')
     @UseGuards(LoggedInGuard)
-    async getChannelsInvites(@Req() req: Request)
-    {
+    async getChannelsInvitesRecieved(@Req() req: Request) {
         const user = req.user['id'] as string;
-        return await this.chatService.getChannelInvites(user);
+        return await this.chatService.getChannelInvitesRecieved(user);
     }
 
     @Get('/channels/:channelId/role')
@@ -378,7 +378,15 @@ export class ChatController {
         const user = req.user['id'] as string;
         return await this.chatService.getUserRoleInCahannel(channelId, user);
     }
-
+    
+    @Get('/channels/invites/sent')
+    @UseGuards(LoggedInGuard)
+    async getChannelsInvitesSent(@Req() req: Request)
+    {
+        const user = req.user['id'] as string;
+        return await this.chatService.getChannelInvitesSent(user);
+    }
+    
     @Get('/channels/:channelId')
     @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
