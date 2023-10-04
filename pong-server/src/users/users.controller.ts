@@ -37,22 +37,31 @@ export class UsersController {
   }
 
   @Post('/block')
-  blockUser(@Body('userId') user: string, @Req() req: any) {
-    const blocked = this.usersService.blockFriend(req.user.id, user);
-    if (!blocked) return { status: 'failure', message: 'User does not exists in your friendslist.' };
+  @UseGuards(LoggedInGuard)
+  async blockUser(@Body('userId') user: string, @Req() req: any) {
+    const blocked = await this.usersService.blockFriend(req.user.id, user);
+    if (!blocked) return { status: 'failure', message: 'Could not block friend from your friendslist.' };
     return { status: 'success', message: `User ${user} has been blocked successfully.` };
   }
 
-  @Patch('/block')
-  unblockUser(@Body('userId') user: string, @Req() req: any) {
-    const unblocked = this.usersService.unblockFriend(req.user.id, user);
-    if (!unblocked) return { status: 'failure', message: 'User does not exists in your blockedlist.' };
+  @Post('/unblock')
+  @UseGuards(LoggedInGuard)
+  async unblockUser(@Body('userId') user: string, @Req() req: any) {
+    const unblocked = await this.usersService.unblockFriend(req.user.id, user);
+    if (!unblocked) return { status: 'failure', message: 'Could not unblock friend from your blockedlist.' };
     return { status: 'success', message: `User ${user} has been unblocked successfully.` };
   }
 
   @Get('/block/:id')
-  checkUserBlocked(@Param('id') user: string, @Req() req: any) {
-    return this.usersService.checkBlocked(req.user.id, user);
+  @UseGuards(LoggedInGuard)
+  async checkUserBlocked(@Param('id') user: string, @Req() req: any) {
+    if (user === req.user.id)
+      return {
+        status: 'failure',
+        message: 'Checked user needs to different from the current logged in user.',
+      };
+    const result = await this.usersService.checkBlocked(req.user.id, user);
+    return { status: 'success', blocked: result };
   }
 
   @Get('me')
@@ -63,17 +72,16 @@ export class UsersController {
 
   @Get('friends')
   @UseGuards(LoggedInGuard)
-  getUserFriends(@Req() req: any) {
-    return this.usersService.getUserFriends(req.user.id);
+  async getUserFriends(@Req() req: any) {
+    const friends = await this.usersService.getUserFriends(req.user.id);
+    return { status: 'success', count: friends.length, friends };
   }
-
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     //? This route should calculate properties like stats (wins or loses) and get all user game history
     return this.usersService.findOne(id);
   }
-
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('avatar'))

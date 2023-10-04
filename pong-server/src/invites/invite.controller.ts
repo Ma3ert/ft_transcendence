@@ -13,12 +13,19 @@ export class InviteController {
     return this.inviteService.getInviteReadyList(req.user.id);
   }
 
+  @Get('users/:id')
+  async checkUserAvailable(@Param('id') invitedUser: string, @Req() req: any) {
+    const invite = await this.inviteService.checkCanInviteUser(invitedUser, req.user.id);
+    if (invite) return { status: 'success', available: false, invite };
+    return { status: 'success', available: true };
+  }
+
   @Post()
   async create(@Body('invitedUser') invitedUserId: string, @Req() req: any) {
     if (invitedUserId === req.user.id)
       return {
         status: 'failure',
-        message: 'invalid invite, the invite owner should differ from the invited user',
+        message: 'Invalid invite, the invite owner should differ from the invited user',
       };
     const invite = await this.inviteService.createInvite({
       invitedUserId,
@@ -34,9 +41,9 @@ export class InviteController {
     if (!accepted)
       return {
         status: 'failure',
-        message: 'you are not authrized to accept this invite.',
+        message: 'You are not authrized to accept this invite.',
       };
-    return { status: 'success', message: 'invite accepted succesfully.' };
+    return { status: 'success', message: 'Invite accepted successfully.' };
   }
 
   @Get('received')
@@ -58,6 +65,6 @@ export class InviteController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {
     const deletedInvite = await this.inviteService.removeInvite(id, req.user.id);
-    if (deletedInvite) return { status: 'success', message: 'invite deleted succesfully.' };
+    if (deletedInvite) return { status: 'success', message: 'Invite deleted successfully.' };
   }
 }

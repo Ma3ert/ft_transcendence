@@ -15,6 +15,8 @@ export class LoggedInGuard implements CanActivate {
     const decoded = await this.authService.verifyAccessToken(req.cookies.jwt);
     if (!decoded) return false;
     const user = await this.userService.findById(decoded.sub);
+    if (!user)
+      return false;
     req.user = user;
     if (!user.twoFactor) {
       return true;

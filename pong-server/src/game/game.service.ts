@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Socket, Server } from 'socket.io';
 import { AuthSocket } from 'src/auth/utils/WsLoggedIn.guard';
@@ -20,6 +20,16 @@ import {
   JOINED_GAME_QUEUE,
 } from './utils/events';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+
+export interface Game {
+  id: string;
+  winner?: string;
+  playerOneScore?: number;
+  playerTwoScore?: number;
+  createdAt?: Date;
+}
 
 export interface Player {
   id: number;
@@ -33,7 +43,6 @@ export interface Player {
 }
 
 export interface GameSession {
-  sessionId: string;
   players: Player[];
   updateInterval?: NodeJS.Timeout;
 }
@@ -41,10 +50,14 @@ export interface GameSession {
 export interface MatchItem {
   staggedPlayer?: Player;
   players: Player[];
+  playerOne?: Socket;
+  playerTwo?: Socket;
 }
 
 @Injectable()
 export class GameService {
+  constructor(private readonly usersService: UsersService, private readonly prismaService: PrismaService) {}
+
   private allPlayers: Map<string, User> = new Map();
   private gameSessions: Map<string, GameSession> = new Map();
   private gameQueue: Map<string, MatchItem> = new Map();
@@ -70,21 +83,21 @@ export class GameService {
     const playerTwo = playersData[1];
 
     this.gameSessions.set(gameSessionID, {
-      sessionId: gameSessionID,
       players: [playerOne, playerTwo],
     });
-    //TODO: Should change the players status to in match just to notify other users
 
-    // Emit the player number.
-    server.to(playerOne.socket.id).emit('player', playerOne.id);
-    server.to(playerTwo.socket.id).emit('player', playerTwo.id);
+    // Change the player status to in match
+    this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
+    this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
+
     // Join player to the same game session.
     playerOne.socket.join(gameSessionID);
     playerTwo.socket.join(gameSessionID);
     server.to(gameSessionID).emit(GAME_SESSION_STARTING);
     // Notify the user that we're going to start the session
     setTimeout(() => {
-      server.to(gameSessionID).emit(START_GAME_SESSION, this.gameSessions.get(gameSessionID));
+      console.log('Starting game session');
+      server.to(gameSessionID).emit(START_GAME_SESSION);
       this.gameStarted(gameSessionID, server);
     }, 3000);
   }
@@ -116,11 +129,10 @@ export class GameService {
 
   cancelGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
     if (!this.gameInvites.has(gameInviteId)) {
-      server.to(player.id).emit(NO_SUCH_INVITE);
+      return server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const invite = this.gameInvites.get(gameInviteId);
-    if (invite.players.length == 2)
-      return ;
+    if (invite.players.length == 2) return;
     const receivingPlayer = invite.staggedPlayer;
 
     server.to(receivingPlayer.socket.id).emit(INVITE_CANCELED);
@@ -144,15 +156,16 @@ export class GameService {
         staggedPlayer: undefined,
       });
     }
-    // Dispay invite state
+    // Display invite state
     console.log(this.gameInvites.get(gameInviteId));
-
     // When the user accept add this user to users array
     this.allPlayers.set(player.user.id, player.user);
     // Emit event to playerOne to notify him that invite has been accepted
     const sendingUser = sessionInvite.players.find((player) => player.id == 1);
     if (!sendingUser) return server.to(player.id).emit(INVALID_INVITE);
     server.to(sendingUser.socket.id).emit(USER_ACCEPTED_INVITE);
+    this.createGameSession(this.gameInvites.get(gameInviteId).players, server);
+    this.gameInvites.delete(gameInviteId);
   }
 
   denyGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
@@ -187,14 +200,24 @@ export class GameService {
       const playerOne = lastSession[1].players[0];
       const playerTwo = this.createPlayer(player, 2);
       this.allPlayers.set(player.user.id, player.user);
-      this.gameQueue.set(gameSession, { players: [playerOne, playerTwo] });
-      //TODO: Send the users information about each other.
-      console.log('Game Session: ', gameSession, this.gameQueue.get(gameSession));
+      this.gameQueue.set(gameSession, { ...lastSession[1], players: [playerOne, playerTwo] });
+      // Send the users information about each other.
+      if (playerOne) {
+        const { socket, ...playerTwoData } = playerTwo;
+        playerOne.socket.emit('matchMade', { data: playerTwoData });
+      }
+      if (playerTwo) {
+        const { socket, ...playerOneData } = playerOne;
+        playerTwo.socket.emit('matchMade', { data: playerOneData });
+      }
+      this.createGameSession(this.gameQueue.get(gameSession).players, server);
+      this.gameQueue.delete(gameSession);
     } else {
       const gameSession = randomUUID();
       const playerOne = this.createPlayer(player, 1);
       this.gameQueue.set(gameSession, {
         players: [playerOne],
+        playerOne: player,
       });
       this.allPlayers.set(player.user.id, player.user);
       // Wait for 15 seconds if you don't find a match emit noPlayersAvaiable to the player
@@ -222,44 +245,92 @@ export class GameService {
   gameStarted(session: string, server: Server) {
     //TODO: write state watcher function to compare between the old state and the one and emit events.
     const gameSession = this.gameSessions.get(session);
-    const interval = setInterval(() => {
-      server.to(session).emit(GAME_UPDATE, { data: this.gameSessions.get(session).players });
-    }, 1000 / 60);
-    this.gameSessions.set(session, {
-      ...gameSession,
-      updateInterval: interval,
+    // const interval = setInterval(() => {
+    //   server.to(session).emit(GAME_UPDATE, { data: this.gameSessions.get(session).players });
+    // }, 1000 / 60);
+    // this.gameSessions.set(session, {
+    //   ...gameSession,
+    //   updateInterval: interval,
+    // });
+    setTimeout(() => {
+      gameSession.players[0].socket.emit('gameEnded');
+      gameSession.players[1].socket.emit('gameEnded');
+      this.endGameSession(session);
+    }, 10000);
+  }
+
+  // gameSessionLauncher(server: Server) {
+  //   Logger.log('[+] Game watcher: started');
+  //   setInterval(() => {
+  //     Logger.log('[+] Checking if a game exists.');
+  //     if (this.gameQueue.size > 0) {
+  //       const gameSession = Array.from(this.gameQueue)[this.gameQueue.size - 1];
+  //       const sessionId = gameSession[0];
+  //       const game = gameSession[1];
+  //       if (game.players.length === 2) {
+  //         Logger.log('[+] Creating a game from queue.');
+  //         this.createGameSession(game.players, server);
+  //         this.gameQueue.delete(sessionId);
+  //       }
+  //     } else if (this.gameInvites.size > 0) {
+  //       const gameSession = Array.from(this.gameInvites)[this.gameInvites.size - 1];
+  //       const sessionId = gameSession[0];
+  //       const game = gameSession[1];
+  //       if (game.players.length === 2) {
+  //         Logger.log('[+] Creating a game from invites.');
+  //         this.createGameSession(game.players, server);
+  //         this.gameInvites.delete(sessionId);
+  //       }
+  //     }
+  //   }, 3000);
+  // }
+
+  async endGameSession(gameSessionId: string) {
+    const gameSession = this.gameSessions.get(gameSessionId);
+    const playerOne = gameSession.players[0];
+    const playerTwo = gameSession.players[1];
+    //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
+    //TODO: change users status to ONLINE again
+    await this.usersService.updateUserAll(playerOne.user, { status: 'ONLINE' });
+    await this.usersService.updateUserAll(playerTwo.user, { status: 'ONLINE' });
+    // Create an entry in the game table
+    const result = await this.createGame(gameSessionId);
+    console.log(result);
+
+    // Remove both players from the players array
+    this.allPlayers.delete(playerOne.user);
+    this.allPlayers.delete(playerTwo.user);
+    // Quit the game session (ROOM)
+    playerOne.socket.leave(gameSessionId);
+    playerTwo.socket.leave(gameSessionId);
+    // Clear the interval for that game sesion
+    clearInterval(gameSession.updateInterval);
+    // Remove the item from the game sessions map
+    this.gameSessions.delete(gameSessionId);
+  }
+
+  createGame(gameSessionId: string) {
+    const gameSession = this.gameSessions.get(gameSessionId);
+    const playerOne = gameSession.players[0];
+    const playerTwo = gameSession.players[1];
+    let winner = null;
+
+    if (playerOne.score != 0 && playerTwo.score != 0 && playerOne.score != playerTwo.score)
+      winner = playerOne.score > playerTwo.score ? playerOne.user : playerTwo.user;
+    return this.prismaService.game.create({
+      data: {
+        id: gameSessionId,
+        players: {
+          connect: [{ id: playerOne.user }, { id: playerTwo.user }],
+        },
+        playerOneScore: playerOne.score,
+        playerTwoScore: playerTwo.score,
+        winner,
+      },
     });
   }
 
-  gameSessionLauncher(server: Server) {
-    console.log('Starting the game session watcher');
-    // setInterval(() => {
-    //   console.log('Started game session watcher');
-    // }, 3000);
-  }
-
-  endGameSession(gameSessionId: string) {
-    //TODO: Remove the item from the game sessions map
-    //TODO: Remove both players from the players array
-    //TODO: Check users status to ONLINE again
-    //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
-    //TODO: Quit the game session (ROOM)
-    //TODO: Clear the interval for that game sesion
-  }
-
   leaveGameSession(player: Socket) {
-    // Get the player game session
-    const gameSessionId = this.getPlayerSession(player);
-    //TODO: Should create an entry in the game table <>
-    //TODO: Should save the player and determine if he lost or won the game. <>
-    //TODO: Should emit in that room that the player has disconnected.
-    // Clear the session interval;
-    const gameSession = this.gameSessions.get(gameSessionId);
-    clearInterval(gameSession.updateInterval);
-    // Delete it from the sessions map
-    this.gameSessions.delete(gameSessionId);
-    // Disconnect the player from the session
-    if (gameSessionId) player.leave(gameSessionId);
-    //! Should change the user status to online not in game anymore
+    //! This function should be refactored to use the endGameSession with few exceptions.
   }
 }
