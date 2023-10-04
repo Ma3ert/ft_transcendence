@@ -88,15 +88,11 @@ type ChannelMessage = {
 };
 
 type Channel = {
-  isPrivate: boalean;
-  isProtected?: boolean;
   name: string;
-  members: User[];
+  members: number;
   admin: User;
-  membersCount: number;
-  imageUrl?: string;
+  avatar?: string;
   createdAt?: string;
-  messages?: ChannelMessage[];
   id?: string;
   type?: string;
 };
@@ -281,11 +277,11 @@ type Envite ={
 }
 
 type ChannelEnvite = {
-  channelId: string,
   created_at: string,
   id:string,
-  receiverId: string,
-  senderId: string,
+  reciever: string,
+  sender: string,
+  channel:Channel
 }
 
 type GlobalEnvite = {
@@ -294,7 +290,7 @@ type GlobalEnvite = {
   createdAt: string,
   senderId: string,
   receiverId: string,
-  channelId?: string,
+  channel?: Channel,
 }
 
 type Member = {

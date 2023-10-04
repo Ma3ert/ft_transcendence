@@ -15,34 +15,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
 
   const [activePeer, setActivePeer] = useState<User | null>(null);
   const [friendsList, setFriendsList] = useState<User[]>([]);
-  const [RecievedFriendRequests, setRecievedFriendRequests] = useState<Envite[]>([]);
-  const [SentFriendRequests, setSentFriendRequests] = useState<Envite[]>([]);
-  const recievedClient = new apiClient("/invites/received");
-  const sentClient = new apiClient("/invites/sent");
-
-  useQuery("recievedEnvites", {
-    queryFn: async () => recievedClient.getData().then((data) => data.data),
-    onSuccess: (response: any) => {
-      console.log(`recieved envites`);
-      console.table (response)
-      setRecievedFriendRequests(response.data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
-  useQuery("sentEnvites", {
-    queryFn: async () => sentClient.getData().then((data) => data.data),
-    onSuccess: (response: any) => {
-      console.log(`sent envites : ${response}`);
-      console.table (response)
-      setSentFriendRequests(response.data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  
   const [loggedInUser, setLoggedInUser] = useState<User>({
     id: "0066312b-9ce5-4eb4-a4ce-8fcf467f7e9d",
     username: "ochoumou",
@@ -104,7 +77,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
 
   return (
     <UsersContext.Provider
-      value={{ Users, loggedInUser, friendsList, activePeer, setActivePeer , RecievedFriendRequests, SentFriendRequests}}
+      value={{ Users, loggedInUser, friendsList, activePeer, setActivePeer }}
     >
       {children}
     </UsersContext.Provider>

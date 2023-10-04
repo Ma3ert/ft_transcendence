@@ -18,7 +18,7 @@ const ScrollableStack: React.FC<Props> = ({ children, h='60vh'}) => {
       borderRadius={"20px"}
       maxH={"65vh"}
       bg={"#1D222C"}
-      maxW={{ sm: "400px", md: "450px", lg: "500px", xl: "700px" }}
+      maxW={{ sm: "450px", md: "550px", lg: "600px", xl: "900px" }}
       minW={{ sm: "250px", md: "300px", lg: "350px", xl: "400px" }}
       overflowY={"auto"}
       spacing={2}

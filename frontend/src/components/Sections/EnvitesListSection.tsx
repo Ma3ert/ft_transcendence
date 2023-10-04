@@ -15,50 +15,102 @@ import { useQuery } from "react-query";
 import EnviteField from "../ChatComponents/EnviteField";
 import { useContext, useEffect } from "react";
 import { UsersContext, ChannelsContext } from "@/context/Contexts";
+
+
+const  getGlobalChannelEnvites = (envites: ChannelEnvite[]) => {
+
+  const response: GlobalEnvite[] = envites.map((envite) => ({
+    isChannelEnvite: true,
+    enviteId: envite.id,
+    senderId: envite.sender,
+    receiverId: envite.reciever, // Add receiverId property
+    createdAt: envite.created_at,
+    channel: envite.channel,
+  }));
+
+  return response;
+}
+
+const getGlobalFriendsEnvites = (envites: Envite[]) => {
+
+  const response :GlobalEnvite[] = envites.map((envite) => ({
+    isChannelEnvite: false,
+    enviteId: envite.id,
+    senderId: envite.inviteOwnerId,
+    receiverId: envite.inviteUserId, // Add receiverId property
+    createdAt: envite.createdAt,
+  }));
+  return response
+}
+
 const EnvitesListSection: React.FC = () => {
-  const { RecievedFriendRequests, SentFriendRequests, loggedInUser } =
+  const { loggedInUser } =
     useContext(UsersContext);
+  const channelReceivedEnvitesClient = new apiClient(
+    "/chat/channels/invites/recieved/"
+  );
+  const channelSentEnvitesClient = new apiClient("/chat/channels/invites/sent");
   const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]>([]);
   const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]>([]);
-  const { channelEnvites } = useContext(ChannelsContext);
+  const recievedClient = new apiClient("/invites/received");
+  const sentClient = new apiClient("/invites/sent");
 
-  useEffect(() => {
-    const recievedEnvites: GlobalEnvite[] = RecievedFriendRequests!.map(
-      (envite) => ({
-        isChannelEnvite: false,
-        enviteId: envite.id,
-        senderId: envite.inviteOwnerId,
-        receiverId: envite.inviteUserId,
-        createdAt: envite.createdAt,
-      })
-    );
-    const sentEnvites: GlobalEnvite[] = SentFriendRequests!.map((envite) => ({
-      isChannelEnvite: false,
-      enviteId: envite.id,
-      senderId: envite.inviteOwnerId,
-      receiverId: envite.inviteUserId, // Add receiverId property
-      createdAt: envite.createdAt,
-    }));
-    const ChannelEnvite: GlobalEnvite[] = channelEnvites!.map((envite) => ({
-      isChannelEnvite: true,
-      enviteId: envite.id,
-      senderId: envite.senderId,
-      receiverId: envite.receiverId, // Add receiverId property
-      createdAt: envite.created_at,
-      channelId: envite.channelId,
-    }));
+  useQuery("recievedEnvites", {
+    queryFn: async () => recievedClient.getData().then((data) => data.data),
+    onSuccess: (response: any) => {
+      console.log(`recieved envites`);
+      console.table (response)
+      if (!recievedEnvites.find((envite) => envite.enviteId === response.data.id))
+        setRecievedEnvites([...recievedEnvites, ...getGlobalFriendsEnvites(response.data)]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
-    const receivedChannelEnvites: GlobalEnvite[] = ChannelEnvite.filter(
-      (envite) => envite.receiverId === loggedInUser!.id
-    );
-    const sentChannelEnvites: GlobalEnvite[] = ChannelEnvite.filter(
-      (envite) => envite.senderId === loggedInUser!.id
-    );
-
-    setRecievedEnvites([...recievedEnvites, ...receivedChannelEnvites]);
-    setSentEnvites([...sentEnvites, ...sentChannelEnvites]);
-    
-  }, [RecievedFriendRequests, SentFriendRequests, channelEnvites]);
+  useQuery("sentEnvites", {
+    queryFn: async () => sentClient.getData().then((data) => data.data),
+    onSuccess: (response: any) => {
+      console.log(`sent envites : ${response}`);
+      console.table (response)
+      if (!sentEnvites.find((envite) => envite.enviteId === response.data.id))
+        setSentEnvites([...sentEnvites, ...getGlobalFriendsEnvites(response.data)]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  
+useQuery ('channelReceivedEnvites', {
+    queryFn: () => channelReceivedEnvitesClient.getData().then(res => res.data),
+    onSuccess: (data:any) => {
+      if (data.length)
+      {
+        if (!recievedEnvites.find((envite) => envite.enviteId === data.channel!.id))
+          setRecievedEnvites([...recievedEnvites, ...getGlobalChannelEnvites(data)])
+      }
+      console.log ('channel envites')
+      console.table (data)
+    },
+    onError: (err) => {
+        console.log(err)
+    }
+})    
+useQuery ('channelSentEnvites', {
+  queryFn: () => channelSentEnvitesClient.getData().then(res => res.data),
+  onSuccess: (data:any) => {
+    if (data.length)
+    {
+      if ( !sentEnvites.find((envite) => envite.enviteId === data.channel!.id))
+        setSentEnvites([...sentEnvites, ...getGlobalChannelEnvites(data)])
+    }
+      console.log ('channel envites')
+      console.table (data)
+  },
+  onError: (err) => {
+      console.log(err)
+  }
+})
   return (
     <Stack
       fontFamily={"visbyRound"}
@@ -69,7 +121,7 @@ const EnvitesListSection: React.FC = () => {
       borderRadius={"20px"}
       maxH={"70vh"}
       bg={"#1D222C"}
-      maxW={{ sm: "400px", md: "450px", lg: "500px", xl: "700px" }}
+      maxW={{ sm: "450px", md: "550px", lg: "600px", xl: "900px" }}
       minW={{ sm: "250px", md: "300px", lg: "350px", xl: "400px" }}
       spacing={2}
       px={4}
@@ -104,9 +156,9 @@ const EnvitesListSection: React.FC = () => {
               className="customScroll"
             >
               {recievedEnvites!.length ? (
-                recievedEnvites!.map((envite, index) =>
+                recievedEnvites!.map((envite, index) => (
                   <EnviteField key={index} type="received" envite={envite} />
-                )
+                ))
               ) : (
                 <Stack
                   w="100%"

@@ -18,10 +18,10 @@ interface Props {
   userType?: "Friend" | "User" | "Owner";
 }
 
-const UserField: React.FC<Props> = ({ user, userType = 'User' }) => {
+const UserField: React.FC<Props> = ({ user, userType = "User" }) => {
   const { setCurrentSection } = useContext(AppNavigationContext);
   const { setCurrentChat } = useContext(ChatContext);
-  const { setActivePeer, friendsList } = useContext(UsersContext);
+  const { setActivePeer, friendsList, loggedInUser } = useContext(UsersContext);
 
   useEffect(() => {
     console.log("friends :");
@@ -60,14 +60,16 @@ const UserField: React.FC<Props> = ({ user, userType = 'User' }) => {
           {userType == "Owner" ? (
             <Text fontSize="sm">Owner</Text>
           ) : (
-            <OptionsMenu
-              user={user!}
-              type={
-                friendsList!.find((friend) => friend.id == user.id)
-                  ? "Friend"
-                  : "User"
-              }
-            />
+            user.id != loggedInUser!.id && (
+              <OptionsMenu
+                user={user!}
+                type={
+                  friendsList!.find((friend) => friend.id == user.id)
+                    ? "Friend"
+                    : "User"
+                }
+              />
+            )
           )}
         </HStack>
       </HStack>

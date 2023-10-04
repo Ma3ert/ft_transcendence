@@ -29,7 +29,7 @@ const useChannelSettingsManager = () => {
       sendChannelEnviteClient(user).postData(null),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("channelEnvites");
+      queryClient.invalidateQueries("channelSentEnvites");
       toast (Success ("Envite to channel sent"))
     },
     onError: (error) => {
@@ -43,7 +43,7 @@ const useChannelSettingsManager = () => {
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries("channels");
-      queryClient.invalidateQueries("channelEnvites")
+      queryClient.invalidateQueries("channelReceivedEnvites")
       toast (Success ("Envite to channel accepted"))
     },
     onError: (error) => {
@@ -56,7 +56,7 @@ const useChannelSettingsManager = () => {
       declineChannelEnviteClient(user).deleteData(),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("channelEnvites")
+      queryClient.invalidateQueries("channelReceivedEnvites")
       toast (Success ("Envite to channel declined"))
     },
     onError: (error) => {

@@ -11,6 +11,21 @@ interface EnviteFieldProps {
   envite: GlobalEnvite;
 }
 
+const getEnviteMessage = (user:User, type:string,  envite:GlobalEnvite) => {
+  if (type == "sent") {
+    if(envite.isChannelEnvite){
+      return (`You sent a channel invite to ${user.username}`)
+    }
+    return (`You sent a friend request to ${user.username}`)
+  }
+  else {
+    if (envite.isChannelEnvite) {
+      return (`${user.username} invited you join ${envite.channel?.name}`)
+    }
+    return (`${user.username} sent you a friend request`)
+  }
+  }
+
 const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
   const [peer, setPeer] = useState<User>();
   const { Users } = useContext(UsersContext);
@@ -23,6 +38,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
     } else if (type == "received") {
       setPeer(Users!.find((user) => user.id == envite.senderId));
     }
+    console.log (envite)
   }, [Users]);
   return (
     <Button minH="50px" variant={"field"} w={"100%"} h="auto" p={2}>
@@ -34,14 +50,14 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
       >
         <HStack spacing={2}>
           <Avatar size="sm" src={peer?.avatar} name={peer?.username} />
-         { envite.isChannelEnvite ? <Text>{peer?.username} has envited you to join channel</Text> :  <Text>{peer?.username}</Text>}
+         <Text> {peer && getEnviteMessage (peer!, type , envite)}</Text>
         </HStack>
         {type == "received" ? (
           <HStack spacing={5}>
             <Icon onClick={()=>{
               if(envite.isChannelEnvite){
                 const res:UserChannel = {
-                  channelid: envite.channelId,
+                  channelid: envite.channel?.id,
                   userid: envite.senderId
                 }
                 acceptChannelEnvite(res)
@@ -52,7 +68,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
             <Icon onClick={()=>{
               if(envite.isChannelEnvite){
                 const res:UserChannel = {
-                  channelid: envite.channelId,
+                  channelid: envite.channel?.id,
                   userid: envite.senderId
                 }
                 declineChannelEnvite(res)
