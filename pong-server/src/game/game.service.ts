@@ -259,44 +259,31 @@ export class GameService {
     }, 10000);
   }
 
-  // gameSessionLauncher(server: Server) {
-  //   Logger.log('[+] Game watcher: started');
-  //   setInterval(() => {
-  //     Logger.log('[+] Checking if a game exists.');
-  //     if (this.gameQueue.size > 0) {
-  //       const gameSession = Array.from(this.gameQueue)[this.gameQueue.size - 1];
-  //       const sessionId = gameSession[0];
-  //       const game = gameSession[1];
-  //       if (game.players.length === 2) {
-  //         Logger.log('[+] Creating a game from queue.');
-  //         this.createGameSession(game.players, server);
-  //         this.gameQueue.delete(sessionId);
-  //       }
-  //     } else if (this.gameInvites.size > 0) {
-  //       const gameSession = Array.from(this.gameInvites)[this.gameInvites.size - 1];
-  //       const sessionId = gameSession[0];
-  //       const game = gameSession[1];
-  //       if (game.players.length === 2) {
-  //         Logger.log('[+] Creating a game from invites.');
-  //         this.createGameSession(game.players, server);
-  //         this.gameInvites.delete(sessionId);
-  //       }
-  //     }
-  //   }, 3000);
-  // }
-
   async endGameSession(gameSessionId: string) {
     const gameSession = this.gameSessions.get(gameSessionId);
     const playerOne = gameSession.players[0];
     const playerTwo = gameSession.players[1];
-    //TODO: Do the caluculation of how much the xp and laddel should increment by and save that for each user
-    //TODO: change users status to ONLINE again
+    const playerOneUser = await this.usersService.findById(playerOne.user);
+    const playerTwoUser = await this.usersService.findById(playerTwo.user);
+    const levelOneXP = 100;
+    const winnerReward = 50;
+    const expFactor = 1.5;
+
+    //Do the caluculation of how much the xp and laddel should increment by and save that for each user
+    if (playerOne.score != 0 && playerTwo.score != 0 && playerOne.score != playerTwo.score) {
+      const winner = playerOne.score > playerTwo.score ? playerOneUser : playerTwoUser;
+      const requiredNextLevelXP = levelOneXP * Math.floor(Math.pow(expFactor, winner.level));
+      if (winner.xp + winnerReward >= requiredNextLevelXP)
+        await this.usersService.updateUserAll(winner.id, { level: winner.level + 1 });
+      await this.usersService.updateUserAll(winner.id, { xp: winner.xp + winnerReward });
+    }
+
+    //change users status to ONLINE again
     await this.usersService.updateUserAll(playerOne.user, { status: 'ONLINE' });
     await this.usersService.updateUserAll(playerTwo.user, { status: 'ONLINE' });
     // Create an entry in the game table
-    const result = await this.createGame(gameSessionId);
-    console.log(result);
-
+    await this.createGame(gameSessionId);
+    // TODO: Should send some data to both players about the winner and the loser
     // Remove both players from the players array
     this.allPlayers.delete(playerOne.user);
     this.allPlayers.delete(playerTwo.user);
