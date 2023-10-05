@@ -364,9 +364,9 @@ const theme = extendTheme({
     Modal: ModalStyle,
     Divider: DividerStyle
     },
-    fonts: {
-      visbyRound: "visbyRound, sans-serif"
-    }
+  fonts: {
+    visbyRound: "visbyRound, sans-serif"
+  }
   },
 );
 
