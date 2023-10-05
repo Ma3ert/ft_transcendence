@@ -11,17 +11,22 @@ import {
   ChatContext,
   UsersContext,
 } from "@/context/Contexts";
-import { PRIVATE } from "@/../contstants";
+import { PRIVATE, loggedIndUser } from "@/../contstants";
 import OptionsMenu from "./ChatComponents/FriendSettingsMenu";
+import useUserStatus from "@/hooks/useUserStatus";
+import UserFieldNav from "./ChatComponents/UserFieldNav";
 interface Props {
   user: User;
-  userType?: "Friend" | "User" | "Owner";
+  userRole: string;
+  loggedInUserRole: string;
 }
 
-const UserField: React.FC<Props> = ({ user, userType = "User" }) => {
-  const { setCurrentSection } = useContext(AppNavigationContext);
-  const { setCurrentChat } = useContext(ChatContext);
+const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole }) => {
+  const { setCurrentSection, currentSection } =
+    useContext(AppNavigationContext);
+  const { setCurrentChat, chatType } = useContext(ChatContext);
   const { setActivePeer, friendsList, loggedInUser } = useContext(UsersContext);
+  const { userIsBlocked } = useUserStatus(user);
 
   useEffect(() => {
     console.log("friends :");
@@ -43,33 +48,23 @@ const UserField: React.FC<Props> = ({ user, userType = "User" }) => {
           <Text fontSize="sm">{user!.username}</Text>
         </HStack>
 
-        <HStack spacing={3}>
-          {friendsList!.length &&
-            friendsList!.find((friend) => friend.id == user.id) && (
-              <Icon
-                onClick={() => {
-                  setActivePeer!(user);
-                  setCurrentSection!("chat");
-                  setCurrentChat!(PRIVATE);
-                }}
-                as={FaMessage}
-                fontSize="22px"
-                _hover={{ transform: "scale(1.1)" }}
-              />
-            )}
-          {userType == "Owner" ? (
-            <Text fontSize="sm">Owner</Text>
+        <HStack spacing={4}>
+          {userIsBlocked ? (
+            <Text fontSize='sm' color='#DC585B'>Blocked</Text>
           ) : (
-            user.id != loggedInUser!.id && (
-              <OptionsMenu
-                user={user!}
-                type={
-                  friendsList!.find((friend) => friend.id == user.id)
-                    ? "Friend"
-                    : "User"
-                }
-              />
-            )
+            <UserFieldNav
+              user={user!}
+              userRole={userRole}
+              friendsList={friendsList!}
+            />
+          )}
+          {user.id != loggedInUser!.id && (
+            <OptionsMenu
+              user={user!}
+              loggedInUserRole={loggedInUserRole!}
+              userRole={userRole!}
+              userIsBlocked={userIsBlocked}
+            />
           )}
         </HStack>
       </HStack>

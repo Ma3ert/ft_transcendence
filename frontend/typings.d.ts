@@ -10,7 +10,7 @@ type FriendsSection = "friends" | "requests" | "channels";
 type AchievementsSection = "achievements" | "leaderboard";
 type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
-type ModalType = "regular" | "confirmation" | "alert" | "prompt" | "custom" | "options";
+type ModalType = "regular" | "confirmation" ;
 type EventName =
   | "userLoggedIn"
   | "userIsActive"
@@ -160,6 +160,7 @@ interface RegularModalProps {
   onOpen: () => void;
   onClose: () => void;
   children: React.ReactNode;
+  variant?: string
 }
 
 interface ConfirmationModalProps {
@@ -267,6 +268,7 @@ type MenuOption = {
   description: string;
   type: 'critical' | 'normal';
   modal?: boolean;
+  channelSettings?: boolean;
 }
 
 type Envite ={
@@ -297,3 +299,5 @@ type Member = {
   userId:string
   role:string
 }
+
+type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN"  | string

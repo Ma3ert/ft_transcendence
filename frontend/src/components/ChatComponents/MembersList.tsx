@@ -6,6 +6,7 @@ import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import MemberField from "./Memberfield";
 import ScrollableStack from "../ScrollableStack";
+import FriendsListHeader from "./FriendsListHeader";
 interface MembersListProps {
   members: Member[];
 }
@@ -14,20 +15,14 @@ const MembersList: React.FC<MembersListProps> = ({members}) => {
 
 
   return (
-    <Stack spacing={4} w="100%" h='100%' maxH='100%' >
-      <FormControl w="100%">
-        <Input
-          variant="default"
-          w="95%"
-          placeholder="searching for a friend !!"
-        />
-      </FormControl>
+    <Stack spacing={4}  w="100%" h='100%' maxH='100%' >
+     <FriendsListHeader />
       <ScrollableStack
-      h='40vh'
+      h='50vh'
       >
         {members!.map((member, index) => {
           return (
-            <MemberField member={member} key={index} />
+            <MemberField member={member} key={index} members={members} />
           );
         })}
       </ScrollableStack>

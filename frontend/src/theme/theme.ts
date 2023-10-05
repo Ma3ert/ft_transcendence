@@ -62,6 +62,40 @@ const ModalStyle: ComponentStyleConfig = {
         },
       },
     },
+    largeModal: {
+      dialog: {
+        bg: "#252932",
+        borderRadius: "20px",
+        px: "30px",
+        py: "40px",
+        fontFamily: "visbyRound",
+        boxShadow: "rgba(0, 0, 0, 0.4) 0px 30px 90px;",
+        minW:'60vw',
+        minH:'60vh',
+      },
+      body: {
+        fontFamily: "visbyRound",
+        margin: "0px",
+        padding: "0px",
+        minH: "300px",
+        h: "auto",
+      },
+      closeButton: {
+        fontStyle: "bold",
+        fontWeight: "black",
+        fontSize: "8px",
+        boxSize: "20px",
+        borderRadius: "full",
+        bg: "#DC585B",
+        color: "#252932",
+        _active: {
+          transform: "scale(1.1)",
+        },
+        _hover: {
+          opacity: 0.8,
+        },
+      },
+    },
     form: {
       dialog: {
         fontFamily: "visbyRound",

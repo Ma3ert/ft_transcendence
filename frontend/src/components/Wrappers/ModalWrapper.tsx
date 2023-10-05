@@ -18,6 +18,8 @@ interface useModalProps {
   buttonValue?: JSX.Element;
   buttonVariant?: string;
   action?: () => void;
+  variant?: string;
+  isOption?: boolean;
 }
 export const ModalWrapper: React.FC<useModalProps> = ({
   type,
@@ -25,13 +27,15 @@ export const ModalWrapper: React.FC<useModalProps> = ({
   actionDescription,
   buttonValue,
   buttonVariant,
-  action
+  action,
+  variant,
+  isOption
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      {type === "options" ? (
+      {isOption ? (
         <MenuItem
           w="96%"
           borderRadius={"xl"}
@@ -51,8 +55,8 @@ export const ModalWrapper: React.FC<useModalProps> = ({
           {buttonValue || "confirm"}
         </Button>
       )}
-      {type === "regular" || type === "options" ? (
-        <RegularModalWrapper isOpen={isOpen} onClose={onClose} onOpen={onOpen}>
+      {type === "regular" ? (
+        <RegularModalWrapper isOpen={isOpen} onClose={onClose} onOpen={onOpen} variant={variant}>
           {children}
         </RegularModalWrapper>
       ) : (

@@ -19,57 +19,33 @@ import { ChannelsContext, UsersContext } from "@/context/Contexts";
 import { useQuery } from "react-query";
 import apiClient from "@/services/requestProcessor";
 import useChannelManager from "@/hooks/useChannelManager";
-interface ChannelSettingsProps {}
+import { getUserRole } from "../../../utils/helpers";
+interface ChannelSettingsProps {
+  members:Member[]
+}
 
-const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
+const ChannelSettings: React.FC<ChannelSettingsProps> = ({members}) => {
   // eslint-disable-next-line react/jsx-key
-  const [channelMembers, setChannelMembers] = useState<Member[]>([]);
-  const { activeChannel } = useContext(ChannelsContext);
   const { loggedInUser } = useContext(UsersContext);
   const { removeChannel, leaveChannel } = useChannelManager();
-  const channelMembersClient = (channelId: string) =>
-    new apiClient(`/chat/channels/${channelId}/members`);
-  // eslint-disable-next-line react/jsx-key
+  const { activeChannel } = useContext(ChannelsContext);
+
   const settings = new Map([
     [
       "Members",
       // eslint-disable-next-line react/jsx-key
-      <MembersList members={channelMembers} />,
+       <MembersList members={members} />,
     ],
     [
       "Set Password",
       // eslint-disable-next-line react/jsx-key
-      <SetPassword />,
+       <SetPassword />,
     ],
   ]);
-
   const settingsActions = new Map([
     ["delete", () => removeChannel(activeChannel!.id!)],
     ["leave", () => leaveChannel(activeChannel!.id!)],
   ]);
-
-  useQuery({
-    queryKey: ["channelMembers", activeChannel?.id],
-    queryFn: async () =>
-      channelMembersClient(activeChannel!.id!)
-        .getData()
-        .then((res) => res.data),
-    onSuccess: (data: any) => {
-      setChannelMembers(data);
-      console.log(data);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-
-  const loggedInUserRole = () => {
-    const user = channelMembers.find(
-      (member) => member.userId === loggedInUser!.id
-    );
-    if (user) return user.role;
-    return null;
-  };
 
   return (
     <Stack
@@ -110,9 +86,11 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           {channelSettings.map((setting, index) => {
             return (
               <ModalWrapper
+                isOption={false}
                 type="regular"
                 key={index}
                 buttonVariant="largeGhost"
+                variant={setting === 'Members' ? 'largeModal' : 'default'}
                 buttonValue={
                   <HStack w="100%" h="100%" justifyContent="space-between">
                     <Text>{setting}</Text>
@@ -129,18 +107,19 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       <Stack spacing={3}>
         <ModalWrapper
           action={
-            loggedInUserRole() == "OWNER"
+            getUserRole(loggedInUser!, members) == "OWNER"
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
-          actionDescription={`${loggedInUserRole() == "OWNER" ? "Delete" : "Leave"} Channel`}
+          actionDescription={`${getUserRole (loggedInUser!, members) == "OWNER" ? "Delete" : "Leave"} Channel`}
           buttonValue={
             <Text>
-              {loggedInUserRole() == "OWNER" ? "Delete" : "Leave"} Channel
+              {getUserRole(loggedInUser!, members) == "OWNER" ? "Delete" : "Leave"} Channel
             </Text>
           }
           buttonVariant="largePrimary"
+          isOption={false}
         />
         <Button
           colorScheme="darkGhost"

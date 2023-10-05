@@ -36,65 +36,83 @@ export const AvailableUserRoute = `${process.env.REACT_APP_API_URL}/invites/user
 
 // chat routes
 
-// game routes
+// game route
 
-export const friendOptions: MenuOption[] = [
+export const options: MenuOption[] = [
   {
-    description: "Invite to game",
+    description: "Invite to join game",
     type: "normal",
-    modal:false
+    modal:false,
+    channelSettings:false
   },
   {
     description: "Invite to join channel",
     type: "normal",
-    modal:true
-  },
-  {
-    description: "See Profile",
-    type: "normal",
-    modal:true
-  },
-  {
-    description: "Make party admin",
-    type: "normal",
-    modal:false
-  },
-  {
-    description: "Make channel owner",
-    type: "normal",
-    modal:false
-  },
-  {
-    description: "Ban from channel",
-    type: "critical",
-    modal:false
-  },
-  {
-    description: "Kick from channel",
-    type: "critical",
-    modal:false
-  },
-  {
-    description: "Mute",
-    type: "critical",
-    modal:false
-  },
-  {
-    description: "Block",
-    type: "critical",
-    modal:false
-  },
-];
-
-export const globalUserOptions: MenuOption[] = [
-  {
-    description: "See Profile",
-    type: "normal",
+    modal:true,
+    channelSettings:false
   },
   {
     description: "Send friend request",
     type: "normal",
+    modal:false,
+    channelSettings:false
+  },
+  {
+    description: "See Profile",
+    type: "normal",
+    modal:true,
+    channelSettings:false
+  },
+  {
+    description: "Make party admin",
+    type: "normal",
+    modal:false,
+    channelSettings:true
+  },
+  {
+    description: "Remove party admin",
+    type: "normal",
+    modal:false,
+    channelSettings:true
+  },
+  {
+    description: "Ban from channel",
+    type: "critical",
+    modal:true,
+    channelSettings:true
+  },
+  {
+    description: "Kick from channel",
+    type: "critical",
+    modal:true,
+    channelSettings:true
+  },
+  {
+    description: "Unban",
+    type: "critical",
+    modal:true,
+    channelSettings:true
+  },
+  {
+    description: "Mute",
+    type: "critical",
+    modal:true,
+    channelSettings:true
+  },
+  {
+    description: "Block",
+    type: "critical",
+    modal:true
+  },
+  {
+    description: "Unmute",
+    type: "critical",
+    modal:true,
+    channelSettings:true
+  },
+  {
+    description: "Unblock",
+    type: "critical",
+    modal:true
   },
 ];
-
-
