@@ -78,9 +78,10 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     //? This route should calculate properties like stats (wins or loses) and get all user game history
-    return this.usersService.findOne(id);
+    console.log(id);
+    return await this.usersService.getUserData(id);
   }
 
   @Patch(':id')
