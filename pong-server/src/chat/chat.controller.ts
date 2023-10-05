@@ -74,7 +74,7 @@ export class ChatController {
 
     // leave channel !!Clean
     @Delete('/channels/:channelId/leave')
-    @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
+    @Roles(Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async leaveChannel(@Param('channelId') channelId:string, @Req() req:Request){
@@ -395,4 +395,5 @@ export class ChatController {
     {
         return await this.chatService.getChannelById(channelId);
     }
+    
 }

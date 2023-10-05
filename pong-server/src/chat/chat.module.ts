@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RoleGuard } from './role.guard';
 import { AuthModule } from 'src/auth/auth.module';
 import { NotificationService } from 'src/notification/notification.service';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   providers: [ChatGateway,
@@ -20,7 +21,7 @@ import { NotificationService } from 'src/notification/notification.service';
               NotificationService,
               ],
   controllers: [ChatController],
-  imports: [AuthModule],
+  imports: [AuthModule, NotificationModule],
   exports:[ChatService]
 })
 export class ChatModule {}

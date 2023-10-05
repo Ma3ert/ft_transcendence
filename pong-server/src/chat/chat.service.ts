@@ -12,7 +12,7 @@ import { NotificationService } from '../notification/notification.service';
 export class ChatService {
     constructor(private prismaService: PrismaService,
         private usersService: UsersService,
-        // private notificationService: NotificationService
+        private notificationService: NotificationService
     ) { }
     
     // Create Channel
