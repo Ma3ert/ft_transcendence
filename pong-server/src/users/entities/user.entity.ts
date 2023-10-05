@@ -6,6 +6,6 @@ export class User {
   twoFactor?: boolean;
   twoFactorPinExpires?: Date;
   xp?: number;
-  ladelLevel?: number;
+  level?: number;
   status?: 'ONLINE' | 'OFFLINE' | 'INMATCH';
 }

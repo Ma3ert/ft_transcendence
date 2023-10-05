@@ -3,10 +3,57 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './entities/user.entity';
 import { AuthUserDto } from './dto/auth-user.dto';
+import { Game } from '@prisma/client';
+import { secureUserObject } from './utils/secureUserObject';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async getUserData(id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        games: {
+          include: {
+            players: {
+              select: {
+                username: true,
+                avatar: true,
+                id: true,
+                xp: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const excludedField = ['twoFactorPin', 'twoFactorPinExpires', 'activated', 'pinValidated'];
+    const validGames = user.games
+      .map((game: Game) => (game.winner !== null ? game : null))
+      .filter((game) => game !== null);
+    const totalGames = validGames.length;
+    const numberOfWon = validGames.filter((game: Game) => game.winner === id).length;
+    const numberOfLost = totalGames - numberOfWon;
+    const data = {
+      user: secureUserObject(
+        user,
+        'twoFactorRetry',
+        'twoFactor',
+        'twoFactorPin',
+        'twoFactorPinExpires',
+        'activated',
+        'pinValidated',
+      ),
+      totalGames,
+      numberOfWon,
+      numberOfLost,
+    };
+    return data;
+  }
 
   createUser(createUserDto: User) {
     return this.prismaService.user.create({

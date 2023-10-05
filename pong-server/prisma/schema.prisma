@@ -36,27 +36,32 @@ enum Role {
 }
 
 model User {
-  id                  String     @id @default(uuid())
-  username            String     @unique
-  email               String     @unique
-  avatar              String
-  twoFactorRetry      Int        @default(0)
-  twoFactor           Boolean    @default(false)
+  id       String     @id @default(uuid())
+  username String     @unique
+  email    String     @unique
+  avatar   String
+  status   UserStatus @default(ONLINE)
+
+  xp    Int @default(0)
+  level Int @default(0)
+
+  twoFactorRetry      Int       @default(0)
+  twoFactor           Boolean   @default(false)
   twoFactorPin        String?
   twoFactorPinExpires DateTime?
-  activated           Boolean    @default(false)
-  pinValidated        Boolean    @default(false)
-  status              UserStatus @default(ONLINE)
-  friendsList         User[]     @relation("Friendship")
-  friendOf            User[]     @relation("Friendship")
+  activated           Boolean   @default(false)
+  pinValidated        Boolean   @default(false)
 
-  blocked             User[]     @relation("BlockedFriends")
-  blockedBy           User[]     @relation("BlockedFriends")
+  friendsList User[] @relation("Friendship")
+  friendOf    User[] @relation("Friendship")
 
-  sentInvites         UserInvite[] @relation("sentInvites")
-  receivedInvites     UserInvite[] @relation("receivedInvites")
+  blocked   User[] @relation("BlockedFriends")
+  blockedBy User[] @relation("BlockedFriends")
 
-  games       Game[]
+  sentInvites     UserInvite[] @relation("sentInvites")
+  receivedInvites UserInvite[] @relation("receivedInvites")
+
+  games Game[]
 
   directmessageSent     DirectMessage[] @relation("DMsent")
   directmessageReceived DirectMessage[] @relation("DMreceived")
