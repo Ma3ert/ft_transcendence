@@ -395,5 +395,4 @@ export class ChatController {
     {
         return await this.chatService.getChannelById(channelId);
     }
-    
 }

@@ -19,7 +19,13 @@ export class BanGuard implements CanActivate {
                 userId: user,
                 channelId: channel,
             }
-        })
-        return !isBanned;
+        });
+        const isMuted = await this.prismaService.channelMute.findFirst({
+            where: {
+                userId: user,
+                channelId: channel
+            }
+        });
+        return (!isBanned && !isMuted);
     }
 }
