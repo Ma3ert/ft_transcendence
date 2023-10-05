@@ -149,14 +149,6 @@ export class ChatService {
         })
     }
 
-    CreateRoomId(senderId:string, receiverId:string){
-        const users = [];
-        users.push(senderId);
-        users.push(receiverId);
-        users.sort();
-        return (users[0] + users[1]);
-    }
-
     async isBanned(user:string, channel:string){
         const isBanned = this.prismaService.channelBan.findFirst({
             where:{
@@ -515,8 +507,6 @@ export class ChatService {
         return Array.from(new Set(conversationsUsers));
     }
 
-
-    // Not tested Yet.
     async changeChannelPassword(channel:string, changeChannelPassword:changeChannelPasswordDto)
     {
         const Channel = await this.prismaService.channel.findFirst({
@@ -610,7 +600,8 @@ export class ChatService {
             where:{
                 id:channel,
             },
-            select:{
+            select: {
+                id:true,
                 name:true,
                 type:true,
                 avatar:true,
@@ -643,12 +634,43 @@ export class ChatService {
         return channels;
     }
 
-    async getChannelInvites(user: string)
+    async getChannelInvitesSent(user: string)
     {
-        return await this.prismaService.channelInvite.findMany({
+        let invites = [];
+        let userInvites = await this.prismaService.channelInvite.findMany({
             where: {
-                receiverId:user,
-            }
-        })
+                senderId: user,
+            },
+
+        });
+        for (let invite of userInvites)
+        {
+            let channel = await this.getChannelById(invite.channelId);
+            invites.push({
+                sender: invite.senderId,
+                reciever: invite.receiverId,
+                channel:channel
+            });
+        }
+        return invites;
+    }
+
+    async getChannelInvitesRecieved(user: string) {
+        let invites = []
+        let userInvites = await this.prismaService.channelInvite.findMany({
+            where: {
+                receiverId: user,
+            },
+        });
+        for (let invite of userInvites)
+        {
+            let channel = await this.getChannelById(invite.channelId);
+            invites.push({
+                sender: invite.senderId,
+                reciever: invite.receiverId,
+                channel: channel
+            });
+        }
+        return invites;
     }
 }
