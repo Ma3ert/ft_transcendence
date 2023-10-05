@@ -13,6 +13,6 @@ import { JwtService } from '@nestjs/jwt';
               AuthService,
               UsersService,
               JwtService],
-  exports:[NotificationService, NotificationModule]
+  exports:[NotificationService]
 })
 export class NotificationModule {}
