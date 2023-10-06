@@ -3,7 +3,7 @@ import { Box, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import Ball from "./Ball"
 import {getBallTrajectory, getBallPositions, Point, getOtherPosition} from "./gameEngine"
-import FirstRaquette from "./FirstRaquette"
+import FirstRaquette from "./Player"
 import GameSession from "./GameSession"
 import io, { Socket } from "socket.io-client"
 import { socket } from "./socket";

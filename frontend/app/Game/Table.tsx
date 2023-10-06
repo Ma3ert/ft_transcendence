@@ -1,10 +1,16 @@
 import React from 'react'
 
-type Props = {}
+type Props = {
+  tableTopLeftX: number;
+  tableTopLeftY: number;
+  tableW: number;
+  tableH: number;
+  tableBg: string;
+}
 
 const Table = (props: Props) => {
   return (
-    <div>Table</div>
+
   )
 }
 

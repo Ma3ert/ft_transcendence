@@ -11,46 +11,22 @@ interface BallEvent {
 
 type Props = {
 	socket: Socket;
-	points: Point[]
+	xBall: number;
+	yBall: number;
 	state: string;
-	box: number;
-	distance: number;
-	velocity: number;
+	ballSize: number;
 	roomId: string;
-	index: number
 }
 
-const Ball = ({ socket, state, points, box, distance, velocity, roomId, index }: Props) => {
-	const [scale, setScale] = useState(points[0].y / 500);
-	var boxSize = scale * box
-	console.log("game State from the ball: ", state);
-	const handleMovement = () => {
-		if (state === "gameStarted")
-		{
-			if (index < points.length - 1)
-			{
-				setScale(points[index].y / 500);
-				boxSize = scale * box
-			}
-			// else
-			// {
-			// 	const ballEvent: BallEvent = {room: roomId , event: "ballReachesEnd"}
-			// 	socket.emit("ballReachesEnd", ballEvent);
-			// 	console.log("i reset the index")
-			// }
-		}
-	}
-	useEffect(() => {
-		setTimeout(handleMovement, distance / velocity);
-	});
+const Ball = ({ socket, state, xBall, yBall, ballSize}: Props) => {
   	return (
 		<>
 			<Box
 				bg={"#fff"}
 				position={"absolute"}
-				top={points[index].y}
-				left={points[index].x}
-				boxSize={boxSize.toString() + "px"}
+				top={yBall}
+				left={xBall}
+				boxSize={ballSize}
 				borderRadius={"full"}
 				>
 			</Box>
