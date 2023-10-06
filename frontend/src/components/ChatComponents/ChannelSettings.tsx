@@ -37,7 +37,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members}) => {
        <MembersList members={members} />,
     ],
     [
-      "Set Password",
+      "Set password",
       // eslint-disable-next-line react/jsx-key
        <SetPassword />,
     ],

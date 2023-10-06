@@ -301,3 +301,10 @@ type Member = {
 }
 
 type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN"  | string
+
+
+type ModalWrapperContext = {
+  isOpen?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+}

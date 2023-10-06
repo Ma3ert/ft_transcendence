@@ -7,3 +7,4 @@ export const ModalContext = createContext<ModalContext>({});
 export const GlobalContext = createContext<GlobalContext>({});
 export const UsersContext = createContext <UsersContext> ({});
 export const ChannelsContext = createContext <ChannelsContext> ({});
+export const ModalWrapperContext = createContext<ModalWrapperContext>({});

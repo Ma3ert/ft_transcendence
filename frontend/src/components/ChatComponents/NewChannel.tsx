@@ -24,6 +24,8 @@ import { useEffect } from "react";
 import { z } from "zod";
 import InputWrapper from "../Wrappers/InputWrapper";
 import useChannelManager from "@/hooks/useChannelManager";
+import { ModalWrapperContext } from "@/context/Contexts";
+import { useContext } from "react";
 
 interface NewChannelProps {}
 const NewChannel: React.FC<NewChannelProps> = ({}) => {
@@ -33,6 +35,7 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
   const [channelPassword, setChannelPassword] = useState("");
   const channelNameSchema = z.string().min(3).max(20).refine((val) => val !== "");
   const channelManager = useChannelManager();
+  const {onClose} = useContext (ModalWrapperContext)
   return (
     <Stack spacing={6} justify={"center"} alignItems={"center"}>
       <Box
@@ -128,6 +131,7 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
         else {
           channelManager.createChannel (channelName, "PUBLIC")
         }
+        onClose()
       }}>
         done
       </Button>

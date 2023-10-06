@@ -70,8 +70,8 @@ const ModalStyle: ComponentStyleConfig = {
         py: "40px",
         fontFamily: "visbyRound",
         boxShadow: "rgba(0, 0, 0, 0.4) 0px 30px 90px;",
-        minW:'60vw',
-        minH:'60vh',
+        minW:'50vw',
+        minH:'50vh',
       },
       body: {
         fontFamily: "visbyRound",
