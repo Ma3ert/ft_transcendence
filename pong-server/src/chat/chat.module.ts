@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
@@ -12,16 +12,17 @@ import { NotificationService } from 'src/notification/notification.service';
 import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  providers: [ChatGateway,
-              ChatService,
-              UsersService,
-              AuthService,
-              JwtService,
-              PrismaService,
-              NotificationService,
-              ],
+  providers: [
+    PrismaService,
+    ChatGateway,
+    ChatService,
+    UsersService,
+    AuthService,
+    JwtService,
+    NotificationService,
+  ],
   controllers: [ChatController],
-  imports: [AuthModule, NotificationModule],
-  exports:[ChatService]
+  imports: [AuthModule, forwardRef(() => NotificationModule)],
+  exports: [ChatService],
 })
 export class ChatModule {}
