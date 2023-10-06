@@ -221,6 +221,34 @@ export class ChatService {
         })
     }
 
+    async channelMembers(channel: string, user: string) {
+        let members = [];
+
+        const channelMem = await this.getChannelMembers(channel, user);
+        const ChannelBan = await this.getBannedUsers(channel);
+        const channelMute = await this.MutedMembers(channel);
+
+        for (const usr of channelMem)
+        {
+            let member = {};
+            member['user'] = usr.userId;
+            member['role'] = usr.role;
+            member['banned'] = ChannelBan.some((obj) => obj.userId === user);
+            member['muted'] = channelMute.some((obj) => obj.userId === user);
+            members.push(member);
+        }
+        return members;
+    }
+
+    async MutedMembers(channel: string)
+    {
+        return await this.prismaService.channelMute.findMany({
+            where: {
+                channelId: channel,
+            }
+        });
+    }
+
     async upgradeUser(owner:string, upgradeuser:string, channel:string){
         const user = await this.prismaService.channelUser.findFirst({
             where:{
