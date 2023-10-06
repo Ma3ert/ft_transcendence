@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { NotificationType } from '@prisma/client';
 import { ChatService } from 'src/chat/chat.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -8,6 +8,7 @@ import { chatNotification } from './entities/chatNotification.entity';
 export class NotificationService {
     constructor (
         private prismaService:PrismaService,
+        @Inject(forwardRef(() => ChatService))
         private chatService:ChatService){}
 
     

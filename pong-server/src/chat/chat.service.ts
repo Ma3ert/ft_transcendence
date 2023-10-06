@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
@@ -12,6 +12,7 @@ import { NotificationService } from '../notification/notification.service';
 export class ChatService {
     constructor(private prismaService: PrismaService,
         private usersService: UsersService,
+        @Inject(forwardRef(() => NotificationService))
         private notificationService: NotificationService
     ) { }
     
