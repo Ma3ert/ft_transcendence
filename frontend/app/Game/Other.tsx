@@ -10,7 +10,6 @@ interface KeyEvent {
 }
 
 type Props = {
-    socket: Socket;
     w: string;
     h: string;
     x: number;
@@ -21,19 +20,21 @@ type Props = {
     playerId: number;
 }
 
-const Other = ({socket, w, h, x, y, color, gameState, roomId, playerId}: Props) => {
-  return (
-      <Box
-          w={w}
-          h={h}
-          left={x}
-          top={y}
-          bg={color}
-          position={"absolute"}
-          borderRadius={20}
-      >
-      </Box>
-  )
+const Other = ({ w, h, x, y, color, gameState, roomId, playerId}: Props) => {
+    console.log('from the other')
+
+    return (
+        <Box
+            w={w}
+            h={h}
+            left={x}
+            top={y}
+            bg={color}
+            position={"absolute"}
+            borderRadius={20}
+        >
+        </Box>
+    )
 }
 
 export default Other

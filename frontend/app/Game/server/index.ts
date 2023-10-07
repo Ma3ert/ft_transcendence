@@ -71,7 +71,7 @@ interface BallEvent {
 export function gameInitializer(game: Room, sender: number, reciever: number)
 {
 }
-
+  
 export function servePlayerAction(action: KeyEvent, game: Room)
 {}
 
@@ -80,7 +80,24 @@ export function serveBallAction(action: BallEvent, game: Room)
 
 let rooms: (Room | undefined)[] = [];
 
-const createPlayer = (id: number, join: ResponsiveEvent) => {}
+const createPlayer = (id: number, join: ResponsiveEvent) => {
+  const playerWidth = 20
+  const newTable: Table = {
+    tableBg: "#1D222C",
+    tableH: 200,
+    tableW: 100,
+  }
+  const player: Player = {
+    id: id,
+    roomId: "",
+    xPos: id === 0 ? newTable.tableW - playerWidth + 10 : 10,
+    yPos: newTable.tableH / 2,
+    playerW: playerWidth,
+    playerH: 50,
+    table: newTable
+  }
+  return (player)
+}
 
 io.on("connection", (socket) => {
   console.log(`New user connected ${socket.id}`);

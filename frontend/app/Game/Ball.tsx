@@ -10,27 +10,38 @@ interface BallEvent {
 }
 
 type Props = {
-	socket: Socket;
 	xBall: number;
 	yBall: number;
 	state: string;
-	ballSize: number;
+	ballSize: string;
 	roomId: string;
 }
 
-const Ball = ({ socket, state, xBall, yBall, ballSize}: Props) => {
+const Ball = ({ state, xBall, yBall, ballSize}: Props) => {
+	const [x, setX] = useState(xBall)
+	const [y, setY] = useState(yBall)
+	const [ySpeed, ySpeedSet] = useState(-2)
+	const [xSpeed, xSpeedSet] = useState(0.2)
+	useEffect(() => {
+		setTimeout(() => {
+			// if (y > 350 || y < 0)
+			// {
+			// 	ySpeedSet(ySpeed * -1)
+			// }
+			// setX(x + xSpeed)
+			// setY(y + ySpeed)
+		}, 15)
+	})
   	return (
-		<>
-			<Box
-				bg={"#fff"}
-				position={"absolute"}
-				top={yBall}
-				left={xBall}
-				boxSize={ballSize}
-				borderRadius={"full"}
-				>
-			</Box>
-		</>
+		<Box
+			bg={"#fff"}
+			position={"absolute"}
+			top={y}
+			left={x}
+			boxSize={ballSize}
+			borderRadius={"full"}
+			>
+		</Box>
 	)
 }
 
