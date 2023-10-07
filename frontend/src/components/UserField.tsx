@@ -17,8 +17,8 @@ import useUserStatus from "@/hooks/useUserStatus";
 import UserFieldNav from "./ChatComponents/UserFieldNav";
 interface Props {
   user: User;
-  userRole: string;
-  loggedInUserRole: string;
+  userRole?: string;
+  loggedInUserRole?: string;
 }
 
 const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole }) => {
@@ -54,7 +54,7 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole }) => {
           ) : (
             <UserFieldNav
               user={user!}
-              userRole={userRole}
+              userRole={userRole!}
               friendsList={friendsList!}
             />
           )}

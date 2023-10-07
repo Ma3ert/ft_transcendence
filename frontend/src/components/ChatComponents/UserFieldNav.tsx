@@ -27,8 +27,7 @@ const UserFieldNav:React.FC<UserFieldNavProps> = ({userRole, user, friendsList})
     return (
     <>
       {checkIfMember(userRole) && <Text fontSize="sm">{userRole}</Text>}
-      {friendsList!.length &&
-        friendsList!.find((friend) => friend.id == user.id) && (
+      {friendsList!.find((friend) => friend.id == user.id) && (
           <Icon
             onClick={() => {
               setActivePeer!(user);

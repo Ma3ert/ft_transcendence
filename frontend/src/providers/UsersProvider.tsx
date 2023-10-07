@@ -33,10 +33,20 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   });
   const allUsersClient = new apiClient("/users");
   const meClient = new apiClient("/users/me");
-  const friendsListClient = new apiClient("/users/friends");
   const { socket } = useContext(GlobalContext);
   const listen = useEventHandler(socket);
 
+  const friendsListClient = new apiClient("/users/friends");
+
+  useQuery("friends", {
+    queryFn: () => friendsListClient.getData().then((res) => res.data),
+    onSuccess: (data: any) => {
+      setFriendsList!(data.friends)
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
   useQuery("me", {
     queryFn: (async) => meClient.getData().then((res: any) => res.data),
     onSuccess: (response: meResponse) => {
@@ -58,15 +68,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     },
   });
 
-  useQuery("friends", {
-    queryFn: () => friendsListClient.getData().then((res) => res.data),
-    onSuccess: (data: any) => {
-      setFriendsList(data.friends);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  
   useEffect(() => {
     console.log(`user provider mounted socket id : ${socket?.id}`);
     NotifyServer(socket!, "userLoggedIn", loggedInUser!);

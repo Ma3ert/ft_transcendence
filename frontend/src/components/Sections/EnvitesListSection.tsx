@@ -111,6 +111,9 @@ useQuery ('channelSentEnvites', {
       console.log(err)
   }
 })
+
+  useEffect(() => {
+  }, [recievedEnvites, sentEnvites]);
   return (
     <Stack
       fontFamily={"visbyRound"}

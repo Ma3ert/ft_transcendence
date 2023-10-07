@@ -8,12 +8,14 @@ import useUserOptions from "./useOptions";
 import UserProfileModal from "@/components/ChatComponents/UserProfileModal";
 import InviteToChannels from "@/components/ChatComponents/InviteToChannels";
 import { CHANNEL } from "../../contstants";
+import useUserStatus from "./useUserStatus";
 
 const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], currentSection:Section , chatType:ChatType, userIsBlocked:boolean) => {
   
 
-  const { EnviteUser, BlockUser } = useUserOptions();
-  const actions = new Map([["Send friend request", () => EnviteUser(user)], ["Block", () => BlockUser(user)]]);
+  const { EnviteUser, BlockUser, UnblockUser } = useUserOptions();
+
+  const actions = new Map([["Send friend request", () => EnviteUser(user)], ["Block", () => BlockUser(user)], ["Unblock", () => UnblockUser(user)]]);
   const modals = new Map([
     [
       "See Profile",
@@ -28,22 +30,26 @@ const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], cu
       },
     ],
   ]);
-  function isUserNotFriend(user: User, userRole?: string, loggedInUserRole?: string) {
-    if (friendsList!.find((friend) => friend.id === user.id)) return false;
-    return true;
+  function isUserFriend(user: User) {
+    if (userIsBlocked)
+      return false;
+    if (friendsList!.find((friend) => friend.id === user.id)) return true;
+    return false;
   }
 
-  function isUserEnvitableToGame(user: User, userRole?: string, loggedInUserRole?: string) {
-    if (!userIsBlocked && isUserNotFriend(user)) return false;
-    return true;
+  function isUserEnvitableToGame(user: User) {
+    if (userIsBlocked) return false;
+    if (isUserFriend(user)) return true;
+    return false;
   }
 
-  function isUserEnvitableToChannel(user: User, userRole?: string, loggedInUserRole?: string) {
-    if (!userIsBlocked && isUserNotFriend(user)) return false;
-    return true;
+  function isUserEnvitableToChannel(user: User) {
+    if (userIsBlocked) return false;
+    if (isUserFriend(user)) return true;
+    return false;
   }
 
-  function checkMakePartyAdmin(user:User, userRole?: string, loggedInUserRole?: string) {
+  function checkMakePartyAdmin(user:User) {
     // check if user is banned
     if ( currentSection == "chat" &&
     chatType == CHANNEL)
@@ -177,7 +183,7 @@ const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], cu
   function getChecker(option: string) {
     switch (option) {
       case "Send friend request":
-        return isUserNotFriend;
+        return ()=>(userIsBlocked?false:true);
       case "Invite to join game":
         return isUserEnvitableToGame;
       case "Invite to join channel":

@@ -1,6 +1,7 @@
 import apiClient from "@/services/requestProcessor";
 import { useMutation, useQueryClient } from "react-query";
 import { useToast } from "@chakra-ui/react";
+import axios from "axios";
 
 const useUserOptions = () => {
   const enviteUserClient = new apiClient("/invites");
@@ -63,10 +64,7 @@ const useUserOptions = () => {
   });
 
   const UnblockUserMutation = useMutation({
-    mutationFn: async (userid: string) =>
-      blockUserClient
-        .updateData({ userId: userid }, null)
-        .then((response) => response),
+    mutationFn: async (userid: string) => await axios.patch ('http://localhost:3000/users/block', { userId: userid }).then((response) => response),
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries("friends");

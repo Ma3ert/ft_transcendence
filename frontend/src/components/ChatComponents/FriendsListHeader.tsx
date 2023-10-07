@@ -4,7 +4,7 @@ import { TbArrowBackUp } from "react-icons/tb";
 import { ChannelsContext, UsersContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { filterUsers, filterChannels } from "../../../utils/filterUsers";
-
+import { useQueryClient } from "react-query";
 interface FriendsListHeaderProps {
   type: "friends" | "channels";
   setUsersList?: React.Dispatch<React.SetStateAction<User[]>>;
@@ -18,6 +18,7 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
 }) => {
   const { Users } = useContext(UsersContext);
   const { Channels } = useContext(ChannelsContext);
+  const queryClient = useQueryClient ()
   return (
     <HStack
       w={"100%"}
@@ -60,8 +61,8 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
         py={2}
         onClick={()=>{
           if (type === "friends")
-            setUsersList!(Users!);
-          else setChannelsList!(Channels!);
+            queryClient.invalidateQueries('friends')
+          else queryClient.invalidateQueries('channels');
         }}
       >
         <Icon as={TbArrowBackUp} fontSize={'23px'}/>
