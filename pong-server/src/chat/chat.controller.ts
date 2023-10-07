@@ -92,7 +92,7 @@ export class ChatController {
         @Param('channelId') channelId:string,
         @Req() req:Request){
             const userId = req.user['id'] as string;
-            return await this.chatService.getChannelMembers(channelId, userId);
+            return await this.chatService.channelMembers(channelId, userId);
     }
 
     // upgrade user to admin !!Clean
@@ -280,7 +280,6 @@ export class ChatController {
             return {status:"failure", message:`${error}`};
         }
     }
-
 
     // decline
     @Delete('/channels/:channelId/decline/')
