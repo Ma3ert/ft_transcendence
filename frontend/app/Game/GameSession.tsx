@@ -5,7 +5,7 @@ import FirstRaquette from './Player'
 import SecondRaquette from './Other'
 import { Box, Table } from '@chakra-ui/react'
 import { Socket } from "socket.io-client"
-import {Room} from "./server/index"
+import {Room, createPlayer} from "./server/index"
 import { Point } from './gameEngine';
 import PongTable from './PongTable';
 import Other from './Other';
@@ -14,18 +14,38 @@ import Player from './Player';
 interface Props {
   playerIndex: number;
   socket: Socket; 
+  room: Room | null
 }
 
-const GameSession = ({playerIndex, socket}: Props) => {
-  // const [newRoom, setRoom] = useState(room);
-  // useEffect(() => {
-  //   socket.on("updateGame", (data: Room) => {
-  //     setRoom(data)
-  // })
-  // return () => {
-  //   socket.off("updateGame");
-  // }
-  // },[newRoom])
+
+const GameSession = ({playerIndex, socket, room}: Props) => {
+  const [moving, setMove] = useState(0)
+  const [newRoom, setRoom] = useState(room);
+
+  useEffect(() => {
+    socket.on("updateGame", (data: Room) => { setRoom(data) })
+    return () => {
+      socket.off("updateGame");
+    }
+  },[newRoom])
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowUp")
+    {}
+    else if (event.key === "ArrowDown")
+    {}
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', (event) => { setMove(0) });
+    // moving !== 0 && (py + moving > 0 && py + moving < 350 - 65) && setPy(py + moving)
+  return () => {
+    window.removeEventListener('keyup', (event) => { setMove(0) });
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+  })
+  
   return (
     <>
       <PongTable

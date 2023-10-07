@@ -22,31 +22,13 @@ type Props = {
 }
 
 const Player = ({socket, w, h, x, y, color, gameState, roomId, playerId}: Props) => {
-    const [moving, setMove] = useState(0)
-    const [py, setPy] = useState(y)
-    const handleKeyDown = (event: KeyboardEvent) => {
-        console.log("it fires")
-        if (event.key === "ArrowUp")
-            setMove(-1)
-        else if (event.key === "ArrowDown")
-            setMove(1)
-    }
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', (event) => { setMove(0) });
-        moving !== 0 && (py + moving > 0 && py + moving < 350 - 65) && setPy(py + moving)
-		return () => {
-            window.removeEventListener('keyup', (event) => { setMove(0) });
-		    window.removeEventListener('keydown', handleKeyDown);
-		};
-    })
     return (
         <Box
             position={"absolute"}
             w={w}
             h={h}
             left={x}
-            top={py}
+            top={y}
             bg={color}
             borderRadius={20}
         >

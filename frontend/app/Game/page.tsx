@@ -12,43 +12,43 @@ import {Room, Player} from "./server/index"
 
 type Props = {}
 
-
 export default function Home() {
-  // const [set, setSetter] = useState(false);
-  // const [playerIndex, setIndex] = useState(0);
-  // const [clientSocket, setSocket] = useState(socket);
+  const [data, setData] = useState<Room | null>(null)
+  const [set, setSetter] = useState(false);
+  const [playerIndex, setIndex] = useState(0);
+  const [clientSocket, setSocket] = useState(socket);
 
-  // useEffect(() => {
-  //   clientSocket.connect();
+  useEffect(() => {
+    clientSocket.connect();
 
-  //   clientSocket.on("connect", () => {
-  //     clientSocket.emit("join");
-  //   });
+    clientSocket.on("connect", () => {
+      clientSocket.emit("join");
+    });
 
-  //   return () => {
-  //     clientSocket.off("connect");
-  //   }
-  // }, []);
+    return () => {
+      clientSocket.off("connect");
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   clientSocket.on("player", (n: number) => {
-  //     setIndex(n - 1);
-  //   });
+  useEffect(() => {
+    clientSocket.on("player", (n: number) => {
+      setIndex(n - 1);
+    });
 
-  //   clientSocket.on("startedGame", (data: Room) => {
-  //     setData(data);
-  //     setSetter(true);
-  //   });
+    clientSocket.on("startedGame", (data: Room) => {
+      setData(data);
+      setSetter(true);
+    });
 
-  //   return () => {
-  //     clientSocket.off("player");
-  //     clientSocket.off("startedGame");
-  //   };
-  // }, [set]);
+    return () => {
+      clientSocket.off("player");
+      clientSocket.off("startedGame");
+    };
+  }, [set]);
 
   return (
     <>
-      <GameSession playerIndex={1} socket={socket}/>
+      <GameSession playerIndex={playerIndex} socket={socket} room={data}/>
     </>
   );
 }
