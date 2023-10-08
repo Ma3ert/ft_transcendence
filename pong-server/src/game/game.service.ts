@@ -258,7 +258,6 @@ export class GameService {
 
   getGameInput(payload: any) {
     const gameSession = this.gameSessions.get(payload.gameSession);
-    console.log(gameSession);
     if (gameSession) {
       if (payload.key === 'up') {
         gameSession.players[payload.player - 1].y -= 20;
@@ -358,7 +357,14 @@ export class GameService {
         }
 
         if (gameSession.players[0].score.length === 4) {
-          gameSession.winner = 1;
+          if (
+            this.calculatePlayerScore(gameSession.players[0].score) >
+            this.calculatePlayerScore(gameSession.players[1].score)
+          ) {
+            gameSession.winner = 1;
+          }else {
+            gameSession.winner = 2;
+          }
           server.to(session).emit('endGame', this.createSessionData(session));
           this.allPlayers.delete(gameSession.players[0].user);
           this.allPlayers.delete(gameSession.players[1].user);
@@ -366,7 +372,15 @@ export class GameService {
         }
 
         if (gameSession.players[1].score.length === 4) {
-          gameSession.winner = 2;
+          if (
+            this.calculatePlayerScore(gameSession.players[0].score) <
+            this.calculatePlayerScore(gameSession.players[1].score)
+          ) {
+            gameSession.winner = 2;
+          }
+          else {
+            gameSession.winner = 1;
+          }
           server.to(session).emit('endGame', this.createSessionData(session));
           this.allPlayers.delete(gameSession.players[0].user);
           this.allPlayers.delete(gameSession.players[1].user);
