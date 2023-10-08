@@ -108,6 +108,19 @@ export class GameService {
       players: [playerOne, playerTwo],
     });
 
+    if (playerOne) {
+      const { socket, ...playerTwoData } = playerTwo;
+      playerOne.socket.emit('matchMade', {
+        data: { ...playerTwoData, session: gameSessionID, playerID: playerOne.id },
+      });
+    }
+    if (playerTwo) {
+      const { socket, ...playerOneData } = playerOne;
+      playerTwo.socket.emit('matchMade', {
+        data: { ...playerOneData, session: gameSessionID, playerID: playerTwo.id },
+      });
+    }
+
     // Change the player status to in match
     this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
     this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
@@ -222,19 +235,6 @@ export class GameService {
       const playerTwo = this.createPlayer(player, 2);
       this.allPlayers.set(player.user.id, player.user);
       this.gameQueue.set(gameSession, { ...lastSession[1], players: [playerOne, playerTwo] });
-      // Send the users information about each other.
-      if (playerOne) {
-        const { socket, ...playerTwoData } = playerTwo;
-        playerOne.socket.emit('matchMade', {
-          data: { ...playerTwoData, session: gameSession, playerID: playerOne.id },
-        });
-      }
-      if (playerTwo) {
-        const { socket, ...playerOneData } = playerOne;
-        playerTwo.socket.emit('matchMade', {
-          data: { ...playerOneData, session: gameSession, playerID: playerTwo.id },
-        });
-      }
       this.createGameSession(this.gameQueue.get(gameSession).players, server);
       this.gameQueue.delete(gameSession);
     } else {
@@ -257,7 +257,8 @@ export class GameService {
   }
 
   getGameInput(payload: any) {
-    const gameSession = this.gameSessions.get(payload.GameSession);
+    const gameSession = this.gameSessions.get(payload.gameSession);
+    console.log(gameSession);
     if (gameSession) {
       if (payload.key === 'up') {
         gameSession.players[payload.player - 1].y -= 20;
