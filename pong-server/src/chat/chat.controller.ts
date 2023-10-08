@@ -2,18 +2,23 @@ import {
     Body,
     Controller,
     Delete,
+    FileTypeValidator,
     Get,
     HttpCode,
     HttpException,
     HttpStatus,
+    MaxFileSizeValidator,
     Param,
+    ParseFilePipe,
     ParseIntPipe,
     Patch,
     Post,
     Query,
     Req,
     Res,
-    UseGuards
+    UploadedFile,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { createChannelDto } from './dto/channel.create.dto';
@@ -26,13 +31,16 @@ import { RoleGuard } from './role.guard';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 import { changeChannelName } from './dto/changeChannelName.dto';
 import { BanGuard } from './ban.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from './utils/storage.config';
+import { diskStorage } from 'multer';
+import { updateChannelAvatar } from './dto/updateAvatar.dto';
 
 
 @Controller('chat')
 export class ChatController {
     constructor(private chatService:ChatService) {}
 
-    // create Channel !! clean
     @Post('/channels')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
@@ -46,7 +54,6 @@ export class ChatController {
         }
     }
     
-    // delete Channel !! clean
     @Delete('/channels/:channelId')
     @Roles(Role.OWNER)
     @UseGuards(RoleGuard)
@@ -57,7 +64,6 @@ export class ChatController {
         return {status:"success", message:"delete channel successfully"};
     }
 
-    // User Join a Channel !! Clean
     @Post('/channels/:channelId/join/')
     @HttpCode(HttpStatus.CREATED)
     @UseGuards(LoggedInGuard)
@@ -72,7 +78,6 @@ export class ChatController {
         }
     }
 
-    // leave channel !!Clean
     @Delete('/channels/:channelId/leave')
     @Roles(Role.ADMIN, Role.MEMBER)
     @UseGuards(RoleGuard)
@@ -83,7 +88,6 @@ export class ChatController {
         return {status:"success", message:"left successfully"};
     }
 
-    // get channel Members !!Clean
     @Get('/channels/:channelId/members/')
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(RoleGuard)
@@ -92,10 +96,9 @@ export class ChatController {
         @Param('channelId') channelId:string,
         @Req() req:Request){
             const userId = req.user['id'] as string;
-            return await this.chatService.getChannelMembers(channelId, userId);
+            return await this.chatService.channelMembers(channelId, userId);
     }
 
-    // upgrade user to admin !!Clean
     @Patch('/channels/:channelId/upgrade/:upgradeuser')
     @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN)
@@ -116,7 +119,6 @@ export class ChatController {
         }
     }
 
-    // down grade user to member !!Clean
     @Patch('/channels/:channelId/downgrade/:downgradeuser')
     @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN)
@@ -139,7 +141,6 @@ export class ChatController {
         }
     }
 
-    // get channel messages !!Clean
     @Get('/channels/:channelId/messages/')
     @Roles(Role.ADMIN, Role.MEMBER, Role.OWNER)
     @UseGuards(LoggedInGuard, RoleGuard)
@@ -152,7 +153,6 @@ export class ChatController {
             return this.chatService.getChannelMessages(skip, take, channelId);
     }
 
-    // get direct message of a conversation Not yet (after matich complete the block and friend Request)
     @Get('/direct/:friendId/messages/')
     @UseGuards(LoggedInGuard)
     async getDirectMessage(
@@ -207,7 +207,6 @@ export class ChatController {
         }
     }
 
-    // kick User
     @Delete('/channels/:channelId/kick/:userid')
     @UseGuards(BanGuard)
     @Roles(Role.ADMIN, Role.OWNER)
@@ -220,7 +219,6 @@ export class ChatController {
         await this.chatService.leaveChannel(channelId, userId);
     }
 
-    // Mute User
     @Post('/channels/:channelId/mute/:userid')
     @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN)
@@ -240,7 +238,6 @@ export class ChatController {
             }
     }
 
-    // sent invite
     @Post('/channels/:channelId/sent/:userId')
     @UseGuards(BanGuard)
     @Roles(Role.OWNER, Role.ADMIN, Role.MEMBER)
@@ -261,7 +258,6 @@ export class ChatController {
         }
     }
 
-    // accept invite
     @Post('/channels/:channelId/accept/')
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -281,8 +277,6 @@ export class ChatController {
         }
     }
 
-
-    // decline
     @Delete('/channels/:channelId/decline/')
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
@@ -395,5 +389,33 @@ export class ChatController {
     {
         return await this.chatService.getChannelById(channelId);
     }
-    
+
+    @Post('/channels/avatar/')
+    @UseGuards(LoggedInGuard)
+    @UseInterceptors(
+        FileInterceptor('file', { storage: storage }))
+    async uploadChannelAvatar(
+        @Req() req: Request,
+        @UploadedFile(new ParseFilePipe({
+            validators: [
+                new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+                new MaxFileSizeValidator({maxSize: 1024 * 1024 * 3}),
+            ],
+        })
+        ) avatar:Express.Multer.File)
+    {
+        return {
+            statusCode: 200,
+            data:avatar.path
+        }
+    }
+
+    @Patch('/channels/avatar')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)    
+    @UseGuards(LoggedInGuard)
+    async updateChannelAvatar(@Req() req: Request, @Body() avatarDto: updateChannelAvatar) {
+        await this.chatService.updateChannelAvatar(avatarDto.channel, avatarDto.avatar);
+        return { status: "success", message: "Channel Avatar updated Successfully" };
+    }
 }

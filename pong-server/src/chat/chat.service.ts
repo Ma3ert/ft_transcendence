@@ -102,7 +102,6 @@ export class ChatService {
         })
     }
 
-    // Create DM
     async createDirectMessage(sender: string, receiver: string, message: string) {
         const isBlocked = await this.usersService.checkBlocked(sender, receiver);
         const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
@@ -118,7 +117,6 @@ export class ChatService {
         })
     }
 
-    // Create ChannelMessage
     async createChannelMessage(sender:string, channel:string, message:string){
         await this.prismaService.channelMessage.create({
             data:{
@@ -162,18 +160,6 @@ export class ChatService {
         return false;
     }
 
-    async getAllchannelMembers(channel:string){
-        return await this.prismaService.channelUser.findMany({
-            where:{
-                channelId:channel,
-            },
-            select:{
-                userId:true,
-            }
-        });
-    }             
-
-    // get channel message
     async getChannelMessages(skip:number, take:number, channel:string){
         return await this.prismaService.channelMessage.findMany({
             where:{
@@ -187,7 +173,6 @@ export class ChatService {
         })
     }
 
-    // Delete Channel
     async deleteChannelById(user:string, channel:string){
         const deletedChannel = await this.prismaService.channel.delete({
             where:{
@@ -196,7 +181,6 @@ export class ChatService {
         })
     }
 
-    // leave channel
     async leaveChannel(channel:string, user:string){
         await this.prismaService.channelUser.delete({
             where:{
@@ -208,8 +192,7 @@ export class ChatService {
         })
     }
 
-    // get Channel Members
-    async getChannelMembers(channel:string, userId:string){
+    async getChannelMembersIds(channel:string, userId:string){
         return await this.prismaService.channelUser.findMany({
             where:{
                 channelId:channel,
@@ -219,6 +202,34 @@ export class ChatService {
                 role:true,
             }
         })
+    }
+
+    async channelMembers(channel: string, user: string) {
+        let members = [];
+
+        const channelMem = await this.getChannelMembersIds(channel, user);
+        const ChannelBan = await this.getBannedUsers(channel);
+        const channelMute = await this.MutedMembers(channel);
+
+        for (const usr of channelMem)
+        {
+            let member = {};
+            member['user'] = usr.userId;
+            member['role'] = usr.role;
+            member['banned'] = ChannelBan.some((obj) => obj.userId === user);
+            member['muted'] = channelMute.some((obj) => obj.userId === user);
+            members.push(member);
+        }
+        return members;
+    }
+
+    async MutedMembers(channel: string)
+    {
+        return await this.prismaService.channelMute.findMany({
+            where: {
+                channelId: channel,
+            }
+        });
     }
 
     async upgradeUser(owner:string, upgradeuser:string, channel:string){
@@ -439,7 +450,7 @@ export class ChatService {
                 channelId:channelId,
             }
         })
-        // await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
+        await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
     }
 
     async deleteChannelInvite(user:string, channel:string)
@@ -450,7 +461,7 @@ export class ChatService {
                 channelId:channel
             },
         })
-        // await this.notificationService.readChannelInviteNotification(user, channel);
+        await this.notificationService.readChannelInviteNotification(user, channel);
     }
 
     async getChannelInvite(channel:string, user:string)
@@ -673,5 +684,16 @@ export class ChatService {
             });
         }
         return invites;
+    }
+
+    async updateChannelAvatar(channel: string, _avatar: string) {
+        await this.prismaService.channel.update({
+            where: {
+                id:channel,
+            },
+            data: {
+                avatar:_avatar,
+            }
+        })
     }
 }
