@@ -22,6 +22,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { stripPlayerSockets } from './utils/utils'
 
 export interface Game {
   id: string;
@@ -31,19 +32,28 @@ export interface Game {
   createdAt?: Date;
 }
 
+export interface Ball {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+}
+
 export interface Player {
   id: number;
   user: string;
+  username: string;
+  avatar: string;
   socket: Socket;
-  ballX: number;
-  ballY: number;
   score: number;
-  playerX: number;
-  playerY: number;
+  x: number;
+  y: number;
 }
 
 export interface GameSession {
+  winner: number;
   players: Player[];
+  ball: Ball;
   updateInterval?: NodeJS.Timeout;
 }
 
@@ -63,16 +73,22 @@ export class GameService {
   private gameQueue: Map<string, MatchItem> = new Map();
   private gameInvites: Map<string, MatchItem> = new Map();
 
+  createSessionData(session: string) {
+    const gameSession = this.gameSessions.get(session);
+    const serializedGameSession = stripPlayerSockets(gameSession);
+    return serializedGameSession;
+  }
+
   createPlayer(player: AuthSocket, id: number) {
     const state: Player = {
       id,
       socket: player,
       user: player.user.id,
-      ballX: 0,
-      ballY: 0,
+      username: player.user.username,
+      avatar: player.user.avatar,
       score: 0,
-      playerX: 0,
-      playerY: 0,
+      x: id === 1 ? 0 : 400,
+      y: id === 1 ? 200 : 245,
     };
     return state;
   }
@@ -83,6 +99,13 @@ export class GameService {
     const playerTwo = playersData[1];
 
     this.gameSessions.set(gameSessionID, {
+      winner: 0,
+      ball: {
+        x: 400,
+        y: 245,
+        dx: Math.random() < 0.5 ? 1 : -1,
+        dy: 0,
+      },
       players: [playerOne, playerTwo],
     });
 
@@ -93,13 +116,11 @@ export class GameService {
     // Join player to the same game session.
     playerOne.socket.join(gameSessionID);
     playerTwo.socket.join(gameSessionID);
-    server.to(gameSessionID).emit(GAME_SESSION_STARTING);
-    // Notify the user that we're going to start the session
     setTimeout(() => {
       console.log('Starting game session');
-      server.to(gameSessionID).emit(START_GAME_SESSION);
+      server.to(gameSessionID).emit(START_GAME_SESSION, this.createSessionData(gameSessionID));
       this.gameStarted(gameSessionID, server);
-    }, 3000);
+    }, 4000);
   }
 
   createGameInvite(sendingPlayer: AuthSocket, receivingPlayer: AuthSocket, server: Server) {
@@ -188,8 +209,10 @@ export class GameService {
 
   joinGameQueue(player: AuthSocket, server: Server) {
     // Checking if the user is in match before joinning the queue
-    if (this.allPlayers.size > 0 && this.allPlayers.has(player.user.id))
+    if (this.allPlayers.size > 0 && this.allPlayers.has(player.user.id)) {
+      console.log('Already in match.');
       return server.to(player.id).emit(ONGOING_MATCH);
+    }
     // Emit player joined queue event
     server.to(player.id).emit(JOINED_GAME_QUEUE);
 
@@ -204,11 +227,15 @@ export class GameService {
       // Send the users information about each other.
       if (playerOne) {
         const { socket, ...playerTwoData } = playerTwo;
-        playerOne.socket.emit('matchMade', { data: playerTwoData });
+        playerOne.socket.emit('matchMade', {
+          data: { ...playerTwoData, session: gameSession, playerID: playerOne.id },
+        });
       }
       if (playerTwo) {
         const { socket, ...playerOneData } = playerOne;
-        playerTwo.socket.emit('matchMade', { data: playerOneData });
+        playerTwo.socket.emit('matchMade', {
+          data: { ...playerOneData, session: gameSession, playerID: playerTwo.id },
+        });
       }
       this.createGameSession(this.gameQueue.get(gameSession).players, server);
       this.gameQueue.delete(gameSession);
@@ -292,7 +319,7 @@ export class GameService {
     playerTwo.socket.leave(gameSessionId);
     // Clear the interval for that game sesion
     clearInterval(gameSession.updateInterval);
-    // Remove the item from the game sessions map
+    // Remove the item from the game sessions map.
     this.gameSessions.delete(gameSessionId);
   }
 
@@ -317,7 +344,13 @@ export class GameService {
     });
   }
 
-  leaveGameSession(player: Socket) {
-    //! This function should be refactored to use the endGameSession with few exceptions.
+  leaveGameSession(leavingPlayer: AuthSocket, server: Server) {
+    this.gameSessions.forEach((game) => {
+      const gameSessionPlayers = game.players.map((player) => player.user);
+      if (gameSessionPlayers.includes(leavingPlayer.user.id)) {
+        const otherPlayer = game.players.filter((player) => player.user !== leavingPlayer.user.id)[0];
+        otherPlayer.socket.emit('userLeftGame');
+      }
+    });
   }
 }

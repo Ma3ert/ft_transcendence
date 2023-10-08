@@ -31,7 +31,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('who')
   getCurrentUser(client: AuthSocket) {
-    client.emit('currentUser', client.user);
+    this.server.to(client.id).emit('currentUser', client.user)
+    // client.emit('currentUser', client.user);
   }
 
   @SubscribeMessage('gameJoinQueue')
@@ -54,9 +55,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.cancelGameInvite(client, payload.invite, this.server);
   }
 
-  @SubscribeMessage("gameDenyInvite")
-  denyGameInvite(client: AuthSocket, payload: any)
-  {
+  @SubscribeMessage('gameDenyInvite')
+  denyGameInvite(client: AuthSocket, payload: any) {
     this.gameService.denyGameInvite(client, payload.invite, this.server);
   }
 
@@ -66,13 +66,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   handleConnection(client: AuthSocket) {
-    if (this.socketUsers.size > 0 && this.socketUsers.has(client.user.id)) return client.emit(ONGOING_MATCH);
-    this.socketUsers.set(client.user.id, client);
+    console.log("New User");
+    if (!(this.socketUsers.size > 0 && this.socketUsers.has(client.user.id)))
+      this.socketUsers.set(client.user.id, client);
   }
 
   handleDisconnect(client: AuthSocket) {
-    //! Should the function that is reponsible for the player leaving the game session.
-    console.log('User id:', client.user.id);
+    this.gameService.leaveGameSession(client, this.server);
     if (this.socketUsers.has(client.user.id)) {
       this.socketUsers.delete(client.user.id);
     }
@@ -80,6 +80,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   afterInit(client: Socket) {
     client.use(SocketAuthMiddlware() as any);
-    // this.gameService.gameSessionLauncher(this.server);
+    // this.gameService.gameSessionLauncher(this.server).
   }
 }
