@@ -192,8 +192,7 @@ export class ChatService {
         })
     }
 
-    // get Channel Members
-    async getChannelMembers(channel:string, userId:string){
+    async getChannelMembersIds(channel:string, userId:string){
         return await this.prismaService.channelUser.findMany({
             where:{
                 channelId:channel,
@@ -208,7 +207,7 @@ export class ChatService {
     async channelMembers(channel: string, user: string) {
         let members = [];
 
-        const channelMem = await this.getChannelMembers(channel, user);
+        const channelMem = await this.getChannelMembersIds(channel, user);
         const ChannelBan = await this.getBannedUsers(channel);
         const channelMute = await this.MutedMembers(channel);
 
@@ -686,4 +685,9 @@ export class ChatService {
         }
         return invites;
     }
+
+    // upload avatar
+    
+
+    // update avatar
 }
