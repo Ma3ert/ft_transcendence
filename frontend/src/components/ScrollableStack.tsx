@@ -3,8 +3,8 @@ import React, { ReactNode } from 'react'
 import "../theme/styles.css" 
 
 type Props = {
-  width: number;
-  height: number;
+  width: any;
+  height: any;
   items: ReactNode[];
   spacing: string;
 }
@@ -16,16 +16,18 @@ const ScrollableStack = ({ width, height, spacing, items }: Props) => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      w={(width + 20).toString() + "px"}
-      h={(height + 50).toString() + "px"}
+      w={width}
+      h={height}
       borderRadius={"20px"}
+      px={"10px"}
       bg={"#1D222C"}>
       <Box
+        py={"10px"}
         className='customScroll'
         maxH={height}
         overflowY={"scroll"}
-        w={width.toString() + "px"}
-        h={height.toString() + "px"}>
+        w={width}
+        h={height}>
         <Stack align={"center"} spacing={spacing}>
           {items.map((item) => (item))}
         </Stack>

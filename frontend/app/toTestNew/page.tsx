@@ -1,5 +1,6 @@
 "use client"
 
+import Achievements from "@/components/Achievements"
 import BoxScore from "@/components/BoxScore"
 import NavBar from "@/components/NavBar"
 import NotificationCenter from "@/components/NotificationCenter"
@@ -14,6 +15,7 @@ export default function Home() {
         //     leftScore={2}
         //     rightScore={5}
         // />
-        <NavBar></NavBar>
+        // <NavBar></NavBar>
+        <Achievements></Achievements>
     )
 }
