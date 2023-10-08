@@ -102,7 +102,6 @@ export class ChatService {
         })
     }
 
-    // Create DM
     async createDirectMessage(sender: string, receiver: string, message: string) {
         const isBlocked = await this.usersService.checkBlocked(sender, receiver);
         const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
@@ -118,7 +117,6 @@ export class ChatService {
         })
     }
 
-    // Create ChannelMessage
     async createChannelMessage(sender:string, channel:string, message:string){
         await this.prismaService.channelMessage.create({
             data:{
@@ -162,18 +160,6 @@ export class ChatService {
         return false;
     }
 
-    async getAllchannelMembers(channel:string){
-        return await this.prismaService.channelUser.findMany({
-            where:{
-                channelId:channel,
-            },
-            select:{
-                userId:true,
-            }
-        });
-    }             
-
-    // get channel message
     async getChannelMessages(skip:number, take:number, channel:string){
         return await this.prismaService.channelMessage.findMany({
             where:{
@@ -187,7 +173,6 @@ export class ChatService {
         })
     }
 
-    // Delete Channel
     async deleteChannelById(user:string, channel:string){
         const deletedChannel = await this.prismaService.channel.delete({
             where:{
@@ -196,7 +181,6 @@ export class ChatService {
         })
     }
 
-    // leave channel
     async leaveChannel(channel:string, user:string){
         await this.prismaService.channelUser.delete({
             where:{
@@ -467,7 +451,7 @@ export class ChatService {
                 channelId:channelId,
             }
         })
-        // await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
+        await this.notificationService.createChannelInviteNotification(sender, receiver, channelId);
     }
 
     async deleteChannelInvite(user:string, channel:string)
@@ -478,7 +462,7 @@ export class ChatService {
                 channelId:channel
             },
         })
-        // await this.notificationService.readChannelInviteNotification(user, channel);
+        await this.notificationService.readChannelInviteNotification(user, channel);
     }
 
     async getChannelInvite(channel:string, user:string)
