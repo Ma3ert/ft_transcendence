@@ -686,8 +686,14 @@ export class ChatService {
         return invites;
     }
 
-    // upload avatar
-    
-
-    // update avatar
+    async updateChannelAvatar(channel: string, _avatar: string) {
+        await this.prismaService.channel.update({
+            where: {
+                id:channel,
+            },
+            data: {
+                avatar:_avatar,
+            }
+        })
+    }
 }

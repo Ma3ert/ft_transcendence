@@ -9,5 +9,5 @@ export const storage = diskStorage({
 })
 
 function generateFilename(file) {
-    return `${Date.now()}.${extname(file.originalname)}`;
+    return `${Date.now()}${extname(file.originalname)}`;
 }

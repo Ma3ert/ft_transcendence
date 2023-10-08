@@ -34,6 +34,7 @@ import { BanGuard } from './ban.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from './utils/storage.config';
 import { diskStorage } from 'multer';
+import { updateChannelAvatar } from './dto/updateAvatar.dto';
 
 
 @Controller('chat')
@@ -407,5 +408,14 @@ export class ChatController {
             statusCode: 200,
             data:avatar.path
         }
+    }
+
+    @Patch('/channels/avatar')
+    @Roles(Role.OWNER)
+    @UseGuards(RoleGuard)    
+    @UseGuards(LoggedInGuard)
+    async updateChannelAvatar(@Req() req: Request, @Body() avatarDto: updateChannelAvatar) {
+        await this.chatService.updateChannelAvatar(avatarDto.channel, avatarDto.avatar);
+        return { status: "success", message: "Channel Avatar updated Successfully" };
     }
 }
