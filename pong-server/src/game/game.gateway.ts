@@ -50,6 +50,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.createGameInvite(sendingUser, receivingUser, this.server);
   }
 
+  @SubscribeMessage("gameMovePlayer")
+  moveGamePlayer(client: AuthSocket, payload: any)
+  {
+    this.gameService.getGameInput(payload);
+  }
+
   @SubscribeMessage('gameCancelInvite')
   cancelGameInvite(client: AuthSocket, payload: any) {
     this.gameService.cancelGameInvite(client, payload.invite, this.server);
