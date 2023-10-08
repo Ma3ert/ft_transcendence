@@ -22,7 +22,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { stripPlayerSockets } from './utils/utils'
+import { stripPlayerSockets } from './utils/utils';
 
 export interface Game {
   id: string;
@@ -117,7 +117,6 @@ export class GameService {
     playerOne.socket.join(gameSessionID);
     playerTwo.socket.join(gameSessionID);
     setTimeout(() => {
-      console.log('Starting game session');
       server.to(gameSessionID).emit(START_GAME_SESSION, this.createSessionData(gameSessionID));
       this.gameStarted(gameSessionID, server);
     }, 4000);
@@ -268,22 +267,89 @@ export class GameService {
     return player.rooms.values().next().value;
   }
 
-  //! We might not need this logic
   gameStarted(session: string, server: Server) {
-    //TODO: write state watcher function to compare between the old state and the one and emit events.
-    const gameSession = this.gameSessions.get(session);
-    // const interval = setInterval(() => {
-    //   server.to(session).emit(GAME_UPDATE, { data: this.gameSessions.get(session).players });
-    // }, 1000 / 60);
-    // this.gameSessions.set(session, {
-    //   ...gameSession,
-    //   updateInterval: interval,
-    // });
-    setTimeout(() => {
-      gameSession.players[0].socket.emit('gameEnded');
-      gameSession.players[1].socket.emit('gameEnded');
-      this.endGameSession(session);
-    }, 10000);
+    const SPEED = 8;
+    if (this.gameSessions.has(session)) {
+      const gameSession = this.gameSessions.get(session);
+      let interval = setInterval(() => {
+        gameSession.ball.x += gameSession.ball.dx * SPEED;
+        gameSession.ball.y += gameSession.ball.dy * SPEED;
+
+        // Check if player one hits the ball
+        if (
+          gameSession.ball.x < 30 &&
+          gameSession.ball.y > gameSession.players[0].y &&
+          gameSession.ball.y < gameSession.players[0].y + 100
+        ) {
+          gameSession.ball.dx = 1;
+
+          // change ball direction
+          if (gameSession.ball.y < gameSession.players[0].y + 30) {
+            gameSession.ball.dy = -1;
+          } else if (gameSession.ball.y > gameSession.players[0].y + 30) {
+            gameSession.ball.dy = 1;
+          } else {
+            gameSession.ball.dy = 0;
+          }
+        }
+
+        // Check if player two hits the ball
+        if (
+          gameSession.ball.x > 780 &&
+          gameSession.ball.y > gameSession.players[1].y &&
+          gameSession.ball.y < gameSession.players[1].y + 100
+        ) {
+          gameSession.ball.dx = -1;
+
+          // change ball direction
+          if (gameSession.ball.y < gameSession.players[1].y + 30) {
+            gameSession.ball.dy = -1;
+          } else if (gameSession.ball.y > gameSession.players[1].y + 30) {
+            gameSession.ball.dy = 1;
+          } else {
+            gameSession.ball.dy = 0;
+          }
+        }
+
+        // If ball hits the side walls check its direction
+        if (gameSession.ball.y < 5 || gameSession.ball.y > 490) {
+          gameSession.ball.dy *= -1;
+        }
+
+        // Check if player scored
+        if (gameSession.ball.x < 5) {
+          gameSession.players[1].score += 1;
+          gameSession.ball.x = 395;
+          gameSession.ball.y = 245;
+          gameSession.ball.dx = 1;
+          gameSession.ball.dy = 0;
+          // Here i should emit a score event
+        }
+
+        if (gameSession.ball.x > 795) {
+          gameSession.players[0].score += 1;
+          gameSession.ball.x = 395;
+          gameSession.ball.y = 245;
+          gameSession.ball.dx = -1;
+          gameSession.ball.dy = 0;
+          // Here i should emit a score event
+        }
+
+        if (gameSession.players[0].score === 3) {
+          gameSession.winner = 1;
+          server.to(session).emit('endGame', gameSession);
+          clearInterval(interval);
+        }
+
+        if (gameSession.players[1].score === 3) {
+          gameSession.winner = 2;
+          server.to(session).emit('endGame', gameSession);
+          clearInterval(interval);
+        }
+
+        server.to(session).emit('updateGame', gameSession);
+      }, 1000 / 60);
+    }
   }
 
   async endGameSession(gameSessionId: string) {
@@ -317,8 +383,6 @@ export class GameService {
     // Quit the game session (ROOM)
     playerOne.socket.leave(gameSessionId);
     playerTwo.socket.leave(gameSessionId);
-    // Clear the interval for that game sesion
-    clearInterval(gameSession.updateInterval);
     // Remove the item from the game sessions map.
     this.gameSessions.delete(gameSessionId);
   }
