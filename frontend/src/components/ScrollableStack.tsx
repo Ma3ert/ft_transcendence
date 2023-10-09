@@ -6,7 +6,7 @@ type Props = {
   width: any;
   height: any;
   items: ReactNode[];
-  spacing: string;
+  spacing: any;
 }
 
 const ScrollableStack = ({ width, height, spacing, items }: Props) => {

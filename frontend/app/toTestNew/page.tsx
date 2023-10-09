@@ -2,6 +2,7 @@
 
 import Achievements from "@/components/Achievements"
 import BoxScore from "@/components/BoxScore"
+import FriendSection from "@/components/FriendSection"
 import NavBar from "@/components/NavBar"
 import NotificationCenter from "@/components/NotificationCenter"
 import TwoFaAuPopUp from "@/components/TwoFaAuPopUp"
@@ -16,6 +17,7 @@ export default function Home() {
         //     rightScore={5}
         // />
         // <NavBar></NavBar>
-        <Achievements></Achievements>
+        // <Achievements></Achievements>
+        <FriendSection></FriendSection>
     )
 }

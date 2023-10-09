@@ -40,15 +40,15 @@ const Achievements = (props: Props) => {
       bodys={[
         <ScrollableStack
           items={rank}
-          width={{base: "235px", sm: "325px", md: "435px",  lg:"535px" }}
+          width={{base: "235px", sm: "335px", md: "435px",  lg:"535px" }}
           height={{base: "224px", sm: "424px", md: "435px", lg: "624px"}}
-          spacing="20px"
+          spacing= {{ base: "10px", md:"20px" }}
         ></ScrollableStack>,
         <ScrollableStack
           items={rank}
           width={{base: "235px", sm: "325px", md: "435px",  lg:"535px" }}
           height={{base: "224px", sm: "424px", md: "435px", lg: "624px"}}
-          spacing="20px"
+          spacing= {{ base: "10px", md:"20px" }}
         ></ScrollableStack>,
       ]}
     />

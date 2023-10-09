@@ -54,8 +54,19 @@ const FriendSection = (props: Props) => {
     <PageBody
       navBar={<NavBar/>}
       tabs={[<Icon as={FaUserPlus} style={{ fontSize: "23px" }}/>, <Icon as={FaUserGroup} style={{ fontSize: "23px" }}/>]}
-      bodys={[<ScrollableStack items={requests} width={555} height={624} spacing='25px'></ScrollableStack>,
-              <ScrollableStack items={friends} width={555} height={624} spacing='25px'></ScrollableStack>]}
+      bodys={[
+      <ScrollableStack 
+        items={requests} 
+        width={{base: "235px", sm: "335px", md: "435px",  lg:"535px" }}
+        height={{base: "224px", sm: "424px", md: "425px", lg: "624px"}} 
+        spacing= {{ base: "5px", md:"8px", lg: "10px", xl: "12px" }}
+        ></ScrollableStack>,
+      <ScrollableStack 
+        items={friends} 
+        width={{base: "235px", sm: "335px", md: "435px",  lg:"535px" }} 
+        height={{base: "224px", sm: "424px", md: "425px", lg: "624px"}} 
+        spacing= {{ base: "5px", md:"8px", lg: "10px", xl: "12px" }}
+        ></ScrollableStack>]}
   />
   )
 }
