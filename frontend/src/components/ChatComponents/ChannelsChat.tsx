@@ -8,6 +8,7 @@ import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import { useState, useContext } from "react";
 import { ChannelsContext, UsersContext } from "@/context/Contexts";
+import { getUserRole } from "../../../utils/helpers";
 
 const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     const channelMembersClient = (channelId: string) =>
@@ -15,6 +16,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     const [channelMembers, setChannelMembers] = useState<Member[]>([]);
     const { activeChannel } = useContext(ChannelsContext);
     const {loggedInUser} = useContext (UsersContext)
+    const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
   
   // eslint-disable-next-line react/jsx-key
   
@@ -27,6 +29,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
         .then((res) => res.data),
     onSuccess: (data: any) => {
       setChannelMembers(data);
+      setLoggedInUserRole(getUserRole (loggedInUser!, data))
       console.log(data);
     },
     onError: (err) => {
@@ -53,7 +56,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
         <ChatBox />
       </GridItem>
       <GridItem justifyContent="center" alignItems="center" w={"100%"} h="100%">
-          <ChannelSettings members={channelMembers}/>        
+          <ChannelSettings members={channelMembers} userRole={loggedInUserRole}/>        
       </GridItem>
     </Grid>
   );

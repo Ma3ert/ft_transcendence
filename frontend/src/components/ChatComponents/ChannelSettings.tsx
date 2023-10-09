@@ -8,8 +8,9 @@ import {
   Icon,
   Image,
   Wrap,
+  useDisclosure
 } from "@chakra-ui/react";
-import { channelSettings } from "../../../contstants";
+import { ProtectedChannelSettings, channelSettings, ChannelMemberSettings } from "../../../contstants";
 import CostumSwitcher from "./CostumSwitcher";
 import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
@@ -20,15 +21,21 @@ import { useQuery } from "react-query";
 import apiClient from "@/services/requestProcessor";
 import useChannelManager from "@/hooks/useChannelManager";
 import { getUserRole } from "../../../utils/helpers";
+import EditeChannel, {VisibilityPopOver} from "./EditeChannel";
+import ChannelsListSection from "../Sections/ChannelsListSection";
+import { useEffect } from "react";
 interface ChannelSettingsProps {
   members:Member[]
+  userRole: string
 }
 
-const ChannelSettings: React.FC<ChannelSettingsProps> = ({members}) => {
+const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole}) => {
   // eslint-disable-next-line react/jsx-key
   const { loggedInUser } = useContext(UsersContext);
   const { removeChannel, leaveChannel } = useChannelManager();
   const { activeChannel } = useContext(ChannelsContext);
+  const [settingsList, setSettings] = useState<string[]> (channelSettings)
+  const {isOpen, onOpen, onClose} = useDisclosure ()
 
   const settings = new Map([
     [
@@ -41,12 +48,29 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members}) => {
       // eslint-disable-next-line react/jsx-key
        <SetPassword />,
     ],
+    [
+      "Edit Channel",
+      // eslint-disable-next-line react/jsx-key
+       <EditeChannel channel={activeChannel!} />,
+    ]
+   
   ]);
   const settingsActions = new Map([
     ["delete", () => removeChannel(activeChannel!.id!)],
     ["leave", () => leaveChannel(activeChannel!.id!)],
   ]);
 
+  useEffect (()=>{
+    console.log (`user role : -----> ${userRole}`)
+    if (userRole === "OWNER") {
+      if (activeChannel?.type === 'PROTECTED')
+        setSettings (ProtectedChannelSettings)
+      else
+        setSettings (channelSettings)
+    } else {
+        setSettings (ChannelMemberSettings)
+      }
+  }, [userRole])
   return (
     <Stack
       spacing={5}
@@ -77,13 +101,8 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members}) => {
           minH={"45vh"}
           maxH="auto"
         >
-          <HStack px={2} justify={"space-between"} alignItems={"center"}>
-            <Text color={"#5B6171"} fontSize="sm" fontWeight={"bold"}>
-              Private Channel
-            </Text>
-            <CostumSwitcher />
-          </HStack>
-          {channelSettings.map((setting, index) => {
+           <VisibilityPopOver />
+          {settingsList.map((setting, index) => {
             return (
               <ModalWrapper
                 isOption={false}

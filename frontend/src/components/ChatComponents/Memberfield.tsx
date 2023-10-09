@@ -17,7 +17,7 @@ const MemberField:React.FC<MemberFieldProps> = ({member, members}) => {
     const {Users, loggedInUser} = useContext(UsersContext)
     useEffect(() => {
 
-        const user = Users!.find((user) => user.id === member.userId);
+        const user = Users!.find((user) => user.id === member.user);
         if(user) {
             setUser(user);
         }

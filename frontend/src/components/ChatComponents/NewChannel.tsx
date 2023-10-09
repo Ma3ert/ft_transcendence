@@ -37,7 +37,7 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
   const [channelName, setChannelName] = useState("");
   const [channelPassword, setChannelPassword] = useState("");
   const channelNameSchema = z.string().min(3).max(20).refine((val) => val !== "");
-  const passwordSchema = z.string().min(7).max(12).refine((val) => val !== "");
+  const passwordSchema = z.string().min(7).max(20).refine((val) => val !== "");
   const channelManager = useChannelManager();
   const {onClose} = useContext (ModalWrapperContext)
   const [submitted, setSubmitted] = useState(false);

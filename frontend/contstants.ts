@@ -20,11 +20,20 @@ export const ChannelTypes: string[] = [
   "Private messages",
 ];
 
-export const channelSettings: string[] = [
+export const channelSettings: string[] = [ 
   "Members",
   "Set password",
-  "Edit channel",
+  "Edit Channel"
 ];
+
+export const ProtectedChannelSettings: string[] = [ 
+  "Members",
+  "Edit Channel"
+];
+
+export const ChannelMemberSettings:string[] = [
+  'Members',
+]
 
 // Channel
 

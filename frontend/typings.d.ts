@@ -296,8 +296,10 @@ type GlobalEnvite = {
 }
 
 type Member = {
-  userId:string
+  user:string
   role:string
+  banned:boolean
+  mutted:boolean
 }
 
 type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN"  | string
