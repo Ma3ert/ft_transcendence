@@ -48,7 +48,7 @@ export class NotificationService {
 
     async createChannelMessageNotification(sender:string, channel:string)
     {
-        const channelMembers = await this.chatService.getChannelMembers(channel, sender);
+        const channelMembers = await this.chatService.getChannelMembersIds(channel, sender);
         for (const member of channelMembers)
         {
             await this.prismaService.notification.create({

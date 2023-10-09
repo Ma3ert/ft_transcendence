@@ -171,7 +171,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   {
     await this.chatService.createChannelMessage(data.from, data.channel, data.message);
     await this.notificationService.createChannelMessageNotification(data.from, data.channel);
-    const channelMembers = await this.chatService.getChannelMembers(data.channel, data.from);
+    const channelMembers = await this.chatService.getChannelMembersIds(data.channel, data.from);
     this.server.to(data.channel).emit("CM", data);
     for (const user of channelMembers)
     {

@@ -32,7 +32,7 @@ export class AuthController {
   async handleRedirect(@Req() req: any, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
-    res.status(200).json({ message: 'Authenticated' });
+    res.redirect("http://127.0.0.1:5173")
   }
 
   @Get('42/logout')

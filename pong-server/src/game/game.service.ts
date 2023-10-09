@@ -22,6 +22,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { stripPlayerSockets } from './utils/utils';
 
 export interface Game {
   id: string;
@@ -31,20 +32,29 @@ export interface Game {
   createdAt?: Date;
 }
 
+export interface Ball {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+}
+
 export interface Player {
   id: number;
   user: string;
+  username: string;
+  avatar: string;
   socket: Socket;
-  ballX: number;
-  ballY: number;
-  score: number;
-  playerX: number;
-  playerY: number;
+  score: string[];
+  x: number;
+  y: number;
 }
 
 export interface GameSession {
+  interval?: NodeJS.Timeout;
+  winner: number;
   players: Player[];
-  updateInterval?: NodeJS.Timeout;
+  ball: Ball;
 }
 
 export interface MatchItem {
@@ -63,43 +73,66 @@ export class GameService {
   private gameQueue: Map<string, MatchItem> = new Map();
   private gameInvites: Map<string, MatchItem> = new Map();
 
+  createSessionData(session: string) {
+    const gameSession = this.gameSessions.get(session);
+    const serializedGameSession = stripPlayerSockets(gameSession);
+    return serializedGameSession;
+  }
+
   createPlayer(player: AuthSocket, id: number) {
     const state: Player = {
       id,
       socket: player,
       user: player.user.id,
-      ballX: 0,
-      ballY: 0,
-      score: 0,
-      playerX: 0,
-      playerY: 0,
+      username: player.user.username,
+      avatar: player.user.avatar,
+      score: [],
+      x: id === 1 ? 0 : 780,
+      y: 200,
     };
     return state;
   }
 
-  createGameSession(playersData: Player[], server: Server) {
+  async createGameSession(playersData: Player[], server: Server) {
     const gameSessionID = randomUUID();
     const playerOne = playersData[0];
     const playerTwo = playersData[1];
 
     this.gameSessions.set(gameSessionID, {
+      winner: 0,
+      ball: {
+        x: 400,
+        y: 245,
+        dx: Math.random() < 0.5 ? 1 : -1,
+        dy: 0,
+      },
       players: [playerOne, playerTwo],
     });
 
+    if (playerOne) {
+      const { socket, ...playerTwoData } = playerTwo;
+      playerOne.socket.emit('matchMade', {
+        data: { ...playerTwoData, session: gameSessionID, playerID: playerOne.id },
+      });
+    }
+    if (playerTwo) {
+      const { socket, ...playerOneData } = playerOne;
+      playerTwo.socket.emit('matchMade', {
+        data: { ...playerOneData, session: gameSessionID, playerID: playerTwo.id },
+      });
+    }
+
     // Change the player status to in match
-    this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
-    this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
+    await this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
+    await this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
 
     // Join player to the same game session.
     playerOne.socket.join(gameSessionID);
     playerTwo.socket.join(gameSessionID);
-    server.to(gameSessionID).emit(GAME_SESSION_STARTING);
-    // Notify the user that we're going to start the session
     setTimeout(() => {
-      console.log('Starting game session');
-      server.to(gameSessionID).emit(START_GAME_SESSION);
+      server.to(gameSessionID).emit(START_GAME_SESSION, this.createSessionData(gameSessionID));
       this.gameStarted(gameSessionID, server);
-    }, 3000);
+    }, 4000);
   }
 
   createGameInvite(sendingPlayer: AuthSocket, receivingPlayer: AuthSocket, server: Server) {
@@ -188,8 +221,10 @@ export class GameService {
 
   joinGameQueue(player: AuthSocket, server: Server) {
     // Checking if the user is in match before joinning the queue
-    if (this.allPlayers.size > 0 && this.allPlayers.has(player.user.id))
+    if (this.allPlayers.size > 0 && this.allPlayers.has(player.user.id)) {
+      console.log('Already in match.');
       return server.to(player.id).emit(ONGOING_MATCH);
+    }
     // Emit player joined queue event
     server.to(player.id).emit(JOINED_GAME_QUEUE);
 
@@ -201,15 +236,6 @@ export class GameService {
       const playerTwo = this.createPlayer(player, 2);
       this.allPlayers.set(player.user.id, player.user);
       this.gameQueue.set(gameSession, { ...lastSession[1], players: [playerOne, playerTwo] });
-      // Send the users information about each other.
-      if (playerOne) {
-        const { socket, ...playerTwoData } = playerTwo;
-        playerOne.socket.emit('matchMade', { data: playerTwoData });
-      }
-      if (playerTwo) {
-        const { socket, ...playerOneData } = playerOne;
-        playerTwo.socket.emit('matchMade', { data: playerOneData });
-      }
       this.createGameSession(this.gameQueue.get(gameSession).players, server);
       this.gameQueue.delete(gameSession);
     } else {
@@ -232,8 +258,22 @@ export class GameService {
   }
 
   getGameInput(payload: any) {
-    //TODO: Should get the room id from the player
-    //TODO: Update the state and emit a gameUpdate state the interval will handle the update
+    const gameSession = this.gameSessions.get(payload.gameSession);
+    if (gameSession) {
+      if (payload.key === 'up') {
+        gameSession.players[payload.player - 1].y -= 20;
+
+        if (gameSession.players[payload.player - 1].y < 0) {
+          gameSession.players[payload.player - 1].y = 0;
+        }
+      } else if (payload.key === 'down') {
+        gameSession.players[payload.player - 1].y += 20;
+
+        if (gameSession.players[payload.player - 1].y > 400) {
+          gameSession.players[payload.player - 1].y = 400;
+        }
+      }
+    }
   }
 
   getPlayerSession(player: Socket) {
@@ -241,22 +281,102 @@ export class GameService {
     return player.rooms.values().next().value;
   }
 
-  //! We might not need this logic
   gameStarted(session: string, server: Server) {
-    //TODO: write state watcher function to compare between the old state and the one and emit events.
-    const gameSession = this.gameSessions.get(session);
-    // const interval = setInterval(() => {
-    //   server.to(session).emit(GAME_UPDATE, { data: this.gameSessions.get(session).players });
-    // }, 1000 / 60);
-    // this.gameSessions.set(session, {
-    //   ...gameSession,
-    //   updateInterval: interval,
-    // });
-    setTimeout(() => {
-      gameSession.players[0].socket.emit('gameEnded');
-      gameSession.players[1].socket.emit('gameEnded');
-      this.endGameSession(session);
-    }, 10000);
+    const SPEED = 5;
+    if (this.gameSessions.has(session)) {
+      const gameSession = this.gameSessions.get(session);
+      gameSession.interval = setInterval(() => {
+        gameSession.ball.x += gameSession.ball.dx * SPEED;
+        gameSession.ball.y += gameSession.ball.dy * SPEED;
+
+        // Check if player one hits the ball
+        if (
+          gameSession.ball.x < 30 &&
+          gameSession.ball.y > gameSession.players[0].y &&
+          gameSession.ball.y < gameSession.players[0].y + 100
+        ) {
+          gameSession.ball.dx = 1;
+
+          // change ball direction
+          if (gameSession.ball.y < gameSession.players[0].y + 30) {
+            gameSession.ball.dy = -1;
+          } else if (gameSession.ball.y > gameSession.players[0].y + 30) {
+            gameSession.ball.dy = 1;
+          } else {
+            gameSession.ball.dy = 0;
+          }
+        }
+
+        // Check if player two hits the ball
+        if (
+          gameSession.ball.x > 780 &&
+          gameSession.ball.y > gameSession.players[1].y &&
+          gameSession.ball.y < gameSession.players[1].y + 100
+        ) {
+          gameSession.ball.dx = -1;
+
+          // change ball direction
+          if (gameSession.ball.y < gameSession.players[1].y + 30) {
+            gameSession.ball.dy = -1;
+          } else if (gameSession.ball.y > gameSession.players[1].y + 30) {
+            gameSession.ball.dy = 1;
+          } else {
+            gameSession.ball.dy = 0;
+          }
+        }
+
+        // If ball hits the side walls check its direction
+        if (gameSession.ball.y < 5 || gameSession.ball.y > 490) {
+          gameSession.ball.dy *= -1;
+        }
+
+        // Check if player scored
+        if (gameSession.ball.x < 5) {
+          gameSession.players[1].score.push('W');
+          gameSession.players[0].score.push('L');
+          gameSession.ball.x = 395;
+          gameSession.ball.y = 245;
+          gameSession.ball.dx = 1;
+          gameSession.ball.dy = 0;
+          server
+            .to(session)
+            .emit('score', { 1: gameSession.players[0].score, 2: gameSession.players[1].score });
+          // Here i should emit a score event
+        }
+
+        if (gameSession.ball.x > 795) {
+          gameSession.players[0].score.push('W');
+          gameSession.players[1].score.push('L');
+          gameSession.ball.x = 395;
+          gameSession.ball.y = 245;
+          gameSession.ball.dx = -1;
+          gameSession.ball.dy = 0;
+          server
+            .to(session)
+            .emit('score', { 1: gameSession.players[0].score, 2: gameSession.players[1].score });
+          // Here i should emit a score event
+        }
+
+        if (gameSession.players[0].score.length >= 4 || gameSession.players[1].score.length >= 4) {
+          if (
+            this.calculatePlayerScore(gameSession.players[0].score) !==
+            this.calculatePlayerScore(gameSession.players[1].score)
+          ) {
+            this.calculatePlayerScore(gameSession.players[0].score) >
+            this.calculatePlayerScore(gameSession.players[1].score)
+              ? (gameSession.winner = 1)
+              : (gameSession.winner = 2);
+            server.to(session).emit('endGame', this.createSessionData(session));
+            this.endGameSession(session);
+            this.allPlayers.delete(gameSession.players[0].user);
+            this.allPlayers.delete(gameSession.players[1].user);
+            clearInterval(gameSession.interval);
+          }
+        }
+
+        server.to(session).emit('updateGame', this.createSessionData(session));
+      }, 1000 / 60);
+    }
   }
 
   async endGameSession(gameSessionId: string) {
@@ -270,7 +390,11 @@ export class GameService {
     const expFactor = 1.5;
 
     //Do the caluculation of how much the xp and laddel should increment by and save that for each user
-    if (playerOne.score != 0 && playerTwo.score != 0 && playerOne.score != playerTwo.score) {
+    if (
+      this.calculatePlayerScore(playerOne.score) != 0 &&
+      this.calculatePlayerScore(playerTwo.score) != 0 &&
+      playerOne.score != playerTwo.score
+    ) {
       const winner = playerOne.score > playerTwo.score ? playerOneUser : playerTwoUser;
       const requiredNextLevelXP = levelOneXP * Math.floor(Math.pow(expFactor, winner.level));
       if (winner.xp + winnerReward >= requiredNextLevelXP)
@@ -290,9 +414,7 @@ export class GameService {
     // Quit the game session (ROOM)
     playerOne.socket.leave(gameSessionId);
     playerTwo.socket.leave(gameSessionId);
-    // Clear the interval for that game sesion
-    clearInterval(gameSession.updateInterval);
-    // Remove the item from the game sessions map
+    // Remove the item from the game sessions map.
     this.gameSessions.delete(gameSessionId);
   }
 
@@ -302,7 +424,11 @@ export class GameService {
     const playerTwo = gameSession.players[1];
     let winner = null;
 
-    if (playerOne.score != 0 && playerTwo.score != 0 && playerOne.score != playerTwo.score)
+    if (
+      this.calculatePlayerScore(playerOne.score) != 0 &&
+      this.calculatePlayerScore(playerTwo.score) != 0 &&
+      this.calculatePlayerScore(playerOne.score) != this.calculatePlayerScore(playerTwo.score)
+    )
       winner = playerOne.score > playerTwo.score ? playerOne.user : playerTwo.user;
     return this.prismaService.game.create({
       data: {
@@ -310,14 +436,30 @@ export class GameService {
         players: {
           connect: [{ id: playerOne.user }, { id: playerTwo.user }],
         },
-        playerOneScore: playerOne.score,
-        playerTwoScore: playerTwo.score,
+        playerOneScore: this.calculatePlayerScore(playerOne.score),
+        playerTwoScore: this.calculatePlayerScore(playerTwo.score),
         winner,
       },
     });
   }
 
-  leaveGameSession(player: Socket) {
-    //! This function should be refactored to use the endGameSession with few exceptions.
+  calculatePlayerScore(score: string[]) {
+    return score.length !== 0 ? score.filter((value) => value !== 'L').length : 0;
+  }
+
+  leaveGameSession(leavingPlayer: AuthSocket, server: Server) {
+    this.gameSessions.forEach(async (game, gameSessionID) => {
+      const gameSessionPlayers = game.players.map((player) => player.user);
+      if (gameSessionPlayers.includes(leavingPlayer.user.id)) {
+        clearInterval(game.interval);
+        this.allPlayers.delete(game.players[0].user);
+        this.allPlayers.delete(game.players[1].user);
+
+        await this.usersService.updateUserAll(game.players[0].user, { status: 'ONLINE' });
+        await this.usersService.updateUserAll(game.players[1].user, { status: 'ONLINE' });
+        server.to(gameSessionID).emit('userLeftGame');
+        this.gameSessions.delete(gameSessionID);
+      }
+    });
   }
 }
