@@ -62,7 +62,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole}) =>
 
   useEffect (()=>{
     console.log (`user role : -----> ${userRole}`)
-    if (userRole === "OWNER") {
+    if (userRole === "OWNER" || userRole === 'ADMIN') {
       if (activeChannel?.type === 'PROTECTED')
         setSettings (ProtectedChannelSettings)
       else

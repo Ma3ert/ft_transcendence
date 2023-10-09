@@ -2,12 +2,14 @@ import apiClient from "@/services/requestProcessor";
 import { useMutation, useQueryClient } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
-
+import { ChannelsContext } from "@/context/Contexts";
+import {useContext} from 'react'
 const useUserOptions = () => {
   const enviteUserClient = new apiClient("/invites");
   const blockUserClient = new apiClient("/users/block");
   const toast = useToast();
   const queryClient = useQueryClient();
+  const {activeChannel} = useContext (ChannelsContext)
   const muteUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/mute/${request.userid}`);
   const banUserClient = (request: UserChannel) =>
@@ -88,9 +90,9 @@ const useUserOptions = () => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
+
       console.log(data);
-      queryClient.invalidateQueries("friends");
-      queryClient.invalidateQueries("users");
+      queryClient.invalidateQueries(["channelMembers", activeChannel!.id])
       toast({
         title: "User muted.",
         description: "The user has been muted successfully.",
@@ -108,9 +110,7 @@ const useUserOptions = () => {
     mutationFn: async (request: UserChannel) =>
       banUserClient(request).postData(null).then((response) => response),
     onSuccess: (data) => {
-      console.log(data);
-      queryClient.invalidateQueries("friends");
-      queryClient.invalidateQueries("users");
+      queryClient.invalidateQueries(["channelMembers", activeChannel!.id])
       toast({
         title: "User banned.",
         description: "The user has been banned successfully.",
@@ -131,8 +131,7 @@ const useUserOptions = () => {
         .then((response) => response),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("friends");
-      queryClient.invalidateQueries("users");
+      queryClient.invalidateQueries(["channelMembers", activeChannel!.id])
       toast({
         title: "User unbanned.",
         description: "The user has been unbanned successfully.",

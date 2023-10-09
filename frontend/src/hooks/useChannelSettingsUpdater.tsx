@@ -19,19 +19,55 @@ const useChannelSettingsUpdater = (channel: Channel) => {
   const toast = useToast();
   const queryClient = useQueryClient();
 
-//   const upgradeUserMutation = useMutation({
-//     mutationFn: (user:UserChannel) =>
-//       upgrageUserClient(user).updateData(null, null),
-//     onSuccess: (data) => console.log(data),
-//     onError: (error) => console.log(error),
-//   });
+  const upgradeUserMutation = useMutation({
+    mutationFn: async (user:UserChannel) => await axios.patch(`http://localhost:3000/${upgrageUserClient(user)}`, {}, {withCredentials:true}).then (response => response),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["channelMembers", channel.id])
+      toast({
+        title: "User upgraded.",
+        description: "You can now share it with your friends.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      console.log(data)
+    },
+    onError: (error) => {
+      toast ({
+        title: "Something went wrong",
+        description: "Failed to upgrade user.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      console.log(error)
+    },
+  });
 
-//   const downgradeUserMutation = useMutation({
-//     mutationFn: (user: UserChannel) =>
-//       downgradeUserClient(user).updateData(null, null),
-//     onSuccess: (data) => console.log(data),
-//     onError: (error) => console.log(error),
-//   });
+  const downgradeUserMutation = useMutation({
+    mutationFn: async (user: UserChannel) => await axios.patch (`http://localhost:3000/${downgradeUserClient(user)}`, {}, {withCredentials:true}).then (response => response),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
+      toast ({
+        title: "User downgraded.",
+        description: "You can now share it with your friends.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      console.log(data)
+    },
+    onError: (error) =>{
+      toast({
+        title: "Something went wrong",
+        description: "Failed to downgrade user.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      console.log (error)
+    },
+  });
 
   const setChannelPasswordMutation = useMutation({
     mutationFn: async (password: string) =>
@@ -176,10 +212,10 @@ const useChannelSettingsUpdater = (channel: Channel) => {
   });
 
   function upgradeUser(user: UserChannel) {
-    // upgradeUserMutation.mutate(user);
+    upgradeUserMutation.mutate(user);
   }
   function downgradeUser(user: UserChannel) {
-    // downgradeUserMutation.mutate(user);
+    downgradeUserMutation.mutate(user);
   }
   function setChannelPassword(password: string) {
     setChannelPasswordMutation.mutate(password);
