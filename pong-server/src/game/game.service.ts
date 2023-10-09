@@ -269,8 +269,8 @@ export class GameService {
       } else if (payload.key === 'down') {
         gameSession.players[payload.player - 1].y += 20;
 
-        if (gameSession.players[payload.player - 1].y > 440) {
-          gameSession.players[payload.player - 1].y = 440;
+        if (gameSession.players[payload.player - 1].y > 400) {
+          gameSession.players[payload.player - 1].y = 400;
         }
       }
     }
