@@ -696,4 +696,16 @@ export class ChatService {
             }
         })
     }
+
+    async changeVisiblity(channel: string, _type:Type)
+    {
+        await this.prismaService.channel.update({
+            where: {
+                id:channel,
+            },
+            data: {
+                type:_type
+            }
+        })
+    }
 }
