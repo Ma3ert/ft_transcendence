@@ -12,9 +12,9 @@ const LobbyParty = ({solo}: Props) => {
     <Stack spacing={"52px"} align={"center"}>
         {solo ? <SoloLobbyParty/> : <MultiLobbyParty/>}
         <Image
-        src='/Shadow.png'
-        w={"341px"}
-        h={"27px"}>
+          src='/Shadow.png'
+          w={"341px"}
+          h={"27px"}>
         </Image>
         <Button
             variant={"primary"}

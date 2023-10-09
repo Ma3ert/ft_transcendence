@@ -44,7 +44,6 @@ export default function Home() {
     // <SoloLobbyParty></SoloLobbyParty>
     // <MultiLobbyParty></MultiLobbyParty>
     
-    
     // <NavBar></NavBar>
     // <SideBar></SideBar>
     // <Tabs w={"255px"} h={"50px"} isFitted variant={"default"}>

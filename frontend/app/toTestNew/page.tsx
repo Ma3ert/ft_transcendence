@@ -3,6 +3,7 @@
 import Achievements from "@/components/Achievements"
 import BoxScore from "@/components/BoxScore"
 import FriendSection from "@/components/FriendSection"
+import Lobby from "@/components/Lobby"
 import NavBar from "@/components/NavBar"
 import NotificationCenter from "@/components/NotificationCenter"
 import Setting from "@/components/Setting"
@@ -18,7 +19,8 @@ export default function Home() {
         //     rightScore={5}
         // />
         // <NavBar></NavBar>
-        <Achievements></Achievements>
+        // <Achievements></Achievements>
+        <Lobby/>
         // <FriendSection></FriendSection>
         // <Setting></Setting>
     )
