@@ -31,7 +31,6 @@ export class UsersService {
       },
     });
 
-    const excludedField = ['twoFactorPin', 'twoFactorPinExpires', 'activated', 'pinValidated'];
     const validGames = user.games
       .map((game: Game) => (game.winner !== null ? game : null))
       .filter((game) => game !== null);
