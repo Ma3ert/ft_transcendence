@@ -356,35 +356,21 @@ export class GameService {
           // Here i should emit a score event
         }
 
-        if (gameSession.players[0].score.length === 4) {
+        if (gameSession.players[0].score.length >= 4 || gameSession.players[1].score.length >= 4) {
           if (
+            this.calculatePlayerScore(gameSession.players[0].score) !==
+            this.calculatePlayerScore(gameSession.players[1].score)
+          ) {
             this.calculatePlayerScore(gameSession.players[0].score) >
             this.calculatePlayerScore(gameSession.players[1].score)
-          ) {
-            gameSession.winner = 1;
-          }else {
-            gameSession.winner = 2;
+              ? (gameSession.winner = 1)
+              : (gameSession.winner = 2);
+            server.to(session).emit('endGame', this.createSessionData(session));
+            this.endGameSession(session);
+            this.allPlayers.delete(gameSession.players[0].user);
+            this.allPlayers.delete(gameSession.players[1].user);
+            clearInterval(interval);
           }
-          server.to(session).emit('endGame', this.createSessionData(session));
-          this.allPlayers.delete(gameSession.players[0].user);
-          this.allPlayers.delete(gameSession.players[1].user);
-          clearInterval(interval);
-        }
-
-        if (gameSession.players[1].score.length === 4) {
-          if (
-            this.calculatePlayerScore(gameSession.players[0].score) <
-            this.calculatePlayerScore(gameSession.players[1].score)
-          ) {
-            gameSession.winner = 2;
-          }
-          else {
-            gameSession.winner = 1;
-          }
-          server.to(session).emit('endGame', this.createSessionData(session));
-          this.allPlayers.delete(gameSession.players[0].user);
-          this.allPlayers.delete(gameSession.players[1].user);
-          clearInterval(interval);
         }
 
         server.to(session).emit('updateGame', this.createSessionData(session));
@@ -457,15 +443,14 @@ export class GameService {
   }
 
   calculatePlayerScore(score: string[]) {
-    return score.length === 0 ? score.filter((value) => value !== 'L').length : 0;
+    return score.length !== 0 ? score.filter((value) => value !== 'L').length : 0;
   }
 
   leaveGameSession(leavingPlayer: AuthSocket, server: Server) {
-    this.gameSessions.forEach((game) => {
+    this.gameSessions.forEach((game, gameSessionID) => {
       const gameSessionPlayers = game.players.map((player) => player.user);
       if (gameSessionPlayers.includes(leavingPlayer.user.id)) {
-        const otherPlayer = game.players.filter((player) => player.user !== leavingPlayer.user.id)[0];
-        otherPlayer.socket.emit('userLeftGame');
+        server.to(gameSessionID).emit('userLeftGame');
       }
     });
   }
