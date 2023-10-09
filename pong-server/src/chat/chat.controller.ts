@@ -35,6 +35,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from './utils/storage.config';
 import { diskStorage } from 'multer';
 import { updateChannelAvatar } from './dto/updateAvatar.dto';
+import { User } from '../users/entities/user.entity';
+import { visibilityDto } from './dto/visibility.dto';
 
 
 @Controller('chat')
@@ -417,5 +419,17 @@ export class ChatController {
     async updateChannelAvatar(@Req() req: Request, @Body() avatarDto: updateChannelAvatar) {
         await this.chatService.updateChannelAvatar(avatarDto.channel, avatarDto.avatar);
         return { status: "success", message: "Channel Avatar updated Successfully" };
+    }
+
+    @Patch('/channels/:channelId/change-visibility')
+    @Roles(Role.OWNER, Role.ADMIN)
+    @UseGuards(RoleGuard)
+    @UseGuards(LoggedInGuard)
+    async changeVisibility(
+        @Req() req: Request,
+        @Param('channelId') channelId: string,
+        @Body() changeVisibility:visibilityDto)
+    {
+        await this.chatService.changeVisiblity(channelId, changeVisibility.type);
     }
 }
