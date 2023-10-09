@@ -97,7 +97,8 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole}) =>
           justify="start"
           spacing={4}
           h="auto"
-          minW={"auto"}
+          minW={"90%"}
+          maxW={"450px"}
           minH={"45vh"}
           maxH="auto"
         >

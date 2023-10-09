@@ -258,7 +258,7 @@ const ButtonStyle: ComponentStyleConfig = {
       _active: {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
-      w: "95%",
+      px: "18px",
       fontSize: "sm",
     },
     largeSecondary: {
@@ -271,9 +271,8 @@ const ButtonStyle: ComponentStyleConfig = {
       _active: {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
-      w: "95%",
-      maxWidth: "320px",
       fontSize: "sm",
+      px: "18px",
     },
     menuItemImportant: {
       display: "flex",

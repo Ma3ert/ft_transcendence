@@ -75,9 +75,9 @@ export const VisibilityPopOver: React.FC<EditPopOverProps> = ({
             </HStack>
           </MenuItem>
           <MenuItem bg="transparent" border="none">
-            <HStack w='100%' spacing={5} py={8}>
+            <HStack w='100%' spacing={5} py={2}>
               <Button variant='ghost' color={"#DC585B"} onClick={onClose}>cancel</Button>
-              <Button variant='modalConfirm' color={"#DC585B"} onClick={()=>{
+              <Button variant='ghost' color={"#5B6171"} onClick={()=>{
                 onClose ()
               }}>done</Button>
             </HStack>
@@ -99,7 +99,35 @@ const EditChannel: React.FC<EditChannelProps> = ({ channel }) => {
   return (
     <Stack justifyContent={"center"} alignItems={"center"} spacing={6}>
       <Box position={"relative"} w="50%">
-        <Avatar icon={<Icon fontSize='80px' color='#5B6171' as={HiMiniUserGroup} />} bg="#1D222C" w="160px" h="auto" src={channel.avatar} />
+        {channel.avatar ? <Avatar w='100%' h="auto" src={channel.avatar} /> : (
+          <Box
+          position="relative"
+          bg="#1D222C"
+          borderRadius={"full"}
+          p={8}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          _hover={{ bg: "#181D25" }}
+        >
+          <Icon as={HiMiniUserGroup} w={20} h="auto" color={"#5B6171"} />
+          <Icon
+            as={FaPen}
+            position="absolute"
+            bottom="12px"
+            right="12px"
+            fontStyle="bold"
+            fontWeight="black"
+            fontSize="6px"
+            boxSize="20px"
+            borderRadius="full"
+            bg="#DC585B"
+            color="#252932"
+            _active={{ transform: "scale(1.1)" }}
+            _hover={{ opacity: 0.8 }}
+          />
+        </Box>
+        )}
         <Button
           w="40px"
           h="40px"
