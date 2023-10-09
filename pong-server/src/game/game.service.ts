@@ -51,6 +51,7 @@ export interface Player {
 }
 
 export interface GameSession {
+  interval?: NodeJS.Timeout;
   winner: number;
   players: Player[];
   ball: Ball;
@@ -92,7 +93,7 @@ export class GameService {
     return state;
   }
 
-  createGameSession(playersData: Player[], server: Server) {
+  async createGameSession(playersData: Player[], server: Server) {
     const gameSessionID = randomUUID();
     const playerOne = playersData[0];
     const playerTwo = playersData[1];
@@ -122,8 +123,8 @@ export class GameService {
     }
 
     // Change the player status to in match
-    this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
-    this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
+    await this.usersService.updateUserAll(playerOne.user, { status: 'INMATCH' });
+    await this.usersService.updateUserAll(playerTwo.user, { status: 'INMATCH' });
 
     // Join player to the same game session.
     playerOne.socket.join(gameSessionID);
@@ -284,7 +285,7 @@ export class GameService {
     const SPEED = 5;
     if (this.gameSessions.has(session)) {
       const gameSession = this.gameSessions.get(session);
-      let interval = setInterval(() => {
+      gameSession.interval = setInterval(() => {
         gameSession.ball.x += gameSession.ball.dx * SPEED;
         gameSession.ball.y += gameSession.ball.dy * SPEED;
 
@@ -369,7 +370,7 @@ export class GameService {
             this.endGameSession(session);
             this.allPlayers.delete(gameSession.players[0].user);
             this.allPlayers.delete(gameSession.players[1].user);
-            clearInterval(interval);
+            clearInterval(gameSession.interval);
           }
         }
 
@@ -447,10 +448,17 @@ export class GameService {
   }
 
   leaveGameSession(leavingPlayer: AuthSocket, server: Server) {
-    this.gameSessions.forEach((game, gameSessionID) => {
+    this.gameSessions.forEach(async (game, gameSessionID) => {
       const gameSessionPlayers = game.players.map((player) => player.user);
       if (gameSessionPlayers.includes(leavingPlayer.user.id)) {
+        clearInterval(game.interval);
+        this.allPlayers.delete(game.players[0].user);
+        this.allPlayers.delete(game.players[1].user);
+
+        await this.usersService.updateUserAll(game.players[0].user, { status: 'ONLINE' });
+        await this.usersService.updateUserAll(game.players[1].user, { status: 'ONLINE' });
         server.to(gameSessionID).emit('userLeftGame');
+        this.gameSessions.delete(gameSessionID);
       }
     });
   }
