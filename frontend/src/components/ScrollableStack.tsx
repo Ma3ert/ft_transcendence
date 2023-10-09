@@ -19,7 +19,6 @@ const ScrollableStack = ({ width, height, spacing, items }: Props) => {
       w={width}
       h={height}
       borderRadius={"20px"}
-      px={"10px"}
       bg={"#1D222C"}>
       <Box
         py={"10px"}

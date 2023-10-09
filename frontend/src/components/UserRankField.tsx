@@ -12,7 +12,7 @@ type Props = {
 
 const UserRankField = ({userName, userPic}: Props) => {
   return (
-    <Button variant={"field"} w={{base: "200px", sm: "300px", md: "400px", lg:"500px" }} h={{sm: "40px", md: "50px", lg: "70px" }} p={"15px"}>
+    <Button variant={"field"} w={"95%"} h={{sm: "40px", md: "50px", lg: "70px" }} p={"15px"}>
       <Flex alignItems={"center"} width={"full"}>
         <Wrap align={"center"} spacing={"15px"}>
           <Text fontSize={{base: "8px",md: "10px", lg: "15px"}}>N#</Text>
@@ -21,7 +21,7 @@ const UserRankField = ({userName, userPic}: Props) => {
         <Spacer/>
         <Text fontSize={{base: "10px",md: "15px", lg: "20px"}}>{userName}</Text>
         <Spacer/>
-        <Wrap spacing={"40px"} align={"center"}>
+        <Wrap spacing={{base: "20px", lg: "40px" }} align={"center"}>
           <Text fontSize={{base: "8px",md: "10px", lg: "15px"}}>lvl</Text>
           <Text fontSize={{base: "8px",md: "10px", lg: "15px"}}>xp</Text>
         </Wrap>

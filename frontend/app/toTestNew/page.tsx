@@ -18,8 +18,8 @@ export default function Home() {
         //     rightScore={5}
         // />
         // <NavBar></NavBar>
-        // <Achievements></Achievements>
+        <Achievements></Achievements>
         // <FriendSection></FriendSection>
-        <Setting></Setting>
+        // <Setting></Setting>
     )
 }
