@@ -2,7 +2,7 @@ import { ForbiddenException, Inject, Injectable, InternalServerErrorException, N
 import { PrismaService } from '../prisma/prisma.service';
 import { createChannelDto } from './dto/channel.create.dto';
 import * as bcrypt from 'bcrypt';
-import { Channel, ChannelInvite, NotificationType, Role, Type } from '@prisma/client';
+import { Channel, ChannelInvite, ChannelUser, NotificationType, Role, Type } from '@prisma/client';
 import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 import { UsersService } from '../users/users.service';
@@ -190,6 +190,29 @@ export class ChatService {
                 }
             }
         })
+    }
+
+    async kickUser(channel: string, user: string) {
+        const isInChannel:ChannelUser = await this.prismaService.channelUser.findFirst({
+            where: {
+                userId: user
+            }
+        })
+
+        if (!isInChannel)
+            throw new ForbiddenException('user is not belong to the same channel');
+
+        if (isInChannel.role === Role.OWNER)
+            throw new ForbiddenException('You cannot kick The owner of the Channel');
+
+        await this.prismaService.channelUser.delete({
+            where: {
+                userId_channelId: {
+                    userId: user,
+                    channelId: channel
+                }
+            }
+        });
     }
 
     async getChannelMembersIds(channel:string, userId:string){
