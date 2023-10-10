@@ -210,14 +210,13 @@ export class ChatService {
         const channelMem = await this.getChannelMembersIds(channel, user);
         const ChannelBan = await this.getBannedUsers(channel);
         const channelMute = await this.MutedMembers(channel);
-
         for (const usr of channelMem)
         {
             let member = {};
             member['user'] = usr.userId;
             member['role'] = usr.role;
-            member['banned'] = ChannelBan.some((obj) => obj.userId === user);
-            member['muted'] = channelMute.some((obj) => obj.userId === user);
+            member['banned'] = ChannelBan.some((obj) => obj.userId === usr.userId);
+            member['muted'] = channelMute.some((obj) => obj.userId === usr.userId);
             members.push(member);
         }
         return members;
