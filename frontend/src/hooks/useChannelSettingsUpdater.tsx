@@ -16,6 +16,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
     `chat/channels/${channel.id}/change-password/`;
   const changeChannelNameClient = (channel: Channel) =>
     `chat/channels/${channel.id}/change-name/`;
+  const visibilityClient = (channelId:string) => `chat/channels/${channelId}/change-visibility`
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -211,6 +212,34 @@ const useChannelSettingsUpdater = (channel: Channel) => {
     },
   });
 
+  interface ChannelType {
+    channelId:string
+    type:string
+  }
+  const changeVisibilityMutation = useMutation({
+    mutationFn: async (req:ChannelType) => await axios.patch (`http://localhost:3000/${visibilityClient(req.channelId)}`, {type:req.type}, {
+        withCredentials:true
+    }),
+    onSuccess : (data) =>{
+      queryClient.invalidateQueries("channels");
+      toast ({
+        title: "Channel visibility changed.",
+        description: "You can now share it with your friends.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }, 
+    onError : (error)=>{
+      toast ({
+        title: "Something went wrong",
+        description: "Failed to change channel visibility.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  })
   function upgradeUser(user: UserChannel) {
     upgradeUserMutation.mutate(user);
   }
@@ -233,6 +262,9 @@ const useChannelSettingsUpdater = (channel: Channel) => {
   function changeChannelName(channelName: string) {
     changeChannelNameMutation.mutate(channelName);
   }
+  function changeVisibility (channelId:string, type:string) {
+    changeVisibilityMutation.mutate({channelId,type})  
+  }
   return {
     upgradeUser,
     downgradeUser,
@@ -240,6 +272,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
     removeChannelPassword,
     changeChannelPassword,
     changeChannelName,
+    changeVisibility
   };
 };
 

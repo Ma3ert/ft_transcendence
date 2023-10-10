@@ -5,7 +5,7 @@ import { FaCheck } from "react-icons/fa6";
 import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import useEnviteHandler from "@/hooks/useEnviteHandler";
 import useChannelSettingsManager from "@/hooks/useChannelSettingsManager";
-
+import {AcceptProtectedChannel} from "./AcceptProtectedChannel";
 interface EnviteFieldProps {
   type: "sent" | "received";
   envite: GlobalEnvite;
@@ -54,17 +54,19 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
         </HStack>
         {type == "received" ? (
           <HStack spacing={5}>
-            <Icon onClick={()=>{
-              if(envite.isChannelEnvite){
-                const res:UserChannel = {
-                  channelid: envite.channel?.id,
-                  userid: envite.senderId
+            {envite!.channel!.type === 'PROTECTED' ? (<AcceptProtectedChannel envite={envite}/>) : (
+              <Icon onClick={()=>{
+                if(envite.isChannelEnvite){
+                  const res:UserChannel = {
+                    channelid: envite.channel?.id,
+                    userid: envite.senderId
+                  }
+                  acceptChannelEnvite(res)
+                }else{
+                  AcceptFriendRequest(envite.enviteId)
                 }
-                acceptChannelEnvite(res)
-              }else{
-                AcceptFriendRequest(envite.enviteId)
-              }
-            }} as={CheckIcon} fontSize={'20px'} _hover={{transform:'scale(1.1)'}}/>
+              }} as={CheckIcon} fontSize={'20px'} _hover={{transform:'scale(1.1)'}}/>
+            )}
             <Icon onClick={()=>{
               if(envite.isChannelEnvite){
                 const res:UserChannel = {

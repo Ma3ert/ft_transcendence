@@ -15,11 +15,25 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     new apiClient(`/chat/channels/${channelId}/members`);
     const [channelMembers, setChannelMembers] = useState<Member[]>([]);
     const { activeChannel } = useContext(ChannelsContext);
+    const channelClient = new apiClient (`/chat/channels/${activeChannel?.id}`)
     const {loggedInUser} = useContext (UsersContext)
     const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
   
   // eslint-disable-next-line react/jsx-key
   
+
+  // useQuery ({
+    // queryKey: ["channel", activeChannel?.id],
+    // queryFn: async () =>
+    // channelClient.getData ()
+    // .then (res => res.data),
+    // onSuccess: (data: any) => {
+      // setChannel (data);
+    // }, 
+    // onError : (err) => {
+      // console.log (err)
+      // }
+  // })
 
   useQuery({
     queryKey: ["channelMembers", activeChannel?.id],
@@ -56,7 +70,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
         <ChatBox />
       </GridItem>
       <GridItem justifyContent="center" alignItems="center" w={"100%"} h="100%">
-          <ChannelSettings members={channelMembers} userRole={loggedInUserRole}/>        
+          <ChannelSettings members={channelMembers} userRole={loggedInUserRole} channel={activeChannel!}/>        
       </GridItem>
     </Grid>
   );

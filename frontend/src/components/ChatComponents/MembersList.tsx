@@ -17,7 +17,7 @@ import FriendsListHeader from "./FriendsListHeader";
 interface MembersListProps {
   members: Member[];
 }
-const MembersList: React.FC<MembersListProps> = ({ members }) => {
+const MembersList: React.FC<MembersListProps> = ({ members, channel }) => {
   return (
     <Stack
       spacing={4}

@@ -24,7 +24,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import { SlArrowRight } from "react-icons/sl";
-import { ModalWrapperContext } from "@/context/Contexts";
+import { ChannelsContext, ModalWrapperContext } from "@/context/Contexts";
 import { useContext } from "react";
 import useChannelSettingsUpdater from "@/hooks/useChannelSettingsUpdater";
 import CostumSwitcher from "@/components/ChatComponents/CostumSwitcher";
@@ -47,8 +47,11 @@ export const VisibilityPopOver: React.FC<EditPopOverProps> = ({
   
 
   const [isOpen, setIsOpen] = useState (false)
+  const {activeChannel} = useContext (ChannelsContext)
+  const {changeVisibility} = useChannelSettingsUpdater (activeChannel!)
   const onOpen = () => setIsOpen (true)
   const onClose = () => setIsOpen (false)
+  const [isPrivate, setIsPrivate] = useState (activeChannel!.type === 'PRIVATE')
 
   return (
      
@@ -71,13 +74,15 @@ export const VisibilityPopOver: React.FC<EditPopOverProps> = ({
               <Text color={"#5B6171"} fontSize="sm" fontWeight={"bold"}>
                 Private Channel
               </Text>
-              <CostumSwitcher />
+              <CostumSwitcher state={isPrivate} stateSetter={setIsPrivate}/>
             </HStack>
           </MenuItem>
           <MenuItem bg="transparent" border="none">
             <HStack w='100%' spacing={5} py={2}>
               <Button variant='ghost' color={"#DC585B"} onClick={onClose}>cancel</Button>
               <Button variant='ghost' color={"#5B6171"} onClick={()=>{
+                if (isPrivate != (activeChannel!.type === 'PRIVATE'))
+                  changeVisibility (activeChannel!.id!, isPrivate ? 'PRIVATE' : 'PUBLIC')
                 onClose ()
               }}>done</Button>
             </HStack>

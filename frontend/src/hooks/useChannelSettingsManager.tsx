@@ -3,6 +3,9 @@ import { useMutation } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
 import { useQueryClient } from "react-query";
+import { ChannelsContext } from "@/context/Contexts";
+import { useContext } from "react";
+
 const useChannelSettingsManager = () => {
   const upgradeUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/upgrade/${user.userid}/`);
@@ -12,17 +15,11 @@ const useChannelSettingsManager = () => {
     new apiClient(`/chat/channels/${user.channelid}/accept`);
   const declineChannelEnviteClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/decline`);
-  const muteUserClient = (user: UserChannel) =>
-    new apiClient(`/chat/channels/${user.channelid}/mute/${user.userid}`);
-  const banUserClient = (user: UserChannel) =>
-    new apiClient(`/chat/channels/${user.channelid}/ban/${user.userid}`);
-  const unbanUserClient = (user: UserChannel) =>
-    new apiClient(`/chat/channels/${user.channelid}/unban/${user.userid}`);
-    const toast = useToast();
-    const Success = useSuccess();
-    const Failure = useFailure();
-    const queryClient = useQueryClient();
-
+  const toast = useToast();
+  const Success = useSuccess();
+  const Failure = useFailure();
+  const queryClient = useQueryClient();
+  const { activeChannel } = useContext(ChannelsContext);
 
   const sendChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
@@ -30,11 +27,11 @@ const useChannelSettingsManager = () => {
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries("channelSentEnvites");
-      toast (Success ("Envite to channel sent"))
+      toast(Success("Envite to channel sent"));
     },
     onError: (error) => {
       console.log(error);
-      toast (Failure ("Envite to channel failed"))
+      toast(Failure("Envite to channel failed"));
     },
   });
   const acceptChannelEnviteMutation = useMutation({
@@ -43,12 +40,12 @@ const useChannelSettingsManager = () => {
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries("channels");
-      queryClient.invalidateQueries("channelReceivedEnvites")
-      toast (Success ("Envite to channel accepted"))
+      queryClient.invalidateQueries("channelReceivedEnvites");
+      toast(Success("Envite to channel accepted"));
     },
     onError: (error) => {
       console.log(error);
-      toast (Failure ("Envite to channel failed"))
+      toast(Failure("Envite to channel failed"));
     },
   });
   const declineChannelEnviteMutation = useMutation({
@@ -56,38 +53,37 @@ const useChannelSettingsManager = () => {
       declineChannelEnviteClient(user).deleteData(),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("channelReceivedEnvites")
-      toast (Success ("Envite to channel declined"))
+      queryClient.invalidateQueries("channelReceivedEnvites");
+      toast(Success("Envite to channel declined"));
     },
     onError: (error) => {
       console.log(error);
-      toast (Failure ("Envite to channel failed"))
+      toast(Failure("Envite to channel failed"));
     },
   });
 
   const acceptProtectedEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
       acceptChannelEnviteClient(user).postData({ password: user!.password }),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
-  });
-
-  const muteUserMutation = useMutation({
-    mutationFn: (user: UserChannel) => muteUserClient(user).postData(null),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
-  });
-
-  const banUserMutation = useMutation({
-    mutationFn: (user: UserChannel) => banUserClient(user).postData(null),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
-  });
-
-  const unbanUserMutation = useMutation({
-    mutationFn: (user: UserChannel) => unbanUserClient(user).deleteData(),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("channels");
+      toast({
+        title: "Success",
+        description: "Envite to channel accepted",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Envite to channel failed",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
   });
 
   function sendChannelEnvite(user: UserChannel) {
@@ -106,24 +102,11 @@ const useChannelSettingsManager = () => {
     acceptProtectedEnviteMutation.mutate(user);
   }
 
-  function muteUser(user: UserChannel) {
-    muteUserMutation.mutate(user);
-  }
-  function banUser(user: UserChannel) {
-    banUserMutation.mutate(user);
-  }
-  function unbanUser(user: UserChannel) {
-    unbanUserMutation.mutate(user);
-  }
-
   return {
     sendChannelEnvite,
     acceptChannelEnvite,
     declineChannelEnvite,
     acceptProtectedEnvite,
-    muteUser,
-    banUser,
-    unbanUser,
   };
 };
 

@@ -22,7 +22,7 @@ const MemberField:React.FC<MemberFieldProps> = ({member, members}) => {
             setUser(user);
         }
     }, [Users, user])
-    return (user ? <UserField user={user!} loggedInUserRole={getUserRole (loggedInUser!, members)} userRole={getUserRole (user, members)} /> : <Text>user is not found</Text>);
+    return (user ? <UserField  member={member!} user={user!} loggedInUserRole={getUserRole (loggedInUser!, members)} userRole={getUserRole (user, members)} /> : <Text>user is not found</Text>);
 }
 
 export default MemberField;

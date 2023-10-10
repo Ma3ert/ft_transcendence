@@ -10,6 +10,7 @@ import {
   AppNavigationContext,
   ChatContext,
   UsersContext,
+  ChannelsContext,
 } from "@/context/Contexts";
 import { PRIVATE, loggedIndUser } from "@/../contstants";
 import OptionsMenu from "./ChatComponents/FriendSettingsMenu";
@@ -17,11 +18,12 @@ import useUserStatus from "@/hooks/useUserStatus";
 import UserFieldNav from "./ChatComponents/UserFieldNav";
 interface Props {
   user: User;
+  member?: Member;
   userRole?: string;
   loggedInUserRole?: string;
 }
 
-const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole }) => {
+const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}) => {
   const { setCurrentSection, currentSection } =
     useContext(AppNavigationContext);
   const { setCurrentChat, chatType } = useContext(ChatContext);
@@ -53,6 +55,7 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole }) => {
             <Text fontSize='sm' color='#DC585B'>Blocked</Text>
           ) : (
             <UserFieldNav
+              member={member!}
               user={user!}
               userRole={userRole!}
               friendsList={friendsList!}
@@ -60,6 +63,7 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole }) => {
           )}
           {user.id != loggedInUser!.id && (
             <OptionsMenu
+              member={member!}
               user={user!}
               loggedInUserRole={loggedInUserRole!}
               userRole={userRole!}

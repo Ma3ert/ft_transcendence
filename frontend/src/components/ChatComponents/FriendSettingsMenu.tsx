@@ -29,6 +29,7 @@ interface OptionsMenuProps {
   userRole?: string;
   color?: string;
   userIsBlocked?: boolean;
+  member?:Member
 }
 
 const OptionsMenu: React.FC<OptionsMenuProps> = ({
@@ -37,6 +38,8 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({
   userRole,
   color,
   userIsBlocked,
+  member, 
+  channel
 }) => {
   const { loggedInUser, friendsList } = useContext(UsersContext);
   const { currentSection } = useContext(AppNavigationContext);
@@ -47,7 +50,8 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({
     friendsList!,
     currentSection!,
     chatType!,
-    userIsBlocked!
+    userIsBlocked!,
+    channel!
   );
   return (
     <Menu>
@@ -64,9 +68,8 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({
         {options?.map(
           (setting, index) =>
             getChecker(setting.description)(
-              user!,
-              userRole,
-              loggedInUserRole
+              loggedInUserRole!,
+              member!
             ) &&
             (setting.modal == false ? (
               <MenuItem

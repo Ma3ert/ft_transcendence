@@ -294,6 +294,15 @@ const ButtonStyle: ComponentStyleConfig = {
       py: "6px",
       _hover: {},
     },
+    modalIcon: {
+      w:'auto',
+      h:'auto',
+      px:2,
+      py:2,
+      border:'none',
+      bg:'transparent',
+      _hover:{}
+      },
     modal: {
       _hover: { bg: "#252932" },
       color: "#5B6171",

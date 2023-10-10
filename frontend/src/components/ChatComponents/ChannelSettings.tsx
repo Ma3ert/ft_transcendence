@@ -26,14 +26,14 @@ import ChannelsListSection from "../Sections/ChannelsListSection";
 import { useEffect } from "react";
 interface ChannelSettingsProps {
   members:Member[]
-  userRole: string
+  userRole: string,
+  channel:Channel
 }
 
-const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole}) => {
+const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole, channel}) => {
   // eslint-disable-next-line react/jsx-key
   const { loggedInUser } = useContext(UsersContext);
   const { removeChannel, leaveChannel } = useChannelManager();
-  const { activeChannel } = useContext(ChannelsContext);
   const [settingsList, setSettings] = useState<string[]> (channelSettings)
   const {isOpen, onOpen, onClose} = useDisclosure ()
 
@@ -41,7 +41,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole}) =>
     [
       "Members",
       // eslint-disable-next-line react/jsx-key
-       <MembersList members={members} />,
+       <MembersList  members={members} />,
     ],
     [
       "Set password",
@@ -51,19 +51,19 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole}) =>
     [
       "Edit Channel",
       // eslint-disable-next-line react/jsx-key
-       <EditeChannel channel={activeChannel!} />,
+       <EditeChannel channel={channel!} />,
     ]
    
   ]);
   const settingsActions = new Map([
-    ["delete", () => removeChannel(activeChannel!.id!)],
-    ["leave", () => leaveChannel(activeChannel!.id!)],
+    ["delete", () => removeChannel(channel!.id!)],
+    ["leave", () => leaveChannel(channel!.id!)],
   ]);
 
   useEffect (()=>{
-    console.log (`user role : -----> ${userRole}`)
+    console.log (`channel type : -----> ${channel!.type}`)
     if (userRole === "OWNER" || userRole === 'ADMIN') {
-      if (activeChannel?.type === 'PROTECTED')
+      if (channel?.type === 'PROTECTED')
         setSettings (ProtectedChannelSettings)
       else
         setSettings (channelSettings)

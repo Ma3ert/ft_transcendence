@@ -12,25 +12,58 @@ import { CHANNEL } from "../../contstants";
 import useUserStatus from "./useUserStatus";
 import useChannelSettingsUpdater from "./useChannelSettingsUpdater";
 
-const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], currentSection:Section , chatType:ChatType, userIsBlocked:boolean) => {
-  
+const useOptionsManager = (
+  loggedIndUser: User,
+  user: User,
+  friendsList: User[],
+  currentSection: Section,
+  chatType: ChatType,
+  userIsBlocked: boolean,
+) => {
+  const {activeChannel} = useContext(ChannelsContext)
+  const {
+    EnviteUser,
+    BlockUser,
+    UnblockUser,
+    BanUser,
+    MuteUser,
+    UnbanUser,
+    KickUser,
+  } = useUserOptions(activeChannel!);
+  const { upgradeUser, downgradeUser } = useChannelSettingsUpdater(
+    activeChannel!
+  );
 
-  const { EnviteUser, BlockUser, UnblockUser, BanUser } = useUserOptions();
-  const {activeChannel} = useContext(ChannelsContext);
-  const {upgradeUser, downgradeUser} = useChannelSettingsUpdater(activeChannel!);
-  const actions = new Map([["Send friend request", () => EnviteUser(user)], ["Block", () => BlockUser(user)], ["Unblock", () => UnblockUser(user)],
-  [
-    "Ban from channel",
-    () => BanUser ({userid:user.id, channelid:activeChannel!.id})
-  ],
-  [
-    "Make party admin",
-    () => upgradeUser({userid:user.id, channelid:activeChannel!.id})
-  ],
-  [ 
-    
-    "Remove party admin",
-    () => downgradeUser({userid:user.id, channelid:activeChannel!.id})]
+
+  const actions = new Map([
+    ["Send friend request", () => EnviteUser(user)],
+    ["Block", () => BlockUser(user)],
+    ["Unblock", () => UnblockUser(user)],
+    [
+      "Ban from channel",
+      () => BanUser({ userid: user.id, channelid: activeChannel!.id }),
+    ],
+    [
+      "Make party admin",
+      () => upgradeUser({ userid: user.id, channelid: activeChannel!.id }),
+    ],
+    [
+      "Remove party admin",
+      () => downgradeUser({ userid: user.id, channelid: activeChannel!.id }),
+    ],
+    ["Mute", () => MuteUser({ userid: user.id, channelid: activeChannel!.id })],
+    [
+      "Unmute",
+      () => UnbanUser({ userid: user.id, channelid: activeChannel!.id }),
+    ],
+    [
+      "Kick from channel",
+      () => KickUser({ userid: user.id, channelid: activeChannel!.id }),
+    ],
+    [
+      "Unban",
+      () => UnbanUser({ userid: user.id, channelid: activeChannel!.id }),
+    ],
   ]);
   const modals = new Map([
     [
@@ -47,116 +80,125 @@ const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], cu
     ],
   ]);
   function isUserFriend(user: User) {
-    if (userIsBlocked)
-      return false;
+    if (userIsBlocked) return false;
     if (friendsList!.find((friend) => friend.id === user.id)) return true;
     return false;
   }
 
-  function isUserEnvitableToGame(user: User) {
+  function isUserEnvitableToGame(loggedInUserRole?: string, member?: Member) {
     if (userIsBlocked) return false;
     if (isUserFriend(user)) return true;
     return false;
   }
 
-  function isUserEnvitableToChannel(user: User) {
+  function isUserEnvitableToChannel(
+    loggedInUserRole?: string,
+    member?: Member
+  ) {
     if (userIsBlocked) return false;
     if (isUserFriend(user)) return true;
     return false;
   }
 
-  function checkMakePartyAdmin(user:User, userRole?: string, loggedInUserRole?: string) {
+  function checkMakePartyAdmin(loggedInUserRole?: string, member?: Member) {
     // check if user is banned
-    if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if (userRole == "MEMBER" && loggedInUserRole == "OWNER") return true;
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (member?.role == "MEMBER" && loggedInUserRole == "OWNER") return true;
       return false;
     }
-  
+
     return false;
   }
-  function checkRemovePartyAdmin(user:User,  userRole?: string, loggedInUserRole?: string) {
-    if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if (userRole == "ADMIN" && loggedInUserRole == "OWNER") return true;
-      return false
+  function checkRemovePartyAdmin(loggedInUserRole?: string, member?: Member) {
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (member?.role == "ADMIN" && loggedInUserRole == "OWNER") return true;
+      return false;
     }
-  
+
     return false;
   }
 
-  function checkBanFromChannel(user:User,member:Member, loggedInUserRole?: string) {
-    if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if (member.banned == false && (member.role == "MEMBER" || member.role == 'ADMIN') && loggedInUserRole == "OWNER") return true;
-      else if (member.role == "MEMBER" && loggedInUserRole == "ADMIN") return true;
-      return false
+  function checkBanFromChannel(loggedInUserRole?: string, member?: Member) {
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (
+        member?.banned == false &&
+        (member?.role == "MEMBER" || member?.role == "ADMIN") &&
+        loggedInUserRole == "OWNER"
+      )
+        return true;
+      else if (member?.role == "MEMBER" && loggedInUserRole == "ADMIN")
+        return true;
+      return false;
     }
-   
+
     return false;
   }
 
-  function checkUnbanFromChannel(user:User,loggedInUserRole:string, member:Member) {
-     if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if (member.banned && (loggedInUserRole == "OWNER" || loggedInUserRole == 'ADMIN') && member.banned)
-        return  true
-      return false
+  function checkUnbanFromChannel(loggedInUserRole?: string, member?: Member) {
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (
+        member?.banned &&
+        (loggedInUserRole == "OWNER" || loggedInUserRole == "ADMIN") &&
+        member?.banned
+      )
+        return true;
+      return false;
     }
-    
+
     return false;
   }
 
-  function checkMute(user:User,loggedInUserRole:string, member:Member) {
+  function checkMute(loggedInUserRole?: string, member?: Member) {
     // check if user is muted == false
-    if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if ((member.role == "MEMBER" || member.role == 'ADMIN') && loggedInUserRole == "OWNER") return true;
-      else if (member.role == "MEMBER" && loggedInUserRole == "ADMIN") return true;
-      return false
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (
+        (member?.role == "MEMBER" || member?.role == "ADMIN") &&
+        loggedInUserRole == "OWNER"
+      )
+        return true;
+      else if (member?.role == "MEMBER" && loggedInUserRole == "ADMIN")
+        return true;
+      return false;
     }
-  
+
     return false;
   }
 
-  function checkUnmute(user:User,loggedInUserRole:string, member:Member) {
+  function checkUnmute(loggedInUserRole?: string, member?: Member) {
     // check if user is muted == true
-    if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if ((loggedInUserRole == "OWNER" || loggedInUserRole == 'ADMIN') && member.mutted)
-        return  true
-      return false
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (
+        (loggedInUserRole == "OWNER" || loggedInUserRole == "ADMIN") &&
+        member?.mutted
+      )
+        return true;
+      return false;
     }
-      
-    
+
     return false;
   }
 
-  function checkKickFromChannel(user:User, userRole?: string,  loggedInUserRole?: string) {
-
-    if ( currentSection == "chat" &&
-    chatType == CHANNEL)
-    {
-      if ((userRole == "MEMBER" || userRole == 'ADMIN') && loggedInUserRole == "OWNER") return true;
-      else if (userRole == "MEMBER" && loggedInUserRole == "ADMIN") return true;
-      return false
+  function checkKickFromChannel(loggedInUserRole?: string, member?: Member) {
+    if (currentSection == "chat" && chatType == CHANNEL) {
+      if (
+        (member?.role == "MEMBER" || member?.role == "ADMIN") &&
+        loggedInUserRole == "OWNER"
+      )
+        return true;
+      else if (member?.role == "MEMBER" && loggedInUserRole == "ADMIN")
+        return true;
+      return false;
     }
-   
+
     return false;
   }
 
-  function checkBlock(user:User, userRole?: string, loggedInUserRole?: string) {
+  function checkBlock(loggedInUserRole?: string) {
     if (userIsBlocked) return false;
     return true;
   }
 
-  function checkUnblock(user:User, userRole?: string, loggedInUserRole?: string) {
+  function checkUnblock(loggedInUserRole?: string) {
     if (userIsBlocked) return true;
     return false;
   }
@@ -164,13 +206,14 @@ const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], cu
   function getChecker(option: string) {
     switch (option) {
       case "Send friend request":
-        return ()=>(userIsBlocked?false:true);
+        return (loggedInUserRole?: string, member?: Member) =>
+          !isUserFriend(user);
       case "Invite to join game":
         return isUserEnvitableToGame;
       case "Invite to join channel":
         return isUserEnvitableToChannel;
       case "See Profile":
-        return () => true;
+        return (loggedInUserRole?: string, member?: Member) => true;
       case "Make party admin":
         return checkMakePartyAdmin;
       case "Remove party admin":
@@ -190,12 +233,11 @@ const useOptionsManager = (loggedIndUser:User, user:User, friendsList:User[], cu
       case "Unblock":
         return checkUnblock;
       default:
-        return () => false;
+        return (loggedInUserRole?: string, member?: Member) => false;
     }
   }
 
-  return {getChecker, actions, modals}
+  return { getChecker, actions, modals };
 };
-
 
 export default useOptionsManager;

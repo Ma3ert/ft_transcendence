@@ -4,18 +4,21 @@ import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { ChannelsContext } from "@/context/Contexts";
 import {useContext} from 'react'
-const useUserOptions = () => {
+const useUserOptions = (channel?: Channel) => {
   const enviteUserClient = new apiClient("/invites");
   const blockUserClient = new apiClient("/users/block");
+  const unblockUserClient = new apiClient("/users/unblock");
+
   const toast = useToast();
   const queryClient = useQueryClient();
-  const {activeChannel} = useContext (ChannelsContext)
   const muteUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/mute/${request.userid}`);
   const banUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/ban/${request.userid}`);
   const unbaneUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/unban/${request.userid}`);
+     const kickUserClient = (request: UserChannel) =>
+    new apiClient(`/channels/${request.channelid}/kick/${request.userid}`);
   const enviteUser = async (user: User) => {
     const response = await enviteUserClient.postData({ invitedUser: user.id });
     return response;
@@ -50,8 +53,7 @@ const useUserOptions = () => {
       blockUserClient.postData({ userId: userid }).then((response) => response),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("friends");
-      queryClient.invalidateQueries("users");
+      queryClient.invalidateQueries('friends');
       toast({
         title: "User blocked.",
         description: "The user has been blocked successfully.",
@@ -66,11 +68,10 @@ const useUserOptions = () => {
   });
 
   const UnblockUserMutation = useMutation({
-    mutationFn: async (userid: string) => await axios.patch ('http://localhost:3000/users/block', { userId: userid }).then((response) => response),
+    mutationFn: async (userid: string) => unblockUserClient.postData({ userId: userid }).then((response) => response),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("friends");
-      queryClient.invalidateQueries("users");
+      queryClient.invalidateQueries('friends');
       toast({
         title: "User unblocked.",
         description: "The user has been unblocked successfully.",
@@ -92,7 +93,7 @@ const useUserOptions = () => {
     onSuccess: (data) => {
 
       console.log(data);
-      queryClient.invalidateQueries(["channelMembers", activeChannel!.id])
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
         title: "User muted.",
         description: "The user has been muted successfully.",
@@ -110,7 +111,7 @@ const useUserOptions = () => {
     mutationFn: async (request: UserChannel) =>
       banUserClient(request).postData(null).then((response) => response),
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["channelMembers", activeChannel!.id])
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
         title: "User banned.",
         description: "The user has been banned successfully.",
@@ -131,7 +132,7 @@ const useUserOptions = () => {
         .then((response) => response),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries(["channelMembers", activeChannel!.id])
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
         title: "User unbanned.",
         description: "The user has been unbanned successfully.",
@@ -144,6 +145,32 @@ const useUserOptions = () => {
       console.log(error);
     },
   });
+
+
+  const KickUserMutation = useMutation({
+    mutationFn: (user:UserChannel) => kickUserClient(user).deleteData(),
+    onSuccess: (data)=>{
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
+      toast({
+        title: "User kicked.",
+        description: "The user has been kicked successfully.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+    onError: (error)=>{
+      toast ({
+        title: "An error occurred.",
+        description: "The user has not been kicked.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
+    }
+    })
+
+
   function EnviteUser(user: User) {
     EnviteUserMutation.mutate(user);
   }
@@ -162,7 +189,11 @@ const useUserOptions = () => {
   function UnbanUser(request: UserChannel) {
     unbaneUserMutation.mutate(request);
   }
-  return { EnviteUser, BlockUser, UnblockUser, MuteUser, BanUser, UnbanUser };
+
+  function KickUser(user:UserChannel){
+    KickUserMutation.mutate(user)
+  }
+  return { EnviteUser, BlockUser, UnblockUser, MuteUser, BanUser, UnbanUser , KickUser};
 };
 
 export default useUserOptions;
