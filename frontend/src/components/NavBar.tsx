@@ -7,24 +7,22 @@ import Link from 'next/link'
 
 const NavBar = () => {
   return (
-    // <Wrap align={"center"} spacingX={"1000px"} marginTop={"50px"} color={"#5B6171"}>
-    <Flex as={"nav"} alignItems={"center"} w={"auto"} maxW={{sm: "100%", md: "80%", lg:"60%"}} margin={"auto"} p={"10px"}>
+    <Flex as={"nav"} alignItems={"center"} w={{sm: "100%", lg:"80%"}} margin={"auto"} p={"10px"}>
       <Logo
         src='/logo.png'
-        width='246px'
-        height='121px'
+        width={{ base: "188px", lg: '246px' }}
+        height={{base: "93px", lg: '121px'}}
         ></Logo>
-        <Spacer/>
-      <Wrap align={"center"} spacing={"40px"}>
-        <Avatar boxSize={"60px"}></Avatar>
+      <Spacer/>
+      <Wrap align={"center"} spacing={{base: "30px", lg: "40px" }}>
+        <Avatar boxSize={{base: "40px", lg: "60px"}}></Avatar>
         <IconButton
           icon={FaSignOutAlt}
           size="40px"
           aria-label="Sign out"
-          />
+        />
       </Wrap>
     </Flex>
-    // </Wrap>
   )
 }
 

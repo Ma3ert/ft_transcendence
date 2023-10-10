@@ -4,8 +4,8 @@ import Link from "next/link";
 
 interface Props {
     src: string;
-    width: string;
-    height: string;
+    width: any;
+    height: any;
 }
 
 const Logo = ({src, width, height}: Props) => {
