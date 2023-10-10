@@ -64,7 +64,7 @@ export class InviteController {
 
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {
-    const deletedInvite = await this.inviteService.removeInvite(id, req.user.id);
+    const deletedInvite = await this.inviteService.removeInvite(id);
     if (deletedInvite) return { status: 'success', message: 'Invite deleted successfully.' };
   }
 }

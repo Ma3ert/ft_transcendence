@@ -180,19 +180,6 @@ export class UsersService {
       }
     })
 
-    await this.prismaService.blockedUsers.update({
-      where: {
-        owner: userId
-      },
-      data: {
-        users: {
-          connect: {
-            id: friendId
-          }
-        }
-      }
-    })
-
     await this.prismaService.userFriends.update({
       where: {
         owner: friendId
@@ -205,12 +192,25 @@ export class UsersService {
         }
       }
     })
+
+    return await this.prismaService.blockedUsers.update({
+      where: {
+        owner: userId
+      },
+      data: {
+        users: {
+          connect: {
+            id: friendId
+          }
+        }
+      }
+    })
   }
 
   async getUserFriends(userId: string) {
     const user = await this.prismaService.userFriends.findUnique({
       where: {
-        id: userId,
+        owner: userId,
       },
       include: {
         users: {
@@ -218,6 +218,7 @@ export class UsersService {
             id: true,
             username: true,
             avatar: true,
+            status: true
           }
         },
       }
@@ -239,18 +240,7 @@ export class UsersService {
     if (!blockedUsers.includes(friendId))
       return null;
     
-    await this.prismaService.blockedUsers.update({
-      where: {
-        owner: userId
-      },
-      data: {
-        users: {
-          disconnect: {
-            id: friendId
-          }
-        }
-      }
-    })
+
 
     await this.prismaService.userFriends.update({
       where: {
@@ -273,6 +263,19 @@ export class UsersService {
         users: {
           connect: {
             id: userId
+          }
+        }
+      }
+    })
+
+    return await this.prismaService.blockedUsers.update({
+      where: {
+        owner: userId
+      },
+      data: {
+        users: {
+          disconnect: {
+            id: friendId
           }
         }
       }

@@ -53,10 +53,10 @@ model User {
   pinValidated        Boolean   @default(false)
 
   friends       userFriends? @relation(fields: [friendsListId], references: [id])
-  friendsListId String
+  friendsListId String?
 
   blocked   blockedUsers? @relation(fields: [blockedUserId], references: [id])
-  blockedUserId String
+  blockedUserId String?
 
   sentInvites     UserInvite[] @relation("sentInvites")
   receivedInvites UserInvite[] @relation("receivedInvites")
