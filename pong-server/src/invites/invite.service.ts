@@ -19,7 +19,7 @@ export class InviteService {
 
     //* Check if i already have that friend in the friends list.
 
-    const user = await this.prismaService.friendsList.findFirst({
+    const user = await this.prismaService.userFriends.findFirst({
       where: {
         owner: inviteBody.inviteOwnerId,
       },
@@ -128,7 +128,7 @@ export class InviteService {
     // List all the users that i can send a friend request to.
     const sentInvites: any[] = await this.getSendInvites(userId);
     const receivedInvites: any[] = await this.getReceivedInvites(userId);
-    const user = await this.prismaService.friendsList.findUnique({
+    const user = await this.prismaService.userFriends.findUnique({
       where: {
         id: userId,
       },
@@ -159,7 +159,7 @@ export class InviteService {
     const invite: UserInvite = await this.checkInviteById(inviteId);
     // Check the current user is authorized to accept the invite.
     if (invite.inviteUserId !== inviteUserId) return null;
-    await this.prismaService.friendsList.update({
+    await this.prismaService.userFriends.update({
       where: {
         owner: invite.inviteOwnerId
       },
@@ -172,7 +172,7 @@ export class InviteService {
       }
     })
 
-    await this.prismaService.friendsList.update({
+    await this.prismaService.userFriends.update({
       where: {
         owner: invite.inviteUserId
       },
