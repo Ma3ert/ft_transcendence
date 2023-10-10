@@ -189,8 +189,6 @@ export class GameService {
         staggedPlayer: undefined,
       });
     }
-    // Display invite state
-    console.log(this.gameInvites.get(gameInviteId));
     // When the user accept add this user to users array
     this.allPlayers.set(player.user.id, player.user);
     // Emit event to playerOne to notify him that invite has been accepted
@@ -222,7 +220,6 @@ export class GameService {
   joinGameQueue(player: AuthSocket, server: Server) {
     // Checking if the user is in match before joinning the queue
     if (this.allPlayers.size > 0 && this.allPlayers.has(player.user.id)) {
-      console.log('Already in match.');
       return server.to(player.id).emit(ONGOING_MATCH);
     }
     // Emit player joined queue event

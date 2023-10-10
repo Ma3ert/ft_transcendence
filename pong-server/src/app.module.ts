@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -11,6 +11,7 @@ import { ChatModule } from './chat/chat.module';
 import { InvitesModule } from './invites/invite.module';
 import { NotificationModule } from './notification/notification.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { RejectMiddleware } from './auth/utils/RejectMiddleware';
 
 @Module({
   imports: [
@@ -37,5 +38,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(RejectMiddleware)
+      .forRoutes('auth/42/callback');
+  }
 }

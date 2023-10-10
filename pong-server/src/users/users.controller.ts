@@ -20,6 +20,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptimizerPipe } from './utils/imageOptimizer.pipe';
+import { secureUserObject } from './utils/secureUserObject';
 
 @Controller('users')
 export class UsersController {
@@ -67,7 +68,15 @@ export class UsersController {
   @Get('me')
   @UseGuards(LoggedInGuard)
   getCurrentUser(@Req() req) {
-    return { status: 'success', data: req.user };
+    return { status: 'success', data: secureUserObject(
+      req.user,
+      'twoFactorRetry',
+      'twoFactor',
+      'twoFactorPin',
+      'twoFactorPinExpires',
+      "blockedUserId",
+      "friendsListId"
+    ), };
   }
 
   @Get('friends')
