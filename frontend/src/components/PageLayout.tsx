@@ -1,4 +1,4 @@
-import { Wrap } from '@chakra-ui/react'
+import { Grid, GridItem, Wrap } from '@chakra-ui/react'
 import React, { ReactNode } from 'react'
 import SideBar from './SideBar';
 
@@ -9,10 +9,14 @@ type Props = {
 
 const PageLayout = ({body, bodySetter}: Props) => {
   return (
-    <Wrap spacingX={"90px"} align={"center"} marginLeft={"440px"}>
-      <SideBar bodySetter={bodySetter}></SideBar>
-      {body}
-    </Wrap>
+    <Grid margin={"auto"} templateColumns={"repeat(10, 1fr)"} alignItems={"center"} w={{ base: "100%", xl: "90%" }}>
+      <GridItem colSpan={{ base:10, md: 1, xl: 1 }}>
+        <SideBar bodySetter={bodySetter}></SideBar>
+      </GridItem>
+      <GridItem colSpan={{ base: 10, md: 9,xl : 9}}>
+        {body}
+      </GridItem>
+    </Grid>
   )
 }
 

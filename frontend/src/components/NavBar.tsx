@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const NavBar = () => {
   return (
-    <Flex as={"nav"} alignItems={"center"} w={{sm: "100%", lg:"80%"}} margin={"auto"} p={"10px"}>
+    <Flex as={"nav"} alignItems={"center"} w={"full"} margin={"auto"} p={"10px"}>
       <Logo
         src='/logo.png'
         width={{ base: "188px", lg: '246px' }}
