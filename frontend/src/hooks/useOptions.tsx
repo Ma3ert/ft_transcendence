@@ -8,9 +8,9 @@ const useUserOptions = (channel?: Channel) => {
   const enviteUserClient = new apiClient("/invites");
   const blockUserClient = new apiClient("/users/block");
   const unblockUserClient = new apiClient("/users/unblock");
-
   const toast = useToast();
   const queryClient = useQueryClient();
+  const {activeChannel} = useContext(ChannelsContext)
   const muteUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/mute/${request.userid}`);
   const banUserClient = (request: UserChannel) =>
@@ -18,7 +18,7 @@ const useUserOptions = (channel?: Channel) => {
   const unbaneUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/unban/${request.userid}`);
      const kickUserClient = (request: UserChannel) =>
-    new apiClient(`/channels/${request.channelid}/kick/${request.userid}`);
+    new apiClient(`chat/channels/${request.channelid}/kick/${request.userid}`);
   const enviteUser = async (user: User) => {
     const response = await enviteUserClient.postData({ invitedUser: user.id });
     return response;
@@ -91,9 +91,10 @@ const useUserOptions = (channel?: Channel) => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
-
       console.log(data);
-      queryClient.invalidateQueries(["channelMembers", channel!.id])
+      console.log ('channel id is', channel!.id)
+      console.log ('active channel id', activeChannel!.id)
+      queryClient.refetchQueries(["channelMembers", channel!.id])
       toast({
         title: "User muted.",
         description: "The user has been muted successfully.",

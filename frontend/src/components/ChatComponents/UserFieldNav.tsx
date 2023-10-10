@@ -24,6 +24,7 @@ const checkIfMember = (userType: UserType) => {
 };
 const GetMemberStatus = (member:Member) => {
 
+  console.log (`member --======> ${member.mutted ? 'mutted' : 'not mutted'}`)
   if (member!.banned) return <Text fontSize="sm"  color='#DC585B'>Banned</Text>
   if (member!.mutted) return <Icon as={BsFillMicMuteFill} fontSize="22px" color='#DC585B' _hover={{ transform: "scale(1.1)" }}/>
   if (checkIfMember(member.role)) return  <Text fontSize="sm">{member!.role}</Text>

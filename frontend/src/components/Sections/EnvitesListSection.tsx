@@ -84,7 +84,7 @@ const EnvitesListSection: React.FC = () => {
 useQuery ('channelReceivedEnvites', {
     queryFn: () => channelReceivedEnvitesClient.getData().then(res => res.data),
     onSuccess: (data:any) => {
-      if (data.length)
+      if (data && data.length)
       {
         if (!recievedEnvites.find((envite) => envite.enviteId === data.channel!.id))
           setRecievedEnvites([...recievedEnvites, ...getGlobalChannelEnvites(data)])
@@ -99,7 +99,7 @@ useQuery ('channelReceivedEnvites', {
 useQuery ('channelSentEnvites', {
   queryFn: () => channelSentEnvitesClient.getData().then(res => res.data),
   onSuccess: (data:any) => {
-    if (data.length)
+    if (data && data.length)
     {
       if ( !sentEnvites.find((envite) => envite.enviteId === data.channel!.id))
         setSentEnvites([...sentEnvites, ...getGlobalChannelEnvites(data)])
