@@ -60,6 +60,11 @@ export class UsersService {
         email: createUserDto.email,
         avatar: createUserDto.avatar,
         username: createUserDto.username,
+        friends: {
+          create: {
+            owner: createUserDto.id,
+          }
+        }
       },
     });
   }
@@ -76,9 +81,6 @@ export class UsersService {
     return this.prismaService.user.findUnique({
       where: {
         id,
-      },
-      include: {
-        friendsList: true,
       },
     });
   }
@@ -142,6 +144,8 @@ export class UsersService {
     });
   }
 
+
+  // In the case of block add the user to blocker list in the other user just disconnect from his friendlist
   async blockFriend(userId: string, friendId: string) {
     const friendsList = await (await this.getUserFriends(userId)).map((user) => user.id);
     if (!friendsList.includes(friendId)) return null;
@@ -181,30 +185,21 @@ export class UsersService {
   }
 
   async getUserFriends(userId: string) {
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.friendsList.findUnique({
       where: {
         id: userId,
       },
       include: {
-        friendsList: {
+        users: {
           select: {
             id: true,
-            avatar: true,
             username: true,
-            status: true,
-          },
-        },
-        friendOf: {
-          select: {
-            id: true,
             avatar: true,
-            username: true,
-            status: true,
-          },
+          }
         },
-      },
+      }
     });
-    return [...user.friendsList];
+    return user.users;
   }
 
   async unblockFriend(userId: string, friendId: string) {

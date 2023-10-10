@@ -52,11 +52,8 @@ model User {
   activated           Boolean   @default(false)
   pinValidated        Boolean   @default(false)
 
-  friendsList User[] @relation("Friendship")
-  friendOf    User[] @relation("Friendship")
-
-  blocked   User[] @relation("BlockedFriends")
-  blockedBy User[] @relation("BlockedFriends")
+  friends       friendsList @relation(fields: [friendsListId], references: [id])
+  friendsListId String
 
   sentInvites     UserInvite[] @relation("sentInvites")
   receivedInvites UserInvite[] @relation("receivedInvites")
@@ -81,6 +78,15 @@ model User {
   NotificationSent     Notification[] @relation("NotificationSent")
 
   created_at DateTime @default(now())
+}
+
+model friendsList {
+  id String @id @default(uuid())
+
+  owner String @unique
+  users User[]
+
+  createdAt DateTime @default(now())
 }
 
 model UserInvite {
