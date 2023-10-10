@@ -38,7 +38,7 @@ const Lobby = (props: Props) => {
       <GridItem
         colSpan={{ base: 2, lg: 1 }}
       >
-        <Stack spacing={"55px"} align={"start"}>
+        <Stack spacing={"55px"} align={{base: "center", lg: "start" }}>
           <ProgressLevel></ProgressLevel>
           <Stack spacing={"20px"}>
             <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>Stats</Text>
@@ -56,20 +56,28 @@ const Lobby = (props: Props) => {
         <LobbyParty solo={false}></LobbyParty>
       </GridItem>
     </Grid>,
-    <Wrap align={"center"} spacing={"135px"}>
-    <Stack spacing={"55px"} align={"start"}>
-      <ProgressLevel></ProgressLevel>
-      <Stack spacing={"20px"}>
-        <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>Stats</Text>
-        <ScrollableStack
-          width={435}
-          height={344}
-          spacing='28px'
-          items={challenges}/>
-      </Stack>
-    </Stack>
-    <LobbyParty solo={true}></LobbyParty>
-  </Wrap>
+    <Grid templateColumns={"repeat(2, 1fr)"}>
+      <GridItem
+        colSpan={{ base: 2, lg: 1 }}
+      >
+        <Stack spacing={"55px"} align={{base: "center", lg: "start" }}>
+          <ProgressLevel></ProgressLevel>
+          <Stack spacing={"20px"}>
+            <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>Stats</Text>
+            <ScrollableStack
+              width={435}
+              height={344}
+              spacing='28px'
+              items={challenges}/>
+          </Stack>
+        </Stack>
+      </GridItem>
+      <GridItem
+      colSpan={{ base: 2, lg: 1 }}
+      >
+      <LobbyParty solo={true}></LobbyParty>
+      </GridItem>
+    </Grid>
     ]}
   />
   )
