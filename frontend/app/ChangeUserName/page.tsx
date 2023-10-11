@@ -15,21 +15,24 @@ export default function Home() {
 
   return (
     <Stack
-      spacing={"200px"}
-      direction="column"
+      spacing={"10vh"}
       align="center"
-      justify="center"
-      minH="75vh"
       >
         <Logo src='/logo.png' width="334px" height="179px"></Logo>
         <Stack align={"center"} spacing={"40px"}>
-          <Avatar boxSize={"137px"}></Avatar>
-          <Stack align={"center"} spacing={"20px"}>
+          <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
+            <Avatar boxSize={{base: "100px", xl: "137px" }}></Avatar>
+            <Button
+              fontSize={{base: "15px", lg: "20px" }}
+              variant={"ghost"}
+              >Change</Button>
+          </Stack>
+          <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
             <Wrap marginLeft={"60px"} align={"center"} spacing={"18px"}>
               <Input 
                 variant={"default"}
-                w={"340px"}
-                h={"66px"}
+                w={{ base: "280px", lg: "340px" }}
+                h={{ base: "50px",lg: "66px" }}
                 onChange={handleInputChange}
                 placeholder='new Username'/>
                 <Link href={"/Lobby"}>
@@ -40,7 +43,7 @@ export default function Home() {
             </Wrap>
             <Link href={"/Lobby"}>
               <Button
-                fontSize={"20px"}
+                fontSize={{base: "15px", lg: "20px" }}
                 variant={"ghost"}
                 >skip</Button>
             </Link>

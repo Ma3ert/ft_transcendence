@@ -20,7 +20,6 @@ const ProgressStyle: ComponentStyleConfig = {
   },
 };
 
-<<<<<<< HEAD
 const DividerStyle: ComponentStyleConfig= {
   variants: {
     vertical: {
@@ -31,10 +30,7 @@ const DividerStyle: ComponentStyleConfig= {
   }
 }
 
-const ModalStyle: ComponentStyleConfig={
-=======
 const ModalStyle: ComponentStyleConfig = {
->>>>>>> 15f18bb3fe249568ef62572417b48a8a0f221704
   // sizes:{
   //   invite:{
   //     content: {
@@ -103,7 +99,6 @@ const ModalStyle: ComponentStyleConfig = {
         },
       },
     },
-<<<<<<< HEAD
     twoFa: {
       dialog:{
         fontFamily: "visbyRound",
@@ -134,10 +129,6 @@ const ModalStyle: ComponentStyleConfig = {
     }
   }
 }
-=======
-  },
-};
->>>>>>> 15f18bb3fe249568ef62572417b48a8a0f221704
 
 const ButtonStyle: ComponentStyleConfig = {
   // style object for base or default style
@@ -189,23 +180,6 @@ const ButtonStyle: ComponentStyleConfig = {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
     },
-<<<<<<< HEAD
-    _active: {
-      bg: "transparent",
-      color: "#D9D9D9", // Change this to your desired hover text color
-      transform: "scale(1.1)", // Increase the scale to make it grow
-    }
-	},
-  icon:{
-    borderRadius: "50px",
-    px: "0px",
-    // color: "#5B6171", I removed this cus of the icon color in the hover
-    _hover: {
-      color: "#D9D9D9",
-      cursor: "pointer",
-      transition: "all 0.2s ease-in-out",
-      transform: "scale(1.2)", // Change this to your desired hover text color
-=======
     lightGray: {
       bg: "#5B6171",
       color: "#1D222C",
@@ -221,7 +195,6 @@ const ButtonStyle: ComponentStyleConfig = {
       _active: {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
->>>>>>> 15f18bb3fe249568ef62572417b48a8a0f221704
     },
     darkGray: {
       color: "#5B6171",
@@ -353,17 +326,11 @@ const ButtonStyle: ComponentStyleConfig = {
         color: "#1D222C",
       },
       // _active: {
-      //   transform: "scale(1.03)"
-      // }
+        //   transform: "scale(1.03)"
+        // }
+      },
     },
-  },
-  // default values for 'size', 'variant' and 'colorScheme'
-  // defaultProps: {
-  //   size: "",
-  //   variant: "primary",
-  //   colorScheme: "",
-  // },
-};
+  };
 
 const CheckboxStyle: ComponentStyleConfig = {
   variants: {
@@ -430,6 +397,7 @@ const TabsStyle: ComponentStyleConfig = {
     },
   },
 };
+
 const InputStyle: ComponentStyleConfig = {
   // style object for base or default style
   baseStyle: {},
@@ -481,16 +449,7 @@ const InputStyle: ComponentStyleConfig = {
         },
       },
     },
-  },
-
-  // default values for 'size', 'variant' and 'colorScheme'
-  defaultProps: {
-    // size: "",
-    // variant: "",
-    // colorScheme: "",
-    // focusBorderColor: "primary",
-  },
-};
+  }};
 
 const theme = extendTheme({
   breakpoints: {
@@ -520,18 +479,12 @@ const theme = extendTheme({
     Progress: ProgressStyle,
     Checkbox: CheckboxStyle,
     Modal: ModalStyle,
-<<<<<<< HEAD
     Divider: DividerStyle
     },
   fonts: {
     visbyRound: "visbyRound, sans-serif"
   }
-=======
   },
-  fonts: {
-    visbyRound: "visbyRound, sans-serif",
->>>>>>> 15f18bb3fe249568ef62572417b48a8a0f221704
-  },
-});
+);
 
 export default theme;
