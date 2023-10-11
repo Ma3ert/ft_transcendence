@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 
-export type EventName = string;
+export type EventName = "userIsLoggedIn" | "userIsLoggedOut" | "userIsActive" | "userUnactive" ;
 
 
 export function EventEmitter(

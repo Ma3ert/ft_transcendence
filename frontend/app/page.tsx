@@ -10,11 +10,10 @@ import ChatProvider from "@/providers/ChatProvider";
 import { useEffect } from "react";
 import io from "socket.io-client";
 import ChannelsProvider from "@/providers/ChannelsProvider";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const { authenticated, setSocket } = useContext(GlobalContext);
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYmFiMGVkOS05YWIwLTQ0NzgtOTFiMC1hMDAyNzJjNzhiOGEiLCJ1c2VybmFtZSI6InllbGF0bWFuIiwiaWF0IjoxNjk2MDc2MTYxLCJleHAiOjE2OTY2ODA5NjF9.XJQwSOArXlybMcNUJMuO4JDp212vqxczMPbvHTCagOs";
 
   useEffect(() => {
     const socket = io("http://localhost:3000", {
@@ -22,12 +21,11 @@ export default function Home() {
       transports: ["websocket", "polling"],
       // closeOnBeforeunload: true,
       // reconnection: false,
-      extraHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
     });
 
+    const token = Cookies.get("jwt");
     socket.auth = { token: `Bearer ${token}` };
+    console.log (`jwt token : ${token}`)
     socket.connect();
     setSocket!(socket);
     socket.on("connect", () => {

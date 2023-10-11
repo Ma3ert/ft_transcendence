@@ -5,7 +5,7 @@ import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
-import { ChatContext, UsersContext } from "../../context/Contexts";
+import { ChatContext, UsersContext , DmContext} from "../../context/Contexts";
 import { PRIVATE } from "../../../contstants";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import { GlobalContext } from "@/context/Contexts";
@@ -22,7 +22,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
     Friends,
     chatType,
     setJoinGameStatus,
-    directMessages,
     setDirectMessages,
     GameEnvitation,
     setGameEnvitation,
@@ -31,32 +30,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const { socket } = useContext(GlobalContext);
   const listener = useEventHandler(socket);
   const gameEnviteHandler = useGameEnvite();
-  // const privateMessageHandler = usePrivateMessage ()
-  // const channelMessageHandler = useChannelMessage ()
+
 
   useEffect(() => {
-    // if direct messaeges fetch active peer messages
-    // if channel fetch channel messages
-    console.log(`activePeer is ${activePeer?.username}`);
-    // if (chatType == PRIVATE) {
-    //   NotifyServer(socket!, "checkStatus", activePeer!);
-    //   NotifyServer(socket!, "readChatNotification",activePeer!,  false);
-    //   EventListener(socket!, "checkStatus", (msg: any) => {
-    //     // set peer status
-    //     console.log(`${msg} from server`);
-    //   });
-
-    //   listener("directMessage", (message: EventMessage) => {
-    //     if (message.game)
-    //       console.log("game envitation");
-    //       // gameEnviteHandler(message.from, message.to)
-    //     else setDirectMessages!([...directMessages!, message]);
-    //   });
-    // } else {
-    // NotifyServer(socket!, "readChatNotification", activePeer!, true, activeChannel!);
-
-    // }
-  }, [directMessages, activePeer, activeChannel, chatType]);
+   
+  }, [activePeer, activeChannel, chatType]);
   return (
     <Stack
       borderRadius={"2xl"}

@@ -16,6 +16,7 @@
     "axios": "^1.5.0",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.16",
+    "js-cookie": "^3.0.5",
     "next": "^13.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -32,6 +33,7 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@types/js-cookie": "^3.0.4",
     "decimal.js": "^10.4.3",
     "framer-motion": "^10.15.2",
     "react-icons": "^4.10.1"

@@ -3,7 +3,7 @@ import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 import { Socket, io } from "socket.io-client";
-import { ChatContext, GlobalContext } from "@/context/Contexts";
+import { ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { SendMessage } from "../../../utils/eventHandlers";
 import { PRIVATE, loggedIndUser } from "../../../contstants";
 import useMessageSender from "@/hooks/useMessageSender";
@@ -13,12 +13,12 @@ interface ChatInputBoxProps {
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   const [message, setMessage] = useState("");
   const {
-    activePeer,
     joinGameStatus,
     setJoinGameStatus,
     chatType,
     activeChannel,
   } = useContext(ChatContext);
+  const {activePeer} = useContext (UsersContext)
   const { socket } = useContext(GlobalContext);
   const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
 
@@ -78,7 +78,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-          // SendMessage(message);
+          SendMessage(message);
           setMessage("");
         }}
       >

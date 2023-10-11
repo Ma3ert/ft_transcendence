@@ -17,7 +17,7 @@ const useMessageSender = (
         SendMessage(
           socket!,
           { message: message, from: loggedInUser!.id, to: activePeer!.id },
-          "directMessage"
+          "DM"
         );
       else {
         SendMessage(
@@ -28,7 +28,7 @@ const useMessageSender = (
             from: loggedInUser!.id,
             game: true,
           },
-          "directMessage"
+          "DM"
         );
       }
     } else {
@@ -37,7 +37,7 @@ const useMessageSender = (
         channelid: activeChannel!.id!,
         from: loggedInUser!.id,
       };
-      SendMessage(socket!, messageBody, "channelMessage");
+      SendMessage(socket!, messageBody, "CM");
     }
   };
 };

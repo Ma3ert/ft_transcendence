@@ -26,6 +26,7 @@ import InputWrapper from "../Wrappers/InputWrapper";
 import useChannelManager from "@/hooks/useChannelManager";
 import { ModalWrapperContext } from "@/context/Contexts";
 import { useContext } from "react";
+import AvatarUploader from "./AvatarUploader";
 
 interface NewChannelProps {}
 
@@ -52,33 +53,7 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
   }
   return (
     <Stack spacing={6} justify={"center"} alignItems={"center"}>
-      <Box
-        position="relative"
-        bg="#1D222C"
-        borderRadius={"full"}
-        p={8}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        _hover={{ bg: "#181D25" }}
-      >
-        <Icon as={FaUserGroup} w={16} h="auto" color={"#5B6171"} />
-        <Icon
-          as={SmallCloseIcon}
-          position="absolute"
-          bottom="12px"
-          right="12px"
-          fontStyle="bold"
-          fontWeight="black"
-          fontSize="6px"
-          boxSize="20px"
-          borderRadius="full"
-          bg="#DC585B"
-          color="#252932"
-          _active={{ transform: "scale(1.1)" }}
-          _hover={{ opacity: 0.8 }}
-        />
-      </Box>
+      <AvatarUploader />
       <FormControl
         w="100%"
         display={"flex"}

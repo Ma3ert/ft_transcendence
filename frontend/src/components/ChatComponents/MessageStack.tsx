@@ -3,21 +3,24 @@ import { Stack } from "@chakra-ui/react";
 import MessageBox from "./MessageBox";
 import LayoutStyles from "../../Styles/modules/layout.module.scss";
 import EnviteMessage from "./EnviteMessage";
-import { ChatContext } from "../../context/Contexts";
+import { ChatContext, DmContext } from "../../context/Contexts";
 import { loggedIndUser } from "../../../contstants";
+
 
 interface MessageStackProps {}
 const MessageStack: React.FC<MessageStackProps> = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const {messages} = useContext(DmContext)
 
-  const {directMessages, GameInvitation, setGameInvitation} = useContext (ChatContext)
   useEffect(() => {
     // Scroll to the end when the component mounts or when content changes
+    console.log (`message array`)
+    console.table (messages)
     console.log(
       `scrollTop ${containerRef.current?.scrollTop} scrollHeight ${containerRef.current?.scrollHeight}}`
     );
     scrollContainerToBottom();
-  }, [directMessages, GameInvitation]);
+  }, [messages]);
 
   const scrollContainerToBottom = () => {
     if (containerRef.current) {
@@ -39,11 +42,11 @@ const MessageStack: React.FC<MessageStackProps> = () => {
       overflowY={"auto"}
       className={LayoutStyles.customScroll}
     >
-    {directMessages!.map((message, index) => {
+    {messages!.map((message, index) => {
 
         return <MessageBox Message={message} key={index} />;
       })}
-      {GameInvitation && <EnviteMessage gameInvitation={GameInvitation} setGameInvitation={setGameInvitation!} />}
+      {/* {GameInvitation && <EnviteMessage gameInvitation={GameInvitation} setGameInvitation={setGameInvitation!} />} */}
     </Stack>
   );
 };

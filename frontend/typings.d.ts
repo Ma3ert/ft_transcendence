@@ -12,16 +12,14 @@ type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
 type ModalType = "regular" | "confirmation" ;
 type EventName =
-  | "userLoggedIn"
-  | "userIsActive"
-  | "userisNotActive"
-  | "checkNotification"
-  | "checkStatus"
-  | "directMessage"
-  | "channelMessage"
-  | "checkChatNotification"
-  | "serverSayHello"
-  | "readChatNotification";
+  "userLoggedIn"
+| "userLoggedOut"
+| "userIsActive"
+| "checkStatus"
+| "userIsNotActive"
+| "DM"
+| "CM"
+| "readChatNotification"
 
 type checkStatus = {
   userid?: number;
@@ -309,4 +307,9 @@ type ModalWrapperContext = {
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
+}
+
+
+type DmContext = {
+  messages?: DirectMessage[];
 }

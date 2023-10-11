@@ -14,7 +14,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [chatNotification, setChatNotification] = useState<boolean>(true);
   const [requestNotification, setRequestNotification] = useState<boolean>(true);
   const [directMessages, setDirectMessages] =
-    useState<DirectMessage[]>(messages);
+    useState<DirectMessage[]>([]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
   const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
   const [activePeerStatus, setActivePeerStatus] = useState<boolean>(false)
@@ -36,12 +36,10 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     // fetch Channels
     const friends = Users!.filter(user => user.id !== loggedInUser!.id)
     console.log(`chat provider mounted socket id : ${socket?.id}`);
-    // NotifyServer(socket, "userIsActive", loggedInUser!);
     
 
     return () => {
       // emit user is not active event
-      // NotifyServer(socket, "userIsNotActive", loggedInUser!);
       // cleanup
       // cleanup event listeners
     };

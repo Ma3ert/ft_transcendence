@@ -71,10 +71,6 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   
   useEffect(() => {
     console.log(`user provider mounted socket id : ${socket?.id}`);
-    NotifyServer(socket!, "userLoggedIn", loggedInUser!);
-    listen("checkNotification", (msg: CheckNotificationMessage) => {
-      console.log(msg);
-    });
   }, [Users, loggedInUser]);
 
   return (
