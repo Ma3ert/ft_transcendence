@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React from 'react'
 import ScrollableStack from '@/components/ScrollableStack';
 import NavBar from '@/components/NavBar';
@@ -11,45 +12,45 @@ import Challenge from './Challenge';
 type Props = {}
 
 const FriendSection = (props: Props) => {
-    const requests=[
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        <UserRequest userPic='' userName='ma3ert'></UserRequest>,
-        ]
-    const friends=[
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        <UserField userPic='' userName='ma3ert'></UserField>,
-        ]
+  const requests=[
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    <UserRequest userPic='' userName='ma3ert'></UserRequest>,
+    ]
+const friends=[
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    <UserField userPic='' userName='ma3ert'></UserField>,
+    ]
   return (
     <PageBody
       navBar={<NavBar/>}

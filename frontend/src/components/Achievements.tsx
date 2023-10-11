@@ -1,11 +1,12 @@
-import React from "react";
-import ScrollableStack from "@/components/ScrollableStack";
-import NavBar from "@/components/NavBar";
-import { Icon } from "@chakra-ui/react";
-import { FaMedal, FaTrophy } from "react-icons/fa";
-import UserField from "@/components/UserField";
-import PageBody from "@/components/PageBody";
-import UserRankField from "./UserRankField";
+/* eslint-disable react/jsx-key */
+import React from 'react'
+import ScrollableStack from '@/components/ScrollableStack';
+import NavBar from '@/components/NavBar';
+import { Icon, } from '@chakra-ui/react';
+import {FaMedal, FaTrophy} from "react-icons/fa"
+import UserField from '@/components/UserField';
+import PageBody from '@/components/PageBody';
+import UserRankField from './UserRankField';
 
 type Props = {};
 

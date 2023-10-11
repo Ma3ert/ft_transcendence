@@ -17,20 +17,15 @@ type Props = {
 
 const PageBody = ({ navBar, tabs, bodys }: Props) => {
   return (
-    <Stack spacing={"100px"} align={"center"} h={"1080px"}>
-      {navBar}
-      <Tabs isFitted variant={"default"} align="center">
-        <TabList w={"180px"} h={"45px"}>
-          {tabs.map((tab) => (
-            <Tab>{tab}</Tab>
-          ))}
-        </TabList>
-        <TabPanels marginTop={"50px"}>
-          {bodys.map((body) => (
-            <TabPanel>{body}</TabPanel>
-          ))}
-        </TabPanels>
-      </Tabs>
+    <Stack spacing={1}   w={'100%'} align={"center"} justify={'center'}  h={'auto'}>
+        <Tabs isFitted variant={"default"} align='center'>
+            <TabList  w={"180px"} h={"45px"} >
+                 {tabs.map((tab, index) => (<Tab key={index}>{tab}</Tab>))}
+            </TabList>
+            <TabPanels marginTop={"50px"}>
+              {bodys.map((body, index) => (<TabPanel key={index}>{body}</TabPanel>))}
+            </TabPanels>
+        </Tabs>
     </Stack>
   );
 };

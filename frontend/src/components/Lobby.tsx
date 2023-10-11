@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react'
 import ScrollableStack from '@/components/ScrollableStack';
 import NavBar from '@/components/NavBar';
@@ -6,29 +7,108 @@ import PageBody from '@/components/PageBody';
 import ProgressLevel from '@/components/ProgressLevel';
 import LobbyParty from '@/components/LobbyParty';
 import Challenge from './Challenge';
+=======
+/* eslint-disable react/jsx-key */
+import React from "react";
+import ScrollableStack from "@/components/ScrollableStack";
+import NavBar from "@/components/NavBar";
+import { Wrap, Stack, Text } from "@chakra-ui/react";
+import PageBody from "@/components/PageBody";
+import ProgressLevel from "@/components/ProgressLevel";
+import LobbyParty from "@/components/LobbyParty";
+import Challenge from "./Challenge";
+>>>>>>> 15f18bb3fe249568ef62572417b48a8a0f221704
 
-type Props = {}
+type Props = {};
 
 const Lobby = (props: Props) => {
-    const challenges=[
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    <Challenge progress='5' base='10' description='challenge in progress'></Challenge>,
-    ]
+  const challenges = [
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+    <Challenge
+      progress="5"
+      base="10"
+      description="challenge in progress"
+    ></Challenge>,
+  ];
   return (
     <PageBody
     navBar = {<NavBar></NavBar>}
@@ -83,4 +163,4 @@ const Lobby = (props: Props) => {
   )
 }
 
-export default Lobby
+export default Lobby;

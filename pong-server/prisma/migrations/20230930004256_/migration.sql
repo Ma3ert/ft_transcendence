@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Game" ALTER COLUMN "winner" DROP NOT NULL,
+ALTER COLUMN "playerOneScore" SET DEFAULT 0,
+ALTER COLUMN "playerTwoScore" SET DEFAULT 0;
