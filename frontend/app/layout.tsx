@@ -1,6 +1,10 @@
 "use client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import theme from "@/theme/theme";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
 
 export default function RootLayout({
   children,
@@ -10,7 +14,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ChakraProvider theme={theme}>{children}</ChakraProvider>
+        <QueryClientProvider client={queryClient}>
+          <ChakraProvider theme={theme}>{children}</ChakraProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

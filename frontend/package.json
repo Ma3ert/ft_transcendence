@@ -30,6 +30,8 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query-devtools": "^4.36.1",
     "decimal.js": "^10.4.3",
     "framer-motion": "^10.15.2",
     "react-icons": "^4.10.1"
