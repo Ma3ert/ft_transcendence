@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react'
 import ScrollableStack from '@/components/ScrollableStack';
 import NavBar from '@/components/NavBar';
@@ -7,17 +6,6 @@ import PageBody from '@/components/PageBody';
 import ProgressLevel from '@/components/ProgressLevel';
 import LobbyParty from '@/components/LobbyParty';
 import Challenge from './Challenge';
-=======
-/* eslint-disable react/jsx-key */
-import React from "react";
-import ScrollableStack from "@/components/ScrollableStack";
-import NavBar from "@/components/NavBar";
-import { Wrap, Stack, Text } from "@chakra-ui/react";
-import PageBody from "@/components/PageBody";
-import ProgressLevel from "@/components/ProgressLevel";
-import LobbyParty from "@/components/LobbyParty";
-import Challenge from "./Challenge";
->>>>>>> 15f18bb3fe249568ef62572417b48a8a0f221704
 
 type Props = {};
 
