@@ -17,6 +17,7 @@ export default function Home() {
     <Stack
       spacing={"10vh"}
       align="center"
+      minH="70vh"
       >
         <Logo src='/logo.png' width="334px" height="179px"></Logo>
         <Stack align={"center"} spacing={"40px"}>
@@ -29,7 +30,7 @@ export default function Home() {
           </Stack>
           <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
             <Wrap marginLeft={"60px"} align={"center"} spacing={"18px"}>
-              <Input 
+              <Input
                 variant={"default"}
                 w={{ base: "280px", lg: "340px" }}
                 h={{ base: "50px",lg: "66px" }}

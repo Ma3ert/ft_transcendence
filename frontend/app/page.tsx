@@ -8,31 +8,27 @@ import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 
 export default function Home() {
-  const auth = () => {
-    const client = new apiClient("/auth/42/login")
-    const query = useQuery({
-      queryKey: ["auth"], 
-      queryFn: () => { client.getData() }
-    })
-    if (query.isLoading) return console.log("loading")
-    if (query.isSuccess) return console.log(query.data)
-  }
+
   return (
     <Stack
-    spacing={"300px"}
+    spacing={"20vh"}
     direction="column"
     align="center"
     justify="center"
     minH="70vh"
     >
-    <Logo src="/logo.png" width="334px" height="179px"></Logo>
-    <Link href={"/ChangeUserName"}>
-      <Button variant={"primary"} width="300px" height="80px" fontSize={"22px"} onClick={() => {auth}}> 
-        <Wrap align={"center"} spacing={"20px"}>
-          <Text fontSize={"24px"} >Log in with</Text> <Image marginTop={"6px"} src="/42_Logo.png" w={"40px"} h={"40px"}/>
-        </Wrap>
-      </Button>
-    </Link>
-  </Stack>
+      <Logo src="/logo.png" width="334px" height="179px"></Logo>
+      <Link href={"http://127.0.0.1:3000/auth/42/login"}>
+        <Button variant={"primary"} 
+          width={{ base: "200px", lg: "250px", xl: "300px" }} 
+          height={{base: "60px", lg: "70px", xl: "80px" }}
+        > 
+          <Wrap align={"center"} spacing={"20px"}>
+            <Text fontSize={{base: "18px", lg: "20", xl: "24px" }} >Log in with</Text>
+            <Image marginTop={"6px"} src="/42_Logo.png" boxSize={{base: "30px", lg: "35px", xl: "40px" }}/>
+          </Wrap>
+        </Button>
+      </Link>
+    </Stack>
   )
 }

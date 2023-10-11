@@ -8,6 +8,7 @@ import NavBar from "@/components/NavBar"
 import NotificationCenter from "@/components/NotificationCenter"
 import Setting from "@/components/Setting"
 import TwoFaAuPopUp from "@/components/TwoFaAuPopUp"
+import { Button, Input } from "@chakra-ui/react"
 
 export default function Home() {
     return (
@@ -20,8 +21,13 @@ export default function Home() {
         // />
         // <NavBar></NavBar>
         // <Achievements></Achievements>
-        <Lobby/>
+        // <Lobby/>
         // <FriendSection></FriendSection>
         // <Setting></Setting>
+        <>
+           {/* <label htmlFor="Utilisateur">Cliquez ici</label> */}
+           <Button as={"label"} htmlFor="Utilisateur" >sbardila</Button>
+           <Input visibility={"hidden"} type="file" id="Utilisateur" name="Nom" onChange={() => } />
+        </>
     )
 }
