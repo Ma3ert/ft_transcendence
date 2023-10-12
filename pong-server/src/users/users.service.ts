@@ -84,6 +84,7 @@ export class UsersService {
       include: {
         blocked: true,
         friendsList: true,
+        blockedBy: true
       },
     });
   }

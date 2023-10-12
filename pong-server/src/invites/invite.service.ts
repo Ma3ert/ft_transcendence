@@ -102,24 +102,18 @@ export class InviteService {
   }
 
   async getInviteReadyList(userId: string) {
-    //! This should be refactored to exclude the user am blocked in there friend lists
     const sentInvites: any[] = await this.getSendInvites(userId);
     const receivedInvites: any[] = await this.getReceivedInvites(userId);
-    const user = await this.prismaService.user.findFirst({
-      where: {
-        id: userId,
-      },
-      include: {
-        friendsList: true,
-      },
-    });
+    const user = await this.usersService.findById(userId);
+    const blockedUsers = user && user.blocked && user.blocked.map((user) => user.id);
+    const blockedByUsers = user && user.blockedBy && user.blockedBy.map((user) => user.id);
     const users = await this.prismaService.user.findMany();
     const invitesUsers = [
       ...sentInvites.map((invite) => invite.inviteUserId),
       ...receivedInvites.map((invite) => invite.inviteOwnerId),
     ];
     const userFriends = user.friendsList.length > 0 ? user.friendsList.map((friend) => friend.id) : [];
-    const excludedUsers = [userId, ...invitesUsers, ...userFriends];
+    const excludedUsers = [userId, ...invitesUsers, ...userFriends, ...blockedUsers, ...blockedByUsers];
     return users.filter((user) => !excludedUsers.includes(user.id));
   }
 
