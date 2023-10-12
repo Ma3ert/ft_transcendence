@@ -14,14 +14,15 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
 
   const {socket} = useContext (GlobalContext)
   const  {activePeer} = useContext (UsersContext)
-  const dmClient = new apiClient (`chat/direct/${activePeer!.id}/messages?skip=0&take=5`)
+  const dmClient = new apiClient (`chat/direct/${activePeer!.id}/messages?skip=0&take=500`)
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>([])
 
   useQuery ({
     queryKey: ["directMessages", activePeer!.id],
     queryFn:()=> dmClient.getData ().then (res=>res.data),
     onSuccess: (data:any)=>{
-      setDirectMessages (data)
+      const reversed = data.slice ().reverse ()
+      setDirectMessages (reversed)
     },
     onError: (err:any)=>{
       console.log (err)
@@ -29,11 +30,23 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
   })
   useEffect (()=>{
     EventListener (socket!, "DM", (data)=>{
-      const dms = Array.from (directMessages)
-      dms!.push (data)
-      setDirectMessages (dms!)
-      console.log (`direct message data from server ${data}`)
-      // console.table (data)
+      console.table (data)
+      if (data.game)
+      {
+        console.log ('user has invited you to game')
+      }
+      else 
+      {
+        const dm:DirectMessage = 
+        {
+          senderId: data.senderId,
+          receiverId: data.receiverId,
+          content: data.message,
+        }
+        const dms = Array.from (directMessages)
+        dms!.push (dm)
+        setDirectMessages (dms!)
+      }
       })
   }, [directMessages])
   return (

@@ -16,7 +16,7 @@ const useMessageSender = (
       if (message)
         SendMessage(
           socket!,
-          { message: message, from: loggedInUser!.id, to: activePeer!.id },
+          { message: message, from: loggedInUser!.id, to: activePeer!.id , game:false},
           "DM"
         );
       else {

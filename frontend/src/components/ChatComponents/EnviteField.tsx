@@ -54,7 +54,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
         </HStack>
         {type == "received" ? (
           <HStack spacing={5}>
-            {envite!.channel!.type === 'PROTECTED' ? (<AcceptProtectedChannel envite={envite}/>) : (
+            {(envite.channel && (envite!.channel!.type === 'PROTECTED')) ? (<AcceptProtectedChannel envite={envite}/>) : (
               <Icon onClick={()=>{
                 if(envite.isChannelEnvite){
                   const res:UserChannel = {

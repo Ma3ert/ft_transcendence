@@ -33,7 +33,8 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     channelMessagesClient.getData ()
     .then (res => res.data),
     onSuccess: (data: any) => {
-      setChannelMessages (data)
+      const reversed = data.slice ().reverse ()
+      setChannelMessages (reversed)
     }, 
     onError : (err) => {
       console.log (err)
@@ -57,7 +58,16 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
 
   useEffect (()=>{
     socket!.on("CM", (data: any) => {
-      console.log(`data from server ${data}`);
+      console.log(`data from server `);
+      console.table (data)
+      const newMessage:DirectMessage ={
+        userId: data.from,
+        content: data.message,
+        channelId: data.channel,
+      } ;
+      const messagesList = [...channelMessages];
+      messagesList.push(newMessage);
+      setChannelMessages(messagesList);
     });
   }, [channelMessages])
   return (

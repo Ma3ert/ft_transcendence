@@ -35,8 +35,20 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const meClient = new apiClient("/users/me");
   const { socket } = useContext(GlobalContext);
   const listen = useEventHandler(socket);
-
   const friendsListClient = new apiClient("/users/friends");
+  const [dmConversations, setDmConversations] = useState<string[]>([]);
+  const [friendsConversations, setFriendsConversations] = useState<User[]>([])
+  const friendsConversationsClient = new apiClient (`chat/direct/`)
+  const [counter, setCounter] = useState(0);
+
+  useQuery ({
+    queryKey: "friendsConversations",
+    queryFn: () => friendsConversationsClient.getData ().then (res=>res.data),
+    onSuccess: (conversationIds:string[]) => {
+    setDmConversations(conversationIds)
+  },
+    onError: (err)=>console.log (err)
+  })
 
   useQuery("friends", {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
@@ -69,11 +81,23 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
 
   
   useEffect(() => {
-  }, [Users, loggedInUser]);
+    const filterdArray = friendsList!.filter((friend) => {
+      if ((friend!.id && dmConversations?.includes(friend!.id))
+      )
+        return true;
+      return false;
+    });
+    setFriendsConversations(filterdArray);
+    if (dmConversations.length > 0) 
+      setActivePeer!(friendsConversations[0])
+    if (!activePeer && friendsConversations && friendsConversations.length > 0)
+      setCounter(counter + 1);
+  console.log (activePeer)
+  }, [counter]);
 
   return (
     <UsersContext.Provider
-      value={{ Users, loggedInUser, friendsList, activePeer, setActivePeer }}
+      value={{ Users, loggedInUser, friendsList, activePeer, setActivePeer , friendsConversations}}
     >
       {children}
     </UsersContext.Provider>

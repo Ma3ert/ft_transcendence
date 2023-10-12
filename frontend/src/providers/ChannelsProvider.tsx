@@ -13,6 +13,7 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
     const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
     const [channelConversations, setChannelConversations] = useState<string[]>([])
     const userChannelsClient = new apiClient('/chat/channels/')
+    const [counter, setCounter] = useState<number>(0)
 
 
     useQuery ('channels', {
@@ -32,7 +33,11 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
         // fetch active channel
         // fetch active channel members
         // fetch channel conversations
-    }, [])
+        setActiveChannel(Channels[0])
+        if (!activeChannel && Channels && Channels.length > 0)
+            setCounter (counter + 1)
+        console.log (activeChannel)
+    }, [counter])
     return <ChannelsContext.Provider value={{Channels, activeChannel, setActiveChannel}}>
         {children}
     </ChannelsContext.Provider>

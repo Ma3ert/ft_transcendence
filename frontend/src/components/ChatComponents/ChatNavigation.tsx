@@ -5,6 +5,7 @@ import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
+import { useQuery } from "react-query";
 import {
   ChannelsContext,
   ChatContext,
@@ -13,6 +14,7 @@ import {
 import { PRIVATE, CHANNEL } from "../../../contstants";
 import { NotificationWrapper } from "./NotificationBadge";
 import { setSyntheticTrailingComments } from "typescript";
+import apiClient from "@/services/requestProcessor";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
@@ -21,23 +23,13 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { setCurrentChat } = useContext(ChatContext);
   const { activeChannel, setActiveChannel, Channels } =
     useContext(ChannelsContext);
-  const { channelConversations } = useContext(ChatContext);
-  const [conversations, setConversations] = useState<Channel[]>([]);
 
   useEffect(() => {
-    const filterdArray = Channels!.filter((channel) => {
-      if (
-        channel.id == activeChannel?.id ||
-        (channel!.id && channelConversations?.includes(channel!.id))
-      )
-        return true;
-      return false;
-    });
-    setConversations (filterdArray)
-  }, [channelConversations]);
+   
+  }, []);
   return (
     <>
-      {conversations?.map((channel, index) => {
+      {Channels?.map((channel, index) => {
         return (
           <NotificationWrapper type="activeChat" status={false} key={index}>
             <UserAvatar
@@ -57,26 +49,14 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { setCurrentChat } = useContext(ChatContext);
-  const { friendsList } = useContext(UsersContext);
-  const { activePeer, setActivePeer } = useContext(UsersContext);
-  const [conversations, setConversations] = useState<User[]>([]);
-  const {privateConversations, setPrivateConversations} = useContext(ChatContext)
-
+  const {setCurrentChat } = useContext(ChatContext);
+  const {setActivePeer, friendsConversations} = useContext (UsersContext)
   useEffect (() => {
-    const filterdArray = friendsList!.filter((friend) => {
-      if (
-        friend.id == activePeer?.id ||
-        (friend!.id && privateConversations?.includes(friend!.id))
-      )
-        return true;
-      return false;
-    });
-    setConversations(filterdArray)
-  }, [privateConversations])
+    
+  }, [])
   return (
     <>
-      {conversations?.map((friend, index) => {
+      {friendsConversations?.map((friend, index) => {
         return (
           <NotificationWrapper type="activeChat" status={true} key={index}>
             <UserAvatar
@@ -86,7 +66,6 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
                 setCurrentChat!(PRIVATE);
                 setActivePeer!(friend);
               }}
-              active={activePeer?.id == friend.id}
             />
           </NotificationWrapper>
         );

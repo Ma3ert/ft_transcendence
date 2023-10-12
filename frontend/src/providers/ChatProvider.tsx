@@ -24,18 +24,17 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const { socket } = useContext(GlobalContext);
   const {setCurrentSection} = useContext (AppNavigationContext)
   const {loggedInUser, Users} = useContext (UsersContext)
-  const [privateConversations, setPrivateConversations] = useState<string[]>([])
   const [channelConversations, setChannelConversations] = useState<string[]>([])
-  
-
-  
+  const { setActivePeer } = useContext(UsersContext);
+  const { friendsList } = useContext(UsersContext);
  
 
+
+  
+  
+  
+  
   useEffect(() => {
-    // fetch Peers
-    // fetch Channels
-    const friends = Users!.filter(user => user.id !== loggedInUser!.id)
-    console.log(`chat provider mounted socket id : ${socket?.id}`);
     
 
     return () => {
@@ -60,11 +59,8 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
         setGameEnvitation,
         chatNotification,
         requestNotification,
-        privateConversations,
         channelConversations,
-        setPrivateConversations,
         setChannelConversations,
-
       }}
     >
       {children}

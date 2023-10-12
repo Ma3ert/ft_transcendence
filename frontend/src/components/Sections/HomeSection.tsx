@@ -17,7 +17,7 @@ const HomeSection: React.FC<HomeSectionProps> = ({ children }) => {
   const { socket } = useContext(GlobalContext);
   const {loggedInUser} = useContext (UsersContext)
   useEffect(() => {
-    NotifyServer(socket, "userIsLoggedIn", loggedInUser!);
+    NotifyServer(socket, "userLoggedIn", loggedInUser!);
   }, []);
   return (
     <AppNavigationProvider>

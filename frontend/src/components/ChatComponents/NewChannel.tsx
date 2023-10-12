@@ -46,10 +46,7 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
 
 
   const createChannel = (channelName:string, channelType:string, channelPassword?:string, channelAvatar?:string) => {
-    if (channelPassword)
-      channelManager.createChannel(channelName, channelType, channelPassword)
-    else
-      channelManager.createChannel(channelName, channelType)
+    channelManager.createChannel(channelName, channelType, channelPassword!, channelAvatar!)
     onClose!()
   }
   return (
@@ -117,14 +114,14 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
         if (channelNameSchema.safeParse(channelName).success)
         {
           if (isPrivate) {
-            createChannel (channelName, "PRIVATE")
+            createChannel (channelName, "PRIVATE", undefined, avatarPath)
           }
           else if (isProtected) {
             if (passwordSchema.safeParse(channelPassword).success)
-              createChannel (channelName, "PROTECTED", channelPassword)
+              createChannel (channelName, "PROTECTED", channelPassword, avatarPath)
           }
           else {
-            createChannel (channelName, "PUBLIC")
+            createChannel (channelName, "PUBLIC", avatarPath)
           }
         }
       }}>

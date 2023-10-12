@@ -24,7 +24,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       borderRadius={isChannel ? "15px" : "full"}
       onClick={action}
       size={size}
-      name={isChannel ? channel?.name : user?.username}
       src={isChannel ? `http://localhost://3000/${channel?.avatar}` : user?.avatar}
       _hover={{
         opacity: 0.8,

@@ -14,7 +14,6 @@ const useChannelManager = () => {
     const channelById = (channelId: string) => new apiClient (`/chat/channels/${channelId}/`)
     const joinChannelClient = (channelId: string) => new apiClient (`/chat/channels/${channelId}/join/`)
     const leaveChannelClient = (channelId: string) => new apiClient (`/chat/channels/${channelId}/leave/`)
-    const {updateAvatar} = useAvatarUpdater ()
     const Success = useSuccess()
     const Failure = useFailure ()
     const queryClient = useQueryClient()
@@ -78,8 +77,8 @@ const useChannelManager = () => {
     })
     
 
-    function createChannel (channelName:string, channelType:string , channlPass?:string){
-        newChannelMutation.mutate({name: channelName, type: channelType, password: channlPass!})
+    function createChannel (channelName:string, channelType:string , channlPass?:string, channelAvatar?:string){
+        newChannelMutation.mutate({name: channelName, type: channelType, password: channlPass!, avatar: channelAvatar!})
     }
 
     function removeChannel (channelId: string){

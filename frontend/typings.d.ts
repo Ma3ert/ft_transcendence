@@ -11,6 +11,7 @@ type AchievementsSection = "achievements" | "leaderboard";
 type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
 type ModalType = "regular" | "confirmation" ;
+
 type EventName =
   "userLoggedIn"
 | "userLoggedOut"
@@ -41,6 +42,8 @@ type DirectMessage = {
   userId?: string
   content?: string 
   create_at?:string
+  senderId?:string
+  receiverId	?:string
 };
 
 type ChannelMessage = {
@@ -142,6 +145,8 @@ interface ChatContext {
   channelConversations?: string[];
   setPrivateConversations?: React.Dispatch<React.SetStateAction<string[]>>;
   setChannelConversations?: React.Dispatch<React.SetStateAction<string[]>>;
+  dmConversations?:User[]
+  setDmConversations?:React.Dispatch<React.SetStateAction<User[]>>
 }
 
 interface ModalWrapperProps {
@@ -219,7 +224,9 @@ type UsersContext = {
   setActivePeer?: React.Dispatch<React.SetStateAction<User | null>>;
   RecievedFriendRequests?: Envite[];
   SentFriendRequests?: Envite[];
-
+  friendsConversations?: User[];
+  setFriendsConversations?: React.Dispatch<React.SetStateAction<User[]>>;
+  
 };
 // Chat Events Types
 

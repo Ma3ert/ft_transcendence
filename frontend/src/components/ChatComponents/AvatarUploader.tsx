@@ -79,7 +79,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({setAvatarPath, channel, 
           _hover={{ bg: "#181D25" }}
           objectFit="contain"
         >
-          <Avatar src={`http://localhost:3000/${channel ? channel!.avatar : avatarPath}`} size='2xl' bg="#1D222C" src={channel ? `http://localhost:3000/${channel.avatar}` : ""} />
+          <Avatar src={`http://localhost:3000/${channel ? channel!.avatar : avatarPath}`} size='2xl' bg="#1D222C"  />
           <Button borderRadius={'full'} bg='#DC585B' w='20px' position="absolute" onClick={handleButtonClick}
             bottom="0"
             right="0"
