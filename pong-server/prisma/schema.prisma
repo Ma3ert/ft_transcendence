@@ -55,7 +55,7 @@ model User {
   friends       userFriends? @relation(fields: [friendsListId], references: [id])
   friendsListId String?
 
-  blocked   blockedUsers? @relation(fields: [blockedUserId], references: [id])
+  blocked       blockedUsers? @relation(fields: [blockedUserId], references: [id])
   blockedUserId String?
 
   sentInvites     UserInvite[] @relation("sentInvites")
@@ -86,7 +86,7 @@ model User {
 model userFriends {
   id String @id @default(uuid())
 
-  owner String @unique
+  owner String
   users User[]
 
   createdAt DateTime @default(now())
@@ -95,12 +95,11 @@ model userFriends {
 model blockedUsers {
   id String @id @default(uuid())
 
-  owner String @unique
+  owner String
   users User[]
 
   createdAt DateTime @default(now())
 }
-
 
 model UserInvite {
   id            String   @id @default(uuid())

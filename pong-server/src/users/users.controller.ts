@@ -13,6 +13,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -93,7 +94,8 @@ export class UsersController {
     return await this.usersService.getUserData(id);
   }
 
-  @Patch(':id')
+  @Patch()
+  @UseGuards(LoggedInGuard)
   @UseInterceptors(FileInterceptor('avatar'))
   async update(
     @UploadedFile(
@@ -102,16 +104,16 @@ export class UsersController {
           new MaxFileSizeValidator({ maxSize: 3000 * 1000 }), // 3MB
           new FileTypeValidator({ fileType: 'image/jpeg' }),
         ],
+        fileIsRequired: false
       }),
       imageOptimizerPipe,
     )
     image: string,
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: any,
+    @Body() updateUserDto: UpdateUserDto, 
   ) {
     if (image) updateUserDto.avatar = image;
-    const user = await this.usersService.updateUser(id, updateUserDto);
-    //! Should add a function that will filter out
+    const user = await this.usersService.updateUser(req.user.id, updateUserDto);
     if (user) return { status: 'success', user };
   }
 
