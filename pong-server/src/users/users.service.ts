@@ -24,6 +24,7 @@ export class UsersService {
                 avatar: true,
                 id: true,
                 xp: true,
+                level: true,
               },
             },
           },
@@ -50,6 +51,7 @@ export class UsersService {
       totalGames,
       numberOfWon,
       numberOfLost,
+      games: validGames
     };
     return data;
   }
@@ -282,7 +284,6 @@ export class UsersService {
     })
   }
 
-  // This function will either check if you are blocked by a user of or if you've blocked user
   async checkBlocked(userId: string, friendId: string) {
     const user = await this.prismaService.blockedUsers.findFirst({
       where: {
