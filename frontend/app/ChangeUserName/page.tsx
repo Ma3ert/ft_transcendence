@@ -1,16 +1,49 @@
 "use client";
-import { Avatar, Button, Input, Stack, Wrap } from '@chakra-ui/react'
+import { Avatar, Button, Input, Stack, Wrap, Box, Icon, WrapItem, FormControl } from '@chakra-ui/react'
 import {FaArrowCircleRight} from "react-icons/fa"
 import IconButton from '@/components/IconButton';
 import Logo from "@/components/Logo"
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Link from 'next/link';
+import {AuthUser} from "@/context/Contexts"
+import apiClient from '@/services/requestProcessor';
+import axios, { AxiosResponse } from 'axios';
+import {FaPen} from "react-icons/fa"
 
 export default function Home() {
-  const [send, setSend] = useState(0);
+  const client = new apiClient("/users");
+  const [send, setSend] = useState("");
+  const { currentUser, setCurrentUser } = useContext(AuthUser)
+  const [newAvatar, setNewAvatar] = useState("");
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
-    event.target.value.length >= 1 ? setSend(1) : setSend(0);
+  if (currentUser === null)
+  {
+    client.getData("/me").then((res: AxiosResponse)=> {
+      setCurrentUser(res.data.data)
+      setNewAvatar(res.data.data.avatar)
+    })
+  }
+
+  const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.files)
+    const currentFiles = event.target.files
+    if (currentFiles && currentFiles?.length > 0){
+      let src: string = URL.createObjectURL(currentFiles[0]);
+      setNewAvatar(src)
+    }
+  }
+
+  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.target as HTMLFormElement);
+    // const userName: string = formData.get("newUserName") as string;
+    // const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
+    // const image: string | undefined = imageFile ? imageFile.name : undefined;
+  
+    // console.log("username:", userName);
+    // console.log("image:", image);
+    client.patchData(formData, "/" + currentUser.id)
+    // .then(() => {client.getData("/me").then((res: AxiosResponse)=> {setCurrentUser(res.data.data)})})
   }
 
   return (
@@ -20,36 +53,52 @@ export default function Home() {
       minH="70vh"
       >
         <Logo src='/logo.png' width="334px" height="179px"></Logo>
-        <Stack align={"center"} spacing={"40px"}>
-          <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
-            <Avatar boxSize={{base: "100px", xl: "137px" }}></Avatar>
-            <Button
-              fontSize={{base: "15px", lg: "20px" }}
-              variant={"ghost"}
-              >Change</Button>
-          </Stack>
-          <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
-            <Wrap marginLeft={"60px"} align={"center"} spacing={"18px"}>
+        <form onSubmit={handleOnSubmit}>
+          <Stack align={"center"} spacing={"40px"}>
+            <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
+              <Input onChange={handlePreview} visibility={"hidden"} w={0} h={0} type='file' id='avatar' name='avatar'/>
+              <Wrap align={"end"} position={"relative"}>
+                <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} 
+                  src={newAvatar}></Avatar>
+                <Box
+                  as='label'
+                  htmlFor='avatar'
+                  zIndex={1}
+                  boxSize={"30px"} 
+                  borderRadius={"full"}
+                  bg={"#DC585B"} color={"#fff"} 
+                  display={"flex"} alignItems={"center"} justifyContent={"center"}
+                  position={"absolute"}
+                  left={"70%"}
+                >
+                  <Icon as={FaPen} style={{ fontSize: "14px" }} />
+                </Box>
+              </Wrap>
+            </Stack>
+            <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
               <Input
+                id='username'
+                name='username'
                 variant={"default"}
                 w={{ base: "280px", lg: "340px" }}
                 h={{ base: "50px",lg: "66px" }}
-                onChange={handleInputChange}
-                placeholder='new Username'/>
+                placeholder={currentUser ? currentUser.username : 'new Username'}/>
+              <Stack align={"center"} spacing={{base: "6px", lg:"8px" }}>
+                <Button
+                  fontSize={{base: "15px", lg: "20px" }}
+                  variant={"ghost"}
+                  type='submit'
+                >Apply Changes</Button>
                 <Link href={"/Lobby"}>
-                  <IconButton
-                    icon={FaArrowCircleRight}
-                    size="44px"/>
+                  <Button
+                    fontSize={{base: "15px", lg: "20px" }}
+                    variant={"ghost"}
+                    >skip</Button>
                 </Link>
-            </Wrap>
-            <Link href={"/Lobby"}>
-              <Button
-                fontSize={{base: "15px", lg: "20px" }}
-                variant={"ghost"}
-                >skip</Button>
-            </Link>
+              </Stack>
+            </Stack>
           </Stack>
-        </Stack>
+        </form>
     </Stack>
   )
 }
