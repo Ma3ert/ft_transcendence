@@ -211,14 +211,20 @@ export class ChatController {
 
     @Delete('/channels/:channelId/kick/:userid')
     @UseGuards(BanGuard)
-    @Roles(Role.ADMIN, Role.OWNER)
+    @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)
     @UseGuards(LoggedInGuard)
     async kickUser(
         @Param('channelId') channelId:string,
         @Param('userid') userId:string,
-        @Req() req:Request){
-        await this.chatService.leaveChannel(channelId, userId);
+        @Req() req: Request) {
+        try {
+            await this.chatService.kickUser(channelId, userId);
+            return { status: "success", message: "kicked successfully" };
+        }
+        catch (error) {
+            return { status: "failure", message: `${error}` };
+        }
     }
 
     @Post('/channels/:channelId/mute/:userid')
