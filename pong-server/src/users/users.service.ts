@@ -294,7 +294,7 @@ export class UsersService {
       }
     });
 
-    const friendsList = user.users.map((friend) => friend.id);
+    const friendsList = user.users ? user.users.map((friend) => friend.id) : [];
     return friendsList.includes(friendId);
   }
 
