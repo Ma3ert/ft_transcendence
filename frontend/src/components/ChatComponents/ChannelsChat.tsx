@@ -18,7 +18,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     new apiClient(`/chat/channels/${channelId}/members`);
     const [channelMembers, setChannelMembers] = useState<Member[]>([]);
     const { activeChannel } = useContext(ChannelsContext);
-    const channelMessagesClient = new apiClient (`/chat/channels/${activeChannel!.id}/messages/?skip=0&take=3`)
+    const channelMessagesClient = new apiClient (`/chat/channels/${activeChannel!.id}/messages/?skip=0&take=300`)
     const {loggedInUser} = useContext (UsersContext)
     const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
     const [channelMessages, setChannelMessages] = useState<DirectMessage[]>([]);
@@ -34,8 +34,6 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     .then (res => res.data),
     onSuccess: (data: any) => {
       setChannelMessages (data)
-      console.log (`channel messages query`)
-      console.table (data)
     }, 
     onError : (err) => {
       console.log (err)
@@ -51,7 +49,6 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
     onSuccess: (data: any) => {
       setChannelMembers(data);
       setLoggedInUserRole(getUserRole (loggedInUser!, data))
-      console.log(data);
     },
     onError: (err) => {
       console.log(err);
@@ -59,16 +56,9 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   });
 
   useEffect (()=>{
-    console.log ('in channel chat --------')
-
-    socket!.on ('CM', (data:any)=>{console.table (data)})
-    // EventListener (socket!, "CM", (data)=>{
-    //   const channelMsgs = Array.from (channelMessages)
-    //   channelMsgs!.push (data)
-    //   setChannelMessages (channelMsgs!)
-    //   console.log (`channel message data }`)
-    //   console.table (data)
-    //   })
+    socket!.on("CM", (data: any) => {
+      console.log(`data from server ${data}`);
+    });
   }, [channelMessages])
   return (
     <Grid

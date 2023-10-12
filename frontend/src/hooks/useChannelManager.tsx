@@ -5,6 +5,7 @@ import { useSuccess, useFailure } from "./useAlerts";
 import { useQueryClient } from "react-query";
 import { AppNavigationContext } from "@/context/Contexts";
 import { useContext } from "react";
+import useAvatarUpdater from "./useAvatarUpdater";
 
 
 const useChannelManager = () => {
@@ -13,6 +14,7 @@ const useChannelManager = () => {
     const channelById = (channelId: string) => new apiClient (`/chat/channels/${channelId}/`)
     const joinChannelClient = (channelId: string) => new apiClient (`/chat/channels/${channelId}/join/`)
     const leaveChannelClient = (channelId: string) => new apiClient (`/chat/channels/${channelId}/leave/`)
+    const {updateAvatar} = useAvatarUpdater ()
     const Success = useSuccess()
     const Failure = useFailure ()
     const queryClient = useQueryClient()

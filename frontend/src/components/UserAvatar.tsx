@@ -25,7 +25,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       onClick={action}
       size={size}
       name={isChannel ? channel?.name : user?.username}
-      src={isChannel ? channel?.avatar : user?.avatar}
+      src={isChannel ? `http://localhost://3000/${channel?.avatar}` : user?.avatar}
       _hover={{
         opacity: 0.8,
         transition: "all 0.2s ease-in-out",

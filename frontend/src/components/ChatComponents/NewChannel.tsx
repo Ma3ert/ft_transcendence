@@ -42,9 +42,10 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
   const channelManager = useChannelManager();
   const {onClose} = useContext (ModalWrapperContext)
   const [submitted, setSubmitted] = useState(false);
+  const [avatarPath, setAvatarPath] = useState<string>('');
 
 
-  const createChannel = (channelName:string, channelType:string, channelPassword?:string) => {
+  const createChannel = (channelName:string, channelType:string, channelPassword?:string, channelAvatar?:string) => {
     if (channelPassword)
       channelManager.createChannel(channelName, channelType, channelPassword)
     else
@@ -52,8 +53,8 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
     onClose!()
   }
   return (
-    <Stack spacing={12} justify={"center"} alignItems={"center"}>
-      <AvatarUploader />
+    <Stack spacing={6} justify={"center"} alignItems={"center"}>
+      <AvatarUploader setAvatarPath={setAvatarPath} avatarPath={avatarPath} />
       <FormControl
         w="100%"
         display={"flex"}

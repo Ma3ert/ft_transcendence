@@ -58,26 +58,24 @@ const EnvitesListSection: React.FC = () => {
   useQuery("recievedEnvites", {
     queryFn: async () => recievedClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {
-      console.log(`recieved envites`);
-      console.table (response)
       if (!recievedEnvites.find((envite) => envite.enviteId === response.data.id))
         setRecievedEnvites([...recievedEnvites, ...getGlobalFriendsEnvites(response.data)]);
     },
     onError: (error) => {
-      console.log(error);
+      // console.log(error);
     },
   });
 
   useQuery("sentEnvites", {
     queryFn: async () => sentClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {
-      console.log(`sent envites : ${response}`);
-      console.table (response)
+      // console.log(`sent envites : ${response}`);
+      // console.table (response)
       if (!sentEnvites.find((envite) => envite.enviteId === response.data.id))
         setSentEnvites([...sentEnvites, ...getGlobalFriendsEnvites(response.data)]);
     },
     onError: (error) => {
-      console.log(error);
+      // console.log(error);
     },
   });
   
@@ -89,11 +87,11 @@ useQuery ('channelReceivedEnvites', {
         if (!recievedEnvites.find((envite) => envite.enviteId === data.channel!.id))
           setRecievedEnvites([...recievedEnvites, ...getGlobalChannelEnvites(data)])
       }
-      console.log ('channel envites')
-      console.table (data)
+      // console.log ('channel envites')
+      // console.table (data)
     },
     onError: (err) => {
-        console.log(err)
+        // console.log(err)
     }
 })    
 useQuery ('channelSentEnvites', {
@@ -104,11 +102,11 @@ useQuery ('channelSentEnvites', {
       if ( !sentEnvites.find((envite) => envite.enviteId === data.channel!.id))
         setSentEnvites([...sentEnvites, ...getGlobalChannelEnvites(data)])
     }
-      console.log ('channel envites')
-      console.table (data)
+      // console.log ('channel envites')
+      // console.table (data)
   },
   onError: (err) => {
-      console.log(err)
+      // console.log(err)
   }
 })
 

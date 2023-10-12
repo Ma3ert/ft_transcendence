@@ -103,11 +103,11 @@ export class ChatService {
     }
 
     async createDirectMessage(sender: string, receiver: string, message: string) {
-        const isBlocked = await this.usersService.checkBlocked(sender, receiver);
-        const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
+        // const isBlocked = await this.usersService.checkBlocked(sender, receiver);
+        // const isBlockedBy = await this.usersService.checkBlocked(receiver, sender);
 
-        if (isBlocked || isBlockedBy)
-            return ;
+        // if (isBlocked || isBlockedBy)
+            // return ;
         await this.prismaService.directMessage.create({
             data:{
                 senderId:sender,

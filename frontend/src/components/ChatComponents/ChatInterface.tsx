@@ -12,23 +12,19 @@ import { NotifyServer } from "../../../utils/eventEmitter";
 
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
-  const {socket}  = useContext (GlobalContext)
-  const {loggedInUser}  = useContext (UsersContext)
+  const { socket } = useContext(GlobalContext);
+  const { loggedInUser } = useContext(UsersContext);
 
-  useEffect (()=>{
-      const type = chatType == CHANNEL ? "channelMessage" : "directMessage"
-       console.log (type)
-       if (chatType == PRIVATE)
-        NotifyServer (socket!, "userIsActive", loggedInUser!)
-      // if (chatType == CHANNEL)
-      //   NotifyServer (socket!, "userIsInChannel", loggedInUser!)
-  }
-  ,[])
-  return (
-    <>
-    {(chatType == PRIVATE ? <PrivateChat /> : <ChannelsChat />)}
-    </>
-  );
+  useEffect(() => {
+    const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
+    console.log(type);
+    if (chatType == PRIVATE)
+      NotifyServer(socket!, "userIsActive", loggedInUser!);
+    
+    // if (chatType == CHANNEL)
+    //   NotifyServer (socket!, "userIsInChannel", loggedInUser!)
+  }, []);
+  return <>{chatType == PRIVATE ? <PrivateChat /> : <ChannelsChat />}</>;
 };
 
 export default ChatInterface;

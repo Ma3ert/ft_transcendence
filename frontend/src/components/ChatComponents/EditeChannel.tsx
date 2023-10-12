@@ -29,6 +29,7 @@ import { useContext } from "react";
 import useChannelSettingsUpdater from "@/hooks/useChannelSettingsUpdater";
 import CostumSwitcher from "@/components/ChatComponents/CostumSwitcher";
 import {HiMiniUserGroup} from 'react-icons/hi2' 
+import AvatarUploader from "./AvatarUploader";
 
 
 interface EditChannelProps {
@@ -103,53 +104,8 @@ const EditChannel: React.FC<EditChannelProps> = ({ channel }) => {
 
   return (
     <Stack justifyContent={"center"} alignItems={"center"} spacing={6}>
-      <Box position={"relative"} w="50%">
-        {channel.avatar ? <Avatar w='100%' h="auto" src={channel.avatar} /> : (
-          <Box
-          position="relative"
-          bg="#1D222C"
-          borderRadius={"full"}
-          p={8}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          _hover={{ bg: "#181D25" }}
-        >
-          <Icon as={HiMiniUserGroup} w={20} h="auto" color={"#5B6171"} />
-          <Icon
-            as={FaPen}
-            position="absolute"
-            bottom="12px"
-            right="12px"
-            fontStyle="bold"
-            fontWeight="black"
-            fontSize="6px"
-            boxSize="20px"
-            borderRadius="full"
-            bg="#DC585B"
-            color="#252932"
-            _active={{ transform: "scale(1.1)" }}
-            _hover={{ opacity: 0.8 }}
-          />
-        </Box>
-        )}
-        <Button
-          w="40px"
-          h="40px"
-          position={"absolute"}
-          bottom={2}
-          right={0}
-          color="white"
-          display="flex"
-          justifyContent="center"
-          alignItems={"center"}
-          bg="#DC585B"
-          borderRadius="full"
-          border={"none"}
-        >
-          <Icon as={FaPen} fontSize="18px" />
-        </Button>
-      </Box>
+     
+        <AvatarUploader channel={channel} />
       <Input
         variant={"default"}
         _placeholder={{ color: "#5B6171", fontSize: "sm" }}

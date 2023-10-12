@@ -20,10 +20,11 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
   useQuery ({
     queryKey: ["directMessages", activePeer!.id],
     queryFn:()=> dmClient.getData ().then (res=>res.data),
-    onSuccess: (data)=>{
-      console.log (`direct message query`)
-      console.table (data)
-      // setDirectMessages (data)
+    onSuccess: (data:any)=>{
+      setDirectMessages (data)
+    },
+    onError: (err:any)=>{
+      console.log (err)
     }
   })
   useEffect (()=>{
@@ -31,8 +32,8 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
       const dms = Array.from (directMessages)
       dms!.push (data)
       setDirectMessages (dms!)
-      console.log (`direct message data }`)
-      console.table (data)
+      console.log (`direct message data from server ${data}`)
+      // console.table (data)
       })
   }, [directMessages])
   return (

@@ -15,8 +15,8 @@ const MessageStack: React.FC<MessageStackProps> = () => {
 
   useEffect(() => {
     // Scroll to the end when the component mounts or when content changes
-    console.log (`message array`)
-    console.table (messages)
+    // console.log (`message array`)
+    // console.table (messages)
     console.log(
       `scrollTop ${containerRef.current?.scrollTop} scrollHeight ${containerRef.current?.scrollHeight}}`
     );

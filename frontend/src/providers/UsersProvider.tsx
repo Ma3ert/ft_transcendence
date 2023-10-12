@@ -50,7 +50,6 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   useQuery("me", {
     queryFn: (async) => meClient.getData().then((res: any) => res.data),
     onSuccess: (response: meResponse) => {
-      console.table(response);
       setLoggedInUser!(response.data);
     },
     onError: (error) => {
@@ -70,7 +69,6 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
 
   
   useEffect(() => {
-    console.log(`user provider mounted socket id : ${socket?.id}`);
   }, [Users, loggedInUser]);
 
   return (

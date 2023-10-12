@@ -31,8 +31,6 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}
   const { userIsBlocked } = useUserStatus(user);
 
   useEffect(() => {
-    console.log("friends :");
-    console.table(friendsList);
   }, [friendsList]);
 
   return (
