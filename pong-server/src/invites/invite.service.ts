@@ -39,7 +39,7 @@ export class InviteService {
     const invitedBlockedList = blocked && blocked.users ? blocked.users.map((blocked) => blocked.id) : [];
     if (invitedBlockedList.includes(inviteBody.inviteOwnerId)) return null;
 
-    const friends = user.users.map((friend) => friend.id);
+    const friends = user && user.users ? user.users.map((friend) => friend.id) : [];
     if (friends.includes(inviteBody.invitedUserId)) return null;
 
     return this.prismaService.userInvite.create({

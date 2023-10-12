@@ -166,7 +166,7 @@ export class UsersService {
         users: true
       }
     })
-    const friends = user.users.map((friend) => friend.id);
+    const friends = user && user.users ? user.users.map((friend) => friend.id) : [];
     if (!friends.includes(friendId)) return null;
 
     await this.prismaService.userFriends.update({
@@ -225,7 +225,7 @@ export class UsersService {
         },
       }
     });
-    return user.users;
+    return user && user.users ? user.users : [];
   }
 
   async unblockFriend(userId: string, friendId: string) {
@@ -238,7 +238,7 @@ export class UsersService {
       },
     });
 
-    const blockedUsers = user.users.map((friend) => friend.id);
+    const blockedUsers = user && user.users ? user.users.map((friend) => friend.id) : [];
     if (!blockedUsers.includes(friendId))
       return null;
     
