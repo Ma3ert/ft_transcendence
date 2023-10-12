@@ -109,6 +109,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    console.log(image);
     if (image) updateUserDto.avatar = image;
     const user = await this.usersService.updateUser(id, updateUserDto);
     //! Should add a function that will filter out
