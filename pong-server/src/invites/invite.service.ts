@@ -27,7 +27,19 @@ export class InviteService {
         users: true,
       },
     });
-    const friends = user.users.map((friend) => friend.id);
+    const blocked = await this.prismaService.blockedUsers.findFirst({
+      where: {
+        owner: inviteBody.invitedUserId,
+      },
+      include: {
+        users: true,
+      },
+    });
+
+    const invitedBlockedList = blocked && blocked.users ? blocked.users.map((blocked) => blocked.id) : [];
+    if (invitedBlockedList.includes(inviteBody.inviteOwnerId)) return null;
+
+    const friends = user && user.users ? user.users.map((friend) => friend.id) : [];
     if (friends.includes(inviteBody.invitedUserId)) return null;
 
     return this.prismaService.userInvite.create({
@@ -160,29 +172,29 @@ export class InviteService {
     if (invite.inviteUserId !== inviteUserId) return null;
     await this.prismaService.userFriends.update({
       where: {
-        owner: invite.inviteOwnerId
+        owner: invite.inviteOwnerId,
       },
       data: {
         users: {
           connect: {
-            id: invite.inviteUserId
-          }
-        }
-      }
-    })
+            id: invite.inviteUserId,
+          },
+        },
+      },
+    });
 
     await this.prismaService.userFriends.update({
       where: {
-        owner: invite.inviteUserId
+        owner: invite.inviteUserId,
       },
       data: {
         users: {
           connect: {
-            id: invite.inviteOwnerId
-          }
-        }
-      }
-    })
+            id: invite.inviteOwnerId,
+          },
+        },
+      },
+    });
 
     // Delete the invite.
     return await this.prismaService.userInvite.delete({

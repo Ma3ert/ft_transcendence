@@ -24,6 +24,7 @@ export class UsersService {
                 avatar: true,
                 id: true,
                 xp: true,
+                level: true,
               },
             },
           },
@@ -50,6 +51,7 @@ export class UsersService {
       totalGames,
       numberOfWon,
       numberOfLost,
+      games: validGames
     };
     return data;
   }
@@ -164,7 +166,7 @@ export class UsersService {
         users: true
       }
     })
-    const friends = user.users.map((friend) => friend.id);
+    const friends = user && user.users ? user.users.map((friend) => friend.id) : [];
     if (!friends.includes(friendId)) return null;
 
     await this.prismaService.userFriends.update({
@@ -223,7 +225,7 @@ export class UsersService {
         },
       }
     });
-    return user.users;
+    return user && user.users ? user.users : [];
   }
 
   async unblockFriend(userId: string, friendId: string) {
@@ -236,7 +238,7 @@ export class UsersService {
       },
     });
 
-    const blockedUsers = user.users.map((friend) => friend.id);
+    const blockedUsers = user && user.users ? user.users.map((friend) => friend.id) : [];
     if (!blockedUsers.includes(friendId))
       return null;
     
@@ -282,7 +284,6 @@ export class UsersService {
     })
   }
 
-  // This function will either check if you are blocked by a user of or if you've blocked user
   async checkBlocked(userId: string, friendId: string) {
     const user = await this.prismaService.blockedUsers.findFirst({
       where: {
@@ -293,7 +294,9 @@ export class UsersService {
       }
     });
 
-    const friendsList = user.users.map((friend) => friend.id);
+    // cannot read properties of null (reading 'users')
+    const friendsList = user && user.users ? user.users.map((friend) => friend.id) : [];
+
     return friendsList.includes(friendId);
   }
 
