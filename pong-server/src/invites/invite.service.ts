@@ -18,17 +18,16 @@ export class InviteService {
       return null;
     }
 
-    //! Protection
-    // const userFriends = (await this.usersService.getUserFriends(inviteBody.inviteOwnerId)).map(
-    //   (user) => user.id,
-    // );
-    // if (userFriends.includes(inviteBody.invitedUserId)) return null;
+    const userFriends = (await this.usersService.getUserFriends(inviteBody.inviteOwnerId)).map(
+      (user) => user.id,
+    );
+    if (userFriends.includes(inviteBody.invitedUserId)) return null;
 
-    // const userBlocked = (await this.usersService.getBlockedUsers(inviteBody.inviteOwnerId)).map((user) => user.id)
-    // if (userBlocked.includes(inviteBody.invitedUserId)) return null;
+    const userBlocked = (await this.usersService.getBlockedUsers(inviteBody.inviteOwnerId)).map((user) => user.id)
+    if (userBlocked.includes(inviteBody.invitedUserId)) return null;
 
-    // const currentBlocked = (await this.usersService.getBlockedUsers(inviteBody.invitedUserId)).map((user) => user.id);
-    // if (currentBlocked.includes(inviteBody.inviteOwnerId)) return null;
+    const currentBlocked = (await this.usersService.getBlockedUsers(inviteBody.invitedUserId)).map((user) => user.id);
+    if (currentBlocked.includes(inviteBody.inviteOwnerId)) return null;
 
     return this.prismaService.userInvite.create({
       data: {
@@ -104,7 +103,6 @@ export class InviteService {
 
   async getInviteReadyList(userId: string) {
     //! This should be refactored to exclude the user am blocked in there friend lists
-    // List all the users that i can send a friend request to.
     const sentInvites: any[] = await this.getSendInvites(userId);
     const receivedInvites: any[] = await this.getReceivedInvites(userId);
     const user = await this.prismaService.user.findFirst({
