@@ -20,7 +20,7 @@ export default function Home() {
   {
     client.getData("/me").then((res: AxiosResponse)=> {
       setCurrentUser(res.data.data)
-      setNewAvatar(res.data.data.avatar)
+      setNewAvatar("http://127.0.0.1:3000/public/users/imgs/" + res.data.data.avatar)
     })
   }
 
