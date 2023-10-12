@@ -112,6 +112,7 @@ export class UsersController {
     @Req() req: any,
     @Body() updateUserDto: UpdateUserDto, 
   ) {
+    console.log(image);
     if (image) updateUserDto.avatar = image;
     const user = await this.usersService.updateUser(req.user.id, updateUserDto);
     if (user) return { status: 'success', user };
