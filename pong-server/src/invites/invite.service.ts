@@ -36,7 +36,7 @@ export class InviteService {
       },
     });
 
-    const invitedBlockedList = blocked.users.map((blocked) => blocked.id);
+    const invitedBlockedList = blocked && blocked.users ? blocked.users.map((blocked) => blocked.id) : [];
     if (invitedBlockedList.includes(inviteBody.inviteOwnerId)) return null;
 
     const friends = user.users.map((friend) => friend.id);
