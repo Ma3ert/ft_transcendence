@@ -65,28 +65,7 @@ export class UsersService {
       },
     });
 
-    const friendsList = await this.prismaService.userFriends.create({
-      data: {
-        owner: user.id,
-      },
-    });
-
-    const blockedList = await this.prismaService.blockedUsers.create({
-      data: {
-        owner: user.id,
-      },
-    });
-
-    const createdUser = await this.prismaService.user.update({
-      where: {
-        id: user.id
-      },
-      data: {
-        friendsListId: friendsList.id,
-        blockedUserId: blockedList.id
-      }
-    })
-    return createdUser;
+    return user;
   }
 
   findOne(email: string) {
@@ -132,8 +111,8 @@ export class UsersService {
     });
   }
 
-  updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.prismaService.user.findUnique({ where: { id } });
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findById(id);
     if (!user) return null;
     return this.prismaService.user.update({
       where: {
@@ -165,138 +144,133 @@ export class UsersService {
   }
 
   // In the case of block add the user to blocker list in the other user just disconnect from his friendlist
-  async blockFriend(userId: string, friendId: string) {
-    const user = await this.findById(userId);
-    const userFriends = (await this.getUserFriends(userId)).map((friend) => friend.id);
-    if (!userFriends.includes(friendId)) return null;
+  // async blockFriend(userId: string, friendId: string) {
+  //   const user = await this.findById(userId);
+  // const userFriends = (await this.getUserFriends(userId)).map((friend) => friend.id);
+  // if (!userFriends.includes(friendId)) return null;
 
-    await this.prismaService.userFriends.update({
-      where: {
-        id: user.friendsListId,
-      },
-      data: {
-        users: {
-          disconnect: {
-            id: friendId,
-          },
-        },
-      },
-    });
+  // await this.prismaService.userFriends.update({
+  //   where: {
+  //     id: user.friendsListId,
+  //   },
+  //   data: {
+  //     users: {
+  //       disconnect: {
+  //         id: friendId,
+  //       },
+  //     },
+  //   },
+  // });
 
-    await this.prismaService.userFriends.update({
-      where: {
-        id: user.friendsListId,
-      },
-      data: {
-        users: {
-          disconnect: {
-            id: userId,
-          },
-        },
-      },
-    });
+  // await this.prismaService.userFriends.update({
+  //   where: {
+  //     id: user.friendsListId,
+  //   },
+  //   data: {
+  //     users: {
+  //       disconnect: {
+  //         id: userId,
+  //       },
+  //     },
+  //   },
+  // });
 
-    return await this.prismaService.blockedUsers.update({
-      where: {
-        id: user.blockedUserId,
-      },
-      data: {
-        users: {
-          connect: {
-            id: friendId,
-          },
-        },
-      },
-    });
-  }
+  // return await this.prismaService.blockedUsers.update({
+  //   where: {
+  //     id: user.blockedUserId,
+  //   },
+  //   data: {
+  //     users: {
+  //       connect: {
+  //         id: friendId,
+  //       },
+  //     },
+  //   },
+  // });
+  // }
 
   async getUserFriends(userId: string) {
-    const user = await this.findById(userId);
-    console.log(user);
-    const friendsList = await this.prismaService.userFriends.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
-        id: user.friendsListId,
+        id: userId,
       },
       include: {
-        users: {
+        friendsList: {
           select: {
             id: true,
             username: true,
             avatar: true,
-            status: true,
           },
         },
       },
     });
-    return friendsList && friendsList.users ? friendsList.users : [];
+    return user && user.friendsList ? user.friendsList : [];
   }
 
-  async unblockFriend(userId: string, friendId: string) {
-    const user = await this.findById(userId);
-    const friend = await this.findById(friendId);
-    const blockedUsers = (await this.getBlockedUsers(userId)).map((user) => user.id)
-    if (!blockedUsers.includes(friendId)) return null;
+  // async unblockFriend(userId: string, friendId: string) {
+  //   const user = await this.findById(userId);
+  //   const friend = await this.findById(friendId);
+  //   const blockedUsers = (await this.getBlockedUsers(userId)).map((user) => user.id);
+  //   if (!blockedUsers.includes(friendId)) return null;
 
-    await this.prismaService.userFriends.update({
-      where: {
-        id: user.friendsListId
-      },
-      data: {
-        users: {
-          connect: {
-            id: friendId,
-          },
-        },
-      },
-    });
+  // await this.prismaService.userFriends.update({
+  //   where: {
+  //     id: user.friendsListId
+  //   },
+  //   data: {
+  //     users: {
+  //       connect: {
+  //         id: friendId,
+  //       },
+  //     },
+  //   },
+  // });
 
-    await this.prismaService.userFriends.update({
-      where: {
-        id: friend.friendsListId
-      },
-      data: {
-        users: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    });
+  // await this.prismaService.userFriends.update({
+  //   where: {
+  //     id: friend.friendsListId
+  //   },
+  //   data: {
+  //     users: {
+  //       connect: {
+  //         id: userId,
+  //       },
+  //     },
+  //   },
+  // });
 
-    return await this.prismaService.blockedUsers.update({
-      where: {
-        id: user.blockedUserId,
-      },
-      data: {
-        users: {
-          disconnect: {
-            id: friendId,
-          },
-        },
-      },
-    });
-  }
+  // return await this.prismaService.blockedUsers.update({
+  //   where: {
+  //     id: user.blockedUserId,
+  //   },
+  //   data: {
+  //     users: {
+  //       disconnect: {
+  //         id: friendId,
+  //       },
+  //     },
+  //   },
+  // });
+  // }
 
-  async getBlockedUsers(userId: string)
-  {
-    const user = await this.findById(userId);
-    const userBlocked = await this.prismaService.blockedUsers.findUnique({
-      where: {
-        id: user.blockedUserId
-      },
-      include: {
-        users: true,
-      },
-    });
+  // async getBlockedUsers(userId: string) {
+  //   const user = await this.findById(userId);
+  // const userBlocked = await this.prismaService.blockedUsers.findUnique({
+  //   where: {
+  //     id: user.blockedUserId
+  //   },
+  //   include: {
+  //     users: true,
+  //   },
+  // });
 
-    return userBlocked && userBlocked.users ? userBlocked.users : [];
-  }
+  // return userBlocked && userBlocked.users ? userBlocked.users : [];
+  // }
 
-  async checkBlocked(userId: string, friendId: string) {
-    const friendsList = (await this.getBlockedUsers(userId)).map((user) => user.id);
-
-    return friendsList.includes(friendId);
-  }
+  // async checkBlocked(userId: string, friendId: string) {
+  // const friendsList = (await this.getBlockedUsers(userId)).map((user) => user.id);
+  // return friendsList.includes(friendId);
+  // }
 
   removeUser(id: string) {
     return this.prismaService.user.delete({

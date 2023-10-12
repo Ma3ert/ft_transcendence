@@ -38,33 +38,33 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Post('/block')
-  @UseGuards(LoggedInGuard)
-  async blockUser(@Body('userId') user: string, @Req() req: any) {
-    const blocked = await this.usersService.blockFriend(req.user.id, user);
-    if (!blocked) return { status: 'failure', message: 'Could not block friend from your friendslist.' };
-    return { status: 'success', message: `User ${user} has been blocked successfully.` };
-  }
+  // @Post('/block')
+  // @UseGuards(LoggedInGuard)
+  // async blockUser(@Body('userId') user: string, @Req() req: any) {
+  //   const blocked = await this.usersService.blockFriend(req.user.id, user);
+  //   // if (!blocked) return { status: 'failure', message: 'Could not block friend from your friendslist.' };
+  //   return { status: 'success', message: `User ${user} has been blocked successfully.` };
+  // }
 
-  @Post('/unblock')
-  @UseGuards(LoggedInGuard)
-  async unblockUser(@Body('userId') user: string, @Req() req: any) {
-    const unblocked = await this.usersService.unblockFriend(req.user.id, user);
-    if (!unblocked) return { status: 'failure', message: 'Could not unblock friend from your blockedlist.' };
-    return { status: 'success', message: `User ${user} has been unblocked successfully.` };
-  }
+  // @Post('/unblock')
+  // @UseGuards(LoggedInGuard)
+  // async unblockUser(@Body('userId') user: string, @Req() req: any) {
+  //   const unblocked = await this.usersService.unblockFriend(req.user.id, user);
+  //   if (!unblocked) return { status: 'failure', message: 'Could not unblock friend from your blockedlist.' };
+  //   return { status: 'success', message: `User ${user} has been unblocked successfully.` };
+  // }
 
-  @Get('/block/:id')
-  @UseGuards(LoggedInGuard)
-  async checkUserBlocked(@Param('id') user: string, @Req() req: any) {
-    if (user === req.user.id)
-      return {
-        status: 'failure',
-        message: 'Checked user needs to different from the current logged in user.',
-      };
-    const result = await this.usersService.checkBlocked(req.user.id, user);
-    return { status: 'success', blocked: result };
-  }
+  // @Get('/block/:id')
+  // @UseGuards(LoggedInGuard)
+  // async checkUserBlocked(@Param('id') user: string, @Req() req: any) {
+  //   if (user === req.user.id)
+  //     return {
+  //       status: 'failure',
+  //       message: 'Checked user needs to different from the current logged in user.',
+  //     };
+  //   const result = await this.usersService.checkBlocked(req.user.id, user);
+  //   return { status: 'success', blocked: result };
+  // }
 
   @Get('me')
   @UseGuards(LoggedInGuard)
@@ -80,12 +80,12 @@ export class UsersController {
     ), };
   }
 
-  @Get('friends')
-  @UseGuards(LoggedInGuard)
-  async getUserFriends(@Req() req: any) {
-    const friends = await this.usersService.getUserFriends(req.user.id);
-    return { status: 'success', count: friends.length, friends };
-  }
+  // @Get('friends')
+  // @UseGuards(LoggedInGuard)
+  // async getUserFriends(@Req() req: any) {
+  //   const friends = await this.usersService.getUserFriends(req.user.id);
+  //   return { status: 'success', friends };
+  // }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {

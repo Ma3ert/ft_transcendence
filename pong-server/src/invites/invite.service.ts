@@ -18,16 +18,17 @@ export class InviteService {
       return null;
     }
 
-    const userFriends = (await this.usersService.getUserFriends(inviteBody.inviteOwnerId)).map(
-      (user) => user.id,
-    );
-    if (userFriends.includes(inviteBody.invitedUserId)) return null;
+    //! Protection
+    // const userFriends = (await this.usersService.getUserFriends(inviteBody.inviteOwnerId)).map(
+    //   (user) => user.id,
+    // );
+    // if (userFriends.includes(inviteBody.invitedUserId)) return null;
 
-    const userBlocked = (await this.usersService.getBlockedUsers(inviteBody.inviteOwnerId)).map((user) => user.id)
-    if (userBlocked.includes(inviteBody.invitedUserId)) return null; 
+    // const userBlocked = (await this.usersService.getBlockedUsers(inviteBody.inviteOwnerId)).map((user) => user.id)
+    // if (userBlocked.includes(inviteBody.invitedUserId)) return null;
 
-    const currentBlocked = (await this.usersService.getBlockedUsers(inviteBody.invitedUserId)).map((user) => user.id);
-    if (currentBlocked.includes(inviteBody.inviteOwnerId)) return null;
+    // const currentBlocked = (await this.usersService.getBlockedUsers(inviteBody.invitedUserId)).map((user) => user.id);
+    // if (currentBlocked.includes(inviteBody.inviteOwnerId)) return null;
 
     return this.prismaService.userInvite.create({
       data: {
@@ -106,12 +107,12 @@ export class InviteService {
     // List all the users that i can send a friend request to.
     const sentInvites: any[] = await this.getSendInvites(userId);
     const receivedInvites: any[] = await this.getReceivedInvites(userId);
-    const user = await this.prismaService.userFriends.findFirst({
+    const user = await this.prismaService.user.findFirst({
       where: {
-        owner: userId,
+        id: userId,
       },
       include: {
-        users: true,
+        friendsList: true,
       },
     });
     const users = await this.prismaService.user.findMany();
@@ -119,7 +120,7 @@ export class InviteService {
       ...sentInvites.map((invite) => invite.inviteUserId),
       ...receivedInvites.map((invite) => invite.inviteOwnerId),
     ];
-    const userFriends = user.users.length > 0 ? user.users.map((friend) => friend.id) : [];
+    const userFriends = user.friendsList.length > 0 ? user.friendsList.map((friend) => friend.id) : [];
     const excludedUsers = [userId, ...invitesUsers, ...userFriends];
     return users.filter((user) => !excludedUsers.includes(user.id));
   }
@@ -136,14 +137,12 @@ export class InviteService {
     const invite: UserInvite = await this.getInviteById(inviteId);
     if (invite.inviteUserId !== inviteUserId) return null;
     // Check the current user is authorized to accept the invite.
-    const inviteOwner = await this.usersService.findById(invite.inviteOwnerId);
-    const invitedUser = await this.usersService.findById(invite.inviteUserId);
-    await this.prismaService.userFriends.update({
+    await this.prismaService.user.update({
       where: {
-        id: inviteOwner.friendsListId,
+        id: invite.inviteOwnerId,
       },
       data: {
-        users: {
+        friendsList: {
           connect: {
             id: invite.inviteUserId,
           },
@@ -151,12 +150,12 @@ export class InviteService {
       },
     });
 
-    await this.prismaService.userFriends.update({
+    await this.prismaService.user.update({
       where: {
-        id: invitedUser.friendsListId,
+        id: invite.inviteUserId,
       },
       data: {
-        users: {
+        friendsList: {
           connect: {
             id: invite.inviteOwnerId,
           },
