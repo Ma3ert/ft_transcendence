@@ -35,13 +35,17 @@ type DirectMessage = {
   from?: string;
   username?: string;
   message?: string;
-  socketid?: string;
   game?: boolean;
+  id?:string
+  channelId?:string
+  userId?: string
+  content?: string 
+  create_at?:string
 };
 
 type ChannelMessage = {
   from?: string;
-  channelid?: string;
+  channel?: string;
   message?: string;
 };
 

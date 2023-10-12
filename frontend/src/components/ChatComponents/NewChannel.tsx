@@ -52,7 +52,7 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
     onClose!()
   }
   return (
-    <Stack spacing={6} justify={"center"} alignItems={"center"}>
+    <Stack spacing={12} justify={"center"} alignItems={"center"}>
       <AvatarUploader />
       <FormControl
         w="100%"

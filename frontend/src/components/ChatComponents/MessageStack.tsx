@@ -4,13 +4,14 @@ import MessageBox from "./MessageBox";
 import LayoutStyles from "../../Styles/modules/layout.module.scss";
 import EnviteMessage from "./EnviteMessage";
 import { ChatContext, DmContext } from "../../context/Contexts";
-import { loggedIndUser } from "../../../contstants";
-
+import { PRIVATE, loggedIndUser } from "../../../contstants";
+import ChannelMessageBox from "./ChannelMessageBox";
 
 interface MessageStackProps {}
 const MessageStack: React.FC<MessageStackProps> = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const {messages} = useContext(DmContext)
+  const {chatType} = useContext (ChatContext)
 
   useEffect(() => {
     // Scroll to the end when the component mounts or when content changes
@@ -44,7 +45,9 @@ const MessageStack: React.FC<MessageStackProps> = () => {
     >
     {messages!.map((message, index) => {
 
-        return <MessageBox Message={message} key={index} />;
+        if (chatType == PRIVATE)
+          return <MessageBox Message={message} key={index} />;
+        return <ChannelMessageBox Message={message} key={index}/>
       })}
       {/* {GameInvitation && <EnviteMessage gameInvitation={GameInvitation} setGameInvitation={setGameInvitation!} />} */}
     </Stack>

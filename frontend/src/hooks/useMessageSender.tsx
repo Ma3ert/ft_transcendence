@@ -34,7 +34,7 @@ const useMessageSender = (
     } else {
       const messageBody: ChannelMessage = {
         message: message,
-        channelid: activeChannel!.id!,
+        channel: activeChannel!.id!,
         from: loggedInUser!.id,
       };
       SendMessage(socket!, messageBody, "CM");

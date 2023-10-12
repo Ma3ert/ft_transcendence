@@ -5,7 +5,7 @@ import { ModalWrapper } from "../Wrappers/ModalWrapper";
 import NewChannel from "./NewChannel";
 import {useState, useEffect, useContext } from "react";
 import EventListener from "../../../utils/EventListener";
-import { GlobalContext, DmContext, ChatContext } from "@/context/Contexts";
+import { GlobalContext, DmContext, ChatContext, UsersContext } from "@/context/Contexts";
 import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 interface PrivateChatProps {}
@@ -13,10 +13,19 @@ interface PrivateChatProps {}
 const PrivateChat: React.FC<PrivateChatProps> = () => {
 
   const {socket} = useContext (GlobalContext)
-  const dmClient = (someId:string) => new apiClient (`chat/direct/${someId}/messages?skip=0&take=5`)
+  const  {activePeer} = useContext (UsersContext)
+  const dmClient = new apiClient (`chat/direct/${activePeer!.id}/messages?skip=0&take=5`)
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>([])
 
-  // useQuery ("directMessages", {})
+  useQuery ({
+    queryKey: ["directMessages", activePeer!.id],
+    queryFn:()=> dmClient.getData ().then (res=>res.data),
+    onSuccess: (data)=>{
+      console.log (`direct message query`)
+      console.table (data)
+      // setDirectMessages (data)
+    }
+  })
   useEffect (()=>{
     EventListener (socket!, "DM", (data)=>{
       const dms = Array.from (directMessages)

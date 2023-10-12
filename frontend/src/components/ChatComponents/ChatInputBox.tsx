@@ -3,8 +3,7 @@ import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 import { Socket, io } from "socket.io-client";
-import { ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
-import { SendMessage } from "../../../utils/eventHandlers";
+import { ChannelsContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { PRIVATE, loggedIndUser } from "../../../contstants";
 import useMessageSender from "@/hooks/useMessageSender";
 interface ChatInputBoxProps {
@@ -16,10 +15,10 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     joinGameStatus,
     setJoinGameStatus,
     chatType,
-    activeChannel,
   } = useContext(ChatContext);
-  const {activePeer} = useContext (UsersContext)
+  const {activePeer, loggedInUser} = useContext (UsersContext)
   const { socket } = useContext(GlobalContext);
+  const {activeChannel} = useContext (ChannelsContext)
   const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
 
   return (
@@ -78,7 +77,16 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-          SendMessage(message);
+          if (chatType === PRIVATE)
+            SendMessage(message);
+            else {
+              socket.emit("CM", {
+                from:loggedInUser!.id,
+                channel:activeChannel!.id,
+                message:message
+              });
+              
+            }
           setMessage("");
         }}
       >
