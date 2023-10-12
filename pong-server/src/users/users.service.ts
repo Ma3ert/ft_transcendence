@@ -294,7 +294,9 @@ export class UsersService {
       }
     });
 
-    const friendsList = user.users ? user.users.map((friend) => friend.id) : [];
+    // cannot read properties of null (reading 'users')
+    const friendsList = user && user.users ? user.users.map((friend) => friend.id) : [];
+
     return friendsList.includes(friendId);
   }
 
