@@ -22,7 +22,16 @@ export default function Home() {
   {
     client.getData("/me").then((res: AxiosResponse)=> {
       setCurrentUser(res.data.data)
-      setNewAvatar("http://127.0.0.1:3000/public/users/imgs/" + res.data.data.avatar)
+      if (res.data.data.activated)
+        router.push("/Lobby")
+      const avatar: string = res.data.data.avatar
+      if (!avatar.includes("http"))
+      {
+        setNewAvatar("http://localhost:3000/public/users/imgs/" + res.data.data.avatar)
+        console.log("avatar: ", avatar)
+      }
+      else
+        setNewAvatar(avatar)
     }).catch((err) => (console.log(err)))
   }
 
@@ -38,11 +47,12 @@ export default function Home() {
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement);
-    const userName: string = formData.get("newUserName") as string;
+    const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
+    formData.append("activated", "true")
     // const image: string | undefined = imageFile ? imageFile.name : undefined;
     if (userName !== "" && imageFile)
-      client.patchData(formData, "/" + currentUser.id).then(() => (router.push("/Lobby")))
+      client.patchData(formData).then(() => (router.push("/Lobby")))
     else {
       router.push("/Lobby");
     }

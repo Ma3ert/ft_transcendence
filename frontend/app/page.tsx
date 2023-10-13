@@ -18,7 +18,7 @@ export default function Home() {
     minH="70vh"
     >
       <Logo src="/logo.png" width="334px" height="179px"></Logo>
-      <Link href={"http://127.0.0.1:3000/auth/42/login"}>
+      <Link href={"http://localhost:3000/auth/42/login"}>
         <Button variant={"primary"} 
           width={{ base: "200px", lg: "250px", xl: "300px" }} 
           height={{base: "60px", lg: "70px", xl: "80px" }}

@@ -33,7 +33,7 @@ export class AuthController {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
     // res.status(200).json({status: 'success', message: "User authenticated successfully"})
-    res.redirect("http://127.0.0.1:3001/ChangeUserName")
+    res.redirect("http://localhost:3001/ChangeUserName")
   }
 
   @Get('42/logout')
