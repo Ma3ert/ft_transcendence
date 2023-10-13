@@ -114,7 +114,7 @@ export class ChatService {
                 receiverId:receiver,
                 content:message,
             }
-        })
+        }
     }
 
     async createChannelMessage(sender:string, channel:string, message:string){

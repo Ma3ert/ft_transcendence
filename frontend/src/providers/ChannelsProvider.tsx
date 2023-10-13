@@ -20,6 +20,8 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
         queryFn: () => userChannelsClient.getData().then(res => res.data),
         onSuccess: (data:Channel[]) => {
             setChannels(data)
+            if (data.length > 0)
+                setActiveChannel(data[0])
         },
         onError: (err) => {
             console.log(err)
@@ -33,11 +35,7 @@ const ChannelsProvider:React.FC<ChannelsProviderProps> = ({ children }) =>
         // fetch active channel
         // fetch active channel members
         // fetch channel conversations
-        setActiveChannel(Channels[0])
-        if (!activeChannel && Channels && Channels.length > 0)
-            setCounter (counter + 1)
-        console.log (activeChannel)
-    }, [counter])
+    }, [])
     return <ChannelsContext.Provider value={{Channels, activeChannel, setActiveChannel}}>
         {children}
     </ChannelsContext.Provider>

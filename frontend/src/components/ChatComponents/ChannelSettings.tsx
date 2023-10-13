@@ -16,7 +16,7 @@ import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
 import { ModalWrapper } from "@/components/Wrappers/ModalWrapper";
 import { SlArrowRight } from "react-icons/sl";
-import { ChannelsContext, UsersContext } from "@/context/Contexts";
+import { ChannelsContext, MembersContext, UsersContext } from "@/context/Contexts";
 import { useQuery } from "react-query";
 import apiClient from "@/services/requestProcessor";
 import useChannelManager from "@/hooks/useChannelManager";
@@ -25,23 +25,21 @@ import EditeChannel, {VisibilityPopOver} from "./EditeChannel";
 import ChannelsListSection from "../Sections/ChannelsListSection";
 import { useEffect } from "react";
 interface ChannelSettingsProps {
-  members:Member[]
-  userRole: string,
-  channel:Channel
 }
 
-const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole, channel}) => {
+const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   // eslint-disable-next-line react/jsx-key
   const { loggedInUser } = useContext(UsersContext);
   const { removeChannel, leaveChannel } = useChannelManager();
   const [settingsList, setSettings] = useState<string[]> (channelSettings)
-  const {isOpen, onOpen, onClose} = useDisclosure ()
+  const {members, loggedInUserRole} = useContext (MembersContext)
+  const {activeChannel} = useContext (ChannelsContext)
 
   const settings = new Map([
     [
       "Members",
       // eslint-disable-next-line react/jsx-key
-       <MembersList  members={members} />,
+       <MembersList  members={members!} />,
     ],
     [
       "Set password",
@@ -51,26 +49,26 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole, cha
     [
       "Edit Channel",
       // eslint-disable-next-line react/jsx-key
-       <EditeChannel channel={channel!} />,
+       <EditeChannel channel={activeChannel!} />,
     ]
    
   ]);
   const settingsActions = new Map([
-    ["delete", () => removeChannel(channel!.id!)],
-    ["leave", () => leaveChannel(channel!.id!)],
+    ["delete", () => removeChannel(activeChannel!.id!)],
+    ["leave", () => leaveChannel(activeChannel!.id!)],
   ]);
 
   useEffect (()=>{
-    console.log (`channel type : -----> ${channel!.type}`)
-    if (userRole === "OWNER" || userRole === 'ADMIN') {
-      if (channel?.type === 'PROTECTED')
+    console.log (`channel type : -----> ${activeChannel!.type}`)
+    if ( loggedInUserRole === "OWNER" || loggedInUserRole  === 'ADMIN') {
+      if (activeChannel!.type === 'PROTECTED')
         setSettings (ProtectedChannelSettings)
       else
         setSettings (channelSettings)
     } else {
         setSettings (ChannelMemberSettings)
       }
-  }, [userRole])
+  }, [])
   return (
     <Stack
       spacing={5}
@@ -127,15 +125,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({members, userRole, cha
       <Stack spacing={3}>
         <ModalWrapper
           action={
-            getUserRole(loggedInUser!, members) == "OWNER"
+              loggedInUserRole == "OWNER"
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
-          actionDescription={`${getUserRole (loggedInUser!, members) == "OWNER" ? "Delete" : "Leave"} Channel`}
+          actionDescription={`${loggedInUserRole == "OWNER" ? "Delete" : "Leave"} Channel`}
           buttonValue={
             <Text>
-              {getUserRole(loggedInUser!, members) == "OWNER" ? "Delete" : "Leave"} Channel
+              {loggedInUserRole == "OWNER" ? "Delete" : "Leave"} Channel
             </Text>
           }
           buttonVariant="largePrimary"

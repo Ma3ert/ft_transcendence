@@ -32,24 +32,16 @@ type ServerNotificationMessage =
   | ReadChatNotification;
 
 type DirectMessage = {
-  to?: string;
-  from?: string;
-  username?: string;
-  message?: string;
-  game?: boolean;
-  id?:string
-  channelId?:string
-  userId?: string
-  content?: string 
-  create_at?:string
-  senderId?:string
-  receiverId	?:string
+  senderId: string,
+  receiverId: string,
+  content: string,
+  game?: boolean,
 };
 
 type ChannelMessage = {
-  from?: string;
-  channel?: string;
-  message?: string;
+  userId:string,
+  channelId:string,
+  content:string,
 };
 
 // type UsersResponse = {}
@@ -320,7 +312,16 @@ type ModalWrapperContext = {
   onClose?: () => void;
 }
 
+type CmContext = {
+  messages?: ChannelMessage[];
+}
 
 type DmContext = {
   messages?: DirectMessage[];
+}
+
+type MembersContext = {
+  members?: Member[];
+  loggedInUserRole?: UserType;
+  setMembers?: React.Dispatch<React.SetStateAction<Member[]>>;
 }

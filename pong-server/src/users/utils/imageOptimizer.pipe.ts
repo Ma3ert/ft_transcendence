@@ -5,6 +5,7 @@ import * as path from 'path';
 @Injectable()
 export class imageOptimizerPipe implements PipeTransform<Express.Multer.File> {
   async transform(image: Express.Multer.File): Promise<string> {
+    if (!image) return null;
     const filename = Date.now() + '.jpeg';
     await sharp(image.buffer)
       .resize(500)

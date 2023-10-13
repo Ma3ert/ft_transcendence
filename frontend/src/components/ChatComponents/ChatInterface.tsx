@@ -9,20 +9,19 @@ import { CHANNEL, PRIVATE } from "../../../contstants";
 import PrivateChat from "./PrivateChat";
 import ChannelsChat from "./ChannelsChat";
 import { NotifyServer } from "../../../utils/eventEmitter";
+import useDirectConversations from "@/hooks/useDirectConversations";
 
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
   const { socket } = useContext(GlobalContext);
   const { loggedInUser } = useContext(UsersContext);
+  const {data, isLoading, isError} = useDirectConversations ()
 
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
     console.log(type);
     if (chatType == PRIVATE)
       NotifyServer(socket!, "userIsActive", loggedInUser!);
-    
-    // if (chatType == CHANNEL)
-    //   NotifyServer (socket!, "userIsInChannel", loggedInUser!)
   }, []);
   return <>{chatType == PRIVATE ? <PrivateChat /> : <ChannelsChat />}</>;
 };
