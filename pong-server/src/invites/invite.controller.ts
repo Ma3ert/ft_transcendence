@@ -13,13 +13,6 @@ export class InviteController {
     return this.inviteService.getInviteReadyList(req.user.id);
   }
 
-  @Get('users/:id')
-  async checkUserAvailable(@Param('id') invitedUser: string, @Req() req: any) {
-    const invite = await this.inviteService.checkCanInviteUser(invitedUser, req.user.id);
-    if (invite) return { status: 'success', available: false, invite };
-    return { status: 'success', available: true };
-  }
-
   @Post()
   async create(@Body('invitedUser') invitedUserId: string, @Req() req: any) {
     if (invitedUserId === req.user.id)

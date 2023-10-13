@@ -9,8 +9,10 @@ import {AuthUser} from "@/context/Contexts"
 import apiClient from '@/services/requestProcessor';
 import axios, { AxiosResponse } from 'axios';
 import {FaPen} from "react-icons/fa"
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter()
   const client = new apiClient("/users");
   const [send, setSend] = useState("");
   const { currentUser, setCurrentUser } = useContext(AuthUser)
@@ -21,7 +23,7 @@ export default function Home() {
     client.getData("/me").then((res: AxiosResponse)=> {
       setCurrentUser(res.data.data)
       setNewAvatar("http://127.0.0.1:3000/public/users/imgs/" + res.data.data.avatar)
-    })
+    }).catch((err) => (console.log(err)))
   }
 
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,14 +38,16 @@ export default function Home() {
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement);
-    // const userName: string = formData.get("newUserName") as string;
-    // const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
+    const userName: string = formData.get("newUserName") as string;
+    const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
     // const image: string | undefined = imageFile ? imageFile.name : undefined;
-  
+    if (userName !== "" && imageFile)
+      client.patchData(formData, "/" + currentUser.id).then(() => (router.push("/Lobby")))
+    else {
+      router.push("/Lobby");
+    }
     // console.log("username:", userName);
     // console.log("image:", image);
-    client.patchData(formData, "/" + currentUser.id)
-    // .then(() => {client.getData("/me").then((res: AxiosResponse)=> {setCurrentUser(res.data.data)})})
   }
 
   return (
