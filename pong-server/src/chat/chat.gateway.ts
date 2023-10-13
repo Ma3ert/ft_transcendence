@@ -139,43 +139,43 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
 
   @SubscribeMessage('DM')
   async sendDM(client:AuthSocket, data:{
-    sender:string,
-    reciever:string,
+    senderId:string,
+    recieverId:string,
     message:string,
     game:boolean
   })
   { // need some refactoring
     if (data.game === false)
     {
-      await this.chatService.createDirectMessage(data.sender, data.reciever, data.message);
-      await this.notificationService.createDirectMessageNotification(data.sender, data.reciever);
+      await this.chatService.createDirectMessage(data.senderId, data.recieverId, data.message);
+      await this.notificationService.createDirectMessageNotification(data.senderId, data.recieverId);
       //if user is logged in i will sent a checkNotificatoin event to all loggedIn users.
-      this.server.to(data.sender).emit("DM", data);
-      this.server.to(data.reciever).emit("DM", data);
-      this.checkUserNotification(data.reciever);
-      this.chatNotification(data.reciever);
+      this.server.to(data.senderId).emit("DM", data);
+      this.server.to(data.recieverId).emit("DM", data);
+      this.checkUserNotification(data.recieverId);
+      this.chatNotification(data.recieverId);
     }
     else
     {
-      this.server.to(data.sender).emit("DM", data);
-      this.server.to(data.reciever).emit("DM", data);
+      this.server.to(data.senderId).emit("DM", data);
+      this.server.to(data.recieverId).emit("DM", data);
     }
   }
 
   @SubscribeMessage('CM')
   async sendCM(client:AuthSocket, data:{
-    sender:string,
+    senderId:string,
     channel:string,
     message:string
   })
   {
-    await this.chatService.createChannelMessage(data.sender, data.channel, data.message);
-    await this.notificationService.createChannelMessageNotification(data.sender, data.channel);
-    const channelMembers = await this.chatService.getChannelMembersIds(data.channel, data.sender);
+    await this.chatService.createChannelMessage(data.senderId, data.channel, data.message);
+    await this.notificationService.createChannelMessageNotification(data.senderId, data.channel);
+    const channelMembers = await this.chatService.getChannelMembersIds(data.channel, data.senderId);
     this.server.to(data.channel).emit("CM", data);
     for (const user of channelMembers)
     {
-      if (user.userId != data.sender)
+      if (user.userId != data.senderId)
       {
         await this.checkUserNotification(user.userId);
         await this.chatNotification(user.userId);
