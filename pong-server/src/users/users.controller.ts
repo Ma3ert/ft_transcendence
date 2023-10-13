@@ -69,15 +69,18 @@ export class UsersController {
   @Get('me')
   @UseGuards(LoggedInGuard)
   getCurrentUser(@Req() req) {
-    return { status: 'success', data: secureUserObject(
-      req.user,
-      'twoFactorRetry',
-      'twoFactor',
-      'twoFactorPin',
-      'twoFactorPinExpires',
-      "blockedUserId",
-      "friendsListId"
-    ), };
+    return {
+      status: 'success',
+      data: secureUserObject(
+        req.user,
+        'twoFactorRetry',
+        'twoFactor',
+        'twoFactorPin',
+        'twoFactorPinExpires',
+        'blockedUserId',
+        'friendsListId',
+      ),
+    };
   }
 
   @Get('friends')
@@ -104,15 +107,16 @@ export class UsersController {
           new MaxFileSizeValidator({ maxSize: 3000 * 1000 }), // 3MB
           new FileTypeValidator({ fileType: 'image/jpeg' }),
         ],
-        fileIsRequired: false
+        fileIsRequired: false,
       }),
       imageOptimizerPipe,
     )
     image: string,
     @Req() req: any,
-    @Body() updateUserDto: UpdateUserDto, 
+    @Body() updateUserDto: UpdateUserDto,
   ) {
     if (image) updateUserDto.avatar = image;
+    if (updateUserDto.avatar || updateUserDto.username) updateUserDto.activated = true;
     const user = await this.usersService.updateUser(req.user.id, updateUserDto);
     if (user) return { status: 'success', user };
   }
