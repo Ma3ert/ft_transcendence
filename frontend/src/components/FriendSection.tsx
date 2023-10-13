@@ -12,6 +12,7 @@ import Challenge from './Challenge';
 type Props = {}
 
 const FriendSection = (props: Props) => {
+  
   const requests=[
     <UserRequest userPic='' userName='ma3ert'></UserRequest>,
     <UserRequest userPic='' userName='ma3ert'></UserRequest>,
@@ -32,7 +33,7 @@ const FriendSection = (props: Props) => {
     <UserRequest userPic='' userName='ma3ert'></UserRequest>,
     <UserRequest userPic='' userName='ma3ert'></UserRequest>,
     ]
-const friends=[
+  const friends=[
     <UserField userPic='' userName='ma3ert'></UserField>,
     <UserField userPic='' userName='ma3ert'></UserField>,
     <UserField userPic='' userName='ma3ert'></UserField>,

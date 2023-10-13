@@ -3,10 +3,14 @@ import { UserInvite } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateInviteDto } from './dto/create-invite.dto';
 import { UsersService } from 'src/users/users.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class InviteService {
-  constructor(private readonly prismaService: PrismaService, private readonly usersService: UsersService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly usersService: UsersService,
+    private readonly notificationService: NotificationService) { }
   async createInvite(inviteBody: CreateInviteDto) {
     const checkInviteExists = await this.prismaService.userInvite.findMany({
       where: {
@@ -29,7 +33,7 @@ export class InviteService {
     const currentBlocked = (await this.usersService.getBlockedUsers(inviteBody.invitedUserId)).map((user) => user.id);
     if (currentBlocked.includes(inviteBody.inviteOwnerId)) return null;
 
-    return this.prismaService.userInvite.create({
+    const inviteId = this.prismaService.userInvite.create({
       data: {
         inviteOwner: {
           connect: {
@@ -43,6 +47,8 @@ export class InviteService {
         },
       },
     });
+    await this.notificationService.createFriendInviteNotification(inviteBody.inviteOwnerId, inviteBody.invitedUserId);
+    return inviteId;
   }
 
   getSendInvites(inviteOwnerId: string) {
@@ -155,7 +161,7 @@ export class InviteService {
       },
     });
 
-    // Delete the invite.
+    await this.notificationService.readFriendInviteNotification(invite.inviteOwnerId, invite.inviteUserId);
     return await this.prismaService.userInvite.delete({
       where: {
         id: inviteId,
@@ -164,6 +170,8 @@ export class InviteService {
   }
 
   async removeInvite(inviteId: string) {
+    const invite: UserInvite = await this.getInviteById(inviteId);
+    await this.notificationService.readDirectNotification(invite.inviteOwnerId, invite.inviteUserId);
     return this.prismaService.userInvite.delete({
       where: {
         id: inviteId,

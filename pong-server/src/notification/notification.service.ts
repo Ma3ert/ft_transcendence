@@ -78,7 +78,6 @@ export class NotificationService {
 
     async readUserNotification(user:string)
     {
-        const userNotification:any = await this.getUserNotification(user);
         await this.prismaService.notification.updateMany({
             where:{
                 userId:user,
@@ -193,13 +192,36 @@ export class NotificationService {
                 type: NotificationType.CHANNELINVITE,
             }
         });
-        await this.prismaService.notification.update({
+        if (notification)
+        {
+            await this.prismaService.notification.update({
+                where: {
+                    id: notification.id
+                },
+                data: {
+                    read: true,
+                }
+            });
+        }
+    }
+
+    async readFriendInviteNotification(sender: string, reciever: string) {
+        const notification = await this.prismaService.notification.findFirst({
             where: {
-                id:notification.id
-            },
-            data: {
-                read:true,
+                userId: reciever,
+                senderId: sender,
+                type: NotificationType.FRIENDINVITE,
             }
-        })
+        });
+        if (notification) {
+            await this.prismaService.notification.update({
+                where: {
+                    id:notification.id
+                },
+                data: {
+                    read:true,
+                }
+            })
+        }
     }
 }
