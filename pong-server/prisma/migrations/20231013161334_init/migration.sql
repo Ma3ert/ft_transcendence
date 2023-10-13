@@ -56,7 +56,7 @@ CREATE TABLE "DirectMessage" (
     "id" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
     "receiverId" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
     "create_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "DirectMessage_pkey" PRIMARY KEY ("id")
@@ -66,8 +66,8 @@ CREATE TABLE "DirectMessage" (
 CREATE TABLE "ChannelMessage" (
     "id" TEXT NOT NULL,
     "channelId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
+    "senderId" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
     "create_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ChannelMessage_pkey" PRIMARY KEY ("id")
@@ -198,7 +198,7 @@ ALTER TABLE "DirectMessage" ADD CONSTRAINT "DirectMessage_receiverId_fkey" FOREI
 ALTER TABLE "ChannelMessage" ADD CONSTRAINT "ChannelMessage_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ChannelMessage" ADD CONSTRAINT "ChannelMessage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ChannelMessage" ADD CONSTRAINT "ChannelMessage_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ChannelUser" ADD CONSTRAINT "ChannelUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

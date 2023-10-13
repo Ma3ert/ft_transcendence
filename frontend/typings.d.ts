@@ -282,7 +282,7 @@ type Envite ={
 type ChannelEnvite = {
   created_at: string,
   id:string,
-  reciever: string,
+  receiver: string,
   sender: string,
   channel:Channel
 }

@@ -81,8 +81,8 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
             SendMessage(message);
             else {
               socket.emit("CM", {
-                from:loggedInUser!.id,
-                channel:activeChannel!.id,
+                senderId:loggedInUser!.id,
+                channelId:activeChannel!.id,
                 message:message
               });
               

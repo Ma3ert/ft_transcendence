@@ -23,7 +23,7 @@ const  getGlobalChannelEnvites = (envites: ChannelEnvite[]) => {
     isChannelEnvite: true,
     enviteId: envite.id,
     senderId: envite.sender,
-    receiverId: envite.reciever, // Add receiverId property
+    receiverId: envite.receiver, // Add receiverId property
     createdAt: envite.created_at,
     channel: envite.channel,
   }));

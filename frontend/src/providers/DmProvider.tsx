@@ -41,7 +41,7 @@ const DmProvider: React.FC<DmProviderProps> = ({children}) => {
         {
           senderId: data.senderId,
           receiverId: data.receiverId,
-          content: data.message,
+          message: data.message,
         }
         const dms = Array.from (messages)
         dms!.push (dm)

@@ -111,7 +111,7 @@ export class ChatService {
                     data: {
                         senderId: sender,
                         receiverId: receiver,
-                        content: message,
+                        message: message,
                     }
                 });
             }
@@ -121,9 +121,9 @@ export class ChatService {
     async createChannelMessage(sender:string, channel:string, message:string){
         await this.prismaService.channelMessage.create({
             data:{
-                userId:sender,
+                senderId:sender,
                 channelId:channel,
-                content:message,
+                message:message,
             }
         })
     }
@@ -683,7 +683,7 @@ export class ChatService {
             let channel = await this.getChannelById(invite.channelId);
             invites.push({
                 sender: invite.senderId,
-                reciever: invite.receiverId,
+                receiver: invite.receiverId,
                 channel:channel
             });
         }
@@ -702,7 +702,7 @@ export class ChatService {
             let channel = await this.getChannelById(invite.channelId);
             invites.push({
                 sender: invite.senderId,
-                reciever: invite.receiverId,
+                receiver: invite.receiverId,
                 channel: channel
             });
         }
