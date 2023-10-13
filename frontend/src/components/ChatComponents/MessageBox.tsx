@@ -28,7 +28,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
           {(Message.senderId != loggedInUser!.id) ?  activePeer?.username :  "You"}
         </Text>
         <Text color={(Message.senderId != loggedInUser!.id) ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
-          {Message!.content}
+          {Message!.message}
         </Text>
       </Stack>
     </HStack>

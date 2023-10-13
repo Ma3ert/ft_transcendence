@@ -10,12 +10,12 @@ import PrivateChat from "./PrivateChat";
 import ChannelsChat from "./ChannelsChat";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import useDirectConversations from "@/hooks/useDirectConversations";
-
+import NoFriendsPage from "./NoFriendsPage";
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
   const { socket } = useContext(GlobalContext);
-  const { loggedInUser } = useContext(UsersContext);
-  const {data, isLoading, isError} = useDirectConversations ()
+  const { loggedInUser, friendsList } = useContext(UsersContext);
+  const { data, isLoading, isError } = useDirectConversations();
 
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
@@ -23,7 +23,19 @@ const ChatInterface: React.FC = ({}) => {
     if (chatType == PRIVATE)
       NotifyServer(socket!, "userIsActive", loggedInUser!);
   }, []);
-  return <>{chatType == PRIVATE ? <PrivateChat /> : <ChannelsChat />}</>;
+  return (
+    <Stack h="100%" w="100%" justifyContent={"center"}>
+      {(friendsList && friendsList.length > 0) ? (
+        chatType == PRIVATE ? (
+          <PrivateChat />
+        ) : (
+          <ChannelsChat />
+        )
+      ) : (
+        <NoFriendsPage />
+      )}
+    </Stack>
+  );
 };
 
 export default ChatInterface;

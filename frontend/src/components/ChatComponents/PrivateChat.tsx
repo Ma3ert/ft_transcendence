@@ -9,40 +9,19 @@ import { GlobalContext, DmContext, ChatContext, UsersContext } from "@/context/C
 import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import DmProvider from "@/providers/DmProvider";
+import NoConversationsPage from "./NoConversationsPage";
 interface PrivateChatProps {}
 
 const PrivateChat: React.FC<PrivateChatProps> = () => {
 
   const {socket} = useContext (GlobalContext)
-  const  {activePeer, setActivePeer,friendsConversations, setFriendsConversations, friendsList} = useContext (UsersContext)
-  
-  const friendsConversationsClient = new apiClient (`chat/direct/`)
-
-
-  useQuery ({
-    queryKey: "friendsConversations",
-    queryFn: () => friendsConversationsClient.getData ().then (res=>res.data),
-    onSuccess: (conversationIds:string[]) => {
-      if (conversationIds && conversationIds.length > 0)
-      {
-        const filterdArray = friendsList!.filter((friend) => {
-          if ((friend!.id && conversationIds?.includes(friend!.id))
-          )
-            return true;
-          return false;
-        });
-        setFriendsConversations!(filterdArray);
-        setActivePeer!(filterdArray[0]);
-      }
-  },
-    onError: (err)=>console.log (err)
-  })
+  const  {activePeer,friendsConversations} = useContext (UsersContext)
  
   
   return (
    <Stack w='100%' h='100%' justifyContent={'center'} align={'center'} spacing={0}>
     {
-      (activePeer && friendsConversations!.length > 0) ? (
+      (activePeer) ? (
         <Grid
         templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}
         w={{ base: "100%", lg: "100%", xl: "90%", vl: "85%" }}
@@ -74,7 +53,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
         </GridItem>
       </Grid>
       ) : (
-        <Text>no active peer</Text>
+        <NoConversationsPage />
       )
     }
    </Stack>

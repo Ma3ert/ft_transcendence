@@ -77,7 +77,7 @@ const useChannelManager = () => {
     })
     
 
-    function createChannel (channelName:string, channelType:string , channlPass?:string, channelAvatar?:string){
+    function createChannel (channelName:string, channelType:string ,channelAvatar:string, channlPass?:string, ){
         newChannelMutation.mutate({name: channelName, type: channelType, password: channlPass!, avatar: channelAvatar!})
     }
 

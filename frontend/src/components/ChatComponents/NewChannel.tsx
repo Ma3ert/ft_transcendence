@@ -114,11 +114,11 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
         if (channelNameSchema.safeParse(channelName).success)
         {
           if (isPrivate) {
-            createChannel (channelName, "PRIVATE", undefined, avatarPath)
+            createChannel (channelName, "PRIVATE", avatarPath)
           }
           else if (isProtected) {
             if (passwordSchema.safeParse(channelPassword).success)
-              createChannel (channelName, "PROTECTED", channelPassword, avatarPath)
+              createChannel (channelName, "PROTECTED",avatarPath, channelPassword)
           }
           else {
             createChannel (channelName, "PUBLIC", avatarPath)

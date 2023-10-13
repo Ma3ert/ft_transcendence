@@ -3,12 +3,12 @@ import { ChatContext, UsersContext } from "@/context/Contexts";
 import { useContext } from "react";
 
 interface MessageBoxProps {
-    Message: DirectMessage;
+    Message:ChannelMessage;
   }
   const ChannelMessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
   
     const {loggedInUser , Users} = useContext(UsersContext);
-    const sender:(User|null) = Users!.find (user => user.id == Message.userId) || null
+    const sender:(User|null) = Users!.find (user => user.id == Message.senderId) || null
     return (
       <HStack justify={"start"} w="98%" mx="auto">
         <Stack
@@ -28,11 +28,11 @@ interface MessageBoxProps {
         >
           {sender && (
             <Text color="#DC585B" fontSize={"xs"} fontWeight={"bold"}>
-            {(Message.userId != loggedInUser!.id) ?  sender!.username :  "You"}
+            {(Message.senderId != loggedInUser!.id) ?  sender!.username :  "You"}
           </Text>
           )}
           <Text color={"#1D222C"} fontSize={"sm"}>
-            {Message!.content}
+            {Message!.message}
           </Text>
         </Stack>
       </HStack>

@@ -53,7 +53,7 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
           px={3}
           py={2}
         >
-          <UserAvatar channel={channel} />
+          <UserAvatar isChannel={true} channel={channel} />
           <Text fontSize="sm">{channel.name}</Text>
         </HStack>
 

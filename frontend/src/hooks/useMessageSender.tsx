@@ -16,16 +16,21 @@ const useMessageSender = (
       if (message)
         SendMessage(
           socket!,
-          { message: message, from: loggedInUser!.id, to: activePeer!.id , game:false},
+          {
+            message: message,
+            senderId: loggedInUser!.id,
+            receiverId: activePeer!.id,
+            game: false,
+          },
           "DM"
         );
       else {
         SendMessage(
           socket!,
           {
-            message: message,
-            to: activePeer!.id,
-            from: loggedInUser!.id,
+            message: message!,
+            receiverId: activePeer!.id,
+            senderId: loggedInUser!.id,
             game: true,
           },
           "DM"
@@ -33,9 +38,9 @@ const useMessageSender = (
       }
     } else {
       const messageBody: ChannelMessage = {
-        message: message,
-        channel: activeChannel!.id!,
-        from: loggedInUser!.id,
+        message: message!,
+        channelId: activeChannel!.id!,
+        senderId: loggedInUser!.id,
       };
       SendMessage(socket!, messageBody, "CM");
     }

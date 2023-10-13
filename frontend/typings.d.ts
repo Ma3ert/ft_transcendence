@@ -34,14 +34,14 @@ type ServerNotificationMessage =
 type DirectMessage = {
   senderId: string,
   receiverId: string,
-  content: string,
+  message: string,
   game?: boolean,
 };
 
 type ChannelMessage = {
-  userId:string,
+  senderId:string,
   channelId:string,
-  content:string,
+  message:string,
 };
 
 // type UsersResponse = {}

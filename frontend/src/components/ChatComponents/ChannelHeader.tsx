@@ -30,7 +30,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
         <>
           <Avatar
             borderRadius={"15px"}
-            src={channel!.avatar}
+            src={`http://localhost:3000/${channel!.avatar}`}
             name={channel?.name}
             size="sm"
           />
