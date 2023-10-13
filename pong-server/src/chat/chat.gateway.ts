@@ -145,6 +145,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     game:boolean
   })
   {
+    
     if (data.game === false)
     {
       await this.chatService.createDirectMessage(data.from, data.to, data.message);
