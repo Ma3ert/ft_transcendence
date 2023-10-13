@@ -6,9 +6,17 @@ import { BsGoogle } from "react-icons/bs"
 import Link from "next/link";
 import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
+import { useContext } from "react";
+import { AuthUser } from "@/context/Contexts";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
-
+  const router = useRouter();
+  var currentUser = useAuth()
+  
+  if (currentUser && currentUser.activated)
+    router.push("/Lobby")
   return (
     <Stack
     spacing={"20vh"}

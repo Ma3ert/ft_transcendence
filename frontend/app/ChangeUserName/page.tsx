@@ -1,33 +1,35 @@
 "use client";
 import { Avatar, Button, Input, Stack, Wrap, Box, Icon, WrapItem, FormControl } from '@chakra-ui/react'
-import {FaArrowCircleRight} from "react-icons/fa"
-import IconButton from '@/components/IconButton';
 import Logo from "@/components/Logo"
 import { useContext, useState } from 'react';
 import Link from 'next/link';
 import {AuthUser} from "@/context/Contexts"
 import apiClient from '@/services/requestProcessor';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import {FaPen} from "react-icons/fa"
 import { useRouter } from "next/navigation";
+import { useAuth } from '@/hooks/useAuth';
+import Cookies from 'js-cookie';
 
 export default function Home() {
   const router = useRouter()
   const client = new apiClient("/users");
-  const [send, setSend] = useState("");
-  const { currentUser, setCurrentUser } = useContext(AuthUser)
-  const [newAvatar, setNewAvatar] = useState("");
+  var currentUser = useAuth()
+  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "");
+  
+  if (currentUser && currentUser.activated)
+    router.push("/Lobby")
 
-  if (currentUser === null)
+  if (currentUser === undefined)
   {
+    console.log("its undefined")
     client.getData("/me").then((res: AxiosResponse)=> {
-      setCurrentUser(res.data.data)
-      if (res.data.data.activated)
-        router.push("/Lobby")
+      Cookies.set('currentUser', JSON.stringify(res.data.data));
+      currentUser = useAuth()
       const avatar: string = res.data.data.avatar
       if (!avatar.includes("http"))
       {
-        setNewAvatar("http://localhost:3000/public/users/imgs/" + res.data.data.avatar)
+        setNewAvatar(res.data.data.avatar)
         console.log("avatar: ", avatar)
       }
       else
