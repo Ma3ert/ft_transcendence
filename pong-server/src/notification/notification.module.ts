@@ -8,7 +8,12 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [forwardRef(() => ChatModule)],
-  providers: [PrismaService, NotificationService, AuthService, UsersService, JwtService],
+  providers: [
+    PrismaService,
+    NotificationService,
+    AuthService,
+    UsersService,
+    JwtService],
   exports: [NotificationService],
 })
 export class NotificationModule {}
