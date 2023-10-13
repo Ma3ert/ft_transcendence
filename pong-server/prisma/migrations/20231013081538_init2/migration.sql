@@ -16,13 +16,15 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "avatar" TEXT NOT NULL,
+    "status" "UserStatus" NOT NULL DEFAULT 'ONLINE',
+    "xp" INTEGER NOT NULL DEFAULT 0,
+    "level" INTEGER NOT NULL DEFAULT 0,
     "twoFactorRetry" INTEGER NOT NULL DEFAULT 0,
     "twoFactor" BOOLEAN NOT NULL DEFAULT false,
     "twoFactorPin" TEXT,
     "twoFactorPinExpires" TIMESTAMP(3),
     "activated" BOOLEAN NOT NULL DEFAULT false,
     "pinValidated" BOOLEAN NOT NULL DEFAULT false,
-    "status" "UserStatus" NOT NULL DEFAULT 'ONLINE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -36,6 +38,17 @@ CREATE TABLE "UserInvite" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "UserInvite_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Game" (
+    "id" TEXT NOT NULL,
+    "winner" TEXT,
+    "playerOneScore" INTEGER NOT NULL DEFAULT 0,
+    "playerTwoScore" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Game_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -136,11 +149,20 @@ CREATE TABLE "_BlackedFriends" (
     "B" TEXT NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_GameToUser" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Game_id_key" ON "Game"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_Friendship_AB_unique" ON "_Friendship"("A", "B");
@@ -153,6 +175,12 @@ CREATE UNIQUE INDEX "_BlackedFriends_AB_unique" ON "_BlackedFriends"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_BlackedFriends_B_index" ON "_BlackedFriends"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_GameToUser_AB_unique" ON "_GameToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_GameToUser_B_index" ON "_GameToUser"("B");
 
 -- AddForeignKey
 ALTER TABLE "UserInvite" ADD CONSTRAINT "UserInvite_inviteUserId_fkey" FOREIGN KEY ("inviteUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -219,3 +247,9 @@ ALTER TABLE "_BlackedFriends" ADD CONSTRAINT "_BlackedFriends_A_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "_BlackedFriends" ADD CONSTRAINT "_BlackedFriends_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_GameToUser" ADD CONSTRAINT "_GameToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Game"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_GameToUser" ADD CONSTRAINT "_GameToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
