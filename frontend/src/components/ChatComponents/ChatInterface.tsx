@@ -17,11 +17,10 @@ const ChatInterface: React.FC = ({}) => {
   const { loggedInUser, friendsList } = useContext(UsersContext);
   const { data, isLoading, isError } = useDirectConversations();
 
+
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
     console.log(type);
-    if (chatType == PRIVATE)
-      NotifyServer(socket!, "userIsActive", loggedInUser!);
   }, []);
   return (
     <Stack h="100%" w="100%" justifyContent={"center"}>

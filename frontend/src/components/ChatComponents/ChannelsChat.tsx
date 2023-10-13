@@ -20,49 +20,56 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
 
   return (
-    <Stack w='100%' h='100%'>
-      {(Channels && Channels.length) ? (
-        <Stack w="100%" h="100%" justifyContent={"center"} alignItems={"center"}>
-        {activeChannel && Channels!.length > 0 ? (
-          <Grid
-            templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}
-            w={{ base: "100%", lg: "100%", xl: "90%", vl: "85%" }}
-            // border="1px"
-            // borderColor="green"
-            h="100%"
-            mx="auto"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <GridItem justifyContent="center" alignItems="center" h="100%">
-              <ChatNavigation />
-            </GridItem>
-            <GridItem
-              justifyContent="center"
-              alignItems="center"
-              w={"100%"}
-              h="100%"
-            >
-              <CmProvider>
-                <ChatBox />
-              </CmProvider>
-            </GridItem>
-            <GridItem
-              justifyContent="center"
-              alignItems="center"
-              w={"100%"}
-              h="100%"
-            >
-              <MembersProvider>
-                <ChannelSettings />
-              </MembersProvider>
-            </GridItem>
-          </Grid>
-        ) : (
-          <Text> No channels found </Text>
-        )}
-      </Stack>
-      ) : <NoChannelsPage /> }
+    <Stack w="100%" h="100%">
+      {Channels && Channels.length ? (
+        <Stack
+          w="100%"
+          h="100%"
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          {activeChannel && Channels!.length > 0 ? (
+            <MembersProvider>
+              <Grid
+                templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}
+                w={{ base: "100%", lg: "100%", xl: "90%", vl: "85%" }}
+                // border="1px"
+                // borderColor="green"
+                h="100%"
+                mx="auto"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <GridItem justifyContent="center" alignItems="center" h="100%">
+                  <ChatNavigation />
+                </GridItem>
+                <GridItem
+                  justifyContent="center"
+                  alignItems="center"
+                  w={"100%"}
+                  h="100%"
+                >
+                  <CmProvider>
+                    <ChatBox />
+                  </CmProvider>
+                </GridItem>
+                <GridItem
+                  justifyContent="center"
+                  alignItems="center"
+                  w={"100%"}
+                  h="100%"
+                >
+                  <ChannelSettings />
+                </GridItem>
+              </Grid>
+            </MembersProvider>
+          ) : (
+            <Text> No channels found </Text>
+          )}
+        </Stack>
+      ) : (
+        <NoChannelsPage />
+      )}
     </Stack>
   );
 };

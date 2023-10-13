@@ -58,7 +58,6 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
         </HStack>
 
         <HStack spacing={5}>
-            {caseActions.get(channel!.type!)!()}
           <Text fontSize="sm">{channel!.type?.toLowerCase ()}</Text>
         </HStack>
       </HStack>

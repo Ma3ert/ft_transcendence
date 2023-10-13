@@ -8,17 +8,27 @@ import { NotifyServer } from "../../../utils/eventEmitter";
 import { CHANNEL, PRIVATE } from "../../../contstants";
 
 const Chat: React.FC<ChatProps> = ({}) => {
-  const { chatType } = useContext(ChatContext);
+  const { chatType , setCmNotifications, setDmNotifications} = useContext(ChatContext);
   const {socket}  = useContext (GlobalContext)
   const {loggedInUser}  = useContext (UsersContext)
 
   useEffect (()=>{
       const type = chatType == CHANNEL ? "channelMessage" : "directMessage"
-       console.log (type)
-       if (chatType == PRIVATE)
-        NotifyServer (socket!, "userIsActive", loggedInUser!)
+      console.log (type)
+      NotifyServer (socket!, "userIsActive", loggedInUser!)
+      socket!.on ('ChatNotification', (message: ChatNotification) => {
+        console.log ('chat notifications')
+        console.log (message)
+        setDmNotifications! (message.DM)
+        setCmNotifications! (message.CM)
+      })
+    
       // if (chatType == CHANNEL)
       //   NotifyServer (socket!, "userIsInChannel", loggedInUser!)
+    return ()=>{
+      console.log ('user in inactive')  
+          NotifyServer (socket!, "userIsNotActive", loggedInUser!)
+    }
   }
   ,[])
   return <ChatInterface />;

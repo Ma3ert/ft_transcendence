@@ -1,4 +1,4 @@
-import { AppNavigationContext, ChatContext } from "@/context/Contexts";
+import { AppNavigationContext, ChatContext, UsersContext } from "@/context/Contexts";
 import { Tabs, TabList, Tab, Wrap, Text, Icon } from "@chakra-ui/react";
 import { useContext } from "react";
 import { FaUserPlus, FaMedal, FaTrophy } from "react-icons/fa";
@@ -77,6 +77,7 @@ const TabsWrapper: React.FC = () => {
     setAchievementsSection,
     setSettingsSection,
   } = useContext(AppNavigationContext);
+  const {chatNotifications, inviteNotifications} = useContext(UsersContext);
   const ChatLobbyTabs: Tab[] = [
     {
       value: <Text>Lobby</Text>,
@@ -138,7 +139,7 @@ const TabsWrapper: React.FC = () => {
           switch (getCurrentSectionType()) {
             case "lobby":
               return (
-                <NotificationWrapper type='activeChat' status={true}>
+                <NotificationWrapper type='activeChat' status={chatNotifications!}>
                   <Toggler tabs={ChatLobbyTabs} type={true} />
                 </NotificationWrapper>
               );

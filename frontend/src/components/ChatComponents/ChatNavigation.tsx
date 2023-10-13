@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Avatar, Stack, HStack, Text, Button } from "@chakra-ui/react";
+import { Avatar, Stack, HStack, Text, Button, Tooltip } from "@chakra-ui/react";
 import UserAvatar from "../UserAvatar";
 import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
@@ -20,18 +20,31 @@ interface ChatNavigationProps {}
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { setCurrentChat } = useContext(ChatContext);
+  const { setCurrentChat, CmNotifications } = useContext(ChatContext);
   const { activeChannel, setActiveChannel, Channels } =
     useContext(ChannelsContext);
+  const notification = (channel: Channel) =>
+    CmNotifications?.find((elm) => elm == channel.id);
+  function countOccurrences(channelid: string, ids: string[]) {
+    return ids.filter((item) => item === channelid).length;
+  }
 
-  useEffect(() => {
-   
-  }, []);
+  useEffect(() => {}, []);
   return (
     <>
       {Channels?.map((channel, index) => {
+        console.log(
+          `channel ${channel.name} has ${countOccurrences(
+            channel!.id!,
+            CmNotifications!
+          )} notifications`
+        );
         return (
-          <NotificationWrapper type="activeChat" status={false} key={index}>
+          <NotificationWrapper
+            type="activeChat"
+            status={notification(channel) ? true : false}
+            key={index}
+          >
             <UserAvatar
               isChannel={true}
               channel={channel}
@@ -49,27 +62,54 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const {setCurrentChat } = useContext(ChatContext);
-  const {setActivePeer, friendsConversations} = useContext (UsersContext)
-  useEffect (() => {
-    
-  }, [])
+  const { setCurrentChat, DmNotifications } = useContext(ChatContext);
+  const { setActivePeer, friendsConversations, activePeer } =
+    useContext(UsersContext);
+  const notification = (friend: User) =>
+    DmNotifications?.find((elm) => elm == friend.id);
+  const countOccurrences = (friendid: string, ids: string[]) => {
+    return ids.filter((item) => item === friendid).length;
+  };
+  useEffect(() => {}, []);
   return (
     <>
-      {friendsConversations?.map((friend, index) => {
-        return (
-          <NotificationWrapper type="activeChat" status={true} key={index}>
+      {activePeer && friendsConversations?.length == 0 ? (
+       
+          <NotificationWrapper
+            type="activeChat"
+            status={notification(activePeer!) ? true : false}
+          >
             <UserAvatar
               isChannel={false}
-              user={friend}
+              user={activePeer!}
               action={() => {
                 setCurrentChat!(PRIVATE);
-                setActivePeer!(friend);
+                setActivePeer!(activePeer);
               }}
             />
           </NotificationWrapper>
-        );
-      })}
+      ) : (
+        friendsConversations?.map((friend, index) => {
+          console.log(`friend ${friend.username}  notifications`);
+          return (
+            <NotificationWrapper
+              key={index}
+              type="activeChat"
+              status={notification(friend!) ? true : false}
+            >
+             
+                <UserAvatar
+                  isChannel={false}
+                  user={friend}
+                  action={() => {
+                    setCurrentChat!(PRIVATE);
+                    setActivePeer!(friend);
+                  }}
+                />
+            </NotificationWrapper>
+          );
+        })
+      )}
     </>
   );
 };
@@ -77,7 +117,6 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { chatType, setCurrentChat } = useContext(ChatContext);
 
-  
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton

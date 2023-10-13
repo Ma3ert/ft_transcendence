@@ -8,7 +8,7 @@ import { FaMedal } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import Link from "next/link";
-import { ChatContext } from "@/context/Contexts";
+import { ChatContext, UsersContext } from "@/context/Contexts";
 import {NotificationWrapper} from './ChatComponents/NotificationBadge'
 interface Props {
   currentSection: Section;
@@ -18,6 +18,7 @@ interface Props {
 const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
   const size = "25px";
   const links = new Map<Section, React.ElementType>();
+  const {inviteNotifications} = useContext(UsersContext)
 
   links.set("lobby", AiFillHome);
   links.set("notifications", BiSolidBell);
@@ -36,7 +37,7 @@ const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
       {Array.from(links).map(([section, icon]) => {
         if (section == "notifications") {
           return (
-            <NotificationWrapper key={section} type='activeChat' status={true}>
+            <NotificationWrapper key={section} type='activeChat' status={inviteNotifications!}>
               <IconButton
                 icon={icon}
                 size={size}

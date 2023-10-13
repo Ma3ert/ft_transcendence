@@ -13,7 +13,7 @@ interface MessageBoxProps {
       <HStack justify={"start"} w="98%" mx="auto">
         <Stack
           borderRadius={"2xl"}
-          bg={"#5B6171"}
+          bg={"#252932"}
           justify={"center"}
           alignItems={"start"}
           w="auto"
@@ -27,11 +27,11 @@ interface MessageBoxProps {
           }}
         >
           {sender && (
-            <Text color="#DC585B" fontSize={"xs"} fontWeight={"bold"}>
+            <Text color="#DC585B" fontSize={"md"} fontWeight={"bold"}>
             {(Message.senderId != loggedInUser!.id) ?  sender!.username :  "You"}
           </Text>
           )}
-          <Text color={"#1D222C"} fontSize={"sm"}>
+          <Text color={"#5B6171"} fontSize={"sm"}>
             {Message!.message}
           </Text>
         </Stack>

@@ -10,17 +10,17 @@ type FriendsSection = "friends" | "requests" | "channels";
 type AchievementsSection = "achievements" | "leaderboard";
 type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
-type ModalType = "regular" | "confirmation" ;
+type ModalType = "regular" | "confirmation";
 
 type EventName =
-  "userLoggedIn"
-| "userLoggedOut"
-| "userIsActive"
-| "checkStatus"
-| "userIsNotActive"
-| "DM"
-| "CM"
-| "readChatNotification"
+  | "userLoggedIn"
+  | "userLoggedOut"
+  | "userIsActive"
+  | "checkStatus"
+  | "userIsNotActive"
+  | "DM"
+  | "CM"
+  | "readChatNotification";
 
 type checkStatus = {
   userid?: number;
@@ -32,16 +32,16 @@ type ServerNotificationMessage =
   | ReadChatNotification;
 
 type DirectMessage = {
-  senderId: string,
-  receiverId: string,
-  message: string,
-  game?: boolean,
+  senderId: string;
+  receiverId: string;
+  message: string;
+  game?: boolean;
 };
 
 type ChannelMessage = {
-  senderId:string,
-  channelId:string,
-  message:string,
+  senderId: string;
+  channelId: string;
+  message: string;
 };
 
 // type UsersResponse = {}
@@ -137,8 +137,12 @@ interface ChatContext {
   channelConversations?: string[];
   setPrivateConversations?: React.Dispatch<React.SetStateAction<string[]>>;
   setChannelConversations?: React.Dispatch<React.SetStateAction<string[]>>;
-  dmConversations?:User[]
-  setDmConversations?:React.Dispatch<React.SetStateAction<User[]>>
+  dmConversations?: User[];
+  setDmConversations?: React.Dispatch<React.SetStateAction<User[]>>;
+  DmNotifications?: string[];
+  setDmNotifications?: React.Dispatch<React.SetStateAction<string[]>>;
+  CmNotifications?: string[];
+  setCmNotifications?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 interface ModalWrapperProps {
@@ -159,7 +163,7 @@ interface RegularModalProps {
   onOpen: () => void;
   onClose: () => void;
   children: React.ReactNode;
-  variant?: string
+  variant?: string;
 }
 
 interface ConfirmationModalProps {
@@ -218,7 +222,10 @@ type UsersContext = {
   SentFriendRequests?: Envite[];
   friendsConversations?: User[];
   setFriendsConversations?: React.Dispatch<React.SetStateAction<User[]>>;
-  
+  chatNotifications?: boolean;
+  inviteNotifications?: boolean;
+  setChatNotifications:React.Dispatch<React.SetStateAction<boolean>>;
+  setInviteNotifications:React.Dispatch<React.SetStateAction<boolean>>;
 };
 // Chat Events Types
 
@@ -260,68 +267,78 @@ type ChannelsContext = {
   Channels?: Channel[];
   setChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
   activeChannel?: Channel | null;
-  setActiveChannel?: React.Dispatch<React.SetStateAction<Channel|null>>;
+  setActiveChannel?: React.Dispatch<React.SetStateAction<Channel | null>>;
   channelEnvites?: ChannelEnvite[];
 };
 
-
 type MenuOption = {
   description: string;
-  type: 'critical' | 'normal';
+  type: "critical" | "normal";
   modal?: boolean;
   channelSettings?: boolean;
-}
+};
 
-type Envite ={
-  id: string,
-  inviteUserId: string,
-  inviteOwnerId: string,
-  createdAt: string
-}
+type Envite = {
+  id: string;
+  inviteUserId: string;
+  inviteOwnerId: string;
+  createdAt: string;
+};
 
 type ChannelEnvite = {
-  created_at: string,
-  id:string,
-  receiver: string,
-  sender: string,
-  channel:Channel
-}
+  created_at: string;
+  id: string;
+  receiver: string;
+  sender: string;
+  channel: Channel;
+};
 
 type GlobalEnvite = {
-  isChannelEnvite: boolean,
-  enviteId: string,
-  createdAt: string,
-  senderId: string,
-  receiverId: string,
-  channel?: Channel,
-}
+  isChannelEnvite: boolean;
+  enviteId: string;
+  createdAt: string;
+  senderId: string;
+  receiverId: string;
+  channel?: Channel;
+};
 
 type Member = {
-  user:string
-  role:string
-  banned:boolean
-  mutted:boolean
-}
+  user: string;
+  role: string;
+  banned: boolean;
+  mutted: boolean;
+};
 
-type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN"  | string
-
+type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN" | string;
 
 type ModalWrapperContext = {
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
-}
+};
 
 type CmContext = {
   messages?: ChannelMessage[];
-}
+};
 
 type DmContext = {
   messages?: DirectMessage[];
-}
+};
 
 type MembersContext = {
   members?: Member[];
   loggedInUserRole?: UserType;
   setMembers?: React.Dispatch<React.SetStateAction<Member[]>>;
-}
+};
+
+type checkNotification = {
+  userId:string
+  data:{
+    invites: boolean;
+    chat: boolean;
+  }
+};
+
+type ChatNotification = { DM: string[]; CM: string[] };
+type checkStatus = {status:string} 
+type readChatNotification = {channel:boolean, Id:string}

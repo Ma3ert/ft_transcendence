@@ -6,25 +6,24 @@ import { getUserRole } from '../../utils/helpers';
 
 interface MembersProviderProps {
     children: React.ReactNode
+    channelId?:string
 }
 
-const MembersProvider:React.FC<MembersProviderProps> = ({ children }) => {
+const MembersProvider:React.FC<MembersProviderProps> = ({ children, channelId }) => {
 
     const { activeChannel, Channels } = useContext(ChannelsContext);
     const channelMembersClient = (channelId: string) => new apiClient(`/chat/channels/${channelId}/members`);
     const [channelMembers, setChannelMembers] = useState<Member[]>([]);
     const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
-    const { loggedInUser } = useContext(UsersContext);
-
+    const id = (channelId) ? channelId : activeChannel?.id;
   useQuery({
-    queryKey: ["channelMembers", activeChannel?.id],
+    queryKey: ["channelMembers", id],
     queryFn: async () =>
-      channelMembersClient(activeChannel!.id!)
+      channelMembersClient(id!)
         .getData()
         .then((res) => res.data),
     onSuccess: (data: any) => {
       setChannelMembers(data);
-      setLoggedInUserRole(getUserRole (loggedInUser!, data))
     },
     onError: (err) => {
       console.log(err);
