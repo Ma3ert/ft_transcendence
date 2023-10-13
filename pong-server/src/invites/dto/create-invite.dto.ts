@@ -1,5 +1,11 @@
-//! Should add the class validator
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class CreateInviteDto {
-    inviteOwnerId: string;
-    invitedUserId: string;
+  @IsString()
+  @IsNotEmpty()
+  inviteOwnerId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  invitedUserId: string;
 }

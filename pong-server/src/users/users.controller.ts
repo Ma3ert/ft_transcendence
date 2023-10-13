@@ -116,7 +116,11 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     if (image) updateUserDto.avatar = image;
-    if (updateUserDto.avatar || updateUserDto.username) updateUserDto.activated = true;
+    if (typeof updateUserDto.activated === 'string') {
+      updateUserDto.activated === 'true'
+        ? (updateUserDto.activated = true)
+        : (updateUserDto.activated = false);
+    }
     const user = await this.usersService.updateUser(req.user.id, updateUserDto);
     if (user) return { status: 'success', user };
   }
