@@ -135,6 +135,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       }
     }
     this.activeUsers.delete(user);
+    this.checkUserNotification(user);
   }
 
   @SubscribeMessage('DM')
