@@ -1,48 +1,54 @@
 "use client";
-import { Avatar, Button, Input, Stack, Wrap, Box, Icon, WrapItem, FormControl } from '@chakra-ui/react'
+import { Avatar, Button, Input, Stack, Wrap, Box, Icon } from '@chakra-ui/react'
 import Logo from "@/components/Logo"
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import {AuthUser} from "@/context/Contexts"
 import apiClient from '@/services/requestProcessor';
 import { AxiosResponse } from 'axios';
 import {FaPen} from "react-icons/fa"
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/hooks/useAuth';
+import {useUpdateCurrentUser} from "@/hooks/useUpdateCurrentUser"
 import Cookies from 'js-cookie';
+import { useQuery, useQueryClient } from 'react-query';
 
 export default function Home() {
+  const queryClient = useQueryClient();
   const router = useRouter()
   const client = new apiClient("/users");
-  var currentUser = useAuth()
-  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "");
+  const [currentUser, setCurrentUser] = useState(useAuth()); 
+  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
+  console.log("re-render")
+  // const queryReturn = useQuery(
+  //   {
+  //     queryKey: ["current-user"],
+  //     queryFn: () => { client.getData("/me").then((res: AxiosResponse)=> {
+  //               console.log("query function is fired")
+  //               console.log(res.data.data)
+  //               Cookies.set('currentUser', JSON.stringify(res.data.data));
+  //               console.log("the cookie is set");
+  //               setCurrentUser(useAuth());
+  //               // console.log("from the queryfunctionJ: ", useAuth())
+  //             }).catch((err) => (console.log(err))) }
+  //   }
+  // )
+  const queryReturn = useUpdateCurrentUser({currentUserSetter: (user: any) => {
+    setCurrentUser(user)
+    newAvatar === "" && setNewAvatar(user.avatar)
+  }});
+  console.log("current user from changeusername: ", currentUser)
   
-  if (currentUser && currentUser.activated)
-    router.push("/Lobby")
-
-  if (currentUser === undefined)
-  {
-    console.log("its undefined")
-    client.getData("/me").then((res: AxiosResponse)=> {
-      Cookies.set('currentUser', JSON.stringify(res.data.data));
-      currentUser = useAuth()
-      const avatar: string = res.data.data.avatar
-      if (!avatar.includes("http"))
-      {
-        setNewAvatar(res.data.data.avatar)
-        console.log("avatar: ", avatar)
-      }
-      else
-        setNewAvatar(avatar)
-    }).catch((err) => (console.log(err)))
-  }
-
+  // if (currentUser === undefined)
+  // {
+  //   console.log("current user is undefined")
+  // }
+  
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.files)
     const currentFiles = event.target.files
     if (currentFiles && currentFiles?.length > 0){
       let src: string = URL.createObjectURL(currentFiles[0]);
       setNewAvatar(src)
+      console.log("the avatar updated")
     }
   }
 
@@ -52,19 +58,24 @@ export default function Home() {
     const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
     formData.append("activated", "true")
-    // const image: string | undefined = imageFile ? imageFile.name : undefined;
     if (userName !== "" && imageFile)
-      client.patchData(formData).then(() => (router.push("/Lobby")))
+    {
+      client.patchData(formData).then(() => {
+        queryClient.invalidateQueries("current-user")
+        router.push("/Lobby")
+      })
+    }
     else {
       router.push("/Lobby");
     }
-    // console.log("username:", userName);
-    // console.log("image:", image);
   }
-
+  
+  // if (currentUser && currentUser.activated)
+  //   router.push("/Lobby")
+  
   return (
     <Stack
-      spacing={"10vh"}
+    spacing={"10vh"}
       align="center"
       minH="70vh"
       >
@@ -98,7 +109,7 @@ export default function Home() {
                 variant={"default"}
                 w={{ base: "280px", lg: "340px" }}
                 h={{ base: "50px",lg: "66px" }}
-                placeholder={currentUser ? currentUser.username : 'new Username'}/>
+                placeholder={currentUser ? currentUser.username : "new username"}/>
               <Stack align={"center"} spacing={{base: "6px", lg:"8px" }}>
                 <Button
                   fontSize={{base: "15px", lg: "20px" }}

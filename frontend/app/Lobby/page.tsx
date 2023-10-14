@@ -37,10 +37,10 @@ import { useAuth } from '@/hooks/useAuth';
 
 
 export default function Home() {
-  // const { currentUser, setCurrentUser } = useAuth()
-  // console.log(currentUser)
+  const currentUser = useAuth();
   const [bodyIndex, setBodyIndex] = useState(0);
 
+  console.log("current user: ", currentUser)
   const bodys:ReactNode[] = [<Lobby/>, <Achievements/>, <FriendSection/>, <Setting/>,];
   return (
     <PageLayout body={bodys[bodyIndex]} bodySetter={setBodyIndex}/>
