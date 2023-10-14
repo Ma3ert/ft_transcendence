@@ -4,8 +4,22 @@ import IconButton from './IconButton'
 import {FaSignOutAlt} from "react-icons/fa"
 import Logo from './Logo'
 import Link from 'next/link'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
+import apiClient from '@/services/requestProcessor'
+import Cookies from 'js-cookie'
 
 const NavBar = () => {
+  const currentUser = useAuth()
+  const router = useRouter();
+  if (!currentUser)
+    router.push("/");
+
+  const handleLogout = () => {
+    Cookies.remove('currentUser');
+    router.push("/");
+  }
+
   return (
     <Flex as={"nav"} alignItems={"center"} w={"full"} margin={"auto"} p={"10px"}>
       <Logo
@@ -15,11 +29,12 @@ const NavBar = () => {
         ></Logo>
       <Spacer/>
       <Wrap align={"center"} spacing={{base: "30px", lg: "40px" }}>
-        <Avatar boxSize={{base: "40px", lg: "60px"}}></Avatar>
+        <Avatar src={currentUser.avatar} boxSize={{base: "40px", lg: "60px"}}></Avatar>
         <IconButton
           icon={FaSignOutAlt}
           size="40px"
           aria-label="Sign out"
+          onClick={handleLogout}
         />
       </Wrap>
     </Flex>

@@ -36,12 +36,8 @@ export default function Home() {
     setCurrentUser(user)
     newAvatar === "" && setNewAvatar(user.avatar)
   }});
+
   console.log("current user from changeusername: ", currentUser)
-  
-  // if (currentUser === undefined)
-  // {
-  //   console.log("current user is undefined")
-  // }
   
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentFiles = event.target.files
@@ -70,8 +66,8 @@ export default function Home() {
     }
   }
   
-  // if (currentUser && currentUser.activated)
-  //   router.push("/Lobby")
+  if (currentUser && currentUser.activated)
+    router.push("/Lobby")
   
   return (
     <Stack

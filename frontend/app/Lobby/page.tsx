@@ -30,7 +30,6 @@ import Setting from '@/components/Setting';
 import Lobby from '@/components/Lobby';
 import Achievements from '@/components/Achievements';
 import FriendSection from '@/components/FriendSection';
-import { AuthUser } from '@/context/Contexts';
 import { useAuth } from '@/hooks/useAuth';
 
 
@@ -40,7 +39,7 @@ export default function Home() {
   const currentUser = useAuth();
   const [bodyIndex, setBodyIndex] = useState(0);
 
-  console.log("current user: ", currentUser)
+  console.log("current user Lobby: ", currentUser)
   const bodys:ReactNode[] = [<Lobby/>, <Achievements/>, <FriendSection/>, <Setting/>,];
   return (
     <PageLayout body={bodys[bodyIndex]} bodySetter={setBodyIndex}/>
