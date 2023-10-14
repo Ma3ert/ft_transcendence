@@ -182,3 +182,8 @@ type MutationArgs = {
   mutationFunction: () => Promise<any>;
   options?: MutationOptions;
 };
+
+type AuthUserContext = {
+  currentUser?: any
+  updateUser?: () => void
+}

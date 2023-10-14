@@ -10,14 +10,15 @@ import apiClient from '@/services/requestProcessor'
 import Cookies from 'js-cookie'
 
 const NavBar = () => {
-  const currentUser = useAuth()
+  const {currentUser, updateUser} = useAuth()
   const router = useRouter();
+
   if (!currentUser)
     router.push("/");
 
   const handleLogout = () => {
     Cookies.remove('currentUser');
-    router.push("/");
+    router.push("http://localhost:3000/auth/42/logout");
   }
 
   return (

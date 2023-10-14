@@ -6,10 +6,10 @@ import { useAuth } from "./useAuth";
 import { Dispatch } from "react";
 
 interface updateCurrentUser {
-    currentUserSetter?: (user: any) => void;
+    updateUserCookie?: () => void;
 }
 
-export function useUpdateCurrentUser({currentUserSetter}: updateCurrentUser) {
+export function useUpdateCurrentUser({updateUserCookie}: updateCurrentUser) {
     const client = new apiClient("/users");
     const { useQueryWrapper } = useRequestProcessor()
 
@@ -20,7 +20,7 @@ export function useUpdateCurrentUser({currentUserSetter}: updateCurrentUser) {
             console.log(res.data.data)
             Cookies.set('currentUser', JSON.stringify(res.data.data));
             console.log("the cookie is set");
-            currentUserSetter && currentUserSetter(useAuth());
+            updateUserCookie && updateUserCookie();
             // console.log("from the queryfunctionJ: ", useAuth())
         }).catch((err) => (console.log(err))) } 
     }

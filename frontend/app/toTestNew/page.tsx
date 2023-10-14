@@ -23,11 +23,6 @@ export default function Home() {
         // <Achievements></Achievements>
         // <Lobby/>
         // <FriendSection></FriendSection>
-        // <Setting></Setting>
-        <>
-           {/* <label htmlFor="Utilisateur">Cliquez ici</label> */}
-           <Button as={"label"} htmlFor="Utilisateur" >sbardila</Button>
-           <Input visibility={"hidden"} type="file" id="Utilisateur" name="Nom" onChange={() => } />
-        </>
+        <Setting></Setting>
     )
 }

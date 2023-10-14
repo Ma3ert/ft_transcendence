@@ -16,35 +16,18 @@ export default function Home() {
   const queryClient = useQueryClient();
   const router = useRouter()
   const client = new apiClient("/users");
-  const [currentUser, setCurrentUser] = useState(useAuth()); 
+  const {currentUser, updateUser} = useAuth(); 
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
-  console.log("re-render")
-  // const queryReturn = useQuery(
-  //   {
-  //     queryKey: ["current-user"],
-  //     queryFn: () => { client.getData("/me").then((res: AxiosResponse)=> {
-  //               console.log("query function is fired")
-  //               console.log(res.data.data)
-  //               Cookies.set('currentUser', JSON.stringify(res.data.data));
-  //               console.log("the cookie is set");
-  //               setCurrentUser(useAuth());
-  //               // console.log("from the queryfunctionJ: ", useAuth())
-  //             }).catch((err) => (console.log(err))) }
-  //   }
-  // )
-  const queryReturn = useUpdateCurrentUser({currentUserSetter: (user: any) => {
-    setCurrentUser(user)
-    newAvatar === "" && setNewAvatar(user.avatar)
-  }});
 
-  console.log("current user from changeusername: ", currentUser)
-  
+  const queryReturn = useUpdateCurrentUser({updateUserCookie: () => {
+    updateUser && updateUser()
+    newAvatar === "" && setNewAvatar(currentUser.avatar)
+  }});
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentFiles = event.target.files
     if (currentFiles && currentFiles?.length > 0){
       let src: string = URL.createObjectURL(currentFiles[0]);
       setNewAvatar(src)
-      console.log("the avatar updated")
     }
   }
 

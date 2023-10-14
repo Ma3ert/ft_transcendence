@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
   const router = useRouter();
-  var currentUser = useAuth()
+  const {currentUser, updateUser} = useAuth()
   console.log("current user from the lading page: ", currentUser)
   if (currentUser && currentUser.activated)
     router.push("/Lobby")
