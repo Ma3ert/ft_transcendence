@@ -10,7 +10,7 @@ import ChannelMessages from "./ChannelMessages";
 interface MessageStackProps {}
 const MessageStack: React.FC<MessageStackProps> = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const {chatType} = useContext (ChatContext)
+  const {chatType, joinGameStatus} = useContext (ChatContext)
   const {messages:dms} = useContext (DmContext)
   const {messages:cms} = useContext (CmContext)
   
@@ -20,7 +20,7 @@ const MessageStack: React.FC<MessageStackProps> = () => {
       `scrollTop ${containerRef.current?.scrollTop} scrollHeight ${containerRef.current?.scrollHeight}}`
     );
     scrollContainerToBottom();
-  }, [dms, cms]);
+  }, [dms, cms, joinGameStatus]);
 
   const scrollContainerToBottom = () => {
     if (containerRef.current) {
@@ -35,15 +35,15 @@ const MessageStack: React.FC<MessageStackProps> = () => {
       py={4}
       h="75%"
       maxH="75%"
-      spacing={2}
       justify={"start"}
       alignItems={"start"}
       w="100%"
       overflowY={"auto"}
       className={LayoutStyles.customScroll}
+      spacing={6}
     >
       {chatType == PRIVATE ? <DirectMessages messages={dms!}/> : <ChannelMessages messages={cms!} />}
-      {/* {GameInvitation && <EnviteMessage gameInvitation={GameInvitation} setGameInvitation={setGameInvitation!} />} */}
+      {joinGameStatus && <EnviteMessage />}
     </Stack>
   );
 };

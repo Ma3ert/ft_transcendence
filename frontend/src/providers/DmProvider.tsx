@@ -1,4 +1,4 @@
-import { DmContext, GlobalContext, UsersContext } from "@/context/Contexts";
+import { ChatContext, DmContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { useContext, useState } from "react";
 import apiClient from "../services/requestProcessor";
 import { useQuery } from "react-query";
@@ -10,9 +10,10 @@ interface DmProviderProps {
 
 
 const DmProvider: React.FC<DmProviderProps> = ({children}) => {
-  const { activePeer, setActivePeer } = useContext(UsersContext);
+  const { activePeer, setActivePeer , friendsList} = useContext(UsersContext);
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const {socket} = useContext (GlobalContext)
+  const {setJoinGameStatus, setGameInviteSender} = useContext (ChatContext)
   const dmClient = new apiClient(
     `chat/direct/${activePeer!.id}/messages?skip=0&take=500`
   );
@@ -34,6 +35,8 @@ const DmProvider: React.FC<DmProviderProps> = ({children}) => {
       if (data.game)
       {
         console.log ('user has invited you to game')
+        setJoinGameStatus (true)
+        setGameInviteSender (data.senderId)
       }
       else 
       {

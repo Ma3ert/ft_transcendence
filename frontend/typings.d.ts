@@ -143,6 +143,8 @@ interface ChatContext {
   setDmNotifications?: React.Dispatch<React.SetStateAction<string[]>>;
   CmNotifications?: string[];
   setCmNotifications?: React.Dispatch<React.SetStateAction<string[]>>;
+  gameInviteSender?: string;
+  setGameInviteSender?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface ModalWrapperProps {
