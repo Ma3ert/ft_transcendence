@@ -32,7 +32,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   const { loggedInUser } = useContext(UsersContext);
   const { removeChannel, leaveChannel } = useChannelManager();
   const [settingsList, setSettings] = useState<string[]> (channelSettings)
-  const {members, loggedInUserRole} = useContext (MembersContext)
+  const {members} = useContext (MembersContext)
   const {activeChannel} = useContext (ChannelsContext)
 
   const settings = new Map([
@@ -60,7 +60,9 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
 
   useEffect (()=>{
     console.log (`channel type : -----> ${activeChannel!.type}`)
-    if ( loggedInUserRole === "OWNER" || loggedInUserRole  === 'ADMIN') {
+    console.log (`logged in user role : -----> ${getUserRole (loggedInUser!, members!)}`)
+    console.table (members)
+    if ( getUserRole (loggedInUser!, members!) === "OWNER" || getUserRole (loggedInUser!, members!)  === 'ADMIN') {
       if (activeChannel!.type === 'PROTECTED')
         setSettings (ProtectedChannelSettings)
       else
@@ -68,7 +70,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
     } else {
         setSettings (ChannelMemberSettings)
       }
-  }, [])
+  }, [members])
   return (
     <Stack
       spacing={5}
@@ -125,15 +127,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       <Stack spacing={3}>
         <ModalWrapper
           action={
-              loggedInUserRole == "OWNER"
+              getUserRole (loggedInUser!, members!) == "OWNER"
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
-          actionDescription={`${loggedInUserRole == "OWNER" ? "Delete" : "Leave"} Channel`}
+          actionDescription={`${getUserRole (loggedInUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
           buttonValue={
             <Text>
-              {loggedInUserRole == "OWNER" ? "Delete" : "Leave"} Channel
+              {getUserRole (loggedInUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
             </Text>
           }
           buttonVariant="largePrimary"

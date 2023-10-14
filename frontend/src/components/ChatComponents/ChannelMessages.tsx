@@ -6,7 +6,7 @@ interface ChannelMessagesProps {
 
 const ChannelMessages:React.FC<ChannelMessagesProps> = ({messages}) =>{
     return (
-        <Stack  spacing={4}>
+        <Stack  spacing={4} w='100%' h='100%'>
             {messages && messages.map((message, index) => (
                 <ChannelMessageBox key={index} Message={message} />
             ))}

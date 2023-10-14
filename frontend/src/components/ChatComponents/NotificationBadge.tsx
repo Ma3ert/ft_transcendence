@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { ChatContext } from "../../context/Contexts";
-const NotificationBadge: React.FC = () => {
+const NotificationBadge: React.FC = ({}) => {
   return (
     <Box
       boxSize="0.8em"

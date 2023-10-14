@@ -15,9 +15,15 @@ interface HomeSectionProps {
 const HomeSection: React.FC<HomeSectionProps> = ({ children }) => {
 
   const { socket } = useContext(GlobalContext);
-  const {loggedInUser} = useContext (UsersContext)
+  const {loggedInUser, setChatNotifications, setInviteNotifications} = useContext (UsersContext)
   useEffect(() => {
     NotifyServer(socket, "userLoggedIn", loggedInUser!);
+    socket!.on("checkNotification", (message: checkNotification) => {
+      setChatNotifications!(message.data.chat);
+      setInviteNotifications!(message.data.invites);
+      console.log ("notifications")
+      console.log (message)
+    })
   }, []);
   return (
     <AppNavigationProvider>

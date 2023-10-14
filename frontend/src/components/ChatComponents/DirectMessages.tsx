@@ -6,7 +6,7 @@ interface DirectMessagesProps {
 }
 const DirectMessages:React.FC<DirectMessagesProps> = ({messages}) => {
     return (
-        <Stack spacing={4}>
+        <Stack  w='100%' h='100%'  spacing={4} >
             {messages && messages.map((message, index) => (
                 <MessageBox key={index} Message={message} />
             ))}

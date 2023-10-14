@@ -27,6 +27,8 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [channelConversations, setChannelConversations] = useState<string[]>([])
   const { setActivePeer } = useContext(UsersContext);
   const { friendsList } = useContext(UsersContext);
+  const [DmNotifications, setDmNotifications] = useState<string[]>([]);
+  const [CmNotifications, setCmNotifications] = useState<string[]>([]);
  
 
 
@@ -61,6 +63,10 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
         requestNotification,
         channelConversations,
         setChannelConversations,
+        DmNotifications,
+        setDmNotifications,
+        CmNotifications,
+        setCmNotifications,
       }}
     >
       {children}
