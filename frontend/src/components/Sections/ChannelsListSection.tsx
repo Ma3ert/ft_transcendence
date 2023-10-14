@@ -43,13 +43,7 @@ const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
             <p style={{ color: "#5B6171" }}>
               You have no channels at the moment
             </p>
-            <ModalWrapper
-            type="regular"
-            buttonVariant="largeSecondary"
-            buttonValue={<Text>Create channel</Text>}
-          >
-            <NewChannel />
-          </ModalWrapper>
+           
           </Stack>
         )}
       </ScrollableStack>

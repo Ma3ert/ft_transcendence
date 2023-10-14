@@ -58,11 +58,16 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
     ["leave", () => leaveChannel(activeChannel!.id!)],
   ]);
 
+  const isPrivliged = () =>{
+    if (getUserRole (loggedInUser!, members!) === "OWNER" || getUserRole (loggedInUser!, members!)  === 'ADMIN')
+      return true
+    return false
+  }
   useEffect (()=>{
     console.log (`channel type : -----> ${activeChannel!.type}`)
     console.log (`logged in user role : -----> ${getUserRole (loggedInUser!, members!)}`)
     console.table (members)
-    if ( getUserRole (loggedInUser!, members!) === "OWNER" || getUserRole (loggedInUser!, members!)  === 'ADMIN') {
+    if (isPrivliged ()) {
       if (activeChannel!.type === 'PROTECTED')
         setSettings (ProtectedChannelSettings)
       else
@@ -102,7 +107,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           minH={"45vh"}
           maxH="auto"
         >
-           <VisibilityPopOver />
+           {isPrivliged () && (<VisibilityPopOver />)}
           {settingsList.map((setting, index) => {
             return (
               <ModalWrapper

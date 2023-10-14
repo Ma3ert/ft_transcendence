@@ -5,7 +5,7 @@ import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
-import { ChatContext, UsersContext , DmContext} from "../../context/Contexts";
+import { ChatContext, UsersContext , DmContext, ChannelsContext} from "../../context/Contexts";
 import { PRIVATE } from "../../../contstants";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import { GlobalContext } from "@/context/Contexts";
@@ -18,7 +18,6 @@ import OptionsMenu from "./FriendSettingsMenu";
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const {
-    activeChannel,
     Friends,
     chatType,
     setJoinGameStatus,
@@ -30,10 +29,23 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const { socket } = useContext(GlobalContext);
   const listener = useEventHandler(socket);
   const gameEnviteHandler = useGameEnvite();
+  const {activeChannel} = useContext (ChannelsContext)
 
+  const getReadChatNotification = () => {
+    if (chatType == PRIVATE) {
+      return {
+        channel:false,
+        id: activePeer!.id,
+      }
+    }
+    return {
+      channel: true,
+      id: activeChannel!.id,
+    };
+    }
 
   useEffect(() => {
-   
+    socket!.emit ('readChatNotification', getReadChatNotification())
   }, [activePeer, activeChannel, chatType]);
   return (
     <Stack

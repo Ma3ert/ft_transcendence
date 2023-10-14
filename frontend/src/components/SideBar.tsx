@@ -35,7 +35,7 @@ const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
       alignItems="center"
     >
       {Array.from(links).map(([section, icon]) => {
-        if (section == "notifications") {
+        if (section == "friends") {
           return (
             <NotificationWrapper key={section} type='activeChat' status={inviteNotifications!}>
               <IconButton

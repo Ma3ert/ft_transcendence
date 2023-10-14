@@ -18,7 +18,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [chatNotifications, setChatNotifications] = useState<boolean>(false);
   const [inviteNotifications, setInviteNotifications] =
     useState<boolean>(false);
-
+  const [userStatus, setUserStatus] = useState<string>("");
   const [loggedInUser, setLoggedInUser] = useState<User>({
     id: "0066312b-9ce5-4eb4-a4ce-8fcf467f7e9d",
     username: "ochoumou",
@@ -86,6 +86,9 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         setChatNotifications,
         inviteNotifications,
         setInviteNotifications,
+        userStatus,
+        setUserStatus,
+
       }}
     >
       {children}

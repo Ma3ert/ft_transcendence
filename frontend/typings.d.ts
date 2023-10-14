@@ -226,6 +226,8 @@ type UsersContext = {
   inviteNotifications?: boolean;
   setChatNotifications:React.Dispatch<React.SetStateAction<boolean>>;
   setInviteNotifications:React.Dispatch<React.SetStateAction<boolean>>;
+  userStatus?: string;
+  setUserStatus:React.Dispatch<React.SetStateAction<string>>;
 };
 // Chat Events Types
 

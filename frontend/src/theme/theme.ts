@@ -321,6 +321,20 @@ const ButtonStyle: ComponentStyleConfig = {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
     },
+    glass: {
+      bg:'#5B6171',
+      color:'#1D222C',
+      borderRadius:'15px',
+      border:'none',
+      px:'10px',
+      py:'5px',
+      opacity:'0.5',
+      fontSize:'sm',
+      _hover:{
+        opacity:'0.8',
+        transform: "scale(1.1)", // Increase the scale to make it grow
+      },
+    },
     icon: {
       borderRadius: "50px",
       px: "0px",

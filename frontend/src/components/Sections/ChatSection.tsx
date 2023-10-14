@@ -10,7 +10,7 @@ import { CHANNEL, PRIVATE } from "../../../contstants";
 const Chat: React.FC<ChatProps> = ({}) => {
   const { chatType , setCmNotifications, setDmNotifications} = useContext(ChatContext);
   const {socket}  = useContext (GlobalContext)
-  const {loggedInUser}  = useContext (UsersContext)
+  const {loggedInUser, activePeer, setUserStatus}  = useContext (UsersContext)
 
   useEffect (()=>{
       const type = chatType == CHANNEL ? "channelMessage" : "directMessage"
@@ -22,8 +22,9 @@ const Chat: React.FC<ChatProps> = ({}) => {
         setDmNotifications! (message.DM)
         setCmNotifications! (message.CM)
       })
-    
-      // if (chatType == CHANNEL)
+      
+      
+
       //   NotifyServer (socket!, "userIsInChannel", loggedInUser!)
     return ()=>{
       console.log ('user in inactive')  

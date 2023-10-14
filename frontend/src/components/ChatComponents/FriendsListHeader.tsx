@@ -1,10 +1,13 @@
-import { HStack, Icon, Text, Input, Button } from "@chakra-ui/react";
+import { HStack, Icon, Text, Input, Button , Tooltip} from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import { TbArrowBackUp } from "react-icons/tb";
 import { ChannelsContext, UsersContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { filterUsers, filterChannels } from "../../../utils/filterUsers";
 import { useQueryClient } from "react-query";
+import { ModalWrapper } from "../Wrappers/ModalWrapper";
+import NewChannel from "../ChatComponents/NewChannel";
+import { FaPlus } from "react-icons/fa";
 interface FriendsListHeaderProps {
   type: "friends" | "channels";
   setUsersList?: React.Dispatch<React.SetStateAction<User[]>>;
@@ -20,13 +23,18 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
   const { Channels } = useContext(ChannelsContext);
   const queryClient = useQueryClient ()
   return (
-    <HStack
+   <HStack
+      spacing={5}
       w={"100%"}
-      h={"100%"}
       maxW={{ sm: "450px", md: "550px", lg: "600px", xl: "900px" }}
       minW={{ sm: "250px", md: "300px", lg: "350px", xl: "400px" }}
+   >
+   
+    <HStack
+      flex={1}
       bg="#1D222C"
       borderRadius={"15px"}
+      h={"100%"}
       maxH={"50px"}
       px={1}
       py={1}
@@ -68,6 +76,16 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
         <Icon as={TbArrowBackUp} fontSize={'23px'}/>
       </Button>
     </HStack>
+    {type === "channels" && <Tooltip label="Create new channel" hasArrow>
+    <ModalWrapper 
+    buttonValue={<Icon as={FaPlus} fontSize='18px' />}
+    buttonVariant="glass"
+    type="regular"
+    >
+      <NewChannel />
+    </ModalWrapper>
+      </Tooltip>}
+   </HStack>
   );
 };
 

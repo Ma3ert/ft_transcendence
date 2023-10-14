@@ -1,13 +1,23 @@
 
 import React from "react";
 import { HStack, Avatar, Stack, Text } from "@chakra-ui/react";
-import { useContext } from "react";
-import { UsersContext } from "@/context/Contexts";
+import { useContext , useEffect} from "react";
+import { UsersContext , GlobalContext} from "@/context/Contexts";
 
 interface PeerHeaderProps {}
 const PeerHeader: React.FC<PeerHeaderProps> = () => {
 
-    const {activePeer} = useContext (UsersContext)
+    const {activePeer, userStatus, setUserStatus} = useContext (UsersContext)
+    const { socket } = useContext(GlobalContext);
+
+  useEffect(() => {
+    socket!.emit("checkStatus", { userId: activePeer!.id });
+    socket!.on("checkStatus", (res:any) => {
+      console.log("status");
+      console.log(res);
+      setUserStatus!(res.status);
+    });
+  }, [userStatus]);
   return (
     <HStack spacing={4} alignItems="center">
       <Avatar
@@ -22,9 +32,10 @@ const PeerHeader: React.FC<PeerHeaderProps> = () => {
         </Text>
         <Text
           fontSize={"xs"}
-          color={status == "online" ? "green.300" : "#5B6171"}
+          fontWeight={"bold"}
+          color={userStatus === "ONLINE" ? "green.300" : "#5B6171"}
         >
-          online
+          {userStatus?.toLowerCase()}
         </Text>
       </Stack>
     </HStack>

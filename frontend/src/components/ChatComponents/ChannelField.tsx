@@ -10,7 +10,8 @@ import {
 import { PRIVATE } from "@/../contstants";
 import UserAvatar from "../UserAvatar";
 import { CHANNEL } from "@/../contstants";
-import {LockIcon, ViewOffIcon, ViewIcon} from "@chakra-ui/icons"
+import {LockIcon, ViewOffIcon, ViewIcon, SettingsIcon} from "@chakra-ui/icons"
+import { ModalWrapper } from "../Wrappers/ModalWrapper";
 
 
 interface ChannelFieldProps {
@@ -22,13 +23,13 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
   const { setActiveChannel } = useContext(ChannelsContext);
   const caseActions = new Map([
     ['PRIVATE', () => {
-      return <Icon as={ViewOffIcon} fontSize='23px' />
+      return <Icon as={ViewOffIcon} fontSize='sm' />
     }],
     ['PROTECTED', () => {
-        return <Icon as={LockIcon} fontSize='23px' />
+        return <Icon as={LockIcon} fontSize='sm' />
     }],
     ['PUBLIC', () => {
-        return <Icon as={ViewIcon} fontSize='23px' /> 
+        return <Icon as={ViewIcon} fontSize='sm' /> 
     }]
   ]);
   return (
@@ -57,9 +58,7 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
           <Text fontSize="sm">{channel.name}</Text>
         </HStack>
 
-        <HStack spacing={5}>
-          <Text fontSize="sm">{channel!.type?.toLowerCase ()}</Text>
-        </HStack>
+       {caseActions.get(channel!.type!) && caseActions.get(channel!.type!)!()}
       </HStack>
     </Button>
   );
