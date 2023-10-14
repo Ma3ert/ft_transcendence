@@ -8,6 +8,8 @@ import { useAuth } from '@/hooks/useAuth'
 import apiClient from '@/services/requestProcessor'
 import { useQueryClient } from 'react-query'
 import { useUpdateCurrentUser } from '@/hooks/useUpdateCurrentUser'
+import { AxiosResponse } from 'axios'
+import Cookies from 'js-cookie'
 
 type Props = {}
 
@@ -24,7 +26,7 @@ const UserSetting = (props: Props) => {
       setNewAvatar(src)
     }
   }
-  
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement);
@@ -33,10 +35,13 @@ const UserSetting = (props: Props) => {
     if (userName !== "" && imageFile)
     {
       client.patchData(formData).then(() => {
-        useUpdateCurrentUser({updateUserCookie: () => {
-          console.log("I hope")
-          updateUser && updateUser();
-        }});
+        client.getData("/me").then((res: AxiosResponse)=> {
+          console.log("query function is fired")
+          console.log(res.data.data)
+          Cookies.set('currentUser', JSON.stringify(res.data.data));
+          console.log("the cookie is set");
+          updateUser && updateUser()
+      }).catch((err) => (console.log(err)))
       })
     }
   }

@@ -23,6 +23,15 @@ export default function Home() {
     updateUser && updateUser()
     newAvatar === "" && setNewAvatar(currentUser.avatar)
   }});
+
+  const handleSkip = () => {
+    const formData = new FormData();
+    formData.append("activated", "true")
+    client.patchData(formData).then(() => {
+      router.push("/Lobby");
+    })
+  }
+
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentFiles = event.target.files
     if (currentFiles && currentFiles?.length > 0){
@@ -40,8 +49,14 @@ export default function Home() {
     if (userName !== "" && imageFile)
     {
       client.patchData(formData).then(() => {
-        queryClient.invalidateQueries("current-user")
-        router.push("/Lobby")
+        client.getData("/me").then((res: AxiosResponse)=> {
+          console.log("query function is fired")
+          console.log(res.data.data)
+          Cookies.set('currentUser', JSON.stringify(res.data.data));
+          console.log("the cookie is set");
+          updateUser && updateUser()
+          router.push("/Lobby")
+      }).catch((err) => (console.log(err)))
       })
     }
     else {
@@ -95,12 +110,11 @@ export default function Home() {
                   variant={"ghost"}
                   type='submit'
                 >Apply Changes</Button>
-                <Link href={"/Lobby"}>
-                  <Button
-                    fontSize={{base: "15px", lg: "20px" }}
-                    variant={"ghost"}
-                    >skip</Button>
-                </Link>
+                <Button
+                  fontSize={{base: "15px", lg: "20px" }}
+                  variant={"ghost"}
+                  onClick={handleSkip}
+                  >skip</Button>
               </Stack>
             </Stack>
           </Stack>
