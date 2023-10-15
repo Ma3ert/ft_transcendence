@@ -1,5 +1,5 @@
 "use client"
-import {Box, Stack, Avatar, Button, Input, Wrap, Text, Icon } from '@chakra-ui/react'
+import {Box, Stack, Avatar, Button, Input, Wrap, Text, Icon, Flex, Spacer } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import ScrollableStack from './ScrollableStack'
 import InputStack from './InputStack'
@@ -10,13 +10,15 @@ import { useQueryClient } from 'react-query'
 import { useUpdateCurrentUser } from '@/hooks/useUpdateCurrentUser'
 import { AxiosResponse } from 'axios'
 import Cookies from 'js-cookie'
+import CostumSwitcher from './ChatComponents/CostumSwitcher'
 
 type Props = {}
 
+const client = new apiClient("/users")
 const UserSetting = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
+  const [FaState, setFaState] = useState();
   const queryClient = useQueryClient();
-  const client = new apiClient("/users")
   const [newAvatar, setNewAvatar] = useState(currentUser.avatar);
   
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +48,10 @@ const UserSetting = (props: Props) => {
     }
   }
 
+  const activateFa = () => {
+    
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack py={"15%"} align={"center"} spacing={"6%"} w={{ base: "225px", md: "335px", lg: "465px"}} h={"80vh"} bg={"#1D222C"} px={{base: "25px", md: "45px" }} borderRadius={"20px"}>
@@ -67,7 +73,11 @@ const UserSetting = (props: Props) => {
           </Box>
         </Wrap>
         <Input variant={"secondary"} w={"full"} h={{base: "37", md: "57px" }} placeholder={currentUser.username}></Input>
-        {/* <Text fontSize={"17px"} >Enable 2FA</Text> */}
+        <Flex w={"full"} px={"10px"}>
+          <Text fontFamily={"visbyRound"} fontSize={"15px"} color={"#fff"}>Enable 2FA</Text>
+          <Spacer/>
+          <CostumSwitcher onClick={activateFa}/>
+        </Flex>
         <Button
           type='submit'
           variant={"secondary"}

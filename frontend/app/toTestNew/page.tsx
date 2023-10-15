@@ -24,7 +24,7 @@ export default function Home() {
         // <Achievements></Achievements>
         // <Lobby/>
         // <FriendSection></FriendSection>
-        // <Setting></Setting>
-        <Search></Search>
+        <Setting></Setting>
+        // <Search></Search>
     )
 }
