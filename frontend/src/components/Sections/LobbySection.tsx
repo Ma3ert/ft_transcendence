@@ -101,7 +101,7 @@ const LobbySection = (props: Props) => {
   return (
   
     <HStack w='100%' h='100%' justifyContent={'space-around'} alignItems={'center'}>
-      <Stack spacing={"55px"} align={"start"}>
+      {/* <Stack spacing={"55px"} align={"start"}>
         <ProgressLevel></ProgressLevel>
         <Stack spacing={"20px"}>
           <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>
@@ -112,8 +112,8 @@ const LobbySection = (props: Props) => {
               {challenges}
             </ScrollableStack>
         </Stack>
-      </Stack>
-      <LobbyParty solo={true}></LobbyParty>
+      </Stack> */}
+      {/* <LobbyParty solo={true}></LobbyParty> */}
     </HStack>
   );
 };

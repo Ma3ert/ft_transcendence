@@ -28,7 +28,7 @@ export default function Home() {
     const formData = new FormData();
     formData.append("activated", "true")
     client.patchData(formData).then(() => {
-      router.push("/Lobby");
+      router.push("/Home");
     })
   }
 
@@ -60,12 +60,12 @@ export default function Home() {
       })
     }
     else {
-      router.push("/Lobby");
+      router.push("/Home");
     }
   }
   
   if (currentUser && currentUser.activated)
-    router.push("/Lobby")
+    router.push("/Home")
   
   return (
     <Stack
