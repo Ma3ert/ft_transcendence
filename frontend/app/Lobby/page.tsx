@@ -36,7 +36,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 
 export default function Home() {
-  const currentUser = useAuth();
+  const {currentUser, updateUser} = useAuth();
   const [bodyIndex, setBodyIndex] = useState(0);
 
   console.log("current user Lobby: ", currentUser)

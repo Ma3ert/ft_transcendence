@@ -4,13 +4,17 @@ import SoloLobbyParty from './SoloLobbyParty';
 import MultiLobbyParty from './MultiLobbyParty';
 
 type Props = {
-    solo: boolean;
+  username: string;
+  ready: boolean;
+  other: string;
+  otherReady: boolean
+  alone: boolean;
 }
 
-const LobbyParty = ({solo}: Props) => {
+const LobbyParty = ({alone, username, ready, other, otherReady}: Props) => {
   return (
     <Stack spacing={"52px"} align={"center"}>
-        {solo ? <SoloLobbyParty/> : <MultiLobbyParty/>}
+        <MultiLobbyParty username={username} ready={ready} other={other} otherReady={otherReady} alone={alone}/>
         <Image
           src='/Shadow.png'
           w={"341px"}

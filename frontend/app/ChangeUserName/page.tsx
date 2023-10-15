@@ -13,12 +13,12 @@ import Cookies from 'js-cookie';
 import { useQuery, useQueryClient } from 'react-query';
 
 export default function Home() {
-  const queryClient = useQueryClient();
   const router = useRouter()
   const client = new apiClient("/users");
   const {currentUser, updateUser} = useAuth(); 
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
 
+  console.log("the avatar: ", newAvatar);
   const queryReturn = useUpdateCurrentUser({updateUserCookie: () => {
     updateUser && updateUser()
     newAvatar === "" && setNewAvatar(currentUser.avatar)

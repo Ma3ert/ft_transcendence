@@ -6,10 +6,16 @@ import PageBody from '@/components/PageBody';
 import ProgressLevel from '@/components/ProgressLevel';
 import LobbyParty from '@/components/LobbyParty';
 import Challenge from './Challenge';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 type Props = {};
 
 const Lobby = (props: Props) => {
+  const {currentUser, updateUser} = useAuth();
+  const router = useRouter()
+  if (!currentUser || !currentUser.activated)
+    router.push("/");
   const challenges = [
     <Challenge
       progress="5"
@@ -121,7 +127,7 @@ const Lobby = (props: Props) => {
       <GridItem
       colSpan={{ base: 2, lg: 1 }}
       >
-        <LobbyParty solo={false}></LobbyParty>
+        <LobbyParty username={currentUser.username} ready={false} other={""} otherReady={false} alone={true}></LobbyParty>
       </GridItem>
     </Grid>,
     <Grid templateColumns={"repeat(2, 1fr)"}>
@@ -143,7 +149,7 @@ const Lobby = (props: Props) => {
       <GridItem
       colSpan={{ base: 2, lg: 1 }}
       >
-      <LobbyParty solo={true}></LobbyParty>
+      <LobbyParty solo={false}></LobbyParty>
       </GridItem>
     </Grid>
     ]}
