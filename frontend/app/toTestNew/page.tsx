@@ -6,6 +6,7 @@ import FriendSection from "@/components/FriendSection"
 import Lobby from "@/components/Lobby"
 import NavBar from "@/components/NavBar"
 import NotificationCenter from "@/components/NotificationCenter"
+import Search from "@/components/Search"
 import Setting from "@/components/Setting"
 import TwoFaAuPopUp from "@/components/TwoFaAuPopUp"
 import { Button, Input } from "@chakra-ui/react"
@@ -23,6 +24,7 @@ export default function Home() {
         // <Achievements></Achievements>
         // <Lobby/>
         // <FriendSection></FriendSection>
-        <Setting></Setting>
+        // <Setting></Setting>
+        <Search></Search>
     )
 }
