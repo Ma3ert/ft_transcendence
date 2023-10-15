@@ -1,39 +1,33 @@
-import { Box, Stack } from '@chakra-ui/react'
-import React, { ReactNode } from 'react'
-import "../theme/styles.css" 
+import { Box, Stack } from "@chakra-ui/react";
+import React, { ReactNode } from "react";
+import "../theme/styles.css";
 
-type Props = {
-  width: any;
-  height: any;
-  items: ReactNode[];
-  spacing: any;
+interface Props {
+  children: React.ReactNode;
+  h?: string;
 }
-
-const ScrollableStack = ({ width, height, spacing, items }: Props) => {
+const ScrollableStack: React.FC<Props> = ({ children, h='60vh'}) => {
   return (
-    <Box
+    <Stack
+      className="customScroll"
       fontFamily={"visbyRound"}
-      display="flex"
-      justifyContent="center"
+      justifyContent="start"
       alignItems="center"
-      w={width}
-      h={height}
+      w={"100%"}
+      h={h}
       borderRadius={"20px"}
-      maxH={'65vh'}
-      bg={"#1D222C"}>
-      <Box
-        py={"10px"}
-        className='customScroll'
-        maxH={'95%'}
-        overflowY={"scroll"}
-        w={width}
-        h={height}>
-        <Stack align={"center"} spacing={spacing}>
-          {items.map((item) => (item))}
-        </Stack>
-      </Box>
-    </Box>
-  )
-}
+      maxH={"65vh"}
+      bg={"#1D222C"}
+      maxW={{ sm: "450px", md: "550px", lg: "600px", xl: "900px" }}
+      minW={{ sm: "250px", md: "300px", lg: "350px", xl: "400px" }}
+      overflowY={"auto"}
+      spacing={2}
+      px={4}
+      py={6}
+    >
+      {children}
+    </Stack>
+  );
+};
 
-export default ScrollableStack
+export default ScrollableStack;

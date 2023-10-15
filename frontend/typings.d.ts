@@ -6,95 +6,92 @@ type Section =
   | "achievements"
   | "notifications"
   | "friends";
-type FriendsSection = "friends" | "requests";
+type FriendsSection = "friends" | "requests" | "channels";
 type AchievementsSection = "achievements" | "leaderboard";
 type SettingsSection = "userSettings" | "passwordSettings";
 type ChatType = boolean;
-type ModalType = "regular" | "confirmation" | "alert" | "prompt" | "custom";
+type ModalType = "regular" | "confirmation";
+
 type EventName =
   | "userLoggedIn"
-  | "userIn"
-  | "userOut"
-  | "direct_message"
-  | "channel_message"
-  | "channel_created"
-  | "channel_deleted"
-  | "channel_updated"
-  | "friend_request"
-  | "friend_request_accepted"
-  | "friend_request_rejected"
-  | "friend_request_canceled"
-  | "friend_removed"
-  | "friend_updated"
-  | "user_updated"
-  | "user_created"
-  | "user_deleted";
+  | "userLoggedOut"
+  | "userIsActive"
+  | "checkStatus"
+  | "userIsNotActive"
+  | "DM"
+  | "CM"
+  | "readChatNotification";
 
+type checkStatus = {
+  userid?: number;
+};
 
+type ServerNotificationMessage =
+  | checkStatus
+  | checkChatNotification
+  | ReadChatNotification;
 
-type ServerNotificationMessage = {
-    username: string;
-    userid: number;
-    socketid: string;
-}
+type DirectMessage = {
+  senderId: string;
+  receiverId: string;
+  message: string;
+  game?: boolean;
+};
 
-type  DirectMessage = {
-    to: number;
-    from: number;
-    username:string;
-    message: string;
-    enviteMessage: boolean;
-    socketid: string;
-}
-
-type ChannelMessage ={
-    userid:number
-    username:string
-    message:string
-    channelid:number
-    socketid:string
-}
-
-type EventMessage = ServerNotification | DirectMessage
+type ChannelMessage = {
+  senderId: string;
+  channelId: string;
+  message: string;
+};
 
 // type UsersResponse = {}
 // type ChannelsResponse = {}
-// type MessagesResponse = {}
+// typesResponse = {}
 // type FriendsResponse = {}
-// type responseData = UsersResponse | ChannelsResponse | MessagesResponse | FriendsResponse
+// type responseData = UsersResponse | ChannelsResponse |sResponse | FriendsResponse
 
 type responseData = any;
 type Tab = {
   action: () => void;
   value: JSX.Element;
 };
+
 type User = {
-  imageUrl: string;
+  avatar: string;
   username: string;
-  online: boolean;
-  level: number;
-  id: number;
+  id: string;
+  email?: string;
+  status?: string;
+  created_at?: string;
+  twoFactor?: boolean;
+  twoFactorPin?: string | null;
+  activated?: boolean;
+  pinValidated?: boolean;
+  twoFactorRetry?: number;
+  friendList?: User[];
 };
 
-type Message = {
-  content: string;
-  incoming: boolean;
-  time: string;
-  Author: User;
-  EnviteMessage: boolean;
+type meResponse = {
+  status: string;
+  data: User;
+};
+
+type UsersResponse = User[];
+
+type ChannelMessage = {
+  from: number;
+  channelid: number;
+  message: string;
 };
 
 type Channel = {
-  isPrivate: boalean;
-  isProtected?: boolean;
   name: string;
-  members: User[];
+  members: number;
   admin: User;
-  membersCount: number;
-  imageUrl?: string;
+  avatar?: string;
   createdAt?: string;
-  messages?: Message[];
-  id?: number;
+  id?: string;
+  type?: string;
 };
 
 type friendAction = {
@@ -118,14 +115,36 @@ interface AppNavigationContext {
 
 interface ChatContext {
   chatType?: ChatType;
-  setChatType?: (value: ChatType) => void;
-  setActivePeer?: (value: User) => void;
+  setCurrentChat?: React.Dispatch<React.SetStateAction<ChatType>>;
   setActiveChannel?: (value: Channel) => void;
-  activePeer?: User;
   activeChannel?: Channel;
   Friends?: User[];
   Channels?: Channel[];
-  socket?: SocketIOClient.Socket;
+  socket?: Socket;
+  directMessages?: DirectMessage[];
+  setDirectMessages?: (value: DirectMessage[]) => void;
+  joinGameStatus?: boolean;
+  setJoinGameStatus?: (value: boolean) => void;
+  GameEnvitation?: GameEnvitation | null;
+  setGameEnvitation?: React.Dispatch<
+    React.SetStateAction<GameEnvitation | null>
+  >;
+  chatNotification?: boolean;
+  setChatNotification?: React.Dispatch<React.SetStateAction<boolean>>;
+  requestNotification?: boolean;
+  setRequestNotification?: React.Dispatch<React.SetStateAction<boolean>>;
+  privateConversations?: string[];
+  channelConversations?: string[];
+  setPrivateConversations?: React.Dispatch<React.SetStateAction<string[]>>;
+  setChannelConversations?: React.Dispatch<React.SetStateAction<string[]>>;
+  dmConversations?: User[];
+  setDmConversations?: React.Dispatch<React.SetStateAction<User[]>>;
+  DmNotifications?: string[];
+  setDmNotifications?: React.Dispatch<React.SetStateAction<string[]>>;
+  CmNotifications?: string[];
+  setCmNotifications?: React.Dispatch<React.SetStateAction<string[]>>;
+  gameInviteSender?: string;
+  setGameInviteSender?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface ModalWrapperProps {
@@ -146,6 +165,7 @@ interface RegularModalProps {
   onOpen: () => void;
   onClose: () => void;
   children: React.ReactNode;
+  variant?: string;
 }
 
 interface ConfirmationModalProps {
@@ -153,6 +173,7 @@ interface ConfirmationModalProps {
   onOpen: () => void;
   onClose: () => void;
   actionDescription: string;
+  action?: () => void;
 }
 interface ModalContext {
   RegularModalWrapper?: React.FC<RegularModalProps>;
@@ -187,3 +208,146 @@ type AuthUserContext = {
   currentUser?: any
   updateUser?: () => void
 }
+
+type GlobalContext = {
+  socket?: Socket | null;
+  setSocket?: React.Dispatch<React.SetStateAction<Socket | null>>;
+  authenticated?: boolean;
+  setAuthenticated?: (value: boolean) => void;
+};
+
+type UsersContext = {
+  Users?: User[];
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
+  loggedInUser?: User;
+  setLoggedInUser?: React.Dispatch<React.SetStateAction<User>>;
+  friendsList?: User[];
+  setFriendsList?: React.Dispatch<React.SetStateAction<User[]>>;
+  activePeer?: User | null;
+  setActivePeer?: React.Dispatch<React.SetStateAction<User | null>>;
+  RecievedFriendRequests?: Envite[];
+  SentFriendRequests?: Envite[];
+  friendsConversations?: User[];
+  setFriendsConversations?: React.Dispatch<React.SetStateAction<User[]>>;
+  chatNotifications?: boolean;
+  inviteNotifications?: boolean;
+  setChatNotifications:React.Dispatch<React.SetStateAction<boolean>>;
+  setInviteNotifications:React.Dispatch<React.SetStateAction<boolean>>;
+  userStatus?: string;
+  setUserStatus:React.Dispatch<React.SetStateAction<string>>;
+};
+// Chat Events Types
+
+type GameEnvitation = {
+  from: string;
+  to: string;
+};
+
+type ReadChatNotification = {
+  channel?: boolean;
+  id?: string;
+};
+
+type CheckChatNotification = {
+  directMessageNotifications: number[];
+  channelNotifications: number[];
+};
+
+type EventMessage = ServerNotification | DirectMessage;
+
+type userStatus = "online" | "offline" | "blocked" | "BlockingYou";
+
+type notificationType = "request" | "activeChat" | "unactiveChat";
+
+type CheckNotificationMessage = {
+  requestNotifications: boolean;
+  chatNotifications: boolean;
+};
+
+type EventHandler = (data: EventMessage) => void;
+
+type UserChannel = {
+  channelid?: string;
+  userid?: string;
+  password?: string;
+};
+
+type ChannelsContext = {
+  Channels?: Channel[];
+  setChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
+  activeChannel?: Channel | null;
+  setActiveChannel?: React.Dispatch<React.SetStateAction<Channel | null>>;
+  channelEnvites?: ChannelEnvite[];
+};
+
+type MenuOption = {
+  description: string;
+  type: "critical" | "normal";
+  modal?: boolean;
+  channelSettings?: boolean;
+};
+
+type Envite = {
+  id: string;
+  inviteUserId: string;
+  inviteOwnerId: string;
+  createdAt: string;
+};
+
+type ChannelEnvite = {
+  created_at: string;
+  id: string;
+  receiver: string;
+  sender: string;
+  channel: Channel;
+};
+
+type GlobalEnvite = {
+  isChannelEnvite: boolean;
+  enviteId: string;
+  createdAt: string;
+  senderId: string;
+  receiverId: string;
+  channel?: Channel;
+};
+
+type Member = {
+  user: string;
+  role: string;
+  banned: boolean;
+  mutted: boolean;
+};
+
+type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN" | string;
+
+type ModalWrapperContext = {
+  isOpen?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+};
+
+type CmContext = {
+  messages?: ChannelMessage[];
+};
+
+type DmContext = {
+  messages?: DirectMessage[];
+};
+
+type MembersContext = {
+  members?: Member[];
+  loggedInUserRole?: UserType;
+  setMembers?: React.Dispatch<React.SetStateAction<Member[]>>;
+};
+
+type checkNotification = {
+  userId:string
+  data:{
+    invites: boolean;
+    chat: boolean;
+  }
+};
+
+type ChatNotification = { DM: string[]; CM: string[] };
+type checkStatus = {status:string} 
+type readChatNotification = {channel:boolean, Id:string}

@@ -205,10 +205,10 @@ export class NotificationService {
         }
     }
 
-    async readFriendInviteNotification(sender: string, reciever: string) {
+    async readFriendInviteNotification(sender: string, receiver: string) {
         const notification = await this.prismaService.notification.findFirst({
             where: {
-                userId: reciever,
+                userId: receiver,
                 senderId: sender,
                 type: NotificationType.FRIENDINVITE,
             }

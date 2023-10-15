@@ -72,6 +72,40 @@ const ModalStyle: ComponentStyleConfig = {
         },
       },
     },
+    largeModal: {
+      dialog: {
+        bg: "#252932",
+        borderRadius: "20px",
+        px: "30px",
+        py: "40px",
+        fontFamily: "visbyRound",
+        boxShadow: "rgba(0, 0, 0, 0.4) 0px 30px 90px;",
+        minW:'50vw',
+        minH:'50vh',
+      },
+      body: {
+        fontFamily: "visbyRound",
+        margin: "0px",
+        padding: "0px",
+        minH: "300px",
+        h: "auto",
+      },
+      closeButton: {
+        fontStyle: "bold",
+        fontWeight: "black",
+        fontSize: "8px",
+        boxSize: "20px",
+        borderRadius: "full",
+        bg: "#DC585B",
+        color: "#252932",
+        _active: {
+          transform: "scale(1.1)",
+        },
+        _hover: {
+          opacity: 0.8,
+        },
+      },
+    },
     form: {
       dialog: {
         fontFamily: "visbyRound",
@@ -138,7 +172,7 @@ const ButtonStyle: ComponentStyleConfig = {
   variants: {
     primary: {
       bg: "#DC585B",
-      fontSize: "20px",
+      fontSize: "sm",
       borderRadius: "50px",
       color: "#F5F5F5",
       py: "7px",
@@ -151,7 +185,7 @@ const ButtonStyle: ComponentStyleConfig = {
     },
     secondary: {
       bg: "#F5F5F5",
-      fontSize: "20px",
+      fontSize: "sm",
       borderRadius: "50px",
       color: "#DC585B",
       py: "7px",
@@ -165,7 +199,7 @@ const ButtonStyle: ComponentStyleConfig = {
     ghost: {
       bg: "transparent",
       color: "#5B6171",
-      fontsize: "20px",
+      fontsize: "sm",
       alignContent: "center",
       py: "7px",
       px: "20px",
@@ -179,6 +213,16 @@ const ButtonStyle: ComponentStyleConfig = {
         color: "#D9D9D9", // Change this to your desired hover text color
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
+    },
+    MenuOption: {
+      bg: "transparent",
+      fontSize: "sm",
+      border: "none",
+      outline: "none",
+      w: "auto",
+      h: "auto",
+      _hover: {},
+      _active: {},
     },
     lightGray: {
       bg: "#5B6171",
@@ -196,6 +240,26 @@ const ButtonStyle: ComponentStyleConfig = {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
     },
+    modalCanel: {
+      _hover: { opacity: 0.8 },
+      _active: { transform: "scale(1.1)" },
+      borderRadius: "xl",
+      bg : "#1D222C",
+      color: "#5B6171",
+      fontSize: "sm",
+      px: 6,
+      py: 3,
+    },
+    modalConfirm: {
+      _hover: { opacity: 0.8 },
+      _active: { transform: "scale(1.1)" },
+      borderRadius: "xl",
+      bg : "#D9D9D9",
+      color: "#DC585B",
+      fontSize: "sm",
+      px: 6,
+      py: 3,
+    },
     darkGray: {
       color: "#5B6171",
       bg: "#1D222C",
@@ -212,45 +276,41 @@ const ButtonStyle: ComponentStyleConfig = {
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
     },
-    largeGhost:{
-      bg: "transparent",            
+    largeGhost: {
+      bg: "transparent",
       color: "#5B6171",
       _hover: {
-        bg:'#252932',
-        color: "#D9D9D9", // Change this to your desired hover text color                                   
+        bg: "#252932",
+        color: "#D9D9D9", // Change this to your desired hover text color
       },
-      w:'100%',
-      fontSize:'sm',
+      w: "100%",
+      fontSize: "sm",
     },
-    largePrimary:{
-      bg:'#DC585B',
-      color:'#D9D9D9',
-      borderRadius:'15px',
+    largePrimary: {
+      bg: "#DC585B",
+      color: "#D9D9D9",
+      borderRadius: "15px",
       _hover: {
         opacity: "0.8",
       },
       _active: {
-        bg:'#D9D9D9',
-        color:'#DC585B',
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
-      w:'100%',
-      fontSize:'sm',
+      px: "18px",
+      fontSize: "sm",
     },
-    largeSecondary:{
-      bg:'#D9D9D9',
-      color:'#DC585B',
-      borderRadius:'15px',
+    largeSecondary: {
+      bg: "#D9D9D9",
+      color: "#DC585B",
+      borderRadius: "15px",
       _hover: {
         opacity: "0.8",
       },
       _active: {
-        bg:'#DC585B',
-        color:'#D9D9D9',
         transform: "scale(1.1)", // Increase the scale to make it grow
       },
-      w:'100%',
-      fontSize:'sm',
+      fontSize: "sm",
+      px: "18px",
     },
     menuItemImportant: {
       display: "flex",
@@ -272,6 +332,15 @@ const ButtonStyle: ComponentStyleConfig = {
       py: "6px",
       _hover: {},
     },
+    modalIcon: {
+      w:'auto',
+      h:'auto',
+      px:2,
+      py:2,
+      border:'none',
+      bg:'transparent',
+      _hover:{}
+      },
     modal: {
       _hover: { bg: "#252932" },
       color: "#5B6171",
@@ -279,28 +348,30 @@ const ButtonStyle: ComponentStyleConfig = {
       fontSize: "xs",
     },
     modalCancel: {
-      color:'#5B6171',
-      fontSize:'sm',
-      bg:'#1D222C',
-      px:'15px',
-      py:'5px',
-      borderRadius:'10px',
-      hover:{
-        opacity:'0.8',
+      color: "#5B6171",
+      fontSize: "sm",
+      bg: "#1D222C",
+      px: "15px",
+      py: "5px",
+      borderRadius: "10px",
+      hover: {
+        opacity: "0.8",
         transform: "scale(1.1)", // Increase the scale to make it grow
-      }
+      },
     },
-    modalConfirm: {
-      color:'#D9D9D9',
-      fontSize:'sm',
-      bg:'#DC585B',
-      px:'15px',
+    glass: {
+      bg:'#5B6171',
+      color:'#1D222C',
+      borderRadius:'15px',
+      border:'none',
+      px:'10px',
       py:'5px',
-      borderRadius:'10px',
-      hover:{
+      opacity:'0.5',
+      fontSize:'sm',
+      _hover:{
         opacity:'0.8',
         transform: "scale(1.1)", // Increase the scale to make it grow
-      }
+      },
     },
     icon: {
       borderRadius: "50px",
