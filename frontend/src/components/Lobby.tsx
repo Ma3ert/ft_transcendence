@@ -132,7 +132,7 @@ const Lobby = (props: Props) => {
           />
         </Stack>
       </Stack>
-      <LobbyParty solo={true}></LobbyParty>
+      <LobbyParty solo={false}></LobbyParty>
     </Wrap>
   );
 };
