@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { Button, FormControl, HStack, Input , Image} from "@chakra-ui/react";
+import React, { useState, useEffect, useContext } from "react";
+import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
-import { SendMessage} from '../../../utils/privateChatClient'
 import { Socket, io } from "socket.io-client";
-import useSocket from "@/hooks/useConnection";
-
+import { ChannelsContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
+import { PRIVATE, loggedIndUser } from "../../../contstants";
+import useMessageSender from "@/hooks/useMessageSender";
 interface ChatInputBoxProps {
   // socket: Socket;
 }
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
-
   const [message, setMessage] = useState("");
-  const socket:Socket = useSocket('http://localhost:3060');
+  const {
+    joinGameStatus,
+    setJoinGameStatus,
+    chatType,
+  } = useContext(ChatContext);
+  const {activePeer, loggedInUser} = useContext (UsersContext)
+  const { socket } = useContext(GlobalContext);
+  const {activeChannel} = useContext (ChannelsContext)
+  const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
 
-    socket.on('chat message', (msg) => {
-      alert(msg)
-    })
-  
   return (
     <HStack
       borderRadius={"29px"}
@@ -29,19 +32,30 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       py={2}
     >
       <Button
+        isDisabled={joinGameStatus}
+        onClick={() => {
 
+          socket!.emit("DM", {
+            senderId:loggedInUser!.id,
+            receiverId:activePeer!.id,
+            message:"",
+            game:true
+          });
+          console.log("sending game invitation");
+        }}
         bg="transparent"
-        border='none'
+        border="none"
         outline={"none"}
         _hover={{ opacity: 0.8 }}
-        _active={{transform:'scale(1.1)'}}
-        >
-          <Image src={'/LightSolidLogo.png'} alt={'envite'} w={6} h={'auto'}  />
-        </Button>
+        _active={{ transform: "scale(1.1)" }}
+      >
+        <Image src={"/LightSolidLogo.png"} alt={"envite"} w={6} h={"auto"} />
+      </Button>
 
       <FormControl flex={1}>
         <Input
           value={message}
+          isDisabled={joinGameStatus}
           type="text"
           bg={"transparent"}
           color="white"
@@ -57,6 +71,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         />
       </FormControl>
       <Button
+        isDisabled={joinGameStatus}
         bg="#5B6171"
         color="#1D222C"
         borderRadius={"50%"}
@@ -66,8 +81,16 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         fontSize={"sm"}
         fontWeight={"bold"}
         onClick={() => {
-          socket.emit ('chat message', message)
-          // socket.emit('privateMessage', {message: message, to: '60f9b1b9e9b9c2a4e8b9e0a4', from: '60f9b1b9e9b9c2a4e8b9e0a4'})
+          if (chatType === PRIVATE)
+            SendMessage(message);
+            else {
+              socket.emit("CM", {
+                senderId:loggedInUser!.id,
+                channelId:activeChannel!.id,
+                message:message
+              });
+              
+            }
           setMessage("");
         }}
       >

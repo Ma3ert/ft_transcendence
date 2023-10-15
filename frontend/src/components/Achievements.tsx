@@ -8,38 +8,52 @@ import UserField from '@/components/UserField';
 import PageBody from '@/components/PageBody';
 import UserRankField from './UserRankField';
 
-type Props = {}
+type Props = {};
 
 const Achievements = (props: Props) => {
-
-    const rank=[
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-        <UserRankField userPic='' userName='ma3ert'></UserRankField>,
-    ]
+  const rank = [
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+    <UserRankField userPic="" userName="ma3ert"></UserRankField>,
+  ];
   return (
-      <PageBody
-      navBar={<NavBar/>}
-      tabs={[<Icon as={FaMedal} style={{ fontSize: "23px" }}/>, <Icon as={FaTrophy} style={{ fontSize: "23px" }}/>]}
-      bodys={[<ScrollableStack items={rank} width={535} height={624} spacing='25px'></ScrollableStack>,
-              <ScrollableStack items={rank} width={535} height={624} spacing='25px'></ScrollableStack>]}
+    <PageBody
+      navBar={<NavBar />}
+      tabs={[
+        <Icon as={FaMedal} style={{ fontSize: "23px" }} />,
+        <Icon as={FaTrophy} style={{ fontSize: "23px" }} />,
+      ]}
+      bodys={[
+        <ScrollableStack
+          items={rank}
+          width={{base: "235px", sm: "335px", md: "435px",  lg:"535px" }}
+          height={{base: "224px", sm: "424px", md: "435px", lg: "624px"}}
+          spacing= {{ base: "10px", md:"20px" }}
+        ></ScrollableStack>,
+        <ScrollableStack
+          items={rank}
+          width={{base: "235px", sm: "325px", md: "435px",  lg:"535px" }}
+          height={{base: "224px", sm: "424px", md: "435px", lg: "624px"}}
+          spacing= {{ base: "10px", md:"20px" }}
+        ></ScrollableStack>,
+      ]}
     />
-  )
-}
+  );
+};
 
-export default Achievements
+export default Achievements;

@@ -1,24 +1,60 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { Stack, Text, HStack } from "@chakra-ui/react";
-import { friendsList, messages } from "../../../contstants";
+import { loggedIndUser, messages } from "../../../contstants";
 import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
-import { ChatContext } from "../../context/Contexts";
+import { ChatContext, UsersContext , DmContext, ChannelsContext} from "../../context/Contexts";
 import { PRIVATE } from "../../../contstants";
+import { NotifyServer } from "../../../utils/eventEmitter";
+import { GlobalContext } from "@/context/Contexts";
+import EventListener from "../../../utils/EventListener";
+import UserChannelHeader from "./UserChannelHeader";
+import useEventHandler from "@/hooks/useEventHandler";
+import useGameEnvite from "@/hooks/useGameEnvite";
+import OptionsMenu from "./FriendSettingsMenu";
 
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
-  const { activeChannel, activePeer, chatType } = useContext(ChatContext);
+  const {
+    Friends,
+    chatType,
+    setJoinGameStatus,
+    setDirectMessages,
+    GameEnvitation,
+    setGameEnvitation,
+  } = useContext(ChatContext);
+  const {activePeer, setActivePeer} = useContext (UsersContext)
+  const { socket } = useContext(GlobalContext);
+  const listener = useEventHandler(socket);
+  const gameEnviteHandler = useGameEnvite();
+  const {activeChannel} = useContext (ChannelsContext)
+
+  const getReadChatNotification = () => {
+    if (chatType == PRIVATE) {
+      return {
+        channel:false,
+        id: activePeer!.id,
+      }
+    }
+    return {
+      channel: true,
+      id: activeChannel!.id,
+    };
+    }
+
+  useEffect(() => {
+    socket!.emit ('readChatNotification', getReadChatNotification())
+  }, [activePeer, activeChannel, chatType]);
   return (
     <Stack
       borderRadius={"2xl"}
       w={"98%"}
       h="98%"
       maxH="72vh"
-      maxW={'850px'}
-      mx={'auto'}
+      maxW={"850px"}
+      mx={"auto"}
       bg="#1D222C"
       justify={"space-between"}
       alignItems={"center"}
@@ -33,25 +69,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
         px={4}
         py={2}
       >
-        <HStack spacing={4} alignItems="center">
-          <Avatar
-            src={
-              chatType == PRIVATE
-                ? activePeer?.imageUrl
-                : activeChannel?.imageUrl
-            }
-            name={
-              chatType == PRIVATE ? activePeer?.username : activeChannel?.name
-            }
-            size="sm"
-          />
-          <Text fontWeight={"bold"} fontSize={"sm"} color="#5B6171">
-            {chatType == PRIVATE ? activePeer?.username : activeChannel?.name}
-          </Text>
-        </HStack>
-        {chatType == PRIVATE && <FriendSettingsMenu user={activePeer!} />}
+        <UserChannelHeader status={"online"} />
+        {chatType == PRIVATE && <OptionsMenu color='#5B6171' user={activePeer!} />}
       </HStack>
-      <MessageStack messages={messages} />
+      <MessageStack />
       <Stack w={"100%"} alignItems={"center"}>
         <ChatInputBox />
       </Stack>

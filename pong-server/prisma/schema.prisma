@@ -110,7 +110,7 @@ model DirectMessage {
   receiverId String
   receiver   User   @relation(fields: [receiverId], references: [id], onDelete: Cascade, name: "DMreceived")
 
-  content String
+  message String
 
   create_at DateTime @default(now())
 }
@@ -121,10 +121,10 @@ model ChannelMessage {
   channelId String
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade, name: "channelMsg")
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, name: "userChannelMsg")
+  senderId String
+  user   User   @relation(fields: [senderId], references: [id], onDelete: Cascade, name: "userChannelMsg")
 
-  content String
+  message String
 
   create_at DateTime @default(now())
 }

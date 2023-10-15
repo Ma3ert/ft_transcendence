@@ -4,8 +4,8 @@ import Link from "next/link";
 
 interface Props {
     src: string;
-    width?: string;
-    height?: string;
+    width: any;
+    height: any;
 }
 
 const Logo = ({src, width, height}: Props) => {
@@ -13,7 +13,7 @@ const Logo = ({src, width, height}: Props) => {
     <Link href={"/Lobby"}>
       <Image
         src={src}
-        width={{base:'360px', sm:'100px', md:'120px', lg:'160px', xl:'200px'}}
+        width={{base:'360px', sm:'200px', lg:'250px', xl:'300px'}}
         height={'auto'}
         ></Image>
     </Link>

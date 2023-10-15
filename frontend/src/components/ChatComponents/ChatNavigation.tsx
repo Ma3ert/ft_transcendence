@@ -1,65 +1,142 @@
-import React, { useState, useContext } from "react";
-import { Avatar, Stack, HStack, Text, Button } from "@chakra-ui/react";
+import React, { useState, useContext, useEffect } from "react";
+import { Avatar, Stack, HStack, Text, Button, Tooltip } from "@chakra-ui/react";
 import UserAvatar from "../UserAvatar";
 import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
-import { ChatContext } from "../../context/Contexts";
+import { useQuery } from "react-query";
+import {
+  ChannelsContext,
+  ChatContext,
+  UsersContext,
+} from "../../context/Contexts";
 import { PRIVATE, CHANNEL } from "../../../contstants";
+import { NotificationWrapper } from "./NotificationBadge";
+import { setSyntheticTrailingComments } from "typescript";
+import apiClient from "@/services/requestProcessor";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Channels, setActiveChannel, activeChannel, setChatType } = useContext(ChatContext);
+  const { setCurrentChat, CmNotifications } = useContext(ChatContext);
+  const { activeChannel, setActiveChannel, Channels } =
+    useContext(ChannelsContext);
+  const notification = (channel: Channel) =>
+    CmNotifications?.find((elm) => elm == channel.id);
+  function countOccurrences(channelid: string, ids: string[]) {
+    return ids.filter((item) => item === channelid).length;
+  }
+
+  useEffect(() => {}, []);
   return (
     <>
       {Channels?.map((channel, index) => {
-        return <UserAvatar isChannel={true} channel={channel} key={index} action={()=> {
-          setChatType!(CHANNEL)
-          setActiveChannel! (channel)
-        }} active={activeChannel!.id == channel.id} />;
+        console.log(
+          `channel ${channel.name} has ${countOccurrences(
+            channel!.id!,
+            CmNotifications!
+          )} notifications`
+        );
+        return (
+          <NotificationWrapper
+            type="activeChat"
+            status={notification(channel) ? true : false}
+            key={index}
+          >
+            <UserAvatar
+              isChannel={true}
+              channel={channel}
+              action={() => {
+                setCurrentChat!(CHANNEL);
+                setActiveChannel!(channel);
+              }}
+              active={activeChannel!.id == channel.id}
+            />
+          </NotificationWrapper>
+        );
       })}
     </>
   );
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const { Friends, setActivePeer, activePeer , setChatType} = useContext(ChatContext);
+  const { setCurrentChat, DmNotifications } = useContext(ChatContext);
+  const { setActivePeer, friendsConversations, activePeer } =
+    useContext(UsersContext);
+  const notification = (friend: User) =>
+    DmNotifications?.find((elm) => elm == friend.id);
+  const countOccurrences = (friendid: string, ids: string[]) => {
+    return ids.filter((item) => item === friendid).length;
+  };
+  useEffect(() => {}, []);
   return (
     <>
-      {Friends?.map((friend, index) => {
-        return <UserAvatar isChannel={false} user={friend} key={index} action={() =>{
-          setChatType!(PRIVATE)
-          setActivePeer!(friend)
-        }}  active={activePeer?.id == friend.id}/>;
-      })}
+      {activePeer && friendsConversations?.length == 0 ? (
+       
+          <NotificationWrapper
+            type="activeChat"
+            status={notification(activePeer!) ? true : false}
+          >
+            <UserAvatar
+              isChannel={false}
+              user={activePeer!}
+              action={() => {
+                setCurrentChat!(PRIVATE);
+                setActivePeer!(activePeer);
+              }}
+            />
+          </NotificationWrapper>
+      ) : (
+        friendsConversations?.map((friend, index) => {
+          console.log(`friend ${friend.username}  notifications`);
+          return (
+            <NotificationWrapper
+              key={index}
+              type="activeChat"
+              status={notification(friend!) ? true : false}
+            >
+             
+                <UserAvatar
+                  isChannel={false}
+                  user={friend}
+                  action={() => {
+                    setCurrentChat!(PRIVATE);
+                    setActivePeer!(friend);
+                  }}
+                />
+            </NotificationWrapper>
+          );
+        })
+      )}
     </>
   );
 };
 
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
-  const [privateChat, setPrivate] = useState<boolean>(PRIVATE);
-  const { chatType } = useContext(ChatContext);
+  const { chatType, setCurrentChat } = useContext(ChatContext);
+
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         color="#5B6171"
-        onClick={() => setPrivate(!privateChat)}
-        icon={privateChat ? FaUserGroup : FaUserAlt}
+        onClick={() => {
+          setCurrentChat!(!chatType);
+        }}
+        icon={chatType ? FaUserGroup : FaUserAlt}
         size={"25px"}
       />
       <Stack
         w="auto"
         borderRadius={"2xl"}
-        h='100%'
+        h="100%"
         p={4}
         bg={"#1D222C"}
         spacing={2}
         maxH={"60vh"}
       >
-        {privateChat ? <FriendsNavigation /> : <ChannelsNavigation />}
+        {chatType ? <FriendsNavigation /> : <ChannelsNavigation />}
       </Stack>
     </Stack>
   );

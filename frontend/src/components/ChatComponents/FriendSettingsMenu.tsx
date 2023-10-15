@@ -1,58 +1,107 @@
-import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  Icon,
+  Text,
+} from "@chakra-ui/react";
 import IconButton from "../IconButton";
 import { FaEllipsis } from "react-icons/fa6";
-import { UserSettings } from "../../../contstants";
-import ConfirmationModal from "./ConfirmationModal";
-import MenuModal from "./MenuModal";
-import CostumModal from "./CostumModal";
+import useUserOptions from "@/hooks/useOptions";
+import { ModalWrapper } from "../Wrappers/ModalWrapper";
 import UserProfileModal from "./UserProfileModal";
-interface FriendSettingsMenuProps {
-  user: User;
+import InviteToChannels from "./InviteToChannels";
+import { options } from "../../../contstants";
+import useOptionsManager from "@/hooks/useOptionsManager";
+import OptionModal from "./OptionModal";
+import {
+  UsersContext,
+  AppNavigationContext,
+  ChatContext,
+} from "@/context/Contexts";
+import { useContext } from "react";
+interface OptionsMenuProps {
+  channel?: Channel;
+  user?: User;
+  loggedInUserRole?: string;
+  userRole?: string;
+  color?: string;
+  userIsBlocked?: boolean;
+  member?:Member
 }
 
-const conditoinalRender = (setting: friendAction, user:User) => {
-  if (setting.important)
-    return (
-      <MenuModal
-        value={setting.actionName}
-        componentName={setting.actionName}
-    
-      />
-    );
-  else if (setting.modal)
-    return (
-      <CostumModal value={setting.actionName}buttonVariant="menuItem" >
-        <UserProfileModal user={user} />
-      </CostumModal>
-    );
-  else return <Button variant="menuItem">{setting.actionName}</Button>;
-};
-
-const FriendSettingsMenu:React.FC<FriendSettingsMenuProps> = ({user}) => {
+const OptionsMenu: React.FC<OptionsMenuProps> = ({
+  user,
+  loggedInUserRole,
+  userRole,
+  color,
+  userIsBlocked,
+  member, 
+  channel
+}) => {
+  const { loggedInUser, friendsList } = useContext(UsersContext);
+  const { currentSection } = useContext(AppNavigationContext);
+  const { chatType } = useContext(ChatContext);
+  const { getChecker, modals, actions } = useOptionsManager(
+    loggedInUser!,
+    user!,
+    friendsList!,
+    currentSection!,
+    chatType!,
+    userIsBlocked!,
+    channel!
+  );
   return (
     <Menu>
-      <MenuButton bg="transparent" _active={{}} _hover={{}} as={Button}>
-        <IconButton icon={FaEllipsis} color="#5B6171" size="25px" />
+      <MenuButton
+        bg="transparent"
+        color="#DC585B"
+        _active={{}}
+        _hover={{}}
+        as={Button}
+      >
+        <Icon as={FaEllipsis} _hover={{ transform: "scale(1.1)" }} />
       </MenuButton>
-      <MenuList bg="#181D25" border="none" borderRadius={"xl"}>
-        {UserSettings.map((setting, index) => (
-          <MenuItem
-            w="96%"
-            borderRadius={"xl"}
-            mx={"auto"}
-            key={index}
-            _hover={{
-              background: "#252932",
-            }}
-            bg="#181D25"
-            color={setting.important ? "#DC585B" : "#5B6171"}
-          >
-            {conditoinalRender(setting, user)}
-          </MenuItem>
-        ))}
+      <MenuList bg="#181D25" zIndex={9999} borderRadius={"xl"} border="none">
+        {options?.map(
+          (setting, index) =>
+            getChecker(setting.description)(
+              loggedInUserRole!,
+              member!
+            ) &&
+            (setting.modal == false ? (
+              <MenuItem
+                w="96%"
+                borderRadius={"xl"}
+                mx={"auto"}
+                key={index}
+                _hover={{
+                  background: "#252932",
+                }}
+                bg="#181D25"
+                color={setting.type === "critical" ? "#DC585B" : "#5B6171"}
+                onClick={() => {
+                  if (actions.get(setting.description) !== undefined) {
+                    actions!.get(setting.description)!();
+                  }
+                }}
+              >
+                {setting.description}
+              </MenuItem>
+            ) : (
+             <OptionModal
+                key={index}
+                user={user!}
+                setting={setting}
+                userIsBlocked={userIsBlocked!}
+              />
+            ))
+        )}
       </MenuList>
     </Menu>
   );
 };
 
-export default FriendSettingsMenu;
+export default OptionsMenu;

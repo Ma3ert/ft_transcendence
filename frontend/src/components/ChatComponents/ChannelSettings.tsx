@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   HStack,
   Stack,
@@ -8,19 +8,74 @@ import {
   Icon,
   Image,
   Wrap,
+  useDisclosure
 } from "@chakra-ui/react";
-import { channelSettings } from "../../../contstants";
+import { ProtectedChannelSettings, channelSettings, ChannelMemberSettings } from "../../../contstants";
 import CostumSwitcher from "./CostumSwitcher";
 import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
 import { ModalWrapper } from "@/components/Wrappers/ModalWrapper";
 import { SlArrowRight } from "react-icons/sl";
-interface ChannelSettingsProps {}
+import { ChannelsContext, MembersContext, UsersContext } from "@/context/Contexts";
+import { useQuery } from "react-query";
+import apiClient from "@/services/requestProcessor";
+import useChannelManager from "@/hooks/useChannelManager";
+import { getUserRole } from "../../../utils/helpers";
+import EditeChannel, {VisibilityPopOver} from "./EditeChannel";
+import ChannelsListSection from "../Sections/ChannelsListSection";
+import { useEffect } from "react";
+interface ChannelSettingsProps {
+}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   // eslint-disable-next-line react/jsx-key
-  const settings: Array<React.ReactNode> = [<MembersList />, <SetPassword />];
+  const { loggedInUser } = useContext(UsersContext);
+  const { removeChannel, leaveChannel } = useChannelManager();
+  const [settingsList, setSettings] = useState<string[]> (channelSettings)
+  const {members} = useContext (MembersContext)
+  const {activeChannel} = useContext (ChannelsContext)
 
+  const settings = new Map([
+    [
+      "Members",
+      // eslint-disable-next-line react/jsx-key
+       <MembersList  members={members!} />,
+    ],
+    [
+      "Set password",
+      // eslint-disable-next-line react/jsx-key
+       <SetPassword />,
+    ],
+    [
+      "Edit Channel",
+      // eslint-disable-next-line react/jsx-key
+       <EditeChannel channel={activeChannel!} />,
+    ]
+   
+  ]);
+  const settingsActions = new Map([
+    ["delete", () => removeChannel(activeChannel!.id!)],
+    ["leave", () => leaveChannel(activeChannel!.id!)],
+  ]);
+
+  const isPrivliged = () =>{
+    if (getUserRole (loggedInUser!, members!) === "OWNER" || getUserRole (loggedInUser!, members!)  === 'ADMIN')
+      return true
+    return false
+  }
+  useEffect (()=>{
+    console.log (`channel type : -----> ${activeChannel!.type}`)
+    console.log (`logged in user role : -----> ${getUserRole (loggedInUser!, members!)}`)
+    console.table (members)
+    if (isPrivliged ()) {
+      if (activeChannel!.type === 'PROTECTED')
+        setSettings (ProtectedChannelSettings)
+      else
+        setSettings (channelSettings)
+    } else {
+        setSettings (ChannelMemberSettings)
+      }
+  }, [members])
   return (
     <Stack
       spacing={5}
@@ -47,33 +102,50 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           justify="start"
           spacing={4}
           h="auto"
-          minW={"auto"}
+          minW={"90%"}
+          maxW={"450px"}
           minH={"45vh"}
           maxH="auto"
         >
-          <HStack px={2} justify={"space-between"} alignItems={"center"}>
-            <Text color={"#5B6171"} fontSize="sm" fontWeight={"bold"}>
-              Private Channel
-            </Text>
-            <CostumSwitcher />
-          </HStack>
-          {channelSettings.map((setting, index) => {
-            return (<ModalWrapper type="regular" key={index} buttonVariant='largeGhost' buttonValue={
-              <HStack w='100%' h='100%' justifyContent='space-between'>
-                <Text>
-                  {setting}
-                </Text>
-                <Icon as={SlArrowRight} />
-              </HStack>
-            }>{settings[index]}</ModalWrapper>);
+           {isPrivliged () && (<VisibilityPopOver />)}
+          {settingsList.map((setting, index) => {
+            return (
+              <ModalWrapper
+                isOption={false}
+                type="regular"
+                key={index}
+                buttonVariant="largeGhost"
+                variant={setting === 'Members' ? 'largeModal' : 'default'}
+                buttonValue={
+                  <HStack w="100%" h="100%" justifyContent="space-between">
+                    <Text>{setting}</Text>
+                    <Icon as={SlArrowRight} />
+                  </HStack>
+                }
+              >
+                {settings.get(setting)!}
+              </ModalWrapper>
+            );
           })}
         </Stack>
       </Stack>
       <Stack spacing={3}>
-          <ModalWrapper type="confirmation" actionDescription="leave this channel" buttonValue={
-            <Text>Leave Channel</Text>
+        <ModalWrapper
+          action={
+              getUserRole (loggedInUser!, members!) == "OWNER"
+              ? settingsActions.get("delete")
+              : settingsActions.get("leave")
           }
-          buttonVariant='largePrimary'/>
+          type="confirmation"
+          actionDescription={`${getUserRole (loggedInUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
+          buttonValue={
+            <Text>
+              {getUserRole (loggedInUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
+            </Text>
+          }
+          buttonVariant="largePrimary"
+          isOption={false}
+        />
         <Button
           colorScheme="darkGhost"
           color={"#5B6171"}

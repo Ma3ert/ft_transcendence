@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5002/api/v1/",
+  baseURL: "http://localhost:3000/",
 });
 
 class apiClient<T> {
+  
   endPoint: string;
   constructor(endPoint: string) {
     this.endPoint = endPoint;
@@ -29,6 +30,10 @@ class apiClient<T> {
 
   getData = (suffix = "", params?: any) => {
     return axiosInstance.get<T>(this.endPoint + suffix, { withCredentials: true, params });
+  };
+
+  patchData = (data: T, suffix= "") => {
+    return axiosInstance.patch<T>(this.endPoint + suffix, data, { withCredentials: true });
   };
 }
 
