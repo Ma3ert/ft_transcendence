@@ -25,6 +25,16 @@ const ProgressStyle: ComponentStyleConfig = {
 
 };
 
+const DividerStyle: ComponentStyleConfig= {
+  variants: {
+    vertical: {
+      border: "2px solid",
+      borderRadius: "full",
+      p: 0,
+    }
+  }
+}
+
 const ModalStyle: ComponentStyleConfig = {
   // sizes:{
   //   invite:{
@@ -128,8 +138,36 @@ const ModalStyle: ComponentStyleConfig = {
         },
       },
     },
-  },
-};
+    twoFa: {
+      dialog:{
+        fontFamily: "visbyRound",
+        bg: "#252932",
+        borderRadius: "20px",
+        padding: "auto",
+        px: "30px",
+        py: "40px"
+      },
+      body:{
+        fontFamily: "visbyRound",
+        margin: "0px",
+        px: "0px",
+        py: "10px"
+      },
+      closeButton: {
+        fontStyle: "bold",
+        fontSize: "8px",
+        boxSize: "20px",
+        borderRadius: "full",
+        bg: "#DC585B",
+        color: "#252932",
+        _active:{
+          transform: "scale(1.1)",
+        }
+      },
+
+    }
+  }
+}
 
 const ButtonStyle: ComponentStyleConfig = {
   // style object for base or default style
@@ -364,17 +402,11 @@ const ButtonStyle: ComponentStyleConfig = {
         color: "#1D222C",
       },
       // _active: {
-      //   transform: "scale(1.03)"
-      // }
+        //   transform: "scale(1.03)"
+        // }
+      },
     },
-  },
-  // default values for 'size', 'variant' and 'colorScheme'
-  // defaultProps: {
-  //   size: "",
-  //   variant: "primary",
-  //   colorScheme: "",
-  // },
-};
+  };
 
 const CheckboxStyle: ComponentStyleConfig = {
   variants: {
@@ -441,6 +473,7 @@ const TabsStyle: ComponentStyleConfig = {
     },
   },
 };
+
 const InputStyle: ComponentStyleConfig = {
   // style object for base or default style
   baseStyle: {},
@@ -492,16 +525,7 @@ const InputStyle: ComponentStyleConfig = {
         },
       },
     },
-  },
-
-  // default values for 'size', 'variant' and 'colorScheme'
-  defaultProps: {
-    // size: "",
-    // variant: "",
-    // colorScheme: "",
-    // focusBorderColor: "primary",
-  },
-};
+  }};
 
 const brand = {
   100: "#DC585B",
@@ -539,11 +563,12 @@ const theme = extendTheme({
     Progress: ProgressStyle,
     Checkbox: CheckboxStyle,
     Modal: ModalStyle,
-  },
+    Divider: DividerStyle
+    },
   fonts: {
-    visbyRound: "visbyRound, sans-serif",
+    visbyRound: "visbyRound, sans-serif"
+  }
   },
-  
-});
+);
 
 export default theme;

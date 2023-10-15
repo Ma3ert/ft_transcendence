@@ -25,17 +25,21 @@ import SoloLobbyParty from '@/components/SoloLobbyParty';
 import MultiLobbyParty from '@/components/MultiLobbyParty';
 import LobbyParty from '@/components/LobbyParty';
 import PageLayout from '@/components/PageLayout';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useContext, useState } from 'react';
 import Setting from '@/components/Setting';
 import Lobby from '@/components/Lobby';
 import Achievements from '@/components/Achievements';
 import FriendSection from '@/components/FriendSection';
+import { useAuth } from '@/hooks/useAuth';
+
 
 
 
 export default function Home() {
-  const [bodyIndex, setBodyIndex] = useState(0);
+  const {currentUser, updateUser} = useAuth();
+  const [bodyIndex, setBodyIndex] = useState(3);
 
+  console.log("current user Lobby: ", currentUser)
   const bodys:ReactNode[] = [<Lobby/>, <Achievements/>, <FriendSection/>, <Setting/>,];
   return (
     <PageLayout body={bodys[bodyIndex]} bodySetter={setBodyIndex}/>
@@ -43,7 +47,6 @@ export default function Home() {
     // <ProgressLevel></ProgressLevel>
     // <SoloLobbyParty></SoloLobbyParty>
     // <MultiLobbyParty></MultiLobbyParty>
-    
     
     // <NavBar></NavBar>
     // <SideBar></SideBar>

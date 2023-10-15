@@ -9,6 +9,7 @@ import IconButton from "@/components/IconButton";
 import localFont from "@next/font/local";
 import GlobalProvider from "@/providers/GlobalProvider";
 import { QueryClient, QueryClientProvider } from "react-query";
+import AuthUserProvider from "@/providers/AuthUserProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,11 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <QueryClientProvider client={queryClient}>
-          <ChakraProvider theme={theme}>
-            <GlobalProvider>{children}</GlobalProvider>
-          </ChakraProvider>
-        </QueryClientProvider>
+        <AuthUserProvider>
+          <QueryClientProvider client={queryClient}>
+            <ChakraProvider theme={theme}>
+              <GlobalProvider>{children}</GlobalProvider>
+            </ChakraProvider>
+          </QueryClientProvider>
+        </AuthUserProvider>
       </body>
     </html>
   );

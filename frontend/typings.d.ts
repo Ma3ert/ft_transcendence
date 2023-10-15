@@ -188,7 +188,7 @@ type QueryOptions = {
 };
 
 type QueryArgs = {
-  queryKey: string;
+  queryKey: string[];
   queryFunction: () => void;
   options?: QueryOptions;
 };
@@ -203,6 +203,11 @@ type MutationArgs = {
   mutationFunction: () => Promise<any>;
   options?: MutationOptions;
 };
+
+type AuthUserContext = {
+  currentUser?: any
+  updateUser?: () => void
+}
 
 type GlobalContext = {
   socket?: Socket | null;
