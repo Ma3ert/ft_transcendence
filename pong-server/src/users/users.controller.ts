@@ -74,7 +74,6 @@ export class UsersController {
       data: secureUserObject(
         req.user,
         'twoFactorRetry',
-        'twoFactor',
         'twoFactorPin',
         'twoFactorPinExpires',
         'blockedUserId',
