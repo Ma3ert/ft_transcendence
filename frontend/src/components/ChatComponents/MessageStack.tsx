@@ -43,7 +43,6 @@ const MessageStack: React.FC<MessageStackProps> = () => {
       spacing={6}
     >
       {chatType == PRIVATE ? <DirectMessages messages={dms!}/> : <ChannelMessages messages={cms!} />}
-      {joinGameStatus && <EnviteMessage />}
     </Stack>
   );
 };

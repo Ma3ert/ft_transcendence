@@ -12,12 +12,17 @@ const config: ThemeConfig = {
 const ProgressStyle: ComponentStyleConfig = {
   variants: {
     default: {
-      colorScheme: "#252932",
+      colorScheme: "green",
       bg: "#5B6171",
       borderRadius: "full",
       p: "1px",
     },
+      custom: {
+          bg: "purple.500", // Set the background color of the bar
+          track: { bg: "gray.100" }, // Set the background color of the track
+        },
   },
+
 };
 
 const DividerStyle: ComponentStyleConfig= {
@@ -522,6 +527,12 @@ const InputStyle: ComponentStyleConfig = {
     },
   }};
 
+const brand = {
+  100: "#DC585B",
+  200: "#DC585B",
+  500: "#DC585B", 
+  900: "#DC585B"
+}
 const theme = extendTheme({
   breakpoints: {
     // Define your custom breakpoint here
@@ -538,12 +549,14 @@ const theme = extendTheme({
     },
   },
   colors: {
+    brand,
     primaryDark: "#252932",
     secondDark: "#DC585B",
     thirdDark: "#F5F5F5",
     forthDark: "#5B6171",
   },
   components: {
+   
     Input: InputStyle,
     Button: ButtonStyle,
     Tabs: TabsStyle,
