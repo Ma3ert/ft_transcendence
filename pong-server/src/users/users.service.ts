@@ -10,7 +10,7 @@ import { secureUserObject } from './utils/secureUserObject';
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getUserData(id: string) {
+  async getUserData(id: string, fields: string[]) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
@@ -31,7 +31,7 @@ export class UsersService {
         },
       },
     });
-
+    if (!user) return null;
     const validGames = user.games
       .map((game: Game) => (game.winner !== null ? game : null))
       .filter((game) => game !== null);
@@ -41,12 +41,7 @@ export class UsersService {
     const data = {
       user: secureUserObject(
         user,
-        'twoFactorRetry',
-        'twoFactor',
-        'twoFactorPin',
-        'twoFactorPinExpires',
-        'activated',
-        'pinValidated',
+        ...fields
       ),
       totalGames,
       numberOfWon,

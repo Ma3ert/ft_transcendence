@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Req,
   UseGuards,
   UseInterceptors,
@@ -13,7 +12,8 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
-  Put,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,7 +21,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptimizerPipe } from './utils/imageOptimizer.pipe';
-import { secureUserObject } from './utils/secureUserObject';
 
 @Controller('users')
 export class UsersController {
@@ -68,18 +67,16 @@ export class UsersController {
 
   @Get('me')
   @UseGuards(LoggedInGuard)
-  getCurrentUser(@Req() req) {
-    return {
-      status: 'success',
-      data: secureUserObject(
-        req.user,
-        'twoFactorRetry',
-        'twoFactorPin',
-        'twoFactorPinExpires',
-        'blockedUserId',
-        'friendsListId',
-      ),
-    };
+  async getCurrentUser(@Req() req) {
+    const user = await this.usersService.getUserData(req.user.id, [
+      'twoFactorRetry',
+      'twoFactor',
+      'twoFactorStatus',
+      'twoFactorPin',
+      'twoFactorPinExpires',
+    ]);
+    if (!user) throw new NotFoundException(`Could not find user: ${req.user.id}`);
+    return { status: 'success', current: user };
   }
 
   @Get('friends')
@@ -91,9 +88,18 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    //? This route should calculate properties like stats (wins or loses) and get all user game history
-    console.log(id);
-    return await this.usersService.getUserData(id);
+    const user = await this.usersService.getUserData(id, [
+      'twoFactorRetry',
+      'twoFactor',
+      'twoFactorPin',
+      'twoFactorStatus',
+      'twoFactorPinExpires',
+      'activated',
+      'pinValidated',
+      'games'
+    ]);
+    if (!user) throw new NotFoundException(`Could not find user: ${id}`);
+    return { status: 'success', user };
   }
 
   @Patch()
@@ -121,11 +127,7 @@ export class UsersController {
         : (updateUserDto.activated = false);
     }
     const user = await this.usersService.updateUser(req.user.id, updateUserDto);
-    if (user) return { status: 'success', user };
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.removeUser(id);
+    if (!user) throw new BadRequestException('Could not update user');
+    return { status: 'success', user };
   }
 }
