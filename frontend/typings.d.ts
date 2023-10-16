@@ -64,6 +64,7 @@ type User = {
   status?: string;
   created_at?: string;
   twoFactor?: boolean;
+  twoFactorStatus?: boolean
   twoFactorPin?: string | null;
   activated?: boolean;
   pinValidated?: boolean;
@@ -205,7 +206,7 @@ type MutationArgs = {
 };
 
 type AuthUserContext = {
-  currentUser?: User
+  currentUser?: any
   updateUser?: () => void
 }
 

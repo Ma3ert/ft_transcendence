@@ -9,6 +9,7 @@ import NotificationCenter from "@/components/NotificationCenter"
 import Search from "@/components/Search"
 import Setting from "@/components/Setting"
 import TwoFaAuPopUp from "@/components/TwoFaAuPopUp"
+import UserSetting from "@/components/UserSetting"
 import { Button, Input } from "@chakra-ui/react"
 
 export default function Home() {
@@ -24,7 +25,8 @@ export default function Home() {
         // <Achievements></Achievements>
         // <Lobby/>
         // <FriendSection></FriendSection>
-        <Setting></Setting>
+        // <Setting></Setting>
+        <UserSetting></UserSetting>
         // <Search></Search>
     )
 }

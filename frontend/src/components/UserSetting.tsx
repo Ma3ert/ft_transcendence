@@ -46,12 +46,10 @@ const UserSetting = (props: Props) => {
   const activateFa = () => {
     const patchClient = new apiClient("/auth/twoFactor")
     var toSend = {"activate": faState}
-
-    console.log("two fa pressed")
-    if (!faState){
-      toSend.activate = true;
-    }
-    patchClient.patchData(toSend, "").then(() => {
+    patchClient.patchData(toSend, "").then((res) => {
+      console.log("res data: ", res.data);
+      console.log("path res: ", res.data!.twoFactor)
+      faStateSetter(res.data.twoFactor)
       updateUser && updateUser();
     })
   }
@@ -61,7 +59,7 @@ const UserSetting = (props: Props) => {
       <Stack py={"15%"} align={"center"} spacing={"6%"} w={{ base: "225px", md: "335px", lg: "465px"}} h={"80vh"} bg={"#1D222C"} px={{base: "25px", md: "45px" }} borderRadius={"20px"}>
         <Input onChange={handlePreview} visibility={"hidden"} w={0} h={0} type='file' id='avatar' name='avatar'/>
         <Wrap align={"end"} position={"relative"}>
-          <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} src={newAvatar === "" ? currentUser.avatar : newAvatar}></Avatar>
+          <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} src={newAvatar === "" ? currentUser!.avatar : newAvatar}></Avatar>
           <Box
             as='label'
             htmlFor='avatar'
@@ -76,11 +74,11 @@ const UserSetting = (props: Props) => {
             <Icon as={FaPen} style={{ fontSize: "14px" }} />
           </Box>
         </Wrap>
-        <Input variant={"secondary"} w={"full"} h={{base: "37", md: "57px" }} placeholder={currentUser.username}></Input>
+        <Input variant={"secondary"} w={"full"} h={{base: "37", md: "57px" }} placeholder={currentUser!.username}></Input>
         <Flex w={"full"} px={"10px"}>
           <Text fontFamily={"visbyRound"} fontSize={"15px"} color={"#fff"}>Enable 2FA</Text>
           <Spacer/>
-          <CostumSwitcher state={faState} stateSetter={faStateSetter} onClick={activateFa}/>
+          <CostumSwitcher state={faState!}  onClick={activateFa}/>
         </Flex>
         <Button
           type='submit'
