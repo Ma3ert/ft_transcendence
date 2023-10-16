@@ -17,9 +17,9 @@ type Props = {}
 const client = new apiClient("/users")
 const UserSetting = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
-  const [faState, faStateSetter] = useState(currentUser.twoFactor);
+  const [faState, faStateSetter] = useState(currentUser!.twoFactor);
   const queryClient = useQueryClient();
-  const [newAvatar, setNewAvatar] = useState(currentUser.avatar);
+  const [newAvatar, setNewAvatar] = useState(currentUser!.avatar);
 
   console.log("currentUser from the setting: ", currentUser);
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
