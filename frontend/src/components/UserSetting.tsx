@@ -17,10 +17,11 @@ type Props = {}
 const client = new apiClient("/users")
 const UserSetting = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
-  const [FaState, setFaState] = useState();
+  const [faState, faStateSetter] = useState(currentUser.twoFactor);
   const queryClient = useQueryClient();
   const [newAvatar, setNewAvatar] = useState(currentUser.avatar);
-  
+
+  console.log("currentUser from the setting: ", currentUser);
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentFiles = event.target.files
     if (currentFiles && currentFiles?.length > 0){
@@ -37,19 +38,22 @@ const UserSetting = (props: Props) => {
     if (userName !== "" && imageFile)
     {
       client.patchData(formData).then(() => {
-        client.getData("/me").then((res: AxiosResponse)=> {
-          console.log("query function is fired")
-          console.log(res.data.data)
-          Cookies.set('currentUser', JSON.stringify(res.data.data));
-          console.log("the cookie is set");
-          updateUser && updateUser()
-      }).catch((err) => (console.log(err)))
+        updateUser && updateUser();
       })
     }
   }
 
   const activateFa = () => {
-    
+    const patchClient = new apiClient("/auth/twoFactor")
+    var toSend = {"activate": faState}
+
+    console.log("two fa pressed")
+    if (!faState){
+      toSend.activate = true;
+    }
+    patchClient.patchData(toSend, "").then(() => {
+      updateUser && updateUser();
+    })
   }
 
   return (
@@ -57,7 +61,7 @@ const UserSetting = (props: Props) => {
       <Stack py={"15%"} align={"center"} spacing={"6%"} w={{ base: "225px", md: "335px", lg: "465px"}} h={"80vh"} bg={"#1D222C"} px={{base: "25px", md: "45px" }} borderRadius={"20px"}>
         <Input onChange={handlePreview} visibility={"hidden"} w={0} h={0} type='file' id='avatar' name='avatar'/>
         <Wrap align={"end"} position={"relative"}>
-          <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} src={newAvatar}></Avatar>
+          <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} src={newAvatar === "" ? currentUser.avatar : newAvatar}></Avatar>
           <Box
             as='label'
             htmlFor='avatar'
@@ -76,7 +80,7 @@ const UserSetting = (props: Props) => {
         <Flex w={"full"} px={"10px"}>
           <Text fontFamily={"visbyRound"} fontSize={"15px"} color={"#fff"}>Enable 2FA</Text>
           <Spacer/>
-          <CostumSwitcher onClick={activateFa}/>
+          <CostumSwitcher state={faState} stateSetter={faStateSetter} onClick={activateFa}/>
         </Flex>
         <Button
           type='submit'
