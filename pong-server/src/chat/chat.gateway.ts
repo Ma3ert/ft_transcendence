@@ -24,6 +24,7 @@ import { UsersService } from 'src/users/users.service';
     credentials: true,
     allowedHeaders: ['Access-Control-Allow-Origin']
   },
+  namespace:"chat",
 })
 
 export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
