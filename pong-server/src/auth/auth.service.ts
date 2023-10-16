@@ -74,7 +74,7 @@ export class AuthService {
   }
 
   async alterTwoFactorStatus(status: boolean, userReq: User) {
-    return await this.usersService.updateUserAuth(userReq.id, { twoFactor: status, pinValidated: false });
+    return await this.usersService.updateUserAuth(userReq.id, { twoFactorStatus: status });
   }
 
   async validateTwoFactorPin(pin: string, user: AuthUserDto) {
