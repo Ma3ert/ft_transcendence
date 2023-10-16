@@ -15,10 +15,12 @@ import { useQuery, useQueryClient } from 'react-query';
 export default function Home() {
   const router = useRouter()
   const client = new apiClient("/users");
-  const {currentUser, updateUser} = useAuth(); 
+  const {currentUser, updateUser} = useAuth();
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
 
-  updateUser && updateUser()
+  console.log("avatar from change: ", newAvatar)
+  if (currentUser && currentUser.activated)
+    router.push("/Lobby")
 
   const handleSkip = () => {
     const formData = new FormData();
@@ -44,24 +46,12 @@ export default function Home() {
     formData.append("activated", "true")
     if (userName !== "" && imageFile)
     {
-      client.patchData(formData).then(() => {
-        client.getData("/me").then((res: AxiosResponse)=> {
-          console.log("query function is fired")
-          console.log(res.data.data)
-          Cookies.set('currentUser', JSON.stringify(res.data.data));
-          console.log("the cookie is set");
-          updateUser && updateUser()
-          router.push("/Lobby")
-      }).catch((err) => (console.log(err)))
-      })
+      client.patchData(formData).then(() => {updateUser && updateUser()})
     }
     else {
       router.push("/Lobby");
     }
   }
-  
-  if (currentUser && currentUser.activated)
-    router.push("/Lobby")
   
   return (
     <Stack

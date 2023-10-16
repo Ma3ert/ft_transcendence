@@ -10,13 +10,16 @@ interface updateCurrentUser {
     updateUser: (() => void) | undefined
 }
 
-export function useUpdateCurrentUser() {
+export async function useUpdateCurrentUser() {
     const client = new apiClient("/users");
 
-    client.getData("/me").then((res: AxiosResponse)=> {
+    return client.getData("/me").then((res: AxiosResponse)=> {
         console.log("query function is fired")
         console.log(res.data.data)
-        Cookies.set('currentUser', JSON.stringify(res.data.data));
-        console.log("the cookie is set");
-    }).catch((err) => (console.log(err)))
+        const avatar:string = res.data.data.avatar;
+        if (!avatar.includes("http"))
+            res.data.data.avatar = "http://localhost:3000/public/users/imgs/" + avatar;
+        // Cookies.set('currentUser', JSON.stringify(res.data.data));
+        return (res.data.data);
+    })
 }
