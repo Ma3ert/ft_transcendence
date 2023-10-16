@@ -47,6 +47,7 @@ model User {
 
   twoFactorRetry      Int       @default(0)
   twoFactor           Boolean   @default(false)
+  twoFactorStatus     Boolean   @default(false)
   twoFactorPin        String?
   twoFactorPinExpires DateTime?
   activated           Boolean   @default(false)
@@ -55,8 +56,8 @@ model User {
   friendsList User[] @relation("Friendship")
   friendOf    User[] @relation("Friendship")
 
-  blocked   User[] @relation("BlackedFriends")
-  blockedBy User[] @relation("BlackedFriends")
+  blocked   User[] @relation("BlockedFriends")
+  blockedBy User[] @relation("BlockedFriends")
 
   sentInvites     UserInvite[] @relation("sentInvites")
   receivedInvites UserInvite[] @relation("receivedInvites")

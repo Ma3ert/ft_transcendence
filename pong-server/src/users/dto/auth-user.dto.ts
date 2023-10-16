@@ -7,6 +7,7 @@ export class AuthUserDto extends PartialType(UpdateUserDto) {
   twoFactor?: boolean;
   twoFactorPin?: string;
   pinValidated?: boolean;
+  twoFactorStatus?: boolean;
   twoFactorRetry?: number;
   twoFactorPinExpires?: Date;
   // laddelLevel?: number;
