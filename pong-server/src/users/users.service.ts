@@ -39,10 +39,7 @@ export class UsersService {
     const numberOfWon = validGames.filter((game: Game) => game.winner === id).length;
     const numberOfLost = totalGames - numberOfWon;
     const data = {
-      user: secureUserObject(
-        user,
-        ...fields
-      ),
+      user: secureUserObject(user, ...fields),
       totalGames,
       numberOfWon,
       numberOfLost,
@@ -79,7 +76,7 @@ export class UsersService {
       include: {
         blocked: true,
         friendsList: true,
-        blockedBy: true
+        blockedBy: true,
       },
     });
   }
@@ -279,11 +276,26 @@ export class UsersService {
     return friendsList.includes(friendId);
   }
 
-  removeUser(id: string) {
-    return this.prismaService.user.delete({
-      where: {
-        id,
+  async getUserLocalRank(userId: string) {
+    const users = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatar: true,
+        username: true,
+        status: true
+      },
+      orderBy: {
+        xp: 'asc',
       },
     });
+    const usersRank: any[] = users.map((user, index) => {
+      return { ...user, order: index + 1 };
+    });
+
+    const currentUserRank = usersRank.findIndex((user) => user.id === userId);
+    if (currentUserRank === -1) {
+      return null;
+    }
+    return { ranks: usersRank, currentRank: usersRank[currentUserRank].order };
   }
 }

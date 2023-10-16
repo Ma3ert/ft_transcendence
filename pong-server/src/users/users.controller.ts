@@ -86,7 +86,18 @@ export class UsersController {
     return { status: 'success', friends };
   }
 
+  @Get("rank/local")
+  @UseGuards(LoggedInGuard)
+  async getUserRank(@Req() req: any)
+  {
+    const rank = await this.usersService.getUserLocalRank(req.user.id);
+    if (!rank)
+      throw new NotFoundException(`Could not get rank for current user`);
+    return { status: "success", current: rank }
+  }
+
   @Get(':id')
+  @UseGuards(LoggedInGuard)
   async findOne(@Param('id') id: string) {
     const user = await this.usersService.getUserData(id, [
       'twoFactorRetry',
