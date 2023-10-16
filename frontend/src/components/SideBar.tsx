@@ -25,7 +25,7 @@ const SideBar: React.FC<Props> = ({ }) => {
   links.set("achievements", FaMedal);
   links.set("friends", FaUserGroup);
   links.set("settings", IoMdSettings);
-  routes.set("lobby", "/Home");
+  routes.set("lobby", "/Lobby");
   routes.set("notifications", "/Notifications");
   routes.set("achievements", "/Achievements");
   routes.set("friends", "/Friends");
