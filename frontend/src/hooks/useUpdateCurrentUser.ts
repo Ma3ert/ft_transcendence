@@ -6,25 +6,17 @@ import { useAuth } from "./useAuth";
 import { Dispatch } from "react";
 
 interface updateCurrentUser {
-    updateUserCookie?: () => void;
+    currentUser: any,
+    updateUser: (() => void) | undefined
 }
 
-export function useUpdateCurrentUser({updateUserCookie}: updateCurrentUser) {
+export function useUpdateCurrentUser() {
     const client = new apiClient("/users");
-    const { useQueryWrapper } = useRequestProcessor()
 
-    const updateCurrentUser: QueryArgs = {
-        queryKey: ["current-user"],
-        queryFunction: () => { client.getData("/me").then((res: AxiosResponse)=> {
-            console.log("query function is fired")
-            console.log(res.data.data)
-            Cookies.set('currentUser', JSON.stringify(res.data.data));
-            console.log("the cookie is set");
-            updateUserCookie && updateUserCookie();
-            // console.log("from the queryfunctionJ: ", useAuth())
-        }).catch((err) => (console.log(err))) } 
-    }
-    const queryReturn = useQueryWrapper(updateCurrentUser)
-    if (queryReturn.isLoading) console.log("Loading")
-    if (queryReturn.isSuccess) return queryReturn
+    client.getData("/me").then((res: AxiosResponse)=> {
+        console.log("query function is fired")
+        console.log(res.data.data)
+        Cookies.set('currentUser', JSON.stringify(res.data.data));
+        console.log("the cookie is set");
+    }).catch((err) => (console.log(err)))
 }

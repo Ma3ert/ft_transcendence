@@ -17,10 +17,12 @@ type Props = {}
 const client = new apiClient("/users")
 const UserSetting = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
+  const [faState, faStateSetter] = useState(currentUser.pinValidated);
   const [FaState, setFaState] = useState();
   const queryClient = useQueryClient();
   const [newAvatar, setNewAvatar] = useState(currentUser.avatar);
-  
+
+  console.log("currentUser from the setting: ", currentUser);
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentFiles = event.target.files
     if (currentFiles && currentFiles?.length > 0){
@@ -37,19 +39,21 @@ const UserSetting = (props: Props) => {
     if (userName !== "" && imageFile)
     {
       client.patchData(formData).then(() => {
-        client.getData("/me").then((res: AxiosResponse)=> {
-          console.log("query function is fired")
-          console.log(res.data.data)
-          Cookies.set('currentUser', JSON.stringify(res.data.data));
-          console.log("the cookie is set");
-          updateUser && updateUser()
-      }).catch((err) => (console.log(err)))
+        updateUser && updateUser();
       })
     }
   }
 
   const activateFa = () => {
-    
+    const patchClient = new apiClient("/auth/twoFactor")
+    var toSend = {activated: true}
+
+    if (!faState){
+      toSend.activated = false;
+    }
+    patchClient.patchData(toSend, "").then(() => {
+      updateUser && updateUser();
+    })
   }
 
   return (
@@ -76,7 +80,7 @@ const UserSetting = (props: Props) => {
         <Flex w={"full"} px={"10px"}>
           <Text fontFamily={"visbyRound"} fontSize={"15px"} color={"#fff"}>Enable 2FA</Text>
           <Spacer/>
-          <CostumSwitcher onClick={activateFa}/>
+          <CostumSwitcher state={faState} stateSetter={faStateSetter} onClick={activateFa}/>
         </Flex>
         <Button
           type='submit'

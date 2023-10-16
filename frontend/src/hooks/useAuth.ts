@@ -1,6 +1,7 @@
 import { AuthUser } from "@/context/Contexts";
 import Cookies from "js-cookie";
 import { useContext } from "react";
+import { useUpdateCurrentUser } from "./useUpdateCurrentUser";
 
 export const useAuth = () => {
     const context = useContext(AuthUser);

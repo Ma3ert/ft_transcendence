@@ -18,11 +18,7 @@ export default function Home() {
   const {currentUser, updateUser} = useAuth(); 
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
 
-  console.log("the avatar: ", newAvatar);
-  const queryReturn = useUpdateCurrentUser({updateUserCookie: () => {
-    updateUser && updateUser()
-    newAvatar === "" && setNewAvatar(currentUser.avatar)
-  }});
+  updateUser && updateUser()
 
   const handleSkip = () => {
     const formData = new FormData();
