@@ -9,15 +9,15 @@ import { FaUserGroup } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import Link from "next/link";
 import { ChatContext, UsersContext } from "@/context/Contexts";
+
 import {NotificationWrapper} from './ChatComponents/NotificationBadge'
 interface Props {
-  currentSection: Section;
-  sectionSetter: (section: Section) => void;
 }
 
-const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
+const SideBar: React.FC<Props> = ({ }) => {
   const size = "25px";
   const links = new Map<Section, React.ElementType>();
+  const routes = new Map<string, string>()
   const {inviteNotifications} = useContext(UsersContext)
 
   links.set("lobby", AiFillHome);
@@ -25,6 +25,11 @@ const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
   links.set("achievements", FaMedal);
   links.set("friends", FaUserGroup);
   links.set("settings", IoMdSettings);
+  routes.set("lobby", "/Lobby");
+  routes.set("notifications", "/Notifications");
+  routes.set("achievements", "/Achievements");
+  routes.set("friends", "/Friends");
+  routes.set("settings", "/Settings");
 
   return (
     <Stack
@@ -37,24 +42,26 @@ const SideBar: React.FC<Props> = ({ currentSection, sectionSetter }) => {
       {Array.from(links).map(([section, icon]) => {
         if (section == "friends") {
           return (
-            <NotificationWrapper key={section} type='activeChat' status={inviteNotifications!}>
+           <Link key={section} href={routes.get (section)!}>
+             <NotificationWrapper  type='activeChat' status={inviteNotifications!}>
               <IconButton
                 icon={icon}
                 size={size}
-                onClick={() => {
-                  sectionSetter(section);
-                } } color={currentSection === section ? "#DC585B" : "#5B6171"}/>
+                // currentSection === section ? "#DC585B" :
+ />
             </NotificationWrapper>
+           </Link>
           );
         }
         return (
+        <Link key={section} href={routes.get (section)!}>
           <IconButton
-            color={currentSection === section ? "#DC585B" : "#5B6171"}
-            onClick={() => sectionSetter(section)}
+          // currentSection === section ? "#DC585B" :
+          // currentSection === section ? "35px" : 
             icon={icon}
-            size={currentSection === section ? "35px" : size}
-            key={section}
+            size={size}
           />
+        </Link>
         );
       })}
     </Stack>

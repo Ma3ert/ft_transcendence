@@ -205,7 +205,7 @@ type MutationArgs = {
 };
 
 type AuthUserContext = {
-  currentUser?: any
+  currentUser?: User
   updateUser?: () => void
 }
 

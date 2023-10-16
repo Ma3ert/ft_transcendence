@@ -12,15 +12,15 @@ import UserAvatar from "../UserAvatar";
 import { CHANNEL } from "@/../contstants";
 import {LockIcon, ViewOffIcon, ViewIcon, SettingsIcon} from "@chakra-ui/icons"
 import { ModalWrapper } from "../Wrappers/ModalWrapper";
-
+import { useRouter } from "next/navigation";
 
 interface ChannelFieldProps {
   channel: Channel;
 }
 const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
-  const { setCurrentSection } = useContext(AppNavigationContext);
   const { setCurrentChat } = useContext(ChatContext);
   const { setActiveChannel } = useContext(ChannelsContext);
+  const router = useRouter();
   const caseActions = new Map([
     ['PRIVATE', () => {
       return <Icon as={ViewOffIcon} fontSize='sm' />
@@ -39,10 +39,9 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
       h="auto"
       px={2}
       onClick={() => {
-        // setClicked (true)
-        setCurrentSection!("chat");
         setCurrentChat!(false);
         setActiveChannel!(channel);
+        router.push(`/Chat`);
       }}
     >
       <HStack w="100%" h="100%" justify="space-between" alignItems="center">
