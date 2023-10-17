@@ -117,7 +117,7 @@ export class UsersController {
       'games',
     ]);
     if (!user) throw new NotFoundException(`Could not find user: ${id}`);
-    return { status: 'success', user };
+    return { status: 'success', member: user };
   }
 
   @Patch()
