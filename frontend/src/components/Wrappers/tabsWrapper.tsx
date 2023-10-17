@@ -141,7 +141,7 @@ const TabsWrapper: React.FC = () => {
       {
         (() => {
           switch (section) {
-            case "home":
+            case "lobby":
               return (
                 <NotificationWrapper type='activeChat' status={chatNotifications!}>
                   <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
