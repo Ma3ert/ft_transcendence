@@ -59,7 +59,7 @@ export default function Home() {
     }
   }, [])
 
-  if (currentUser && currentUser.activated && currentUser.twoFactor && currentUser.pinValidated)
+  if (currentUser && currentUser.activated && !currentUser.twoFactor && !currentUser.pinValidated)
     router.push("/Lobby")
 
   const handleSkip = () => {
