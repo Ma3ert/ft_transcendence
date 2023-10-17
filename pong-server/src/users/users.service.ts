@@ -276,16 +276,56 @@ export class UsersService {
     return friendsList.includes(friendId);
   }
 
-  async getUserLocalRank(userId: string) {
+  async getUserLocalRank(userId: string)
+  {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId
+      },
+      include: {
+        friendsList: {
+          select: {
+            id: true
+          }
+        }
+      }
+    })
+    if (!user) return null;
     const users = await this.prismaService.user.findMany({
       select: {
         id: true,
         avatar: true,
         username: true,
-        status: true
+        status: true,
       },
       orderBy: {
-        xp: 'asc',
+        xp: 'desc',
+      },
+    });
+    const usersRank: any[] = users.map((user, index) => {
+      return { ...user, order: index + 1 };
+    });
+
+    const userFriends = [user.id, ...user.friendsList.map((user) => user.id)];
+    const friendsRank = usersRank.filter((user) => userFriends.includes(user.id));
+
+    const currentUserRank = friendsRank.findIndex((user) => user.id === userId);
+    if (currentUserRank === -1) {
+      return null;
+    }
+    return { ranks: usersRank, currentRank: usersRank[currentUserRank].order };
+  }
+
+  async getUserGlobalRank(userId: string) {
+    const users = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatar: true,
+        username: true,
+        status: true,
+      },
+      orderBy: {
+        xp: 'desc',
       },
     });
     const usersRank: any[] = users.map((user, index) => {

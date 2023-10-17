@@ -86,14 +86,21 @@ export class UsersController {
     return { status: 'success', friends };
   }
 
+  @Get('rank/all')
+  @UseGuards(LoggedInGuard)
+  async getUserRank(@Req() req: any) {
+    const rank = await this.usersService.getUserGlobalRank(req.user.id);
+    if (!rank) throw new NotFoundException(`Could not get rank for current user`);
+    return { status: 'success', current: rank };
+  }
+
   @Get("rank/local")
   @UseGuards(LoggedInGuard)
-  async getUserRank(@Req() req: any)
+  async getUserFriendsRank(@Req() req: any)
   {
     const rank = await this.usersService.getUserLocalRank(req.user.id);
-    if (!rank)
-      throw new NotFoundException(`Could not get rank for current user`);
-    return { status: "success", current: rank }
+    if (!rank) throw new NotFoundException(`Could not get rank for current user`);
+    return { status: 'success', current: rank };
   }
 
   @Get(':id')
@@ -107,7 +114,7 @@ export class UsersController {
       'twoFactorPinExpires',
       'activated',
       'pinValidated',
-      'games'
+      'games',
     ]);
     if (!user) throw new NotFoundException(`Could not find user: ${id}`);
     return { status: 'success', user };
