@@ -21,6 +21,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggedInGuard } from 'src/auth/utils/LoggedIn.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageOptimizerPipe } from './utils/imageOptimizer.pipe';
+import { UserCheck } from 'src/auth/utils/UserCheck.guard';
 
 @Controller('users')
 export class UsersController {
@@ -66,7 +67,7 @@ export class UsersController {
   }
 
   @Get('me')
-  @UseGuards(LoggedInGuard)
+  @UseGuards(UserCheck)
   async getCurrentUser(@Req() req) {
     const user = await this.usersService.getUserData(req.user.id, [
       'twoFactorRetry',
