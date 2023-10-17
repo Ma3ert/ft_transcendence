@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, Button, Input, Stack, Wrap, Box, Icon } from '@chakra-ui/react'
 import Logo from "@/components/Logo"
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import apiClient from '@/services/requestProcessor';
 import { AxiosResponse } from 'axios';
@@ -11,14 +11,55 @@ import { useAuth } from '@/hooks/useAuth';
 import {useUpdateCurrentUser} from "@/hooks/useUpdateCurrentUser"
 import Cookies from 'js-cookie';
 import { useQuery, useQueryClient } from 'react-query';
+import { PinInput, PinInputField } from "@chakra-ui/react";
+import {
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  ModalBody,
+  Text
+} from "@chakra-ui/react";
+import { Cookie } from 'next/font/google';
 
 export default function Home() {
+  const [pin, setPin] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   const client = new apiClient("/users");
+  const twoFaClient = new apiClient("/auth/twoFactor")
   const {currentUser, updateUser} = useAuth();
+  console.log("current User: ", currentUser);
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
+  const [retry, setRetry] = useState(3);
+  const [value, setValue] = useState("");
+  const first = useRef<any>(null);
 
-  if (currentUser && currentUser.activated)
+  useEffect(() => {
+    if (pin.length === 6)
+      twoFaClient.postData({"pin": pin} ,"").then((res) => 
+      {
+        console.log("result: from pin validation: ", res);
+        router.push("/Lobby") 
+      }
+      ).catch((err)=> {
+        setRetry(retry - 1)
+        setPin("");
+        setValue("")
+        first.current && first.current.focus()
+      })
+  }, [pin])
+
+  useEffect(() => {
+    if (currentUser && currentUser.twoFactor && !currentUser.pinValidated)
+    {
+      console.log("I sent it again");
+      twoFaClient.getData("").then(() => (onOpen()))
+    }
+  }, [])
+
+  if (currentUser && currentUser.activated && currentUser.twoFactor && currentUser.pinValidated)
     router.push("/Lobby")
 
   const handleSkip = () => {
@@ -58,52 +99,114 @@ export default function Home() {
       align="center"
       minH="70vh"
       >
-        <Logo src='/logo.png' width="334px" height="179px"></Logo>
-        <form onSubmit={handleOnSubmit}>
-          <Stack align={"center"} spacing={"40px"}>
-            <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
-              <Input onChange={handlePreview} visibility={"hidden"} w={0} h={0} type='file' id='avatar' name='avatar'/>
-              <Wrap align={"end"} position={"relative"}>
-                <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} 
-                  src={newAvatar}></Avatar>
-                <Box
-                  as='label'
-                  htmlFor='avatar'
-                  zIndex={1}
-                  boxSize={"30px"} 
-                  borderRadius={"full"}
-                  bg={"#DC585B"} color={"#fff"} 
-                  display={"flex"} alignItems={"center"} justifyContent={"center"}
-                  position={"absolute"}
-                  left={"70%"}
-                >
-                  <Icon as={FaPen} style={{ fontSize: "14px" }} />
-                </Box>
-              </Wrap>
-            </Stack>
-            <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
-              <Input
-                id='username'
-                name='username'
-                variant={"default"}
-                w={{ base: "280px", lg: "340px" }}
-                h={{ base: "50px",lg: "66px" }}
-                placeholder={currentUser ? currentUser.username : "new username"}/>
-              <Stack align={"center"} spacing={{base: "6px", lg:"8px" }}>
-                <Button
-                  fontSize={{base: "15px", lg: "20px" }}
-                  variant={"ghost"}
-                  type='submit'
-                >Apply Changes</Button>
-                <Button
-                  fontSize={{base: "15px", lg: "20px" }}
-                  variant={"ghost"}
-                  onClick={handleSkip}
-                  >skip</Button>
+        <Modal closeOnOverlayClick={false} variant={"form"} isOpen={isOpen} onClose={onClose} size={"invite"}>
+          <ModalOverlay />
+          <ModalContent style={{ width: "480px", height: "280px" }}>
+            <ModalBody>
+              <Stack align={"center"} spacing={"40px"} fontFamily={"visbyRound"}>
+                <Text color={"#5B6171"} fontSize={"20px"}>Enter the PIN</Text>
+                <Wrap spacing={"15px"} align={"center"} px={"auto"}>
+                    <PinInput value={value} focusBorderColor="#d9d9d9" onChange={(newPin) => {setPin(newPin); setValue(newPin)}} >
+                    <PinInputField
+                        ref={first}
+                        borderRadius={"10px"}
+                        boxSize={"50px"}
+                        border={"0px"}
+                        bg={"#1D222C"}
+                        color={"#5B6171"}
+                        />
+                    <PinInputField
+                        borderRadius={"10px"}
+                        boxSize={"50px"}
+                        border={"0px"}
+                        bg={"#1D222C"}
+                        color={"#5B6171"}
+                        />
+                    <PinInputField
+                        borderRadius={"10px"}
+                        boxSize={"50px"}
+                        border={"0px"}
+                        bg={"#1D222C"}
+                        color={"#5B6171"}
+                        />
+                    <PinInputField
+                        borderRadius={"10px"}
+                        boxSize={"50px"}
+                        border={"0px"}
+                        bg={"#1D222C"}
+                        color={"#5B6171"}
+                        />
+                    <PinInputField
+                        borderRadius={"10px"}
+                        boxSize={"50px"}
+                        border={"0px"}
+                        bg={"#1D222C"}
+                        color={"#5B6171"}
+                      />
+                    <PinInputField
+                        borderRadius={"10px"}
+                        boxSize={"50px"}
+                        border={"0px"}
+                        bg={"#1D222C"}
+                        color={"#5B6171"}
+                        />
+                    </PinInput>
+                </Wrap>
+                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + retry.toString() + " retry"}</Text>
+              </Stack>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        {currentUser && !currentUser.twoFactor &&
+        <>
+          <Logo src='/logo.png' width="334px" height="179px"></Logo>
+          <form onSubmit={handleOnSubmit}>
+            <Stack align={"center"} spacing={"40px"}>
+              <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
+                <Input onChange={handlePreview} visibility={"hidden"} w={0} h={0} type='file' id='avatar' name='avatar'/>
+                <Wrap align={"end"} position={"relative"}>
+                  <Avatar zIndex={0} boxSize={{base: "100px", xl: "137px" }} 
+                    src={newAvatar}></Avatar>
+                  <Box
+                    as='label'
+                    htmlFor='avatar'
+                    zIndex={1}
+                    boxSize={"30px"} 
+                    borderRadius={"full"}
+                    bg={"#DC585B"} color={"#fff"} 
+                    display={"flex"} alignItems={"center"} justifyContent={"center"}
+                    position={"absolute"}
+                    left={"70%"}
+                  >
+                    <Icon as={FaPen} style={{ fontSize: "14px" }} />
+                  </Box>
+                </Wrap>
+              </Stack>
+              <Stack align={"center"} spacing={{base: "10px" ,lg:"20px" }}>
+                <Input
+                  id='username'
+                  name='username'
+                  variant={"default"}
+                  w={{ base: "280px", lg: "340px" }}
+                  h={{ base: "50px",lg: "66px" }}
+                  placeholder={currentUser ? currentUser.username : "new username"}/>
+                <Stack align={"center"} spacing={{base: "6px", lg:"8px" }}>
+                  <Button
+                    fontSize={{base: "15px", lg: "20px" }}
+                    variant={"ghost"}
+                    type='submit'
+                    >Apply Changes</Button>
+                  <Button
+                    fontSize={{base: "15px", lg: "20px" }}
+                    variant={"ghost"}
+                    onClick={handleSkip}
+                    >skip</Button>
+                </Stack>
               </Stack>
             </Stack>
-          </Stack>
-        </form>
+          </form>
+        </>
+        }
     </Stack>
   )
 }
