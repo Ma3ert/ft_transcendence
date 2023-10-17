@@ -6,6 +6,10 @@ import { AuthUserDto } from './dto/auth-user.dto';
 import { Game } from '@prisma/client';
 import { secureUserObject } from './utils/secureUserObject';
 
+interface GameType extends Game {
+  players: User[]
+}
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -35,6 +39,21 @@ export class UsersService {
     const validGames = user.games
       .map((game: Game) => (game.winner !== null ? game : null))
       .filter((game) => game !== null);
+
+    const games = validGames.map((game: GameType) => {
+      const opponent = game.players[game.players.findIndex((player) => player.id !== id)];
+      const winnerScore = Math.max(game.playerOneScore, game.playerTwoScore);
+      const loserScore = Math.min(game.playerOneScore, game.playerTwoScore);
+      const won = game.winner === id;
+      const score = won ? winnerScore : loserScore;
+      const opponentScore = game.winner === opponent.id ? winnerScore : loserScore;
+      return {
+        opponent,
+        won,
+        score,
+        opponentScore
+      }
+    })
     const totalGames = validGames.length;
     const numberOfWon = validGames.filter((game: Game) => game.winner === id).length;
     const numberOfLost = totalGames - numberOfWon;
@@ -43,7 +62,7 @@ export class UsersService {
       totalGames,
       numberOfWon,
       numberOfLost,
-      games: validGames,
+      games,
     };
     return data;
   }
