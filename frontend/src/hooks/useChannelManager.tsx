@@ -6,6 +6,7 @@ import { useQueryClient } from "react-query";
 import { AppNavigationContext } from "@/context/Contexts";
 import { useContext } from "react";
 import useAvatarUpdater from "./useAvatarUpdater";
+import { usePathname, useRouter } from "next/navigation";
 
 
 const useChannelManager = () => {
@@ -17,13 +18,18 @@ const useChannelManager = () => {
     const Success = useSuccess()
     const Failure = useFailure ()
     const queryClient = useQueryClient()
-    const {setCurrentSection} = useContext (AppNavigationContext)
+    const {setCurrentSection, setFriendsSection} = useContext (AppNavigationContext)
+    const router = useRouter ()
+    const pathname = usePathname ()
 
     const newChannelMutation = useMutation ({
         mutationFn: (channelBody: any) => channelClient.postData(channelBody),
         onSuccess: (data) => {
             console.log(data)
             queryClient.invalidateQueries('channels')
+            if (pathname === '/Friends') 
+                router.push ('/Friends')
+            setFriendsSection!('channels')  
             toast(Success("Channel created successfully"))
         },
         onError: (error) => {
@@ -37,7 +43,8 @@ const useChannelManager = () => {
         onSuccess: (data) => {
             console.log(data)
             queryClient.invalidateQueries('channels')
-            setCurrentSection!("friends")   
+            router.push ('/Friends')
+            setFriendsSection!('channels')  
             toast(Success("Channel deleted successfully"))
         },
         onError: (error) => {
@@ -67,7 +74,7 @@ const useChannelManager = () => {
         onSuccess: (data) => {
             console.log(data)
             queryClient.invalidateQueries('channels')
-            setCurrentSection!("friends")   
+            router.push ('/Friends')   
             toast(Success("you left channel"))
         },
         onError: (error) => {

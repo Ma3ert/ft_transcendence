@@ -4,17 +4,19 @@ import { Button, Icon, Stack, Image, Wrap, Text } from "@chakra-ui/react";
 import ButtonStack from "@/components/ButtonStack";
 import { BsGoogle } from "react-icons/bs";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "@/context/Contexts";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import apiClient from "@/services/requestProcessor";
 
 export default function LoginPage() {
   const router = useRouter();
   const {currentUser, updateUser} = useAuth()
-  console.log("current user from the lading page: ", currentUser)
-  if (currentUser && currentUser.activated)
+  // console.log("current user from the lobby: ", currentUser)
+  if (currentUser && currentUser.activated && currentUser.twoFactor && currentUser.pinValidated)
     router.push("/Lobby")
+
   return (
     <Stack
     spacing={"20vh"}

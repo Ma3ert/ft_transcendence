@@ -70,7 +70,18 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     },
   });
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (socket)
+    {
+
+    socket!.on("checkNotification", (message: checkNotification) => {
+        setChatNotifications!(message.data.chat);
+        setInviteNotifications!(message.data.invites);
+        console.log("notifications");
+        console.log(message);
+      });
+    }
+  }, [socket]);
 
   return (
     <UsersContext.Provider
