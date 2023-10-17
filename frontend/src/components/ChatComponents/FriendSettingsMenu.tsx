@@ -51,7 +51,6 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({
     currentSection!,
     chatType!,
     userIsBlocked!,
-    channel!
   );
   return (
     <Menu>

@@ -285,6 +285,7 @@ type MenuOption = {
   type: "critical" | "normal";
   modal?: boolean;
   channelSettings?: boolean;
+  modalType?: "largeModal" | "default";
 };
 
 type Envite = {

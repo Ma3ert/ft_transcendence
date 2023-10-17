@@ -42,6 +42,7 @@ const OptionModal: React.FC<OptionModalProps> = ({
       ) : (
         <ModalWrapper
           type="regular"
+          variant={setting.modalType}
           isOption={true}
           buttonValue={<Text>{setting.description}</Text>}
         >
