@@ -29,7 +29,7 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
         //     const cookieUser = JSON.parse(cookieValue);
         //     if (!cookieUser.avatar.includes("http"))
         //         cookieUser.avatar = "http://localhost:3000/public/users/imgs/" + cookieUser.avatar
-            useUpdateCurrentUser().then((res) => {setCurrentUser(res)});
+            useUpdateCurrentUser().then((res) => {console.log("res: ", res); setCurrentUser(res)});
         }
         else {
             setCurrentUser(null);

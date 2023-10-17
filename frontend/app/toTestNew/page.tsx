@@ -26,8 +26,8 @@ export default function Home() {
         // <Lobby/>
         // <FriendSection></FriendSection>
         // <Setting></Setting>
-        // <UserSetting></UserSetting>
-        <TwoFaAuPopUp></TwoFaAuPopUp>
+        <UserSetting></UserSetting>
+        // <TwoFaAuPopUp></TwoFaAuPopUp>
         // <Search></Search>
     )
 }
