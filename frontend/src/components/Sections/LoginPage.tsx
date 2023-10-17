@@ -12,7 +12,6 @@ import { useAuth } from "@/hooks/useAuth";
 export default function LoginPage() {
   const router = useRouter();
   const {currentUser, updateUser} = useAuth()
-  console.log("current user from the lading page: ", currentUser)
   if (currentUser && currentUser.activated)
     router.push("/Lobby")
   return (

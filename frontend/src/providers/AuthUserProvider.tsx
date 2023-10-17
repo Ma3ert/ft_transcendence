@@ -13,12 +13,7 @@ async function returnFromCookie() {
     const [toReturn, setReturn] = useState(null);
 
     if (cookieValue !== undefined && !toReturn) {
-        console.log("i get here");
-        await useUpdateCurrentUser().then((res) => {console.log("res: ", res); setReturn(res)})
-        // const cookieUser = JSON.parse(cookieValue);
-        // if (!cookieUser.avatar.includes("http"))
-        //     cookieUser.avatar = "http://localhost:3000/public/users/imgs/" + cookieUser.avatar
-        // return (cookieUser)
+        await useUpdateCurrentUser().then((res) => {setReturn(res)})
     }
     return (toReturn)
 }
@@ -34,7 +29,7 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
         //     const cookieUser = JSON.parse(cookieValue);
         //     if (!cookieUser.avatar.includes("http"))
         //         cookieUser.avatar = "http://localhost:3000/public/users/imgs/" + cookieUser.avatar
-            useUpdateCurrentUser().then((res) => {console.log("from res: ",res); setCurrentUser(res)});
+            useUpdateCurrentUser().then((res) => {setCurrentUser(res)});
         }
         else {
             setCurrentUser(null);

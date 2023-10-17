@@ -45,10 +45,9 @@ const UserSetting = (props: Props) => {
 
   const activateFa = () => {
     const patchClient = new apiClient("/auth/twoFactor")
-    var toSend = {"activate": faState}
+    var toSend = {"activate": faState ? false : true}
     patchClient.patchData(toSend, "").then((res) => {
       console.log("res data: ", res.data);
-      console.log("path res: ", res.data!.twoFactor)
       faStateSetter(res.data.twoFactor)
       updateUser && updateUser();
     })

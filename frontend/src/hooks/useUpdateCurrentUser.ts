@@ -15,11 +15,11 @@ export async function useUpdateCurrentUser() {
 
     return client.getData("/me").then((res: AxiosResponse)=> {
         console.log("query function is fired")
-        console.log(res.data.data)
-        const avatar:string = res.data.data.avatar;
+        console.log(res.data.current.user)
+        const avatar:string = res.data.current.user.avatar;
         if (!avatar.includes("http"))
-            res.data.data.avatar = "http://localhost:3000/public/users/imgs/" + avatar;
+            res.data.current.user.avatar = "http://localhost:3000/public/users/imgs/" + avatar;
         // Cookies.set('currentUser', JSON.stringify(res.data.data));
-        return (res.data.data);
+        return (res.data.current.user);
     })
 }

@@ -47,8 +47,8 @@ export class AuthController {
       twoFactor: user.twoFactorStatus
     });
     res.cookie('jwt', '');
-    res.status(200).json({ message: 'User logged out successfully' });
-    // res.redirect("http://localhost:3001/")
+    // res.status(200).json({ message: 'User logged out successfully' });
+    res.redirect("http://localhost:3001/")
 
   }
 

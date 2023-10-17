@@ -18,7 +18,6 @@ export default function Home() {
   const {currentUser, updateUser} = useAuth();
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
 
-  console.log("avatar from change: ", newAvatar)
   if (currentUser && currentUser.activated)
     router.push("/Lobby")
 
