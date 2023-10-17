@@ -74,6 +74,7 @@ export class UsersController {
       'twoFactorStatus',
       'twoFactorPin',
       'twoFactorPinExpires',
+      'games',
     ]);
     if (!user) throw new NotFoundException(`Could not find user: ${req.user.id}`);
     return { status: 'success', current: user };
