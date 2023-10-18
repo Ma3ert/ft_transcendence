@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Button, Input, Stack, Wrap, Box, Icon } from '@chakra-ui/react'
+import { Avatar, Button, Input, Stack, Wrap, Box, Icon, useToast } from '@chakra-ui/react'
 import Logo from "@/components/Logo"
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ import {
 import { Cookie } from 'next/font/google';
 
 export default function Home() {
+  const toast = useToast()
   const [pin, setPin] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
@@ -32,23 +33,27 @@ export default function Home() {
   const {currentUser, updateUser} = useAuth();
   console.log("current User: ", currentUser);
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
-  const [retry, setRetry] = useState(3);
+  // const [retry, setRetry] = useState(5 - currentUser.twoFactorRetry);
   const [value, setValue] = useState("");
   const first = useRef<any>(null);
 
   useEffect(() => {
-    if (pin.length === 6)
+    if (pin.length === 6 && (5 - currentUser.twoFactorRetry))
+    {
+
       twoFaClient.postData({"pin": pin} ,"").then((res) => 
       {
         console.log("result: from pin validation: ", res);
         router.push("/Lobby") 
       }
       ).catch((err)=> {
-        setRetry(retry - 1)
         setPin("");
         setValue("")
+        updateUser && updateUser()
+        // setRetry(5 - currentUser.twoFactorRetry)
         first.current && first.current.focus()
       })
+    }
   }, [pin])
 
   useEffect(() => {
@@ -84,12 +89,12 @@ export default function Home() {
     const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
     formData.append("activated", "true")
-    if (userName !== "" && imageFile)
+    if (userName !== "" || imageFile)
     {
       client.patchData(formData).then(() => {updateUser && updateUser()})
     }
     else {
-      router.push("/Lobby");
+      handleSkip()
     }
   }
   
@@ -108,6 +113,7 @@ export default function Home() {
                 <Wrap spacing={"15px"} align={"center"} px={"auto"}>
                     <PinInput value={value} focusBorderColor="#d9d9d9" onChange={(newPin) => {setPin(newPin); setValue(newPin)}} >
                     <PinInputField
+                        autoFocus={true}
                         ref={first}
                         borderRadius={"10px"}
                         boxSize={"50px"}
@@ -152,7 +158,9 @@ export default function Home() {
                         />
                     </PinInput>
                 </Wrap>
-                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + retry.toString() + " retry"}</Text>
+                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + (5 - currentUser.twoFactorRetry).toString() + " retry"}</Text>
+                {!(5 - currentUser.twoFactorRetry) &&  !toast.isActive("toast") && toast({id: "toast", title: "you exceeded the limit of retries contact admin (they won't answer btw)", status: 'error', isClosable: false,})
+                && <Text fontSize={"15px"} color={"#DC585B"}></Text>}
               </Stack>
             </ModalBody>
           </ModalContent>
