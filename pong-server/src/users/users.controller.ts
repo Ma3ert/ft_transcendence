@@ -70,7 +70,6 @@ export class UsersController {
   @UseGuards(UserCheck)
   async getCurrentUser(@Req() req) {
     const user = await this.usersService.getUserData(req.user.id, [
-      'twoFactorRetry',
       'twoFactorStatus',
       'twoFactorPin',
       'twoFactorPinExpires',
