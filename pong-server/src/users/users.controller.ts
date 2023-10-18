@@ -94,10 +94,11 @@ export class UsersController {
     return { status: 'success', current: rank };
   }
 
-  @Get("rank/local")
+  @Get('rank/local')
   @UseGuards(LoggedInGuard)
-  async getUserFriendsRank(@Req() req: any)
-  {
+  async getUserFriendsRank(@Req() req: any) {
+    const userFriends = await this.usersService.getUserFriends(req.user.id);
+    if (!userFriends.length) return { status: 'success', current: { rank: [], currentRank: 1 } };
     const rank = await this.usersService.getUserLocalRank(req.user.id);
     if (!rank) throw new NotFoundException(`Could not get rank for current user`);
     return { status: 'success', current: rank };
