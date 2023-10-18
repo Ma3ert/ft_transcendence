@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import { AppNavigationContext, ChatContext, UsersContext } from "@/context/Contexts";
 import { PRIVATE } from "../../../contstants";
 import {BsFillMicMuteFill} from "react-icons/bs";
+import { useRouter } from "next/navigation";
 interface UserFieldNavProps {
   member?:Member
   user: User;
@@ -33,9 +34,8 @@ const GetMemberStatus = (member:Member) => {
 const UserFieldNav:React.FC<UserFieldNavProps> = ({user, friendsList, member}) => {
   
     const {setActivePeer} = useContext(UsersContext)
-    const {setCurrentSection} = useContext(AppNavigationContext)
     const {setCurrentChat} = useContext(ChatContext)
-    
+    const router = useRouter ()    
 
     return (
     <HStack spacing={3}>
@@ -44,8 +44,8 @@ const UserFieldNav:React.FC<UserFieldNavProps> = ({user, friendsList, member}) =
           <Icon
             onClick={() => {
               setActivePeer!(user);
-              setCurrentSection!("chat");
               setCurrentChat!(PRIVATE);
+              router.push("/Chat");
             }}
             as={FaMessage}
             fontSize="22px"

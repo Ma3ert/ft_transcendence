@@ -116,18 +116,14 @@ const Lobby = (props: Props) => {
           <ProgressLevel></ProgressLevel>
           <Stack spacing={"20px"}>
             <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>Stats</Text>
-            <ScrollableStack
-              width={435}
-              height={344}
-              spacing='28px'
-              items={challenges}/>
+            <ScrollableStack>{challenges}</ScrollableStack>
           </Stack>
         </Stack>
       </GridItem>
       <GridItem
       colSpan={{ base: 2, lg: 1 }}
       >
-        <LobbyParty username={currentUser.username} ready={false} other={""} otherReady={false} alone={true}></LobbyParty>
+        <LobbyParty username={currentUser!.username} ready={false} other={""} otherReady={false} alone={true}></LobbyParty>
       </GridItem>
     </Grid>,
     <Grid templateColumns={"repeat(2, 1fr)"}>

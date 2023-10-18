@@ -6,21 +6,22 @@ import { BiSolidUser, BiSolidLockAlt } from "react-icons/bi";
 import { FaUserGroup } from "react-icons/fa6";
 import { NotificationWrapper } from "../ChatComponents/NotificationBadge";
 import { BsPersonFillAdd } from "react-icons/bs";
+import { useRouter, usePathname } from "next/navigation";
 interface TabsWrapperProps {
   tabs: Tab[];
 }
 interface TabsTogglerWrapperProps extends TabsWrapperProps {
   type: boolean;
+  section: string;
 }
 
-const Toggler: React.FC<TabsTogglerWrapperProps> = ({ tabs, type }) => {
-  const { getCurrentSectionType } = useContext(AppNavigationContext);
+const Toggler: React.FC<TabsTogglerWrapperProps> = ({ tabs, type, section }) => {
 
-  const sectionType = getCurrentSectionType ? getCurrentSectionType() : "chat";
-  const getCurrentIndex = () => (sectionType === "lobby" ? 0 : 1);
+
+  const getCurrentIndex = () => (section === "home" ? 0 : 1);
   return (
     <ControlledTabsContainer
-      controlled={sectionType === "lobby" || sectionType === "chat"}
+      controlled={section === "home" || section === "chat"}
       index={getCurrentIndex()}
     >
       <TabList w={type ? "220px" : "180px"}>
@@ -69,28 +70,30 @@ const ControlledTabsContainer: React.FC<ControlledTabsContainer> = ({
   );
 };
 
+
+
+const getCurrentSection = (path:string) =>{
+  return path.split('/')[1].toLowerCase()
+}
+
 const TabsWrapper: React.FC = () => {
-  const {
-    getCurrentSectionType,
-    setCurrentSection,
-    setFriendsSection,
-    setAchievementsSection,
-    setSettingsSection,
-  } = useContext(AppNavigationContext);
+  const {setFriendsSection, setAchievementsSection, setSettingsSection} = useContext (AppNavigationContext)
   const {chatNotifications, inviteNotifications} = useContext(UsersContext);
+  const router = useRouter();
+  const pathname = usePathname();
   const ChatLobbyTabs: Tab[] = [
     {
       value: <Text>Lobby</Text>,
-      action: () => setCurrentSection && setCurrentSection("lobby"),
+      action: () => router.push("/Lobby"),
     },
     {
       value: <Text>Chat</Text>,
-      action: () => setCurrentSection && setCurrentSection("chat"),
+      action: () => router.push("/Chat"),
     },
   ];
   const FriendsTabs: Tab[] = [
     {
-      value: <Icon as={FaUserPlus} style={{ fontSize: "23px" }} />,
+      value: <Icon as={FaUserPlus} style={{ fontSize: "23px" }}  />,
       action: () => setFriendsSection && setFriendsSection("friends"),
     },
     {
@@ -125,7 +128,8 @@ const TabsWrapper: React.FC = () => {
         setSettingsSection && setSettingsSection("passwordSettings"),
     },
   ];
-  const NotificationsTabs: Tab[] = [];
+  const section = getCurrentSection(pathname)
+  console.log ('section : ', section )
   return (
     <Wrap
       w="100%"
@@ -134,25 +138,25 @@ const TabsWrapper: React.FC = () => {
       justifyContent="center"
       alignItems="center"
     >
-      {getCurrentSectionType &&
+      {
         (() => {
-          switch (getCurrentSectionType()) {
-            case "lobby":
+          switch (section) {
+            case "home":
               return (
                 <NotificationWrapper type='activeChat' status={chatNotifications!}>
-                  <Toggler tabs={ChatLobbyTabs} type={true} />
+                  <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
                 </NotificationWrapper>
               );
             case "chat":
-              return <Toggler tabs={ChatLobbyTabs} type={true} />;
+              return <Toggler section={section} tabs={ChatLobbyTabs} type={true} />;
             case "friends":
-              return <Toggler tabs={FriendsTabs} type={true} />;
+              return <Toggler section={section} tabs={FriendsTabs} type={true} />;
             case "achievements":
-              return <Toggler tabs={AchievementsTabs} type={true} />;
+              return <Toggler section={section} tabs={AchievementsTabs} type={true} />;
             case "settings":
-              return <Toggler tabs={SettingsTabs} type={true} />;
+              return <Toggler section={section} tabs={SettingsTabs} type={true} />;
             default:
-              return <Toggler tabs={ChatLobbyTabs} type={false} />;
+              return <Toggler section={section} tabs={ChatLobbyTabs} type={false} />;
           }
         })()}
     </Wrap>

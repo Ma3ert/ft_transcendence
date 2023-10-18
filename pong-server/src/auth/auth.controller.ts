@@ -32,8 +32,8 @@ export class AuthController {
   async handleRedirect(@Req() req: any, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
-    res.status(200).json({status: 'success', message: "User authenticated successfully"})
-    // res.redirect("http://localhost:3001/ChangeUserName")
+    // res.status(200).json({status: 'success', message: "User authenticated successfully"})
+    res.redirect("http://localhost:3001/ChangeUserName")
   }
 
   @Get('42/logout')
@@ -47,8 +47,8 @@ export class AuthController {
       twoFactor: user.twoFactorStatus
     });
     res.cookie('jwt', '');
-    res.status(200).json({ message: 'User logged out successfully' });
-    // res.redirect("http://localhost:3001/")
+    // res.status(200).json({ message: 'User logged out successfully' });
+    res.redirect("http://localhost:3001/")
 
   }
 

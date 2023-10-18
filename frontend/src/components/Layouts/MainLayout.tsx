@@ -3,11 +3,12 @@ import React, { useContext } from "react";
 import SideBar from "../SideBar";
 import { AppNavigationContext } from "@/context/Contexts";
 import TabsWrapper from "../Wrappers/tabsWrapper";
-interface MainSectionProps {}
+interface MainSectionProps {
+  children?: React.ReactNode;
+}
 
-const MainSection: React.FC<MainSectionProps> = ({}) => {
-  const { getCurrentSectionType, setCurrentSection, sections } =
-    useContext(AppNavigationContext);
+const MainLayout: React.FC<MainSectionProps> = ({children}) => {
+ 
   return (
     <Grid
       templateColumns={"8vw 1fr"}
@@ -20,10 +21,7 @@ const MainSection: React.FC<MainSectionProps> = ({}) => {
       // border="1px" borderColor="yellow"
       >
         <SideBar
-          currentSection={
-            (getCurrentSectionType && getCurrentSectionType()) || "lobby"
-          }
-          sectionSetter={setCurrentSection!}
+         
         />
       </GridItem>
       <GridItem
@@ -44,9 +42,7 @@ const MainSection: React.FC<MainSectionProps> = ({}) => {
             justifyContent={"center"}
             alignItems="center"
           >
-            {getCurrentSectionType
-              ? sections?.get(getCurrentSectionType())
-              : sections?.get("lobby")}
+          {children}
           </GridItem>
         </Grid>
       </GridItem>
@@ -54,4 +50,4 @@ const MainSection: React.FC<MainSectionProps> = ({}) => {
   );
 };
 
-export default MainSection;
+export default MainLayout;

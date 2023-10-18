@@ -21,6 +21,7 @@ CREATE TABLE "User" (
     "level" INTEGER NOT NULL DEFAULT 0,
     "twoFactorRetry" INTEGER NOT NULL DEFAULT 0,
     "twoFactor" BOOLEAN NOT NULL DEFAULT false,
+    "twoFactorStatus" BOOLEAN NOT NULL DEFAULT false,
     "twoFactorPin" TEXT,
     "twoFactorPinExpires" TIMESTAMP(3),
     "activated" BOOLEAN NOT NULL DEFAULT false,
@@ -144,7 +145,7 @@ CREATE TABLE "_Friendship" (
 );
 
 -- CreateTable
-CREATE TABLE "_BlackedFriends" (
+CREATE TABLE "_BlockedFriends" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -171,10 +172,10 @@ CREATE UNIQUE INDEX "_Friendship_AB_unique" ON "_Friendship"("A", "B");
 CREATE INDEX "_Friendship_B_index" ON "_Friendship"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_BlackedFriends_AB_unique" ON "_BlackedFriends"("A", "B");
+CREATE UNIQUE INDEX "_BlockedFriends_AB_unique" ON "_BlockedFriends"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_BlackedFriends_B_index" ON "_BlackedFriends"("B");
+CREATE INDEX "_BlockedFriends_B_index" ON "_BlockedFriends"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_GameToUser_AB_unique" ON "_GameToUser"("A", "B");
@@ -243,10 +244,10 @@ ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_A_fkey" FOREIGN KEY ("A") 
 ALTER TABLE "_Friendship" ADD CONSTRAINT "_Friendship_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_BlackedFriends" ADD CONSTRAINT "_BlackedFriends_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_BlockedFriends" ADD CONSTRAINT "_BlockedFriends_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_BlackedFriends" ADD CONSTRAINT "_BlackedFriends_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_BlockedFriends" ADD CONSTRAINT "_BlockedFriends_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_GameToUser" ADD CONSTRAINT "_GameToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Game"("id") ON DELETE CASCADE ON UPDATE CASCADE;
