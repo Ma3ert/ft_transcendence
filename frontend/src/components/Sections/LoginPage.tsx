@@ -14,7 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
   const {currentUser, updateUser} = useAuth()
   // console.log("current user from the lobby: ", currentUser)
-  if (currentUser && currentUser.activated && !currentUser.twoFactor)
+  if (currentUser && currentUser.activated && (!currentUser.twoFactor || currentUser.pinValidated))
     router.push("/Lobby")
 
   return (

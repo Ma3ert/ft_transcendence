@@ -32,23 +32,27 @@ export default function Home() {
   const {currentUser, updateUser} = useAuth();
   console.log("current User: ", currentUser);
   const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
-  const [retry, setRetry] = useState(3);
+  // const [retry, setRetry] = useState(5 - currentUser.twoFactorRetry);
   const [value, setValue] = useState("");
   const first = useRef<any>(null);
 
   useEffect(() => {
-    if (pin.length === 6)
+    if (pin.length === 6 && (5 - currentUser.twoFactorRetry))
+    {
+
       twoFaClient.postData({"pin": pin} ,"").then((res) => 
       {
         console.log("result: from pin validation: ", res);
         router.push("/Lobby") 
       }
       ).catch((err)=> {
-        setRetry(retry - 1)
         setPin("");
         setValue("")
+        updateUser && updateUser()
+        // setRetry(5 - currentUser.twoFactorRetry)
         first.current && first.current.focus()
       })
+    }
   }, [pin])
 
   useEffect(() => {
@@ -153,7 +157,8 @@ export default function Home() {
                         />
                     </PinInput>
                 </Wrap>
-                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + retry.toString() + " retry"}</Text>
+                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + (5 - currentUser.twoFactorRetry).toString() + " retry"}</Text>
+                {!(5 - currentUser.twoFactorRetry) && <Text fontSize={"15px"} color={"#DC585B"}>"you exceeded the limit of retries contact admin (they won't answer btw)"</Text>}
               </Stack>
             </ModalBody>
           </ModalContent>
