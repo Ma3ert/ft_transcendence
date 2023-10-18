@@ -84,12 +84,12 @@ export default function Home() {
     const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById('avatar') as HTMLInputElement).files?.[0];
     formData.append("activated", "true")
-    if (userName !== "" && imageFile)
+    if (userName !== "" || imageFile)
     {
       client.patchData(formData).then(() => {updateUser && updateUser()})
     }
     else {
-      router.push("/Lobby");
+      handleSkip()
     }
   }
   
@@ -108,6 +108,7 @@ export default function Home() {
                 <Wrap spacing={"15px"} align={"center"} px={"auto"}>
                     <PinInput value={value} focusBorderColor="#d9d9d9" onChange={(newPin) => {setPin(newPin); setValue(newPin)}} >
                     <PinInputField
+                        autoFocus={true}
                         ref={first}
                         borderRadius={"10px"}
                         boxSize={"50px"}

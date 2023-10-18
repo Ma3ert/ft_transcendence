@@ -72,7 +72,7 @@ const UserSetting = (props: Props) => {
             <Icon as={FaPen} style={{ fontSize: "14px" }} />
           </Box>
         </Wrap>
-        <Input variant={"secondary"} w={"full"} h={{base: "37", md: "57px" }} placeholder={currentUser && currentUser.username}></Input>
+        <Input variant={"secondary"} w={"full"} id='username' name='username' h={{base: "37", md: "57px" }} placeholder={currentUser && currentUser.username}></Input>
         <Flex w={"full"} px={"10px"}>
           <Text fontFamily={"visbyRound"} fontSize={"15px"} color={"#fff"}>Enable 2FA</Text>
           <Spacer/>
