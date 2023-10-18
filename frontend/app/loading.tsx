@@ -2,7 +2,7 @@
 import React from 'react'
 import { Box, Text , Stack, Spinner} from '@chakra-ui/react'
 
-export default function loading() {
+export default function Loading() {
   return (
    <Stack w='100vw' h='100vh' justifyContent={'center'} alignItems={'center'}>
     <Spinner

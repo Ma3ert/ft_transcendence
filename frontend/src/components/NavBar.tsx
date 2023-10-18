@@ -17,8 +17,8 @@ const NavBar = () => {
     router.push("/");
 
   const handleLogout = () => {
-    Cookies.remove('currentUser');
     router.push("http://localhost:3000/auth/42/logout");
+    // Cookies.remove('jwt');
   }
 
   return (

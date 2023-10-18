@@ -39,7 +39,6 @@ export default function Home() {
   const {currentUser, updateUser} = useAuth();
   const [bodyIndex, setBodyIndex] = useState(3);
 
-  console.log("current user Lobby: ", currentUser)
   const bodys:ReactNode[] = [<Lobby/>, <Achievements/>, <FriendSection/>, <Setting/>,];
   return (
     <PageLayout body={bodys[bodyIndex]} bodySetter={setBodyIndex}/>

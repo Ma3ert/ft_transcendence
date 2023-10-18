@@ -39,8 +39,12 @@ export class AuthController {
   @Get('42/logout')
   @UseGuards(LoggedInGuard)
   async handleLogout(@Res() res: Response, @Req() req: any) {
-    const user = await this.usersService.updateUserAuth(req.user.id, {
+    const user = await this.usersService.findById(req.user.id);
+    if (user.twoFactor && !user.pinValidated && !user.twoFactorStatus)
+      user.twoFactorStatus = true
+    await this.usersService.updateUserAuth(req.user.id, {
       pinValidated: false,
+      twoFactor: user.twoFactorStatus
     });
     res.cookie('jwt', '');
     // res.status(200).json({ message: 'User logged out successfully' });
@@ -60,7 +64,7 @@ export class AuthController {
   @UseGuards(LoggedInGuard)
   async updateTwoFactorStatus(@Req() req: any, @Body('activate') status: boolean) {
     if (this.authService.alterTwoFactorStatus(status, req.user))
-      return { status: 'success', message: `two factor authentification ${status ? 'enabled' : 'disabled'}` };
+      return { status: 'success', message: `two factor authentification ${status ? 'enabled' : 'disabled'}`, twoFactor: status };
   }
 
   @Get('/twoFactor')
@@ -69,12 +73,13 @@ export class AuthController {
     const pin = await this.authService.generateTwoFactorPin(request.user);
     if (!pin)
       throw new HttpException('Failed to generate two factor code, please retry.', HttpStatus.UNAUTHORIZED);
-    const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
-    if (email)
-      return {
-        status: 'success',
-        message: 'Two factor code sent to your 42 intra email, please check your mailbox.',
-      };
+    console.log("Your pin: ", pin);
+    // const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
+    // if (email)
+    //   return {
+    //     status: 'success',
+    //     message: 'Two factor code sent to your 42 intra email, please check your mailbox.',
+    //   };
   }
 
   @Post('/twoFactor')
@@ -86,7 +91,7 @@ export class AuthController {
         'The Token you have provided is expired please request a new one.',
         HttpStatus.UNAUTHORIZED,
       );
-    if (user.twoFactorRetry >= 3)
+    if (user.twoFactorRetry >= 5)
       throw new HttpException(
         'You have reached maxium numbers of retires please contact an adminstrator to unlock you account.',
         HttpStatus.UNAUTHORIZED,

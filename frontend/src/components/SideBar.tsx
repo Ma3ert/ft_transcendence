@@ -7,6 +7,7 @@ import { BiSolidBell } from "react-icons/bi";
 import { FaMedal } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
+import {IoStatsChart} from "react-icons/io5";
 import Link from "next/link";
 import { ChatContext, UsersContext } from "@/context/Contexts";
 
@@ -21,12 +22,12 @@ const SideBar: React.FC<Props> = ({ }) => {
   const {inviteNotifications} = useContext(UsersContext)
 
   links.set("lobby", AiFillHome);
-  links.set("notifications", BiSolidBell);
+  links.set("stats", IoStatsChart);
   links.set("achievements", FaMedal);
   links.set("friends", FaUserGroup);
   links.set("settings", IoMdSettings);
   routes.set("lobby", "/Lobby");
-  routes.set("notifications", "/Notifications");
+  routes.set("stats", "/Stats");
   routes.set("achievements", "/Achievements");
   routes.set("friends", "/Friends");
   routes.set("settings", "/Settings");

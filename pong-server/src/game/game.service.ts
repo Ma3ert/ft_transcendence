@@ -387,11 +387,7 @@ export class GameService {
     const expFactor = 1.5;
 
     //Do the caluculation of how much the xp and laddel should increment by and save that for each user
-    if (
-      this.calculatePlayerScore(playerOne.score) != 0 &&
-      this.calculatePlayerScore(playerTwo.score) != 0 &&
-      playerOne.score != playerTwo.score
-    ) {
+    if (playerOne.score != playerTwo.score) {
       const winner = playerOne.score > playerTwo.score ? playerOneUser : playerTwoUser;
       const requiredNextLevelXP = levelOneXP * Math.floor(Math.pow(expFactor, winner.level));
       if (winner.xp + winnerReward >= requiredNextLevelXP)
@@ -421,11 +417,7 @@ export class GameService {
     const playerTwo = gameSession.players[1];
     let winner = null;
 
-    if (
-      this.calculatePlayerScore(playerOne.score) != 0 &&
-      this.calculatePlayerScore(playerTwo.score) != 0 &&
-      this.calculatePlayerScore(playerOne.score) != this.calculatePlayerScore(playerTwo.score)
-    )
+    if (this.calculatePlayerScore(playerOne.score) != this.calculatePlayerScore(playerTwo.score))
       winner = playerOne.score > playerTwo.score ? playerOne.user : playerTwo.user;
     return this.prismaService.game.create({
       data: {

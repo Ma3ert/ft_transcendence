@@ -20,9 +20,9 @@ const AppNavigationProvider: React.FC<AppNavigationProps> = ({ children }) => {
   const [settingsSection, setSettingsSection] =
     useState<SettingsSection>("userSettings");
   const SectionsMap = new Map<Section, JSX.Element>();
+  const [statsSection, setStatsSection] = useState <StatsSection> ("stats")
 
   SectionsMap.set("achievements", <AchievementsSection />);
-  SectionsMap.set("notifications", <NotificationsSection />);
   SectionsMap.set("settings", <SettingsSection />);
   SectionsMap.set("lobby", <LobbySection />);
   SectionsMap.set("chat", <ChatSection />)
@@ -45,6 +45,8 @@ const AppNavigationProvider: React.FC<AppNavigationProps> = ({ children }) => {
         setAchievementsSection,
         settingsSection,
         setSettingsSection,
+        setStatsSection,
+        statsSection
       }}
     >
       {children}

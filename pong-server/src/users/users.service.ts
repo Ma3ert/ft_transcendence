@@ -6,11 +6,15 @@ import { AuthUserDto } from './dto/auth-user.dto';
 import { Game } from '@prisma/client';
 import { secureUserObject } from './utils/secureUserObject';
 
+interface GameType extends Game {
+  players: User[]
+}
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getUserData(id: string) {
+  async getUserData(id: string, fields: string[]) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
@@ -31,27 +35,34 @@ export class UsersService {
         },
       },
     });
-
+    if (!user) return null;
     const validGames = user.games
       .map((game: Game) => (game.winner !== null ? game : null))
       .filter((game) => game !== null);
+
+    const games = validGames.map((game: GameType) => {
+      const opponent = game.players[game.players.findIndex((player) => player.id !== id)];
+      const winnerScore = Math.max(game.playerOneScore, game.playerTwoScore);
+      const loserScore = Math.min(game.playerOneScore, game.playerTwoScore);
+      const won = game.winner === id;
+      const score = won ? winnerScore : loserScore;
+      const opponentScore = game.winner === opponent.id ? winnerScore : loserScore;
+      return {
+        opponent,
+        won,
+        score,
+        opponentScore
+      }
+    })
     const totalGames = validGames.length;
     const numberOfWon = validGames.filter((game: Game) => game.winner === id).length;
     const numberOfLost = totalGames - numberOfWon;
     const data = {
-      user: secureUserObject(
-        user,
-        'twoFactorRetry',
-        'twoFactor',
-        'twoFactorPin',
-        'twoFactorPinExpires',
-        'activated',
-        'pinValidated',
-      ),
+      user: secureUserObject(user, ...fields),
       totalGames,
       numberOfWon,
       numberOfLost,
-      games: validGames,
+      games,
     };
     return data;
   }
@@ -84,7 +95,7 @@ export class UsersService {
       include: {
         blocked: true,
         friendsList: true,
-        blockedBy: true
+        blockedBy: true,
       },
     });
   }
@@ -284,11 +295,66 @@ export class UsersService {
     return friendsList.includes(friendId);
   }
 
-  removeUser(id: string) {
-    return this.prismaService.user.delete({
+  async getUserLocalRank(userId: string)
+  {
+    const user = await this.prismaService.user.findUnique({
       where: {
-        id,
+        id: userId
+      },
+      include: {
+        friendsList: {
+          select: {
+            id: true
+          }
+        }
+      }
+    })
+    if (!user) return null;
+    const users = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatar: true,
+        username: true,
+        status: true,
+      },
+      orderBy: {
+        xp: 'desc',
       },
     });
+    const usersRank: any[] = users.map((user, index) => {
+      return { ...user, order: index + 1 };
+    });
+
+    const userFriends = [user.id, ...user.friendsList.map((user) => user.id)];
+    const friendsRank = usersRank.filter((user) => userFriends.includes(user.id));
+
+    const currentUserRank = friendsRank.findIndex((user) => user.id === userId);
+    if (currentUserRank === -1) {
+      return null;
+    }
+    return { ranks: usersRank, currentRank: usersRank[currentUserRank].order };
+  }
+
+  async getUserGlobalRank(userId: string) {
+    const users = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatar: true,
+        username: true,
+        status: true,
+      },
+      orderBy: {
+        xp: 'desc',
+      },
+    });
+    const usersRank: any[] = users.map((user, index) => {
+      return { ...user, order: index + 1 };
+    });
+
+    const currentUserRank = usersRank.findIndex((user) => user.id === userId);
+    if (currentUserRank === -1) {
+      return null;
+    }
+    return { ranks: usersRank, currentRank: usersRank[currentUserRank].order };
   }
 }
