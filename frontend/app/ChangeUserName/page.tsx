@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Button, Input, Stack, Wrap, Box, Icon } from '@chakra-ui/react'
+import { Avatar, Button, Input, Stack, Wrap, Box, Icon, useToast } from '@chakra-ui/react'
 import Logo from "@/components/Logo"
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ import {
 import { Cookie } from 'next/font/google';
 
 export default function Home() {
+  const toast = useToast()
   const [pin, setPin] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
@@ -158,7 +159,8 @@ export default function Home() {
                     </PinInput>
                 </Wrap>
                 <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + (5 - currentUser.twoFactorRetry).toString() + " retry"}</Text>
-                {!(5 - currentUser.twoFactorRetry) && <Text fontSize={"15px"} color={"#DC585B"}>"you exceeded the limit of retries contact admin (they won't answer btw)"</Text>}
+                {!(5 - currentUser.twoFactorRetry) &&  !toast.isActive("toast") && toast({id: "toast", title: "you exceeded the limit of retries contact admin (they won't answer btw)", status: 'error', isClosable: false,})
+                && <Text fontSize={"15px"} color={"#DC585B"}></Text>}
               </Stack>
             </ModalBody>
           </ModalContent>
