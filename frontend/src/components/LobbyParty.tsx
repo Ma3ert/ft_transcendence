@@ -1,4 +1,4 @@
-import { Button, Image, Stack } from '@chakra-ui/react'
+import { Button, Image, Stack, useBreakpointValue } from '@chakra-ui/react'
 import React from 'react'
 import SoloLobbyParty from './SoloLobbyParty';
 import MultiLobbyParty from './MultiLobbyParty';
@@ -12,14 +12,11 @@ type Props = {
 }
 
 const LobbyParty = ({alone, username, ready, other, otherReady}: Props) => {
+  const shadow = useBreakpointValue({base: true, xl: false})
   return (
-    <Stack spacing={"52px"} align={"center"}>
+    <Stack spacing={{base: "40px", xl: "52px" }} align={"center"}>
         <MultiLobbyParty username={username} ready={ready} other={other} otherReady={otherReady} alone={alone}/>
-        <Image
-          src='/Shadow.png'
-          w={"341px"}
-          h={"27px"}>
-        </Image>
+        {!shadow && <Image src='/Shadow.png' w={"341px"} h={"auto"}></Image>}
         <Button
             variant={"primary"}
             w={"217px"}

@@ -10,7 +10,7 @@ const Logo = ({src, }: Props) => {
   return (
     <Link href={"/Lobby"}>
       <Image
-      alt={'logo'}
+        alt={'logo'}
         src={src}
         maxW={{sm:'130px', md:'160px', lg:'180px', xl:'200px'}}
         height={'auto'}
