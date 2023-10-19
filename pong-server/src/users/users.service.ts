@@ -332,7 +332,8 @@ export class UsersService {
     if (currentUserRank === -1) {
       return null;
     }
-    return { ranks: usersRank, currentRank: usersRank[currentUserRank].order };
+
+    return { ranks: friendsRank, currentRank: usersRank[currentUserRank].order };
   }
 
   async getUserGlobalRank(userId: string) {
