@@ -321,19 +321,17 @@ export class UsersService {
         xp: 'desc',
       },
     });
-    const usersRank: any[] = users.map((user, index) => {
-      return { ...user, order: index + 1 };
-    });
 
     const userFriends = [user.id, ...user.friendsList.map((user) => user.id)];
-    const friendsRank = usersRank.filter((user) => userFriends.includes(user.id));
+    const friendsRank = users.filter((user) => userFriends.includes(user.id)).map((user, index) => {
+      return { ...user, order: index + 1 };
+    });;
 
     const currentUserRank = friendsRank.findIndex((user) => user.id === userId);
     if (currentUserRank === -1) {
       return null;
     }
-
-    return { ranks: friendsRank, currentRank: usersRank[currentUserRank].order };
+    return { ranks: friendsRank, currentRank: friendsRank[currentUserRank].order };
   }
 
   async getUserGlobalRank(userId: string) {
