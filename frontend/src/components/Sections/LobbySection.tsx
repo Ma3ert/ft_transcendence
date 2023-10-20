@@ -118,7 +118,7 @@ const LobbySection = (props: Props) => {
       <GridItem
       colSpan={{ base: 2, lg: 1 }}
       >
-        <LobbyParty username={currentUser!.username} ready={false} other={""} otherReady={false} alone={true}></LobbyParty>
+        <LobbyParty />
       </GridItem>
     </Grid>
   </Stack>

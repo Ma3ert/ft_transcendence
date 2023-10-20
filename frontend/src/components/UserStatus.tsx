@@ -6,7 +6,7 @@ interface UserStatusProps {
 const UserStatus:React.FC<UserStatusProps> = ({username, status}) => {
     return (
         <HStack spacing={2}>
-            <Text color='#5B6171' fontWeight={'bold'} fontSize={'sm'}>{username}</Text>
+            <Text fontFamily={"visbyRound"} color='#5B6171' fontWeight={'bold'} fontSize={'sm'}>{username}</Text>
         </HStack>
     )
 }

@@ -23,8 +23,8 @@ const MultiLobbyParty = ({username, ready, other, otherReady, alone}: Props) => 
         </Stack>
         <Stack align={"center"} spacing={"10px"} style={{ position: 'relative', zIndex: 0 }} marginLeft={{ base: "90px", lg: "130px", "2xl": "180px" }}>
             <Stack spacing={"1px"} align={"center"} fontFamily={"visbyRound"}>
-                <Text color={"#5B6171"} fontSize={{base: "8px", xl: "12px"}}>{!alone ? other : ""}</Text>
-                <Text color={"#5B6171"} fontSize={{base: "8px", xl: "12px"}}>{ready ? "ready" : "not ready"}</Text>
+                <Text color={"#5B6171"} fontSize={{base: "8px", xl: "12px"}}>{other}</Text>
+                <Text color={"#5B6171"} fontSize={{base: "8px", xl: "12px"}}>{otherReady ? "ready" : "not ready"}</Text>
                 <Icon color={"#5B6171"} as={FaAngleDown} boxSize={{base: "15px", xl: "25px" }}></Icon>
             </Stack>
             { alone
