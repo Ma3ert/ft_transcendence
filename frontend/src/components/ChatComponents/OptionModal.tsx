@@ -7,6 +7,7 @@ import {
   ChatContext,
 } from "@/context/Contexts";
 import { Text } from "@chakra-ui/react";
+import { useAuth } from "@/hooks/useAuth";
 interface OptionModalProps {
   user: User;
   setting: MenuOption;
@@ -18,11 +19,12 @@ const OptionModal: React.FC<OptionModalProps> = ({
   setting,
   userIsBlocked,
 }) => {
-  const { loggedInUser, friendsList } = useContext(UsersContext);
+  const {friendsList } = useContext(UsersContext);
+  const {currentUser} = useAuth ()
   const { currentSection } = useContext(AppNavigationContext);
   const { chatType } = useContext(ChatContext);
   const { getChecker, modals, actions } = useOptionsManager(
-    loggedInUser!,
+    currentUser!,
     user,
     friendsList!,
     currentSection!,
@@ -42,6 +44,7 @@ const OptionModal: React.FC<OptionModalProps> = ({
       ) : (
         <ModalWrapper
           type="regular"
+          variant={setting.modalType}
           isOption={true}
           buttonValue={<Text>{setting.description}</Text>}
         >

@@ -20,20 +20,15 @@ export const ChannelTypes: string[] = [
   "Private messages",
 ];
 
-export const channelSettings: string[] = [ 
+export const channelSettings: string[] = [
   "Members",
   "Set password",
-  "Edit Channel"
+  "Edit Channel",
 ];
 
-export const ProtectedChannelSettings: string[] = [ 
-  "Members",
-  "Edit Channel"
-];
+export const ProtectedChannelSettings: string[] = ["Members", "Edit Channel"];
 
-export const ChannelMemberSettings:string[] = [
-  'Members',
-]
+export const ChannelMemberSettings: string[] = ["Members"];
 
 // Channel
 
@@ -51,77 +46,87 @@ export const options: MenuOption[] = [
   {
     description: "Invite to join game",
     type: "normal",
-    modal:false,
-    channelSettings:false
+    modal: true,
+    channelSettings: false,
+    modalType: "default",
   },
   {
     description: "Invite to join channel",
     type: "normal",
-    modal:true,
-    channelSettings:false
+    modal: true,
+    channelSettings: false,
+    modalType: "default",
   },
   {
     description: "Send friend request",
     type: "normal",
-    modal:false,
-    channelSettings:false
+    modal: false,
+    channelSettings: false,
   },
   {
     description: "See Profile",
     type: "normal",
-    modal:true,
-    channelSettings:false
+    modal: true,
+    channelSettings: false,
+    modalType: "largeModal",
   },
   {
     description: "Make party admin",
     type: "normal",
-    modal:false,
-    channelSettings:true
+    modal: false,
+    channelSettings: true,
   },
   {
     description: "Remove party admin",
     type: "normal",
-    modal:false,
-    channelSettings:true
+    modal: false,
+    channelSettings: true,
   },
   {
     description: "Ban from channel",
     type: "critical",
-    modal:true,
-    channelSettings:true
+    modal: true,
+    channelSettings: true,
+    modalType: "default",
   },
   {
     description: "Kick from channel",
     type: "critical",
-    modal:true,
-    channelSettings:true
+    modal: true,
+    channelSettings: true,
+    modalType: "default",
   },
   {
     description: "Unban",
     type: "critical",
-    modal:true,
-    channelSettings:true
+    modal: true,
+    channelSettings: true,
+    modalType: "default",
   },
   {
     description: "Mute",
     type: "critical",
-    modal:true,
-    channelSettings:true
+    modal: true,
+    channelSettings: true,
+    modalType: "default",
   },
   {
     description: "Block",
     type: "critical",
-    modal:true
+    modal: true,
+    modalType: "default",
   },
   {
     description: "Unmute",
     type: "critical",
-    modal:true,
-    channelSettings:true
+    modal: true,
+    channelSettings: true,
+    modalType: "default",
   },
   {
     description: "Unblock",
     type: "critical",
-    modal:true
+    modal: true,
+    modalType: "default",
   },
 ];

@@ -6,16 +6,17 @@ import { useEffect } from "react";
 import { ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import { CHANNEL, PRIVATE } from "../../../contstants";
+import { useAuth } from "@/hooks/useAuth";
 
 const Chat: React.FC<ChatProps> = ({}) => {
   const { chatType , setCmNotifications, setDmNotifications} = useContext(ChatContext);
   const {socket}  = useContext (GlobalContext)
-  const {loggedInUser, activePeer, setUserStatus}  = useContext (UsersContext)
+  const {currentUser} = useAuth ()
 
   useEffect (()=>{
       const type = chatType == CHANNEL ? "channelMessage" : "directMessage"
       console.log (type)
-      NotifyServer (socket!, "userIsActive", loggedInUser!)
+      NotifyServer (socket!, "userIsActive", currentUser!)
       socket!.on ('ChatNotification', (message: ChatNotification) => {
         console.log ('chat notifications')
         console.log (message)
@@ -25,10 +26,10 @@ const Chat: React.FC<ChatProps> = ({}) => {
       
       
 
-      //   NotifyServer (socket!, "userIsInChannel", loggedInUser!)
+      //   NotifyServer (socket!, "userIsInChannel", currentUser!)
     return ()=>{
       console.log ('user in inactive')  
-          NotifyServer (socket!, "userIsNotActive", loggedInUser!)
+          NotifyServer (socket!, "userIsNotActive", currentUser!)
     }
   }
   ,[])

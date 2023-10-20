@@ -10,16 +10,6 @@ interface UserAuthProps {
     children: ReactNode;
 }
 
-// async function returnFromCookie() {
-//     const cookieValue = Cookies.get('jwt');
-//     var toReturn;
-
-//     if (cookieValue !== undefined && !toReturn) {
-//         await useUpdateCurrentUser().then((res) => {toReturn  = res})
-//     }
-//     return (toReturn)
-// }
-
 const AuthUserProvider = ({ children }: UserAuthProps) => {
     const [currentUser, setCurrentUser] = useState<any>();
     const [loading, setLoading] = useState(true);
@@ -28,15 +18,17 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
     const updateUser = async () => {
         const cookieValue = Cookies.get('jwt');
         if (cookieValue !== undefined) {
-            console.log("hoho")
             console.log(cookieValue)
             if (cookieValue !== "")
-                useUpdateCurrentUser().then((res) => {setCurrentUser(res); setLoading(false)}).catch((err) => console.log(err));
+                useUpdateCurrentUser()
+            .then((res) => {
+                if (!res.avatar.includes("http"))
+                    res.avatar = "http://localhost:3000/public/users/imgs/" + res.avatar
+                setCurrentUser(res);
+                setLoading(false)
+            }).catch((err) => console.log(err));
             else
                 setLoading(false);
-        //     if (!cookieUser.avatar.includes("http"))
-        //         cookieUser.avatar = "http://localhost:3000/public/users/imgs/" + cookieUser.avatar
-            // console.log("the user is known")
         }
         else {
             setLoading(false)

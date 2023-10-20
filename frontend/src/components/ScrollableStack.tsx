@@ -5,8 +5,9 @@ import "../theme/styles.css";
 interface Props {
   children: React.ReactNode;
   h?: string;
+  yPadding?: number;
 }
-const ScrollableStack: React.FC<Props> = ({ children, h='60vh'}) => {
+const ScrollableStack: React.FC<Props> = ({ children, h='60vh', yPadding = 6}) => {
   return (
     <Stack
       className="customScroll"
@@ -23,7 +24,7 @@ const ScrollableStack: React.FC<Props> = ({ children, h='60vh'}) => {
       overflowY={"auto"}
       spacing={2}
       px={4}
-      py={6}
+      py={yPadding}
     >
       {children}
     </Stack>

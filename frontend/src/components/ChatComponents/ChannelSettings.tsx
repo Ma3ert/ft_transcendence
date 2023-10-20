@@ -23,17 +23,18 @@ import useChannelManager from "@/hooks/useChannelManager";
 import { getUserRole } from "../../../utils/helpers";
 import EditeChannel, {VisibilityPopOver} from "./EditeChannel";
 import ChannelsListSection from "../Sections/ChannelsListSection";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 interface ChannelSettingsProps {
 }
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   // eslint-disable-next-line react/jsx-key
-  const { loggedInUser } = useContext(UsersContext);
   const { removeChannel, leaveChannel } = useChannelManager();
   const [settingsList, setSettings] = useState<string[]> (channelSettings)
   const {members} = useContext (MembersContext)
   const {activeChannel} = useContext (ChannelsContext)
+  const {currentUser} = useAuth ()
 
   const settings = new Map([
     [
@@ -59,13 +60,13 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   ]);
 
   const isPrivliged = () =>{
-    if (getUserRole (loggedInUser!, members!) === "OWNER" || getUserRole (loggedInUser!, members!)  === 'ADMIN')
+    if (getUserRole (currentUser!, members!) === "OWNER" || getUserRole (currentUser!, members!)  === 'ADMIN')
       return true
     return false
   }
   useEffect (()=>{
     console.log (`channel type : -----> ${activeChannel!.type}`)
-    console.log (`logged in user role : -----> ${getUserRole (loggedInUser!, members!)}`)
+    console.log (`logged in user role : -----> ${getUserRole (currentUser!, members!)}`)
     console.table (members)
     if (isPrivliged ()) {
       if (activeChannel!.type === 'PROTECTED')
@@ -132,15 +133,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       <Stack spacing={3}>
         <ModalWrapper
           action={
-              getUserRole (loggedInUser!, members!) == "OWNER"
+              getUserRole (currentUser!, members!) == "OWNER"
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
-          actionDescription={`${getUserRole (loggedInUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
+          actionDescription={`${getUserRole (currentUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
           buttonValue={
             <Text>
-              {getUserRole (loggedInUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
+              {getUserRole (currentUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
             </Text>
           }
           buttonVariant="largePrimary"

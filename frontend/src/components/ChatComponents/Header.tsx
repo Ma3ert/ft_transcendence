@@ -8,7 +8,6 @@ import { FaSignOutAlt } from 'react-icons/fa'
 import UserStatus from '../../components/UserStatus'
 import UserAvatar from '../../components/UserAvatar'
 import IconButton  from '../../components/IconButton'
-import { friendsList } from '../../../contstants'
 import { useContext } from 'react'
 import { GlobalContext, UsersContext } from '@/context/Contexts'
 import { useAuth } from '@/hooks/useAuth';
@@ -16,7 +15,6 @@ import { useRouter } from 'next/navigation';
 
 export default function Header() {
 
-  // const {loggedInUser} = useContext (UsersContext)
   const router = useRouter();
   const {currentUser, updateUser} = useAuth()
   if (!currentUser)
@@ -24,13 +22,12 @@ export default function Header() {
 
   const handleLogout = () => {
     router.push("http://localhost:3000/auth/42/logout");
-    // Cookies.remove('jwt');
   }
 
   return (
     <header>
         <HStack justify={'space-between'} p={4} mx={'auto'} w={{sm:'98%', lg:'95%', xl:'90%', vl:'86%'}}>
-        <Logo src="/logo.png" width="120px" height="auto"/>
+        <Logo src="/logo.png" />
 
         <HStack justify='center' alignItems='center' spacing={12} maxW={'6xl'}>
             <UserStatus username={currentUser!.username} status={true}/>
