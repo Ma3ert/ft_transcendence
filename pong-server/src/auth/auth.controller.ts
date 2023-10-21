@@ -44,6 +44,7 @@ export class AuthController {
       user.twoFactorStatus = true
     await this.usersService.updateUserAuth(req.user.id, {
       pinValidated: false,
+      status: "OFFLINE",
       twoFactor: user.twoFactorStatus
     });
     res.cookie('jwt', '');

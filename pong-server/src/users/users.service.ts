@@ -316,6 +316,8 @@ export class UsersService {
         avatar: true,
         username: true,
         status: true,
+        level: true,
+        xp: true
       },
       orderBy: {
         xp: 'desc',
@@ -341,6 +343,8 @@ export class UsersService {
         avatar: true,
         username: true,
         status: true,
+        xp: true,
+        level: true
       },
       orderBy: {
         xp: 'desc',
