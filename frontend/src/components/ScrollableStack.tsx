@@ -24,7 +24,7 @@ const ScrollableStack: React.FC<Props> = ({ children, h='60vh', yPadding = 6}) =
       overflowY={"auto"}
       spacing={2}
       px={4}
-    py={yPadding}
+      py={yPadding}
     >
       {children}
     </Stack>

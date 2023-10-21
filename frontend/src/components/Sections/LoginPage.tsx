@@ -25,7 +25,7 @@ export default function LoginPage() {
     justify="center"
     minH="70vh"
     >
-      <Logo src="/logo.png" width="334px" height="179px"></Logo>
+      <Logo src="/logo.png"></Logo>
       <Link href={"http://localhost:3000/auth/42/login"}>
         <Button variant={"primary"} 
           width={{ base: "200px", lg: "250px", xl: "300px" }} 
