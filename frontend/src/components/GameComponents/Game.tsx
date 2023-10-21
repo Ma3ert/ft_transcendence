@@ -8,6 +8,7 @@ import socket from './socket';
 import "@/theme/styles.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import Cookies from "js-cookie"
 import {
     useDisclosure,
     Wrap,
@@ -31,7 +32,7 @@ export interface Game {
 
 const Game = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [theme, setTheme] = useState({one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9"})
+    // const [theme, setTheme] = useState({one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9"})
     const toast = useToast();
     const ref = useRef(null);
     const router = useRouter()
@@ -109,7 +110,15 @@ const Game = () => {
         socket.on("startGameSession", () => {
             setMessage("");
             console.log("i get here")
+            var theme = {one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9"}
 
+            const cookieValue = Cookies.get("theme");
+            if (cookieValue !== undefined) {
+                console.log(cookieValue)
+                if (cookieValue !== ""){
+                    theme = JSON.parse(cookieValue)
+                }
+            }
             game.playerOne = new Player(0, 200, 20, 100, theme.one, 1);
             game.playerTwo = new Player(780, 200, 20, 100, theme.two, 2);
             game.ball = new Ball(400, 245, 10, theme.ball);
