@@ -2,12 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import Ball from "./ball";
 import Player from "./player";
 import GameHeader from "./GameHeader";
-import { Box, useToast } from "@chakra-ui/react";
+import { Box, Stack, useToast } from "@chakra-ui/react";
 import useGame from "@/hooks/useGame";
 import socket from './socket';
 import "@/theme/styles.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import {
+    useDisclosure,
+    Wrap,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalBody,
+    Button,
+    Text
+  } from "@chakra-ui/react";
+import ButtonStack from "../ButtonStack";
 
 export interface Game {
     playerOne: Player;
@@ -19,6 +30,8 @@ export interface Game {
 }
 
 const Game = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [theme, setTheme] = useState({one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9"})
     const toast = useToast();
     const ref = useRef(null);
     const router = useRouter()
@@ -97,9 +110,9 @@ const Game = () => {
             setMessage("");
             console.log("i get here")
 
-            game.playerOne = new Player(0, 200, 20, 100, "#DC585B", 1);
-            game.playerTwo = new Player(780, 200, 20, 100, "#D9D9D9", 2);
-            game.ball = new Ball(400, 245, 10, "#D9D9D9");
+            game.playerOne = new Player(0, 200, 20, 100, theme.one, 1);
+            game.playerTwo = new Player(780, 200, 20, 100, theme.two, 2);
+            game.ball = new Ball(400, 245, 10, theme.ball);
 
             game.isGameStarted = true;
 
@@ -129,22 +142,23 @@ const Game = () => {
             game.isGameStarted = false;
             updateUser && updateUser()
             if (game.playerID === room.winner) {
-                !toast.isActive("pop") && toast({
-                    id: "pop",
-                    title: "Congrats. You won this game",
-                    status:"success"
-                })
-                // return setMessage("Congrats. You won this game");
+                // !toast.isActive("pop") && toast({
+                //     id: "pop",
+                //     title: "Congrats. You won this game",
+                //     status:"success"
+                // })
+                setMessage("Congrats. You won this game");
             }
             else {
-                !toast.isActive("pop") && toast({
-                    id: "pop",
-                    title: "Bitch, you lost this game",
-                    status:"warning"
-                })
+                setMessage("Bitch. You lost this game");
+                // !toast.isActive("pop") && toast({
+                //     id: "pop",
+                //     title: "Bitch, you lost this game",
+                //     status:"warning"
+                // })
             }
-            setTimeout(() => router.push("/Lobby"), 3000)
-            setMessage("Bitch. You lost this game");
+            setTimeout(() => router.push("/Lobby"), 30000)
+            onOpen()
         });
 
         socket.on("updateGame", (room) => {
@@ -158,15 +172,37 @@ const Game = () => {
     }, []);
 
     return (
-        <>
-            <p id="messageArea">{message}</p>
+        <Stack 
+            direction="column"
+            align="center"
+            justify="center"
+            minH="70vh"
+        >
+            {/* <p id="messageArea">{message}</p> */}
             <div id="body">
                 <Box backgroundColor="#1D222C" padding="2rem" borderRadius={12}>
-                    <GameHeader score={score} playerID={gameSettings.playerID} user={gameSettings.me} opponent={gameSettings.opponent} />
+                    <GameHeader themeSetter={setTheme} score={score} playerID={gameSettings.playerID} user={gameSettings.me} opponent={gameSettings.opponent} />
                     <canvas id="gameFrame" width={800} height={500} ref={ref} />
                 </Box>
             </div>
-        </>
+            <Modal closeOnOverlayClick={false} variant={"form"} isOpen={isOpen} onClose={onClose} size={"invite"}>
+                <ModalOverlay />
+                <ModalContent style={{ width: "480px", height: "280px" }}>
+                    <ModalBody>
+                    <Stack align={"center"} spacing={"40px"} fontFamily={"visbyRound"}>
+                        <Text color={"#d9d9d9"} fontSize={"25px"}>{message}</Text>
+                        <Button
+                            variant={"primary"}
+                            width={{ base: "150px", md:"200px" }}
+                            height={{base: "40px", md: "50px" }}
+                            fontSize={{base: "12px", md: "15px"}}
+                            onClick={() => router.push("/Lobby")}
+                        >Go Back to Lobby</Button>
+                    </Stack>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+        </Stack>
     );
 };
 

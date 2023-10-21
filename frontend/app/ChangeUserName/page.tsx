@@ -11,7 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import {useUpdateCurrentUser} from "@/hooks/useUpdateCurrentUser"
 import Cookies from 'js-cookie';
 import { useQuery, useQueryClient } from 'react-query';
-import { PinInput, PinInputField } from "@chakra-ui/react";
+
 import {
   useDisclosure,
   Modal,
