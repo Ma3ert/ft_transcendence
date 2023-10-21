@@ -73,6 +73,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       this.LoggedInUsers.delete(user);
       this.activeUsers.delete(user);
     }
+    for (const usr of this.LoggedInUsers) {
+      client.emit("checkStatus", {userId:user, status:"OFFLINE"});
+    }
   }
 
   // user join room contains the channel id of his channels
@@ -114,9 +117,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   {
     let status:string = "OFFLINE";
 
-    if (this.activeUsers.has(data.userId))
+    if (this.LoggedInUsers.has(data.userId))
       status = "ONLINE";
-    client.emit("checkStatus", {status:status});
+    client.emit("checkStatus", {userId:data.userId, status:status});
   }
 
   @SubscribeMessage('userIsNotActive')
@@ -193,5 +196,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       await this.notificationService.readChannelNotification(client.user.id, data.Id);
     else
       await this.notificationService.readDirectNotification(client.user.id, data.Id);
+    await this.chatNotification(client.user.id);
   }
+
 }
