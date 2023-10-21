@@ -5,7 +5,9 @@ import GameHeader from "./GameHeader";
 import { Box, useToast } from "@chakra-ui/react";
 import useGame from "@/hooks/useGame";
 import socket from './socket';
+import "@/theme/styles.css";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface Game {
     playerOne: Player;
@@ -23,6 +25,7 @@ const Game = () => {
     const [message, setMessage] = useState("Waiting for game to start");
     const { gameSettings } = useGame();
     const [score, setScore] = useState({});
+    const {currentUser, updateUser} = useAuth();
     const [game] = useState<Game>({
         playerOne: new Player(0, 200, 20, 100, "transparent", 1),
         playerTwo: new Player(780, 200, 20, 100, "transparent", 2),
@@ -124,19 +127,23 @@ const Game = () => {
             console.log(room);
             clearCanvas(context);
             game.isGameStarted = false;
+            updateUser && updateUser()
             if (game.playerID === room.winner) {
                 !toast.isActive("pop") && toast({
                     id: "pop",
                     title: "Congrats. You won this game",
                     status:"success"
                 })
-                return setMessage("Congrats. You won this game");
+                // return setMessage("Congrats. You won this game");
             }
-            !toast.isActive("pop") && toast({
-                id: "pop",
-                title: "Bitch, you lost this game",
-                status:"warning"
-            })
+            else {
+                !toast.isActive("pop") && toast({
+                    id: "pop",
+                    title: "Bitch, you lost this game",
+                    status:"warning"
+                })
+            }
+            setTimeout(() => router.push("/Lobby"), 3000)
             setMessage("Bitch. You lost this game");
         });
 

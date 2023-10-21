@@ -136,12 +136,12 @@ const LobbyParty = () => {
         <MultiLobbyParty username={currentUser.username} ready={readyness} other={opponent.username} otherReady={opponent.ready} alone={party}/>
         {!shadow && <Image src='/Shadow.png' w={"341px"} h={"auto"}></Image>}
         <Button
-            variant={"primary"}
-            w={"217px"}
-            h={"60px"}
-            fontSize={"25px"}
-            onClick={handleJoinQueue}
-            isDisabled={ready}
+          variant={"primary"}
+          w={"217px"}
+          h={"60px"}
+          fontSize={"25px"}
+          onClick={handleJoinQueue}
+          isDisabled={ready}
         >Ready</Button>
     </Stack>
   )
