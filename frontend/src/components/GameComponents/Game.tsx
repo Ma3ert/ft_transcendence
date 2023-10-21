@@ -92,6 +92,7 @@ const Game = () => {
 
         socket.on("startGameSession", () => {
             setMessage("");
+            console.log("i get here")
 
             game.playerOne = new Player(0, 200, 20, 100, "#DC585B", 1);
             game.playerTwo = new Player(780, 200, 20, 100, "#D9D9D9", 2);
@@ -147,7 +148,7 @@ const Game = () => {
             game.ball.y = room.ball.y;
             paint(context);
         });
-    });
+    }, []);
 
     return (
         <>
