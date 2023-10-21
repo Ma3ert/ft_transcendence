@@ -16,6 +16,7 @@ import { PRIVATE, loggedIndUser } from "@/../contstants";
 import OptionsMenu from "./ChatComponents/FriendSettingsMenu";
 import useUserStatus from "@/hooks/useUserStatus";
 import UserFieldNav from "./ChatComponents/UserFieldNav";
+import { useAuth } from "@/hooks/useAuth";
 interface Props {
   user: User;
   member?: Member;
@@ -27,7 +28,8 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}
   const { setCurrentSection, currentSection } =
     useContext(AppNavigationContext);
   const { setCurrentChat, chatType } = useContext(ChatContext);
-  const { setActivePeer, friendsList, loggedInUser } = useContext(UsersContext);
+  const { setActivePeer, friendsList} = useContext(UsersContext);
+  const {currentUser} = useAuth ();
   const { userIsBlocked } = useUserStatus(user);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}
               friendsList={friendsList!}
             />
           )}
-          {user.id != loggedInUser!.id && (
+          {user.id != currentUser!.id && (
             <OptionsMenu
               member={member!}
               user={user!}

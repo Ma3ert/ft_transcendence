@@ -1,15 +1,16 @@
 import React, { useContext, useEffect } from "react";
 import { ChatContext, UsersContext } from "@/context/Contexts";
 import { HStack, Stack, Text, Image, Button, Progress } from "@chakra-ui/react";
-import { loggedIndUser } from "../../../contstants";
 import TimerComponent from "./TimerComponent";
+import { useAuth } from "@/hooks/useAuth";
 interface EnviteMessageProps {
   gameInviteSender?: string;
 }
 const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
   const { joinGameStatus, setJoinGameStatus, gameInviteSender } =
     useContext(ChatContext);
-  const { activePeer, loggedInUser } = useContext(UsersContext);
+  const { activePeer } = useContext(UsersContext);
+  const {currentUser} = useAuth ()
 
   useEffect(() => {
     // Create a setTimeout to change the message after 3 seconds
@@ -22,14 +23,14 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
   }, []);
   return (
     <HStack
-      justify={gameInviteSender !== loggedIndUser.id ? "end" : "start"}
+      justify={gameInviteSender !== currentUser!.id ? "end" : "start"}
       w="98%"
       mx="auto"
       spacing={3}
     >
       <Stack
         borderRadius={"2xl"}
-        bg={gameInviteSender !== loggedIndUser.id ? "#252932" : "#5B6171"}
+        bg={gameInviteSender !== currentUser!.id ? "#252932" : "#5B6171"}
         minW={"300px"}
         maxW="100%"
         px={2}
@@ -41,7 +42,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
         <HStack spacing={5}>
           <Image
             src={
-              gameInviteSender !== loggedIndUser.id
+              gameInviteSender !== currentUser!.id
                 ? "/LightSolidLogo.png"
                 : "/DarkSolidLogo.png"
             }
@@ -52,32 +53,32 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
           <Stack justify={"center"} alignItems={"center"} p={2}>
             <Text
               color={
-                gameInviteSender !== loggedIndUser.id ? "#5B6171" : "#1D222C"
+                gameInviteSender !== currentUser!.id ? "#5B6171" : "#1D222C"
               }
               fontSize={"sm"}
               fontWeight={"bold"}
             >
-              {gameInviteSender !== loggedIndUser.id
+              {gameInviteSender !== currentUser!.id
                 ? activePeer!.username
                 : "you"}{" "}
               Looking for a 1v1 ..
             </Text>
             <Button
-              isDisabled={gameInviteSender === loggedIndUser.id}
+              isDisabled={gameInviteSender === currentUser!.id}
               onClick={() => {
                 /// accept game invite
                 /// decline game inviate
                 setJoinGameStatus!(false);
               }}
               variant={
-                gameInviteSender !== loggedIndUser.id ? "lightGray" : "darkGray"
+                gameInviteSender !== currentUser!.id ? "lightGray" : "darkGray"
               }
             >
               {`let's go`}
             </Button>
           </Stack>
         </HStack>
-      <TimerComponent bg={gameInviteSender !== loggedIndUser.id ? "#5B6171" : "#1D222C"}/>
+      <TimerComponent bg={gameInviteSender !== currentUser!.id ? "#5B6171" : "#1D222C"}/>
       </Stack>
     </HStack>
   );

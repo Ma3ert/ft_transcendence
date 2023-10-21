@@ -4,11 +4,11 @@ type Section =
   | "chat"
   | "settings"
   | "achievements"
-  | "notifications"
+  | "stats"
   | "friends";
 type FriendsSection = "friends" | "requests" | "channels";
 type AchievementsSection = "achievements" | "leaderboard";
-type SettingsSection = "userSettings" | "passwordSettings";
+type SettingsSection = "userSettings" | "userProfile";
 type ChatType = boolean;
 type ModalType = "regular" | "confirmation";
 
@@ -112,6 +112,8 @@ interface AppNavigationContext {
   setAchievementsSection?: (value: AchievementsSection) => void;
   settingsSection?: SettingsSection;
   setSettingsSection?: (value: SettingsSection) => void;
+  statsSection?: StatsSection;
+  setStatsSection?: (value: StatsSection) => void;
 }
 
 interface ChatContext {
@@ -286,6 +288,7 @@ type MenuOption = {
   type: "critical" | "normal";
   modal?: boolean;
   channelSettings?: boolean;
+  modalType?: "largeModal" | "default";
 };
 
 type Envite = {
@@ -352,3 +355,4 @@ type checkNotification = {
 type ChatNotification = { DM: string[]; CM: string[] };
 type checkStatus = {status:string} 
 type readChatNotification = {channel:boolean, Id:string}
+type StatsSection = 'stats' |  'history' 

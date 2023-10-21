@@ -102,12 +102,12 @@ const LobbySection = (props: Props) => {
     ></Challenge>,
   ];
   return (
-  
-    <Grid templateColumns={"repeat(2, 1fr)"}>
+  <Stack align={"center"} justifyContent={"center"}>
+    <Grid templateColumns={"repeat(2, 1fr)"} gap={"5%"}>
       <GridItem
         colSpan={{ base: 2, lg: 1 }}
-      >
-        <Stack spacing={"55px"} align={{base: "center", lg: "start" }}>
+        >
+        <Stack spacing={{base: "10px", xl: "55px" }} align={{base: "center", lg: "start" }}>
           <ProgressLevel></ProgressLevel>
           <Stack spacing={"20px"}>
             <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>Stats</Text>
@@ -118,9 +118,10 @@ const LobbySection = (props: Props) => {
       <GridItem
       colSpan={{ base: 2, lg: 1 }}
       >
-        <LobbyParty username={currentUser!.username} ready={false} other={""} otherReady={false} alone={true}></LobbyParty>
+        <LobbyParty />
       </GridItem>
     </Grid>
+  </Stack>
   );
 };
 

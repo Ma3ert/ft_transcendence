@@ -1,19 +1,21 @@
 import { HStack, Stack, Text } from "@chakra-ui/react";
 import { ChatContext, UsersContext } from "@/context/Contexts";
 import { useContext } from "react";
+import { useAuth } from "@/hooks/useAuth";
 interface MessageBoxProps {
   Message: DirectMessage;
 }
 const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
 
-  const { activePeer, loggedInUser } = useContext(UsersContext);
+  const { activePeer} = useContext(UsersContext);
+  const {currentUser} = useAuth ()
   return (
-    <HStack justify={(Message.senderId != loggedInUser!.id) ? "end" : "start"} w="98%" mx="auto">
+    <HStack justify={(Message.senderId != currentUser!.id) ? "end" : "start"} w="98%" mx="auto">
       <Stack
         borderRadius={"2xl"}
-        bg={(Message.senderId != loggedInUser!.id) ? "#252932" : "#5B6171"}
+        bg={(Message.senderId != currentUser!.id) ? "#252932" : "#5B6171"}
         justify={"center"}
-        alignItems={(Message.senderId != loggedInUser!.id) ? "end" : "start"}
+        alignItems={(Message.senderId != currentUser!.id) ? "end" : "start"}
         w="auto"
         px={2}
         py={2}
@@ -25,9 +27,9 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
         }}
       >
         <Text color="#DC585B" fontSize={"md"} fontWeight={"bold"}>
-          {(Message.senderId != loggedInUser!.id) ?  activePeer?.username :  "You"}
+          {(Message.senderId != currentUser!.id) ?  activePeer?.username :  "You"}
         </Text>
-        <Text color={(Message.senderId != loggedInUser!.id) ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
+        <Text color={(Message.senderId != currentUser!.id) ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
           {Message!.message}
         </Text>
       </Stack>

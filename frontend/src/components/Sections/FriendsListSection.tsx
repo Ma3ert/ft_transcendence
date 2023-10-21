@@ -7,12 +7,14 @@ import { UsersContext } from "@/context/Contexts";
 import {useQuery, useQueryClient} from 'react-query'
 import apiClient from "@/services/requestProcessor";
 import { getUserRole } from "../../../utils/helpers";
+import { useAuth } from "@/hooks/useAuth";
 
 interface FriendsListProps {}
 
 const FriendsListSection: React.FC<FriendsListProps> = ({}) => {
   const [usersList, setUsersList] = useState<User[]>([]);
-  const {loggedInUser, friendsList} = useContext(UsersContext)
+  const {currentUser}= useAuth ()
+  const {friendsList} = useContext(UsersContext)
   const queryClient = useQueryClient ()
  
 

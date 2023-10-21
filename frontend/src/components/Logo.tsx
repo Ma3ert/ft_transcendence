@@ -4,16 +4,15 @@ import Link from "next/link";
 
 interface Props {
     src: string;
-    width: any;
-    height: any;
 }
 
-const Logo = ({src, width, height}: Props) => {
+const Logo = ({src, }: Props) => {
   return (
     <Link href={"/Lobby"}>
       <Image
+        alt={'logo'}
         src={src}
-        width={{base:'360px', sm:'200px', lg:'250px', xl:'300px'}}
+        maxW={{sm:'130px', md:'160px', lg:'180px', xl:'200px'}}
         height={'auto'}
         ></Image>
     </Link>

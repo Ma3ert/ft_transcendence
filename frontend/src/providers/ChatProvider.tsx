@@ -23,7 +23,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   );
   const { socket } = useContext(GlobalContext);
   const {setCurrentSection} = useContext (AppNavigationContext)
-  const {loggedInUser, Users} = useContext (UsersContext)
   const [channelConversations, setChannelConversations] = useState<string[]>([])
   const { setActivePeer } = useContext(UsersContext);
   const { friendsList } = useContext(UsersContext);

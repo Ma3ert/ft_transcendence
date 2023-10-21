@@ -6,6 +6,7 @@ import { Socket, io } from "socket.io-client";
 import { ChannelsContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { PRIVATE, loggedIndUser } from "../../../contstants";
 import useMessageSender from "@/hooks/useMessageSender";
+import { useAuth } from "@/hooks/useAuth";
 interface ChatInputBoxProps {
   // socket: Socket;
 }
@@ -16,7 +17,8 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     setJoinGameStatus,
     chatType,
   } = useContext(ChatContext);
-  const {activePeer, loggedInUser} = useContext (UsersContext)
+  const {activePeer} = useContext (UsersContext)
+  const {currentUser} = useAuth ()
   const { socket } = useContext(GlobalContext);
   const {activeChannel} = useContext (ChannelsContext)
   const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
@@ -36,7 +38,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         onClick={() => {
 
           socket!.emit("DM", {
-            senderId:loggedInUser!.id,
+            senderId:currentUser!.id,
             receiverId:activePeer!.id,
             message:"",
             game:true
@@ -85,7 +87,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
             SendMessage(message);
             else {
               socket.emit("CM", {
-                senderId:loggedInUser!.id,
+                senderId:currentUser!.id,
                 channelId:activeChannel!.id,
                 message:message
               });

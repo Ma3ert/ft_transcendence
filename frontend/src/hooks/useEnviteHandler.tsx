@@ -1,6 +1,8 @@
 import apiClient from "@/services/requestProcessor"
 import { useMutation, useQueryClient } from "react-query"
 import { useToast } from "@chakra-ui/react"
+import { useContext } from "react"
+import { AppNavigationContext } from "@/context/Contexts"
 const useEnviteHandler = () => {
 
         const toast = useToast()
@@ -12,6 +14,7 @@ const useEnviteHandler = () => {
         const declineChannelEnvitationClient = new apiClient ('')
         const cancelChannelEnvitationClient = new apiClient ('')
         const acceptProtectedChannelClient = new apiClient ('')
+        const {setFriendsSection} = useContext (AppNavigationContext)
 
         const acceptEnvitation = async (enviteId:string) => {
             const response = await acceptEnvitationClient.postData({'inviteId': enviteId})
@@ -24,6 +27,7 @@ const useEnviteHandler = () => {
                 queryClient.invalidateQueries('sentEnvites')
                 queryClient.invalidateQueries ('recievedEnvites')
                 queryClient.invalidateQueries ('friends')
+                setFriendsSection! ('friends')
                 toast({
                     title: "Friend request accepted.",
                     description: "You have a new friend.",

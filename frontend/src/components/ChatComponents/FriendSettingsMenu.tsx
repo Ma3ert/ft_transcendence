@@ -16,6 +16,7 @@ import InviteToChannels from "./InviteToChannels";
 import { options } from "../../../contstants";
 import useOptionsManager from "@/hooks/useOptionsManager";
 import OptionModal from "./OptionModal";
+import { useAuth } from "@/hooks/useAuth";
 import {
   UsersContext,
   AppNavigationContext,
@@ -41,17 +42,17 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({
   member, 
   channel
 }) => {
-  const { loggedInUser, friendsList } = useContext(UsersContext);
+  const {friendsList } = useContext(UsersContext);
   const { currentSection } = useContext(AppNavigationContext);
+  const {currentUser} = useAuth ()
   const { chatType } = useContext(ChatContext);
   const { getChecker, modals, actions } = useOptionsManager(
-    loggedInUser!,
+    currentUser!,
     user!,
     friendsList!,
     currentSection!,
     chatType!,
     userIsBlocked!,
-    channel!
   );
   return (
     <Menu>

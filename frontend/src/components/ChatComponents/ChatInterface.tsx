@@ -11,11 +11,10 @@ import ChannelsChat from "./ChannelsChat";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import useDirectConversations from "@/hooks/useDirectConversations";
 import NoFriendsPage from "./NoFriendsPage";
+import { useAuth } from "@/hooks/useAuth";
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
-  const { socket } = useContext(GlobalContext);
-  const { loggedInUser, friendsList } = useContext(UsersContext);
-  const { data, isLoading, isError } = useDirectConversations();
+  const { friendsList } = useContext(UsersContext);
 
 
   useEffect(() => {

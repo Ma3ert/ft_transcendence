@@ -1,13 +1,15 @@
 import { HStack, Stack, Text } from "@chakra-ui/react";
 import { ChatContext, UsersContext } from "@/context/Contexts";
 import { useContext } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface MessageBoxProps {
     Message:ChannelMessage;
   }
   const ChannelMessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
   
-    const {loggedInUser , Users} = useContext(UsersContext);
+    const {Users} = useContext(UsersContext);
+    const {currentUser} = useAuth ()
     const sender:(User|null) = Users!.find (user => user.id == Message.senderId) || null
     return (
       <HStack justify={"start"} w="98%" mx="auto">
@@ -28,7 +30,7 @@ interface MessageBoxProps {
         >
           {sender && (
             <Text color="#DC585B" fontSize={"md"} fontWeight={"bold"}>
-            {(Message.senderId != loggedInUser!.id) ?  sender!.username :  "You"}
+            {(Message.senderId != currentUser!.id) ?  sender!.username :  "You"}
           </Text>
           )}
           <Text color={"#5B6171"} fontSize={"sm"}>

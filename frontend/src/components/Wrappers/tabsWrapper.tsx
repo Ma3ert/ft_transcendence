@@ -7,6 +7,10 @@ import { FaUserGroup } from "react-icons/fa6";
 import { NotificationWrapper } from "../ChatComponents/NotificationBadge";
 import { BsPersonFillAdd } from "react-icons/bs";
 import { useRouter, usePathname } from "next/navigation";
+import { IoStatsChart } from "react-icons/io5";
+import { AiOutlineHistory } from "react-icons/ai";
+import { IoMdSettings } from "react-icons/io";
+import { FaGamepad, FaBell } from "react-icons/fa";
 interface TabsWrapperProps {
   tabs: Tab[];
 }
@@ -77,8 +81,9 @@ const getCurrentSection = (path:string) =>{
 }
 
 const TabsWrapper: React.FC = () => {
-  const {setFriendsSection, setAchievementsSection, setSettingsSection} = useContext (AppNavigationContext)
+  const {setFriendsSection, setAchievementsSection, setSettingsSection, setStatsSection} = useContext (AppNavigationContext)
   const {chatNotifications, inviteNotifications} = useContext(UsersContext);
+
   const router = useRouter();
   const pathname = usePathname();
   const ChatLobbyTabs: Tab[] = [
@@ -101,7 +106,7 @@ const TabsWrapper: React.FC = () => {
       action: () => setFriendsSection && setFriendsSection("channels"),
     },
     {
-      value: <Icon as={BsPersonFillAdd} style={{ fontSize: "23px" }} />,
+      value: <Icon as={FaBell} style={{ fontSize: "23px" }} />,
       action: () => setFriendsSection && setFriendsSection("requests"),
     }
   ];
@@ -119,13 +124,26 @@ const TabsWrapper: React.FC = () => {
   ];
   const SettingsTabs: Tab[] = [
     {
-      value: <Icon as={BiSolidUser} style={{ fontSize: "23px" }} />,
+      value: <Icon as={IoMdSettings} style={{ fontSize: "23px" }} />,
       action: () => setSettingsSection && setSettingsSection("userSettings"),
     },
     {
-      value: <Icon as={BiSolidLockAlt} style={{ fontSize: "23px" }} />,
+      value: <Icon as={FaGamepad} style={{ fontSize: "23px" }} />,
       action: () =>
-        setSettingsSection && setSettingsSection("passwordSettings"),
+        setSettingsSection && setSettingsSection("userProfile"),
+    },
+  ];
+
+  const StatsTabs: Tab[] = [
+    {
+      value: <Icon as={IoStatsChart} style={{ fontSize: "23px" }} />,
+      action: () =>
+        setStatsSection  && setStatsSection ("stats"),
+    },
+    {
+      value: <Icon as={AiOutlineHistory} style={{ fontSize: "23px" }} />,
+      action: () =>
+        setStatsSection  && setStatsSection ("history"),
     },
   ];
   const section = getCurrentSection(pathname)
@@ -141,7 +159,7 @@ const TabsWrapper: React.FC = () => {
       {
         (() => {
           switch (section) {
-            case "home":
+            case "lobby":
               return (
                 <NotificationWrapper type='activeChat' status={chatNotifications!}>
                   <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
@@ -155,6 +173,8 @@ const TabsWrapper: React.FC = () => {
               return <Toggler section={section} tabs={AchievementsTabs} type={true} />;
             case "settings":
               return <Toggler section={section} tabs={SettingsTabs} type={true} />;
+            case "stats":
+              return <Toggler section={section} tabs={StatsTabs} type={true} />;
             default:
               return <Toggler section={section} tabs={ChatLobbyTabs} type={false} />;
           }
