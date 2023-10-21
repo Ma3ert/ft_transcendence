@@ -132,7 +132,7 @@ export class GameService {
     setTimeout(() => {
       server.to(gameSessionID).emit(START_GAME_SESSION, this.createSessionData(gameSessionID));
       this.gameStarted(gameSessionID, server);
-    }, 4000);
+    }, 8000);
   }
 
   createGameInvite(sendingPlayer: AuthSocket, receivingPlayer: AuthSocket, server: Server) {
