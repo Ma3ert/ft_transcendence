@@ -14,114 +14,21 @@ type Props = {};
 const LobbySection = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
 
-  const challenges = [
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-    <Challenge
-      progress="5"
-      base="10"
-      description="challenge in progress"
-    ></Challenge>,
-  ];
   return (
-  <Stack align={"center"} justifyContent={"center"}>
-    <Grid templateColumns={"repeat(2, 1fr)"} gap={"5%"}>
-      <GridItem
-        colSpan={{ base: 2, lg: 1 }}
-        >
-        <Stack spacing={{base: "10px", xl: "55px" }} align={{base: "center", lg: "start" }}>
-          <ProgressLevel></ProgressLevel>
-          <Stack spacing={"20px"}>
-            <Text fontFamily={"visbyRound"} color={"#5B6171"} fontSize={"25px"}>Stats</Text>
-            <ScrollableStack>{challenges}</ScrollableStack>
-          </Stack>
-        </Stack>
-      </GridItem>
-      <GridItem
-      colSpan={{ base: 2, lg: 1 }}
-      >
-        <LobbyParty />
-      </GridItem>
-    </Grid>
-  </Stack>
+      <LobbyParty />
+  // <Stack align={"center"} justifyContent={"center"}>
+  //   <Grid templateColumns={"repeat(8, 1fr)"} placeItems="center">
+  //     <GridItem
+  //       colSpan={{ base: 8, lg: 2 }}
+  //       >
+  //         <ProgressLevel/>
+  //     </GridItem>
+  //     <GridItem
+  //     colSpan={{ base: 8, lg: 6 }}
+  //     >
+  //     </GridItem>
+  //   </Grid>
+  // </Stack>
   );
 };
 
