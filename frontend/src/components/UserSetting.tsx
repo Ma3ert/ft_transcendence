@@ -17,8 +17,8 @@ type Props = {}
 const client = new apiClient("/users")
 const UserSetting = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
-  const [faState, faStateSetter] = useState(currentUser.twoFactor);
-  const [newAvatar, setNewAvatar] = useState(currentUser.avatar);
+  const [faState, faStateSetter] = useState(currentUser.user.twoFactor);
+  const [newAvatar, setNewAvatar] = useState(currentUser.user.avatar);
 
   const handlePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentFiles = event.target.files
@@ -72,7 +72,7 @@ const UserSetting = (props: Props) => {
               <Icon as={FaPen} style={{ fontSize: "14px" }} />
             </Box>
           </Wrap>
-          <Input variant={"secondary"} w={"full"} id='username' name='username' h={{ base: "40px", md: "50px" }} placeholder={currentUser && currentUser.username}></Input>
+          <Input variant={"secondary"} w={"full"} id='username' name='username' h={{ base: "40px", md: "50px" }} placeholder={currentUser && currentUser.user.username}></Input>
           <Flex w={"full"} px={"10px"}>
             <Text fontFamily={"visbyRound"} fontSize={"15px"} color={"#fff"}>Enable 2FA</Text>
             <Spacer/>

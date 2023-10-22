@@ -11,9 +11,9 @@ const ProgressLevel = (props: Props) => {
     <Stack marginTop={"12px"} align={"center"} w={{base: "260px", xl: "360px" }} h={{ base: "150px", xl: "150px" }} fontFamily={"visbyRound"}>
         <Wrap spacingX={"12px"} align={"baseline"}>
             <Text color={"#5B6171"} fontSize={{ base: "35px", xl: "40px" }}>LEVEL</Text>
-            <Text color={"#D9D9D9"} fontSize={{ base: "50px", xl: "60px" }}>{currentUser.level}</Text>
+            <Text color={"#D9D9D9"} fontSize={{ base: "50px", xl: "60px" }}>{currentUser.user.level}</Text>
         </Wrap>
-        <Text color={"#5B6171"} fontSize={{base: "15px", xl: "20px" }}>{currentUser.xp + "xp"}</Text>
+        <Text color={"#5B6171"} fontSize={{base: "15px", xl: "20px" }}>{currentUser.user.xp + "xp"}</Text>
     </Stack>
   )
 }

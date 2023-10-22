@@ -95,7 +95,7 @@ const LobbyParty = () => {
       setGameSettings({
         gameID: data.session,
         playerID: data.playerID,
-        me: { username: currentUser.username, avatar: currentUser.avatar },
+        me: { username: currentUser.user.username, avatar: currentUser.user.avatar },
         opponent: { username: data.username, avatar: data.avatar },
       });
       setTimeout(() => {
@@ -141,7 +141,7 @@ const LobbyParty = () => {
 
       <GridItem colSpan={{ base: 8, lg: 4 }} justifyContent={"center"}>
         <Stack spacing={{base: "40px", xl: "52px" }} align={"center"}>
-            <MultiLobbyParty username={currentUser.username} ready={readyness} other={opponent.username} otherReady={opponent.ready} alone={party}/>
+            <MultiLobbyParty username={currentUser.user.username} ready={readyness} other={opponent.username} otherReady={opponent.ready} alone={party}/>
             {!shadow && <Image src='/Shadow.png' w={"341px"} h={"auto"}></Image>}
         </Stack>
       </GridItem>

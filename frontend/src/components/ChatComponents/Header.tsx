@@ -30,8 +30,8 @@ export default function Header() {
         <Logo src="/logo.png" />
 
         <HStack justify='center' alignItems='center' spacing={12} maxW={'6xl'}>
-            <UserStatus username={currentUser!.username} status={true}/>
-            <UserAvatar  user={currentUser!}/>
+            <UserStatus username={currentUser.user.username} status={true}/>
+            <UserAvatar  user={currentUser.user}/>
             <IconButton
               icon={FaSignOutAlt}
               size="40px"
