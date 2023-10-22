@@ -9,6 +9,7 @@ import "@/theme/styles.css";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Cookies from "js-cookie"
+import {FaTrophy} from "react-icons/fa"
 import {
     useDisclosure,
     Wrap,
@@ -32,7 +33,7 @@ export interface Game {
 
 const Game = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    // const [theme, setTheme] = useState({one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9"})
+    const [win, setWin] = useState(true)
     const toast = useToast();
     const ref = useRef(null);
     const router = useRouter()
@@ -49,6 +50,16 @@ const Game = () => {
         gameID: gameSettings.gameID,
     });
 
+    const degage = () => {
+        !toast.isActive("pop") && toast({
+            id: "pop",
+            title: "Achivement",
+            description: win ? "Congrats. You WON a game" : "Bitch. You LOST a game",
+            status:win ? "success" : "error",
+            icon: <FaTrophy/>
+        })
+        router.push("/Lobby")
+    }
 
     const paint = (context: any) => {
         if (game.isGameStarted) {
@@ -151,22 +162,16 @@ const Game = () => {
             game.isGameStarted = false;
             updateUser && updateUser()
             if (game.playerID === room.winner) {
-                // !toast.isActive("pop") && toast({
-                //     id: "pop",
-                //     title: "Congrats. You won this game",
-                //     status:"success"
-                // })
-                setMessage("Congrats. You won this game");
+                setMessage("Congrats. You WON this game");
+                setWin(true)
             }
             else {
-                setMessage("Bitch. You lost this game");
-                // !toast.isActive("pop") && toast({
-                //     id: "pop",
-                //     title: "Bitch, you lost this game",
-                //     status:"warning"
-                // })
+                setMessage("Bitch. You LOST this game");
+                setWin(false)
             }
-            setTimeout(() => router.push("/Lobby"), 30000)
+            setTimeout(() => {
+                degage();
+            }, 30000)
             onOpen()
         });
 
@@ -190,7 +195,7 @@ const Game = () => {
             {/* <p id="messageArea">{message}</p> */}
             <div id="body">
                 <Box backgroundColor="#1D222C" padding="2rem" borderRadius={12}>
-                    <GameHeader themeSetter={setTheme} score={score} playerID={gameSettings.playerID} user={gameSettings.me} opponent={gameSettings.opponent} />
+                    <GameHeader score={score} playerID={gameSettings.playerID} user={gameSettings.me} opponent={gameSettings.opponent} />
                     <canvas id="gameFrame" width={800} height={500} ref={ref} />
                 </Box>
             </div>
@@ -205,7 +210,7 @@ const Game = () => {
                             width={{ base: "150px", md:"200px" }}
                             height={{base: "40px", md: "50px" }}
                             fontSize={{base: "12px", md: "15px"}}
-                            onClick={() => router.push("/Lobby")}
+                            onClick={() => degage()}
                         >Go Back to Lobby</Button>
                     </Stack>
                     </ModalBody>

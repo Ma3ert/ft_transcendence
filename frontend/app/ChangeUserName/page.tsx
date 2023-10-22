@@ -8,6 +8,7 @@ import { AxiosResponse } from 'axios';
 import {FaPen} from "react-icons/fa"
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/hooks/useAuth';
+import { PinInput, PinInputField } from "@chakra-ui/react";
 import {useUpdateCurrentUser} from "@/hooks/useUpdateCurrentUser"
 import Cookies from 'js-cookie';
 import { useQuery, useQueryClient } from 'react-query';

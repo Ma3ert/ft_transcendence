@@ -8,10 +8,9 @@ interface GameHeaderProps {
     user: any;
     opponent: any;
     playerID: number;
-    themeSetter: React.Dispatch<React.SetStateAction<any>>
 }
 
-const GameHeader = ({ themeSetter, score, user, opponent, playerID }: GameHeaderProps) => {
+const GameHeader = ({ score, user, opponent, playerID }: GameHeaderProps) => {
     if (!user || !opponent) return null;
     return (
         <HStack
