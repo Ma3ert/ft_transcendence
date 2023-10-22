@@ -76,23 +76,6 @@ export class NotificationService {
         });
     }
 
-    async readUserNotification(user:string)
-    {
-        await this.prismaService.notification.updateMany({
-            where:{
-                userId:user,
-                OR:[
-                    {type:NotificationType.FRIENDINVITE},
-                    {type:NotificationType.CHANNELINVITE},
-                ],
-                read:false,
-            },
-            data:{
-                read:true,
-            }
-        })
-    }
-
     async checkUserNotification(user:string)
     {
         const   notificationType: Set<NotificationType> = new Set();
@@ -118,32 +101,27 @@ export class NotificationService {
         return userNotificationTypes;   
     }
 
-    // check the chat notification channel/directMessage for a specific user
     async chatNotification(user:string)
     {
         let chatNotif:Set<chatNotification> = new Set();
-        let allNotification:{DM:string[], CM:string[]} = {DM:[], CM:[]};
+        let allNotification: { DM: string[], CM: string[] } = { DM: [], CM: [] };
 
-
-        // get the user notification related to channel/direct messages
         const chatUserNotification = await this.prismaService.notification.findMany({
             where:{
                 userId:user,
                 OR:[
                     {type:NotificationType.CMESSAGE},
-                    {type:NotificationType.DMESSAGE},
+                    { type: NotificationType.DMESSAGE },
                 ],
                 read:false,
             }
         });
-        // get unique of them by pushing them into a set.
         for (const chat of chatUserNotification){
             if (chat.type === NotificationType.CMESSAGE)
                 chatNotif.add(new chatNotification(chat.channelId, NotificationType.CMESSAGE));
             else
                 chatNotif.add(new chatNotification(chat.senderId, NotificationType.DMESSAGE));
         };
-        // filter the result.
         for(const value of chatNotif)
         {
             if (value.type === NotificationType.CMESSAGE)
@@ -156,12 +134,12 @@ export class NotificationService {
         return allNotification;
     }
 
-    // read all channel notificaion for a specific user
     async readChannelNotification(user:string, channel:string){
         await this.prismaService.notification.updateMany({
             where:{
                 userId:user,
-                channelId:channel
+                channelId: channel,
+                read: false,
             },
             data:{
                 read:true,
@@ -169,13 +147,13 @@ export class NotificationService {
         })
     }
 
-    // read all direct message notificaion for a specific user
     async readDirectNotification(user:string, sender:string){
         await this.prismaService.notification.updateMany({
             where:{
                 userId:user,
                 senderId: sender,
-                type:NotificationType.DMESSAGE
+                type: NotificationType.DMESSAGE,
+                read:false,
             },
             data:{
                 read:true,
@@ -183,45 +161,18 @@ export class NotificationService {
         })
     }
 
-    async readChannelInviteNotification(user: string, channelId: string)
-    {
-        const notification = await this.prismaService.notification.findFirst({
+    async readInviteNotification(userId: string) {
+        await this.prismaService.notification.updateMany({
             where: {
-                userId: user,
-                channelId: channelId,
-                type: NotificationType.CHANNELINVITE,
+                userId: userId,
+                OR: [
+                    { type: NotificationType.CHANNELINVITE },
+                    { type: NotificationType.FRIENDINVITE},
+                ],
+            },
+            data: {
+                read: true,
             }
         });
-        if (notification)
-        {
-            await this.prismaService.notification.update({
-                where: {
-                    id: notification.id
-                },
-                data: {
-                    read: true,
-                }
-            });
-        }
-    }
-
-    async readFriendInviteNotification(sender: string, receiver: string) {
-        const notification = await this.prismaService.notification.findFirst({
-            where: {
-                userId: receiver,
-                senderId: sender,
-                type: NotificationType.FRIENDINVITE,
-            }
-        });
-        if (notification) {
-            await this.prismaService.notification.update({
-                where: {
-                    id:notification.id
-                },
-                data: {
-                    read:true,
-                }
-            })
-        }
     }
 }
