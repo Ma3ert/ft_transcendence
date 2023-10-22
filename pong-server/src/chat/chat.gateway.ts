@@ -200,7 +200,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   @SubscribeMessage('typing')
   async typing(client: AuthSocket, data: { userId: string })
   {
-    
+    client.to(data.userId).emit("typing", { userId: client.user.id });
   }
 
   @SubscribeMessage('readInviteNotification')
