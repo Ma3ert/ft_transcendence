@@ -484,7 +484,6 @@ export class ChatService {
                 channelId:channel
             },
         })
-        await this.notificationService.readChannelInviteNotification(user, channel);
     }
 
     async getChannelInvite(channel:string, user:string)

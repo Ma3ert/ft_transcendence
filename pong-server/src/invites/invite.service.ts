@@ -161,7 +161,6 @@ export class InviteService {
       },
     });
 
-    await this.notificationService.readFriendInviteNotification(invite.inviteOwnerId, invite.inviteUserId);
     return await this.prismaService.userInvite.delete({
       where: {
         id: inviteId,
@@ -171,7 +170,6 @@ export class InviteService {
 
   async removeInvite(inviteId: string) {
     const invite: UserInvite = await this.getInviteById(inviteId);
-    await this.notificationService.readDirectNotification(invite.inviteOwnerId, invite.inviteUserId);
     return this.prismaService.userInvite.delete({
       where: {
         id: inviteId,
