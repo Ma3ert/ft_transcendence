@@ -4,6 +4,15 @@
     scrollbar-color: #252932;
   } */
   
+
+#gameFrame {
+    margin-top: 10px;
+    background-color: #252932;
+    border-radius: 10px;
+    border: 1px solid #5B6171;
+    position: relative;
+}
+  
 @font-face {
     font-family: 'visbyRound';
     src: url('/fonts/VisbyRoundCF-Bold.otf') format('truetype');

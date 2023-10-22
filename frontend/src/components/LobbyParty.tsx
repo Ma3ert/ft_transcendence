@@ -31,7 +31,8 @@ const LobbyParty = () => {
   const { setGameSettings } = useGame();
   const [readyness, setReadyness] = useState(false)
   var interval: NodeJS.Timeout;
-
+  
+  useEffect(() => {
   socket.on("onGoingMatch", () => {
       !toast.isActive("pop") && toast({
         id: "pop",
@@ -83,7 +84,7 @@ const LobbyParty = () => {
   });
 
   socket.on("matchMade", ({ data }) => {
-      console.log(data);
+      // console.log(data);
       // setMessage("");
       setOppenent({username: data.username, ready: true})
       setReadyness(true)
@@ -101,7 +102,6 @@ const LobbyParty = () => {
       }, 3000);
   });
 
-  useEffect(() => {
     socket.on("connect", () => {
         if (!socket.connected) {
             // setMessage("Error connecting to the sockets server");
@@ -136,12 +136,12 @@ const LobbyParty = () => {
         <MultiLobbyParty username={currentUser.username} ready={readyness} other={opponent.username} otherReady={opponent.ready} alone={party}/>
         {!shadow && <Image src='/Shadow.png' w={"341px"} h={"auto"}></Image>}
         <Button
-            variant={"primary"}
-            w={"217px"}
-            h={"60px"}
-            fontSize={"25px"}
-            onClick={handleJoinQueue}
-            isDisabled={ready}
+          variant={"primary"}
+          w={"217px"}
+          h={"60px"}
+          fontSize={"25px"}
+          onClick={handleJoinQueue}
+          isDisabled={ready}
         >Ready</Button>
     </Stack>
   )

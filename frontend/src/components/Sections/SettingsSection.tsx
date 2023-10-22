@@ -5,6 +5,7 @@ import PasswordSetting from "../PasswordSetting";
 import UserSetting from "../UserSetting";
 import UserProfileModal from "../ChatComponents/UserProfileModal";
 import { useAuth } from "@/hooks/useAuth";
+import { GameSetting } from "../GameSetting";
 interface SettingsSectionProps {}
 const SettingsSection: React.FC<SettingsSectionProps> = ({}) => {
   const { settingsSection } = useContext(AppNavigationContext);
@@ -23,10 +24,11 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({}) => {
           <UserSetting></UserSetting>
         // </Stack>
       ) : (
-        <Stack maxW='60vw' justifyContent='center' alignItems='center'>
-          /// game settings 
-          <Text color='#5B6171'>Game Settings</Text>
-          </Stack>
+          <GameSetting/>
+        // <Stack maxW='60vw' justifyContent='center' alignItems='center'>
+        //   /// game settings 
+        //   <Text color='#5B6171'>Game Settings</Text>
+        //   </Stack>
       )}
     </Stack>
   );

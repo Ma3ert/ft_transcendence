@@ -16,12 +16,15 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
 
   const router = useRouter();
-  const {currentUser, updateUser} = useAuth()
+  const { socket } = useContext(GlobalContext);
+  const { currentUser, updateUser } = useAuth()
+
   if (!currentUser)
   router.push("/");
 
   const handleLogout = () => {
     router.push("http://localhost:3000/auth/42/logout");
+    socket.emit("userLoggedOut");
   }
 
   return (
