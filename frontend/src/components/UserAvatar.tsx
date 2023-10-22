@@ -18,13 +18,14 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   action,
   active,
 }) => {
+  const avatar = user?.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user!.avatar;
   return (
     <Avatar
       transform={active ? "scale(1.1)" : "scale(1)"}
       borderRadius={isChannel ? "15px" : "full"}
       onClick={action}
       size={size}
-      src={isChannel ? `http://localhost:3000/${channel!.avatar}` : user.avatar}
+      src={isChannel ? `http://localhost:3000/${channel!.avatar}` : avatar}
       _hover={{
         opacity: 0.8,
         transition: "all 0.2s ease-in-out",

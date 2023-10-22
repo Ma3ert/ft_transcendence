@@ -3,6 +3,7 @@ import ScrollableStack from "../ScrollableStack";
 import { useAuth } from "@/hooks/useAuth";
 import { GameField, LargeGameInfo } from "./UserProfileModal";
 import { AiOutlineHistory } from "react-icons/ai";
+import { ReactNode } from "react";
 
 interface Props {}
 const GameHistory: React.FC<Props> = ({}) => {
@@ -17,29 +18,21 @@ const GameHistory: React.FC<Props> = ({}) => {
         </Text>
       </HStack>
       <HStack>
-        <LargeGameInfo title="Wins" info="16" />
-        <LargeGameInfo title="Losses" info="15" />
-        <LargeGameInfo title="Total Games" info="100" />
+        <LargeGameInfo title="Wins" info={currentUser.numberOfLost} />
+        <LargeGameInfo title="Losses" info={currentUser.numberOfWon} />
+        <LargeGameInfo title="Total Games" info={currentUser.totalGames} />
       </HStack>
       <ScrollableStack h="50vh" yPadding={2}>
-        <GameField
-          firstUser={currentUser!}
-          secondUser={currentUser!}
-          firstScore={1}
-          secondScore={2}
-        />
-        <GameField
-          firstUser={currentUser!}
-          secondUser={currentUser!}
-          firstScore={1}
-          secondScore={2}
-        />
-        <GameField
-          firstUser={currentUser!}
-          secondUser={currentUser!}
-          firstScore={1}
-          secondScore={2}
-        />
+        {
+          currentUser.games.map((match: any) => {
+            return <GameField firstUser={currentUser.user} 
+              secondUser={match.opponent}
+              firstScore={match.score}
+              secondScore={match.opponentScore}
+              won={match.won}
+            />
+          })
+        }
       </ScrollableStack>
     </Stack>
   );

@@ -170,7 +170,8 @@ const Game = () => {
                 setWin(false)
             }
             setTimeout(() => {
-                degage();
+                // degage();
+                router.push("/Lobby")
             }, 30000)
             onOpen()
         });
