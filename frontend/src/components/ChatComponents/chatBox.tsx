@@ -70,7 +70,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
         py={2}
       >
         <UserChannelHeader status={"online"} />
-        {chatType == PRIVATE && <OptionsMenu color='#5B6171' user={activePeer!} />}
+        {chatType == PRIVATE && <OptionsMenu  user={activePeer!} />}
       </HStack>
       <MessageStack />
       <Stack w={"100%"} alignItems={"center"}>

@@ -28,7 +28,6 @@ const UserProfileNavbar:React.FC<UserProfileNavbarProps> = ({user}) => {
             fontSize="22px"
           />
          
-        <OptionsMenu color='#5B6171' user={user!} />
         </HStack>
     )
 }

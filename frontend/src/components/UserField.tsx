@@ -20,15 +20,12 @@ import { useAuth } from "@/hooks/useAuth";
 interface Props {
   user: User;
   member?: Member;
-  userRole?: string;
-  loggedInUserRole?: string;
+  MembersList?: Member[];
 }
 
-const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}) => {
-  const { setCurrentSection, currentSection } =
-    useContext(AppNavigationContext);
-  const { setCurrentChat, chatType } = useContext(ChatContext);
-  const { setActivePeer, friendsList} = useContext(UsersContext);
+const UserField: React.FC<Props> = ({ user, member, MembersList}) => {
+ 
+const {friendsList} = useContext(UsersContext);
   const {currentUser} = useAuth ();
   const { userIsBlocked } = useUserStatus(user);
 
@@ -57,7 +54,6 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}
             <UserFieldNav
               member={member!}
               user={user!}
-              userRole={userRole!}
               friendsList={friendsList!}
             />
           )}
@@ -65,9 +61,7 @@ const UserField: React.FC<Props> = ({ user, userRole, loggedInUserRole , member}
             <OptionsMenu
               member={member!}
               user={user!}
-              loggedInUserRole={loggedInUserRole!}
-              userRole={userRole!}
-              userIsBlocked={userIsBlocked}
+              MembersList={MembersList!}
             />
           )}
         </HStack>

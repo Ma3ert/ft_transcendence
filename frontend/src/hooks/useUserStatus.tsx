@@ -4,8 +4,6 @@ import { useQuery } from "react-query";
 
 const useUserStatus = (user:User) => {
 
-    const [userIsOnline, setUserIsOnline] = useState(false);
-    const [userIsAway, setUserIsAway] = useState(false);
     const [userIsBlocked, setUserIsBlocked] = useState(false);
     const userIsBlockedClient = (userid:string) => new apiClient (`/users/block/${userid}`)
 

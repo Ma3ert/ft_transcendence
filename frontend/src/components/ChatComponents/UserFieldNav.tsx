@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 interface UserFieldNavProps {
   member?:Member
   user: User;
-  userRole: string;
   friendsList: User[];
 }
 
@@ -31,9 +30,9 @@ const GetMemberStatus = (member:Member) => {
 
 }
 
-const UserFieldNav:React.FC<UserFieldNavProps> = ({user, friendsList, member}) => {
+const UserFieldNav:React.FC<UserFieldNavProps> = ({user, member}) => {
   
-    const {setActivePeer} = useContext(UsersContext)
+    const {setActivePeer, friendsList} = useContext(UsersContext)
     const {setCurrentChat} = useContext(ChatContext)
     const router = useRouter ()    
 

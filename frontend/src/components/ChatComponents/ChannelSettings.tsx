@@ -25,6 +25,7 @@ import EditeChannel, {VisibilityPopOver} from "./EditeChannel";
 import ChannelsListSection from "../Sections/ChannelsListSection";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
+import InviteMultipleToChannel from "./InviteMultipleToChannel";
 interface ChannelSettingsProps {
 }
 
@@ -147,14 +148,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           buttonVariant="largePrimary"
           isOption={false}
         />
-        <Button
-          colorScheme="darkGhost"
-          color={"#5B6171"}
-          borderRadius={"2xl"}
-          _hover={{ opacity: 0.8 }}
-        >
-          Envite
-        </Button>
+       <InviteMultipleToChannel Members={members} channel={activeChannel!} /> 
       </Stack>
     </Stack>
   );

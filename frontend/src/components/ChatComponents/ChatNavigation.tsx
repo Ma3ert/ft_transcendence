@@ -120,7 +120,6 @@ const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
-        color="#5B6171"
         onClick={() => {
           setCurrentChat!(!chatType);
         }}
