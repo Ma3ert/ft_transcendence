@@ -1,5 +1,7 @@
-import { HStack, Heading, Avatar, VStack, Icon } from "@chakra-ui/react";
+import { HStack, Heading, Avatar, VStack, Icon, Box } from "@chakra-ui/react";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
+import IconButton from "../IconButton";
+import { ThemeCircle } from "../ThemeCircle";
 
 interface GameHeaderProps {
     score: any;
@@ -35,6 +37,10 @@ const GameHeader = ({ score, user, opponent, playerID }: GameHeaderProps) => {
                     </HStack>
                 </VStack>
             </HStack>
+            {/* <HStack>
+                <ThemeCircle left={"#DC585B"} right={"#D9D9D9"} size={"20px"} onClick={() => themeSetter({one: "#D9D9D9", two: "#DC585B", ball: "#D9D9D9"})}/>
+                <ThemeCircle left={"#5B6171"} right={"#252932"} size={"20px"} onClick={() => themeSetter({one: "#252932", two: "#5B6171", ball: "#DC585B"})}/>
+            </HStack> */}
             <HStack>
                 {opponent.avatar && <Avatar src={opponent.avatar || ""} border="1px solid #D9D9D9" />}
                 <VStack alignItems="flex-start" gap={1} width="120px">
