@@ -46,7 +46,9 @@ export const GameSetting = ({}) => {
                             w={{ base: "15px", lg: "20px" }}
                             h={{ base: "50px", lg: "60px" }}
                             borderRadius={"20px"}
-                            bg={"#1D222C"}/>
+                            bg={"#1D222C"}
+                            border={"1px solid #5b6171"}
+                            />
                         <Spacer/>
                         <Box boxSize={"20px"} bg={"#DC585B"} borderRadius={"full"}/>
                         <Spacer/>
@@ -54,7 +56,9 @@ export const GameSetting = ({}) => {
                             w={{ base: "15px", lg: "20px" }}
                             h={{ base: "50px", lg: "60px" }}
                             borderRadius={"20px"}
-                            bg={"#5B6171"}/>
+                            bg={"#5B6171"}
+                            border={"1px solid #1D222C"}
+                            />
                     </Flex>
                 </Stack>
             </Button>

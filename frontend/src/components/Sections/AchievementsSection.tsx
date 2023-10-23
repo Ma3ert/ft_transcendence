@@ -7,9 +7,11 @@ import UserRankField from '../UserRankField';
 import { useQuery } from 'react-query';
 import apiClient from '@/services/requestProcessor';
 import { AxiosResponse } from 'axios';
+import { useAuth } from '@/hooks/useAuth';
 interface AchievementsSectionsProps {}
 const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
     const client = new apiClient("/users/rank")
+    const {currentUser, updateUser} = useAuth();
     const [localRank, setLocal] = useState<ReactNode[]>([])
     const [allRank, setAll] = useState<ReactNode[]>([])
     // <UserRankField userPic='' userName='ma3ert'></UserRankField>
@@ -22,7 +24,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             const localRes: ReactNode[] = [];
             res.data.current.ranks.map((user: any) => {
                 user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar
-                localRes.push(<UserRankField rank={user.order} userName={user.username} 
+                const variant = user.id === currentUser.user.id ? "secondField" : "field"
+                localRes.push(<UserRankField variant={variant} rank={user.order} userName={user.username} 
                 userPic={user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar}/>)
             })
             setLocal(localRes)
@@ -38,7 +41,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             const allRes: ReactNode[] = [];
             res.data.current.ranks.map((user: any) => {
                 user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar
-                allRes.push(<UserRankField rank={user.order} userName={user.username} 
+                const variant = user.id === currentUser.user.id ? "secondField" : "field"
+                allRes.push(<UserRankField variant={variant} rank={user.order} userName={user.username} 
                 userPic={user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar}/>)
             })
             setAll(allRes)
