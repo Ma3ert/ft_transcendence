@@ -26,3 +26,5 @@ export const DmContext = createContext<DmContext>({});
 export const CmContext = createContext<CmContext>({});
 export const MembersContext = createContext<MembersContext>({});
 export const GameContext = createContext<GameContextType>({} as GameContextType);
+export const InvitesContext = createContext<InvitesContext>({});
+export const UserStatusContext = createContext<UserStatusContext>({});

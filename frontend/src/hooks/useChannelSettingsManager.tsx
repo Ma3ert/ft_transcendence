@@ -5,6 +5,7 @@ import { useSuccess, useFailure } from "./useAlerts";
 import { useQueryClient } from "react-query";
 import { ChannelsContext } from "@/context/Contexts";
 import { useContext } from "react";
+import { AppNavigationContext } from "@/context/Contexts";
 
 const useChannelSettingsManager = () => {
   const upgradeUserClient = (user: UserChannel) =>
@@ -20,6 +21,8 @@ const useChannelSettingsManager = () => {
   const Failure = useFailure();
   const queryClient = useQueryClient();
   const { activeChannel } = useContext(ChannelsContext);
+  const {setFriendsSection} = useContext (AppNavigationContext)
+
 
   const sendChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
@@ -41,6 +44,7 @@ const useChannelSettingsManager = () => {
       console.log(data);
       queryClient.invalidateQueries("channels");
       queryClient.invalidateQueries("channelReceivedEnvites");
+      setFriendsSection!("channels")
       toast(Success("Envite to channel accepted"));
     },
     onError: (error) => {

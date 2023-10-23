@@ -18,8 +18,6 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [chatNotifications, setChatNotifications] = useState<boolean>(false);
   const [inviteNotifications, setInviteNotifications] =
     useState<boolean>(false);
-  const [userStatus, setUserStatus] = useState<string>("");
-  
   const allUsersClient = new apiClient("/users");
   const { socket } = useContext(GlobalContext);
   const listen = useEventHandler(socket);
@@ -54,11 +52,11 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     socket!.on("checkNotification", (message: checkNotification) => {
         setChatNotifications!(message.data.chat);
         setInviteNotifications!(message.data.invites);
-        console.log("notifications");
+        console.log("notifications ???????");
         console.log(message);
       });
     }
-  }, [socket]);
+  }, [socket, chatNotifications, inviteNotifications]);
 
   return (
     <UsersContext.Provider
@@ -73,9 +71,6 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         setChatNotifications,
         inviteNotifications,
         setInviteNotifications,
-        userStatus,
-        setUserStatus,
-
       }}
     >
       {children}

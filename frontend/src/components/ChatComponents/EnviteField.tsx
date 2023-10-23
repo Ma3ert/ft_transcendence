@@ -65,7 +65,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
                 }else{
                   AcceptFriendRequest(envite.enviteId)
                 }
-              }} as={CheckIcon} fontSize={'20px'} _hover={{transform:'scale(1.1)'}}/>
+              }} as={CheckIcon} fontSize={'18px'} _hover={{transform:'scale(1.1)', color:'green.400'}}/>
             )}
             <Icon onClick={()=>{
               if(envite.isChannelEnvite){
@@ -77,7 +77,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
               }else{
                 DeleteFriendRequest(envite.enviteId)
               }
-            }} as={CloseIcon} fontSize={'20px'} _hover={{transform:'scale(1.1)'}}/>
+            }} as={CloseIcon} fontSize={'18px'} _hover={{transform:'scale(1.1)', color:'#DC585B'}}/>
           </HStack>
         ) : (
           <Text>pending</Text>

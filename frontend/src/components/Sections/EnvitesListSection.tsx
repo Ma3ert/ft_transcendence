@@ -14,104 +14,26 @@ import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import EnviteField from "../ChatComponents/EnviteField";
 import { useContext, useEffect } from "react";
-import { UsersContext, ChannelsContext } from "@/context/Contexts";
+import { UsersContext, ChannelsContext, GlobalContext, InvitesContext } from "@/context/Contexts";
+import { useAuth } from "@/hooks/useAuth";
 
 
-const  getGlobalChannelEnvites = (envites: ChannelEnvite[]) => {
 
-  const response: GlobalEnvite[] = envites.map((envite) => ({
-    isChannelEnvite: true,
-    enviteId: envite.id,
-    senderId: envite.sender,
-    receiverId: envite.receiver, // Add receiverId property
-    createdAt: envite.created_at,
-    channel: envite.channel,
-  }));
 
-  return response;
-}
-
-const getGlobalFriendsEnvites = (envites: Envite[]) => {
-
-  const response :GlobalEnvite[] = envites.map((envite) => ({
-    isChannelEnvite: false,
-    enviteId: envite.id,
-    senderId: envite.inviteOwnerId,
-    receiverId: envite.inviteUserId, // Add receiverId property
-    createdAt: envite.createdAt,
-  }));
-  return response
-}
 
 const EnvitesListSection: React.FC = () => {
-  const { loggedInUser } =
-    useContext(UsersContext);
-  const channelReceivedEnvitesClient = new apiClient(
-    "/chat/channels/invites/recieved/"
-  );
-  const channelSentEnvitesClient = new apiClient("/chat/channels/invites/sent");
-  const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]>([]);
-  const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]>([]);
-  const recievedClient = new apiClient("/invites/received");
-  const sentClient = new apiClient("/invites/sent");
-
-  useQuery("recievedEnvites", {
-    queryFn: async () => recievedClient.getData().then((data) => data.data),
-    onSuccess: (response: any) => {
-      if (!recievedEnvites.find((envite) => envite.enviteId === response.data.id))
-        setRecievedEnvites([...recievedEnvites, ...getGlobalFriendsEnvites(response.data)]);
-    },
-    onError: (error) => {
-      // console.log(error);
-    },
-  });
-
-  useQuery("sentEnvites", {
-    queryFn: async () => sentClient.getData().then((data) => data.data),
-    onSuccess: (response: any) => {
-      // console.log(`sent envites : ${response}`);
-      // console.table (response)
-      if (!sentEnvites.find((envite) => envite.enviteId === response.data.id))
-        setSentEnvites([...sentEnvites, ...getGlobalFriendsEnvites(response.data)]);
-    },
-    onError: (error) => {
-      // console.log(error);
-    },
-  });
+  const {socket} = useContext (GlobalContext)
+  const {currentUser} = useAuth ()
+  const {friendRecieved, friendSent, channelRecieved, channelSent} = useContext (InvitesContext)
+  const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]> ([...friendRecieved!, ...channelRecieved!]);
+  const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]> ([...friendSent!, ...channelSent!]);
   
-useQuery ('channelReceivedEnvites', {
-    queryFn: () => channelReceivedEnvitesClient.getData().then(res => res.data),
-    onSuccess: (data:any) => {
-      if (data && data.length)
-      {
-        if (!recievedEnvites.find((envite) => envite.enviteId === data.channel!.id))
-          setRecievedEnvites([...recievedEnvites, ...getGlobalChannelEnvites(data)])
-      }
-      // console.log ('channel envites')
-      // console.table (data)
-    },
-    onError: (err) => {
-        // console.log(err)
-    }
-})    
-useQuery ('channelSentEnvites', {
-  queryFn: () => channelSentEnvitesClient.getData().then(res => res.data),
-  onSuccess: (data:any) => {
-    if (data && data.length)
-    {
-      if ( !sentEnvites.find((envite) => envite.enviteId === data.channel!.id))
-        setSentEnvites([...sentEnvites, ...getGlobalChannelEnvites(data)])
-    }
-      // console.log ('channel envites')
-      // console.table (data)
-  },
-  onError: (err) => {
-      // console.log(err)
-  }
-})
 
   useEffect(() => {
-  }, [recievedEnvites, sentEnvites]);
+    socket!.emit ("readInviteNotification", {
+      userId: currentUser!.id
+    })
+  }, [friendRecieved, friendSent, channelRecieved, channelSent]);
   return (
     <Stack
       fontFamily={"visbyRound"}

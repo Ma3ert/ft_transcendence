@@ -1,4 +1,8 @@
-import { AppNavigationContext, ChatContext, UsersContext } from "@/context/Contexts";
+import {
+  AppNavigationContext,
+  ChatContext,
+  UsersContext,
+} from "@/context/Contexts";
 import { Tabs, TabList, Tab, Wrap, Text, Icon } from "@chakra-ui/react";
 import { useContext } from "react";
 import { FaUserPlus, FaMedal, FaTrophy } from "react-icons/fa";
@@ -19,9 +23,11 @@ interface TabsTogglerWrapperProps extends TabsWrapperProps {
   section: string;
 }
 
-const Toggler: React.FC<TabsTogglerWrapperProps> = ({ tabs, type, section }) => {
-
-
+const Toggler: React.FC<TabsTogglerWrapperProps> = ({
+  tabs,
+  type,
+  section,
+}) => {
   const getCurrentIndex = () => (section === "home" ? 0 : 1);
   return (
     <ControlledTabsContainer
@@ -74,15 +80,18 @@ const ControlledTabsContainer: React.FC<ControlledTabsContainer> = ({
   );
 };
 
-
-
-const getCurrentSection = (path:string) =>{
-  return path.split('/')[1].toLowerCase()
-}
+const getCurrentSection = (path: string) => {
+  return path.split("/")[1].toLowerCase();
+};
 
 const TabsWrapper: React.FC = () => {
-  const {setFriendsSection, setAchievementsSection, setSettingsSection, setStatsSection} = useContext (AppNavigationContext)
-  const {chatNotifications, inviteNotifications} = useContext(UsersContext);
+  const {
+    setFriendsSection,
+    setAchievementsSection,
+    setSettingsSection,
+    setStatsSection,
+  } = useContext(AppNavigationContext);
+  const { chatNotifications, inviteNotifications } = useContext(UsersContext);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -98,7 +107,7 @@ const TabsWrapper: React.FC = () => {
   ];
   const FriendsTabs: Tab[] = [
     {
-      value: <Icon as={FaUserPlus} style={{ fontSize: "23px" }}  />,
+      value: <Icon as={FaUserPlus} style={{ fontSize: "23px" }} />,
       action: () => setFriendsSection && setFriendsSection("friends"),
     },
     {
@@ -108,7 +117,7 @@ const TabsWrapper: React.FC = () => {
     {
       value: <Icon as={FaBell} style={{ fontSize: "23px" }} />,
       action: () => setFriendsSection && setFriendsSection("requests"),
-    }
+    },
   ];
   const AchievementsTabs: Tab[] = [
     {
@@ -129,25 +138,22 @@ const TabsWrapper: React.FC = () => {
     },
     {
       value: <Icon as={FaGamepad} style={{ fontSize: "23px" }} />,
-      action: () =>
-        setSettingsSection && setSettingsSection("userProfile"),
+      action: () => setSettingsSection && setSettingsSection("userProfile"),
     },
   ];
 
   const StatsTabs: Tab[] = [
     {
       value: <Icon as={IoStatsChart} style={{ fontSize: "23px" }} />,
-      action: () =>
-        setStatsSection  && setStatsSection ("stats"),
+      action: () => setStatsSection && setStatsSection("stats"),
     },
     {
       value: <Icon as={AiOutlineHistory} style={{ fontSize: "23px" }} />,
-      action: () =>
-        setStatsSection  && setStatsSection ("history"),
+      action: () => setStatsSection && setStatsSection("history"),
     },
   ];
-  const section = getCurrentSection(pathname)
-  console.log ('section : ', section )
+  const section = getCurrentSection(pathname);
+  console.log("section : ", section);
   return (
     <Wrap
       w="100%"
@@ -156,29 +162,38 @@ const TabsWrapper: React.FC = () => {
       justifyContent="center"
       alignItems="center"
     >
-      {
-        (() => {
-          switch (section) {
-            case "lobby":
-              return (
-                <NotificationWrapper type='activeChat' status={chatNotifications!}>
-                  <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
-                </NotificationWrapper>
-              );
-            case "chat":
-              return <Toggler section={section} tabs={ChatLobbyTabs} type={true} />;
-            case "friends":
-              return <Toggler section={section} tabs={FriendsTabs} type={true} />;
-            case "achievements":
-              return <Toggler section={section} tabs={AchievementsTabs} type={true} />;
-            case "settings":
-              return <Toggler section={section} tabs={SettingsTabs} type={true} />;
-            case "stats":
-              return <Toggler section={section} tabs={StatsTabs} type={true} />;
-            default:
-              return <Toggler section={section} tabs={ChatLobbyTabs} type={false} />;
-          }
-        })()}
+      {(() => {
+        switch (section) {
+          case "lobby":
+            return (
+              <NotificationWrapper status={chatNotifications!}>
+                <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
+              </NotificationWrapper>
+            );
+          case "chat":
+            return (
+              <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
+            );
+          case "friends":
+            return (<NotificationWrapper status={inviteNotifications!}>
+              <Toggler section={section} tabs={FriendsTabs} type={true} />;
+            </NotificationWrapper>);
+          case "achievements":
+            return (
+              <Toggler section={section} tabs={AchievementsTabs} type={true} />
+            );
+          case "settings":
+            return (
+              <Toggler section={section} tabs={SettingsTabs} type={true} />
+            );
+          case "stats":
+            return <Toggler section={section} tabs={StatsTabs} type={true} />;
+          default:
+            return (
+              <Toggler section={section} tabs={ChatLobbyTabs} type={false} />
+            );
+        }
+      })()}
     </Wrap>
   );
 };
