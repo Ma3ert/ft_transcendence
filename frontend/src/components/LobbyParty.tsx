@@ -1,4 +1,4 @@
-import { Button, Image, Stack, useBreakpointValue, useToast } from '@chakra-ui/react'
+import { Button, Grid, GridItem, Image, Stack, useBreakpointValue, useToast } from '@chakra-ui/react'
 import React from 'react'
 import SoloLobbyParty from './SoloLobbyParty';
 import MultiLobbyParty from './MultiLobbyParty';
@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useState, useEffect } from 'react';
 import useGame from '@/hooks/useGame';
 import axios from 'axios';
+import ProgressLevel from './ProgressLevel';
 
 type Props = {
   username: string;
@@ -19,6 +20,7 @@ type Props = {
 
 const LobbyParty = () => {
   const shadow = useBreakpointValue({base: true, xl: false})
+  const mobile = useBreakpointValue({base: true, md: false})
   const {currentUser, updateUser} = useAuth();
   const toast = useToast();
   const [party, setPartyState] = useState(true);
@@ -93,7 +95,7 @@ const LobbyParty = () => {
       setGameSettings({
         gameID: data.session,
         playerID: data.playerID,
-        me: { username: currentUser.username, avatar: currentUser.avatar },
+        me: { username: currentUser.user.username, avatar: currentUser.user.avatar },
         opponent: { username: data.username, avatar: data.avatar },
       });
       setTimeout(() => {
@@ -132,18 +134,29 @@ const LobbyParty = () => {
   };
 
   return (
-    <Stack spacing={{base: "40px", xl: "52px" }} align={"center"}>
-        <MultiLobbyParty username={currentUser.username} ready={readyness} other={opponent.username} otherReady={opponent.ready} alone={party}/>
-        {!shadow && <Image src='/Shadow.png' w={"341px"} h={"auto"}></Image>}
+    <Grid  templateColumns={"repeat(8, 1fr)"} placeItems="center">
+      <GridItem colSpan={{ base: 8, lg: 2 }}>
+        <ProgressLevel/>
+      </GridItem>
+
+      <GridItem colSpan={{ base: 8, lg: 4 }} justifyContent={"center"}>
+        <Stack spacing={{base: "40px", xl: "52px" }} align={"center"}>
+            <MultiLobbyParty username={currentUser.user.username} ready={readyness} other={opponent.username} otherReady={opponent.ready} alone={party}/>
+            {!shadow && <Image src='/Shadow.png' w={"341px"} h={"auto"}></Image>}
+        </Stack>
+      </GridItem>
+
+      {!mobile && <GridItem colSpan={{ base: 8, lg: 2 }} justifyContent={"center"}>
         <Button
           variant={"primary"}
-          w={"217px"}
+          w={{base: "150px", md: "150px", lg: "217px" }}
           h={"60px"}
           fontSize={"25px"}
           onClick={handleJoinQueue}
           isDisabled={ready}
-        >Ready</Button>
-    </Stack>
+          >Ready</Button>
+      </GridItem>}
+    </Grid>
   )
 }
 

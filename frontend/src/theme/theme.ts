@@ -401,10 +401,20 @@ const ButtonStyle: ComponentStyleConfig = {
         bg: "#5B6171",
         color: "#1D222C",
       },
-      // _active: {
-        //   transform: "scale(1.03)"
-        // }
       },
+    secondField: {
+        background: "#DC585B",
+        color: "#d9d9d9",
+        px: "0px",
+        margin: "0px",
+        borderRadius: "15px",
+        fontFamily: "visbyRound",
+        _hover: {
+          borderRadius: "15px",
+          bg: "#d9d9d9",
+          color: "#DC585B",
+        },
+        },
     },
   };
 

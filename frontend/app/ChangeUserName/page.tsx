@@ -33,13 +33,13 @@ export default function Home() {
   const twoFaClient = new apiClient("/auth/twoFactor")
   const {currentUser, updateUser} = useAuth();
   console.log("current User: ", currentUser);
-  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.avatar : "")
-  // const [retry, setRetry] = useState(5 - currentUser.twoFactorRetry);
+  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.user.avatar : "")
+  // const [retry, setRetry] = useState(5 - currentUser.user.twoFactorRetry);
   const [value, setValue] = useState("");
   const first = useRef<any>(null);
 
   useEffect(() => {
-    if (pin.length === 6 && (5 - currentUser.twoFactorRetry))
+    if (pin.length === 6 && (5 - currentUser.user.twoFactorRetry))
     {
 
       twoFaClient.postData({"pin": pin} ,"").then((res) => 
@@ -51,21 +51,21 @@ export default function Home() {
         setPin("");
         setValue("")
         updateUser && updateUser()
-        // setRetry(5 - currentUser.twoFactorRetry)
+        // setRetry(5 - currentUser.user.twoFactorRetry)
         first.current && first.current.focus()
       })
     }
   }, [pin])
 
   useEffect(() => {
-    if (currentUser && currentUser.twoFactor && !currentUser.pinValidated)
+    if (currentUser && currentUser.user.twoFactor && !currentUser.user.pinValidated)
     {
       console.log("I sent it again");
       twoFaClient.getData("").then(() => (onOpen()))
     }
   }, [])
 
-  if (currentUser && currentUser.activated && !currentUser.twoFactor && !currentUser.pinValidated)
+  if (currentUser && currentUser.user.activated && !currentUser.user.twoFactor && !currentUser.user.pinValidated)
     router.push("/Lobby")
 
   const handleSkip = () => {
@@ -159,14 +159,14 @@ export default function Home() {
                         />
                     </PinInput>
                 </Wrap>
-                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + (5 - currentUser.twoFactorRetry).toString() + " retry"}</Text>
-                {!(5 - currentUser.twoFactorRetry) &&  !toast.isActive("toast") && toast({id: "toast", title: "you exceeded the limit of retries contact admin (they won't answer btw)", status: 'error', isClosable: false,})
+                <Text fontSize={"15px"} color={"#5B6171"}>{"you still have " + (5 - currentUser.user.twoFactorRetry).toString() + " retry"}</Text>
+                {!(5 - currentUser.user.twoFactorRetry) &&  !toast.isActive("toast") && toast({id: "toast", title: "you exceeded the limit of retries contact admin (they won't answer btw)", status: 'error', isClosable: false,})
                 && <Text fontSize={"15px"} color={"#DC585B"}></Text>}
               </Stack>
             </ModalBody>
           </ModalContent>
         </Modal>
-        {currentUser && !currentUser.twoFactor &&
+        {currentUser && !currentUser.user.twoFactor &&
         <>
           <Logo src='/logo.png' width="334px" height="179px"></Logo>
           <form onSubmit={handleOnSubmit}>
@@ -198,7 +198,7 @@ export default function Home() {
                   variant={"default"}
                   w={{ base: "280px", lg: "340px" }}
                   h={{ base: "50px",lg: "66px" }}
-                  placeholder={currentUser ? currentUser.username : "new username"}/>
+                  placeholder={currentUser ? currentUser.user.username : "new username"}/>
                 <Stack align={"center"} spacing={{base: "6px", lg:"8px" }}>
                   <Button
                     fontSize={{base: "15px", lg: "20px" }}
