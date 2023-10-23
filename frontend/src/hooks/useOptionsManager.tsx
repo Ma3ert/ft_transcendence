@@ -20,7 +20,7 @@ const useOptionsManager = (
   const {currentSection} = useContext(AppNavigationContext);
   const {chatType} = useContext(ChatContext);
   const {currentUser} = useAuth ();
-  const currentUserRole = MembersList! ?  getUserRole (currentUser!, MembersList!) : undefined
+  const currentUserRole = MembersList! ?  getUserRole (currentUser!.user!, MembersList!) : undefined
 
   console.log ('current user role : ', currentUserRole)
   console.log ('member : ', Member)

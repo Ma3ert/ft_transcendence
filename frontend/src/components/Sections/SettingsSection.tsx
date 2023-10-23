@@ -9,7 +9,6 @@ import { GameSetting } from "../GameSetting";
 interface SettingsSectionProps {}
 const SettingsSection: React.FC<SettingsSectionProps> = ({}) => {
   const { settingsSection } = useContext(AppNavigationContext);
-  const {currentUser }  = useAuth ()
   return (
     <Stack
       w="100%"

@@ -35,7 +35,7 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
     setSocket!(socket);
     socket.on("connect", () => {
       console.log("client connected");
-      NotifyServer(socket, "userLoggedIn", currentUser);
+      NotifyServer(socket, "userLoggedIn", currentUser!.user!);
       socket.on("disconnect", () => {
         console.log("client disconnected");
       });

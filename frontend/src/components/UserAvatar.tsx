@@ -18,7 +18,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   action,
   active,
 }) => {
-  const avatar = user?.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user!.avatar;
+  const avatar:string = isChannel ? (user?.avatar.includes("http") ? user!.avatar : "http://localhost:3000/public/users/imgs/" + user!.avatar) : '';
   return (
     <Avatar
       transform={active ? "scale(1.1)" : "scale(1)"}

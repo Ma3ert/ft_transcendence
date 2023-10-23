@@ -23,14 +23,14 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
   }, []);
   return (
     <HStack
-      justify={gameInviteSender !== currentUser!.id ? "end" : "start"}
+      justify={gameInviteSender !== currentUser!.user!.id ? "end" : "start"}
       w="98%"
       mx="auto"
       spacing={3}
     >
       <Stack
         borderRadius={"2xl"}
-        bg={gameInviteSender !== currentUser!.id ? "#252932" : "#5B6171"}
+        bg={gameInviteSender !== currentUser!.user!.id ? "#252932" : "#5B6171"}
         minW={"300px"}
         maxW="100%"
         px={2}
@@ -42,7 +42,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
         <HStack spacing={5}>
           <Image
             src={
-              gameInviteSender !== currentUser!.id
+              gameInviteSender !== currentUser!.user!.id
                 ? "/LightSolidLogo.png"
                 : "/DarkSolidLogo.png"
             }
@@ -53,32 +53,32 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
           <Stack justify={"center"} alignItems={"center"} p={2}>
             <Text
               color={
-                gameInviteSender !== currentUser!.id ? "#5B6171" : "#1D222C"
+                gameInviteSender !== currentUser!.user!.id ? "#5B6171" : "#1D222C"
               }
               fontSize={"sm"}
               fontWeight={"bold"}
             >
-              {gameInviteSender !== currentUser!.id
+              {gameInviteSender !== currentUser!.user!.id
                 ? activePeer!.username
                 : "you"}{" "}
               Looking for a 1v1 ..
             </Text>
             <Button
-              isDisabled={gameInviteSender === currentUser!.id}
+              isDisabled={gameInviteSender === currentUser!.user!.id}
               onClick={() => {
                 /// accept game invite
                 /// decline game inviate
                 setJoinGameStatus!(false);
               }}
               variant={
-                gameInviteSender !== currentUser!.id ? "lightGray" : "darkGray"
+                gameInviteSender !== currentUser!.user!.id ? "lightGray" : "darkGray"
               }
             >
               {`let's go`}
             </Button>
           </Stack>
         </HStack>
-      <TimerComponent bg={gameInviteSender !== currentUser!.id ? "#5B6171" : "#1D222C"}/>
+      <TimerComponent bg={gameInviteSender !== currentUser!.user!.id ? "#5B6171" : "#1D222C"}/>
       </Stack>
     </HStack>
   );

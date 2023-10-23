@@ -27,6 +27,7 @@ const GameHistory: React.FC<Props> = ({}) => {
         {
           currentUser.games.toReversed().map((match: any) => {
             return <GameField firstUser={currentUser.user} 
+              key={match.id}
               secondUser={match.opponent}
               firstScore={match.score}
               secondScore={match.opponentScore}

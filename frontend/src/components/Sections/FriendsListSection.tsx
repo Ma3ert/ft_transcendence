@@ -13,7 +13,6 @@ interface FriendsListProps {}
 
 const FriendsListSection: React.FC<FriendsListProps> = ({}) => {
   const [usersList, setUsersList] = useState<User[]>([]);
-  const {currentUser}= useAuth ()
   const {friendsList} = useContext(UsersContext)
   const queryClient = useQueryClient ()
  

@@ -31,7 +31,7 @@ const EnvitesListSection: React.FC = () => {
 
   useEffect(() => {
     socket!.emit ("readInviteNotification", {
-      userId: currentUser!.id
+      userId: currentUser!.user.id
     })
   }, [friendRecieved, friendSent, channelRecieved, channelSent]);
   return (

@@ -16,7 +16,7 @@ const Chat: React.FC<ChatProps> = ({}) => {
   useEffect (()=>{
       const type = chatType == CHANNEL ? "channelMessage" : "directMessage"
       console.log (type)
-      NotifyServer (socket!, "userIsActive", currentUser!)
+      NotifyServer (socket!, "userIsActive", currentUser!.user!)
       socket!.on ('ChatNotification', (message: ChatNotification) => {
         console.log ('chat notifications')
         console.log (message)
@@ -26,10 +26,10 @@ const Chat: React.FC<ChatProps> = ({}) => {
       
       
 
-      //   NotifyServer (socket!, "userIsInChannel", currentUser!)
+      //   NotifyServer (socket!, "userIsInChannel", currentUser!.user!)
     return ()=>{
       console.log ('user in inactive')  
-          NotifyServer (socket!, "userIsNotActive", currentUser!)
+          NotifyServer (socket!, "userIsNotActive", currentUser!.user!)
     }
   }
   ,[])

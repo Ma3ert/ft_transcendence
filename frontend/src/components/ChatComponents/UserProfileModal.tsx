@@ -80,9 +80,9 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ user }) => {
             </GridItem>
             <GridItem >
               <ScrollableStack yPadding={2} h="40vh">
-              <GameField firstUser={currentUser!} secondUser={user} firstScore={1} secondScore={2}/>
-              <GameField firstUser={currentUser!} secondUser={user} firstScore={1} secondScore={2}/>
-              <GameField firstUser={currentUser!} secondUser={user} firstScore={1} secondScore={2}/>
+              <GameField firstUser={currentUser!.user!} secondUser={user} firstScore={1} secondScore={2}/>
+              <GameField firstUser={currentUser!.user!} secondUser={user} firstScore={1} secondScore={2}/>
+              <GameField firstUser={currentUser!.user!} secondUser={user} firstScore={1} secondScore={2}/>
               </ScrollableStack>
             </GridItem>
           </Grid>

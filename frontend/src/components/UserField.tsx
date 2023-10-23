@@ -57,7 +57,7 @@ const {friendsList} = useContext(UsersContext);
               friendsList={friendsList!}
             />
           )}
-          {user.id != currentUser!.id && (
+          {user.id != currentUser.user!.id && (
             <OptionsMenu
               member={member!}
               user={user!}

@@ -61,13 +61,13 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   ]);
 
   const isPrivliged = () =>{
-    if (getUserRole (currentUser!, members!) === "OWNER" || getUserRole (currentUser!, members!)  === 'ADMIN')
+    if (getUserRole (currentUser!.user!, members!) === "OWNER" || getUserRole (currentUser!.user!, members!)  === 'ADMIN')
       return true
     return false
   }
   useEffect (()=>{
     console.log (`channel type : -----> ${activeChannel!.type}`)
-    console.log (`logged in user role : -----> ${getUserRole (currentUser!, members!)}`)
+    console.log (`logged in user role : -----> ${getUserRole (currentUser!.user!, members!)}`)
     console.table (members)
     if (isPrivliged ()) {
       if (activeChannel!.type === 'PROTECTED')
@@ -134,15 +134,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       <Stack spacing={3}>
         <ModalWrapper
           action={
-              getUserRole (currentUser!, members!) == "OWNER"
+              getUserRole (currentUser!.user!, members!) == "OWNER"
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
-          actionDescription={`${getUserRole (currentUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
+          actionDescription={`${getUserRole (currentUser!.user!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
           buttonValue={
             <Text>
-              {getUserRole (currentUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
+              {getUserRole (currentUser!.user!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
             </Text>
           }
           buttonVariant="largePrimary"
