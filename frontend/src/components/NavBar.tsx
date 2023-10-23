@@ -30,7 +30,7 @@ const NavBar = () => {
         ></Logo>
       <Spacer/>
       <Wrap align={"center"} spacing={{base: "30px", lg: "40px" }}>
-        <Avatar src={currentUser.avatar} boxSize={{base: "40px", lg: "60px"}}></Avatar>
+        <Avatar src={currentUser.user.avatar} boxSize={{base: "40px", lg: "60px"}}></Avatar>
         <IconButton
           icon={FaSignOutAlt}
           size="40px"

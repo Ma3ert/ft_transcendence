@@ -4,16 +4,18 @@ import React from 'react'
 import IconButton from './IconButton';
 import {FaMessage} from "react-icons/fa6"
 import {SlOptions} from "react-icons/sl"
+import UserAvatar from './UserAvatar';
 
 type Props = {
     userPic: string;
     userName: string;
     rank: number;
+    variant: string;
 }
 
-const UserRankField = ({userName, userPic, rank}: Props) => {
+const UserRankField = ({userName, userPic, rank, variant="field"}: Props) => {
   return (
-    <Button variant={"field"} w={"95%"} h={{sm: "40px", md: "50px", lg: "70px" }} p={"15px"}>
+    <Button variant={variant} w={"95%"} h={{sm: "40px", md: "50px", lg: "70px" }} p={"15px"}>
       <Flex alignItems={"center"} width={"full"}>
         <Wrap align={"center"} spacing={"15px"}>
           <Text fontSize={{base: "8px",md: "10px", lg: "15px"}}>{rank}</Text>

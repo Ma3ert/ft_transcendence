@@ -14,12 +14,13 @@ export async function useUpdateCurrentUser() {
     const client = new apiClient("/users");
 
     return client.getData("/me").then((res: AxiosResponse)=> {
+        console.log("all the data: ", res.data)
         console.log("query function is fired")
-        console.log(res.data.current.user)
+        console.log(res.data.current)
         const avatar:string = res.data.current.user.avatar;
         if (!avatar.includes("http"))
             res.data.current.user.avatar = "http://localhost:3000/public/users/imgs/" + avatar;
         // Cookies.set('currentUser', JSON.stringify(res.data.data));
-        return (res.data.current.user);
+        return (res.data.current);
     })
 }

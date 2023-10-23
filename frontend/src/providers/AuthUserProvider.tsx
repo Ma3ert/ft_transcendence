@@ -22,8 +22,8 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
             if (cookieValue !== "")
                 useUpdateCurrentUser()
             .then((res) => {
-                if (!res.avatar.includes("http"))
-                    res.avatar = "http://localhost:3000/public/users/imgs/" + res.avatar
+                if (!res.user.avatar.includes("http"))
+                    res.user.avatar = "http://localhost:3000/public/users/imgs/" + res.user.avatar
                 setCurrentUser(res);
                 setLoading(false)
             }).catch((err) => console.log(err));
