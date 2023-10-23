@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 interface Props {}
 const GameHistory: React.FC<Props> = ({}) => {
   const { currentUser } = useAuth();
+  const chihaja = []
   return (
     <Stack w='100%' h='100%' justifyContent={'center'} alignItems={'center'} spacing={5}>
        <HStack spacing={3} justifyContent={"center"}
@@ -24,7 +25,7 @@ const GameHistory: React.FC<Props> = ({}) => {
       </HStack>
       <ScrollableStack h="50vh" yPadding={2}>
         {
-          currentUser.games.map((match: any) => {
+          currentUser.games.toReversed().map((match: any) => {
             return <GameField firstUser={currentUser.user} 
               secondUser={match.opponent}
               firstScore={match.score}

@@ -21,7 +21,9 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             console.log("the res from the local rank: ", res.data.current);
             const localRes: ReactNode[] = [];
             res.data.current.ranks.map((user: any) => {
-                localRes.push(<UserRankField rank={user.order} userName={user.username} userPic={user.avatar}/>)
+                user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar
+                localRes.push(<UserRankField rank={user.order} userName={user.username} 
+                userPic={user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar}/>)
             })
             setLocal(localRes)
 
@@ -35,7 +37,9 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             console.log("the res from the all rank ", res.data.current);
             const allRes: ReactNode[] = [];
             res.data.current.ranks.map((user: any) => {
-                allRes.push(<UserRankField rank={user.order} userName={user.username} userPic={user.avatar}/>)
+                user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar
+                allRes.push(<UserRankField rank={user.order} userName={user.username} 
+                userPic={user.avatar.includes("http") ? user.avatar : "http://localhost:3000/public/users/imgs/" + user.avatar}/>)
             })
             setAll(allRes)
         })

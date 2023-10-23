@@ -4,6 +4,7 @@ import React from 'react'
 import IconButton from './IconButton';
 import {FaMessage} from "react-icons/fa6"
 import {SlOptions} from "react-icons/sl"
+import UserAvatar from './UserAvatar';
 
 type Props = {
     userPic: string;
