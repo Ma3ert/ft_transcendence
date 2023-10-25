@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    ports:
+      - '5432:5432'
+    env_file:
+      - ./pong-server/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  server:
+    container_name: server
+    build: ./pong-server/
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
+
+
+volumes:
+  pgdata:
