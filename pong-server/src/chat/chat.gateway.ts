@@ -152,6 +152,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   { // need some refactoring
     if (data.game === false)
     {
+      console.log()
       await this.chatService.createDirectMessage(data.senderId, data.receiverId, data.message);
       await this.notificationService.createDirectMessageNotification(data.senderId, data.receiverId);
       //if user is logged in i will sent a checkNotificatoin event to all loggedIn users.
