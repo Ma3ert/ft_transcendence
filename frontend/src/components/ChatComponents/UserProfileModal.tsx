@@ -42,6 +42,7 @@ interface GameFieldProps {
   secondScore: number;
   won: boolean;
 }
+
 export const GameField:React.FC<GameFieldProps> = ({won, firstUser, secondUser, firstScore, secondScore}) => {
   return (
     <Stack w='100%' h='100%' borderRadius={'15px'} bg='#181D25' minH='65px' maxH={'70px'} _hover={{bg:'#5B6171'}}  px={5} py={2} >
