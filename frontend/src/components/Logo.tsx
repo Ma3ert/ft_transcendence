@@ -12,7 +12,7 @@ const Logo = ({src, }: Props) => {
       <Image
         alt={'logo'}
         src={src}
-        maxW={{sm:'130px', md:'160px', lg:'180px', xl:'200px'}}
+        maxW={{sm:'130px', md:'160px', lg:'180px', xl:'300px'}}
         height={'auto'}
         ></Image>
     </Link>

@@ -11,7 +11,7 @@ const MainLayout: React.FC<MainSectionProps> = ({children}) => {
  
   return (
     <Grid
-      templateColumns={"8vw 1fr"}
+      templateColumns={"auto 1fr"}
       w="100%"
       h="100%"
       // border="1px"
@@ -20,16 +20,14 @@ const MainLayout: React.FC<MainSectionProps> = ({children}) => {
       <GridItem w="100%" h="100%" 
       // border="1px" borderColor="yellow"
       >
-        <SideBar
-         
-        />
+        <SideBar/>
       </GridItem>
       <GridItem
         w="100%"
         h="100%"
-        // border="1px"
-        // borderColor="red"
-        justifyContent={"center"}
+        border="1px"
+        borderColor="red"
+        // justifyContent={"center"}
         alignItems="center"
       >
         <Grid templateRows={"10vh 75vh"} w="100%" h="100%">

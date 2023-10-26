@@ -29,7 +29,7 @@ export default function Header() {
 
   return (
     <header>
-        <HStack justify={'space-between'} p={4} mx={'auto'} w={{sm:'98%', lg:'95%', xl:'90%', vl:'86%'}}>
+        <HStack justify={'space-between'} p={4} mx={'auto'} w={{sm:'98%', lg:'95%', xl:'90%', vl:'66%'}}>
         <Logo src="/logo.png" />
 
         <HStack justify='center' alignItems='center' spacing={12} maxW={'6xl'}>
