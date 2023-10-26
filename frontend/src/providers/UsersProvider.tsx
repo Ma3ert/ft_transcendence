@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { GlobalContext } from "@/context/Contexts";
 import { NotifyServer } from "../../utils/eventEmitter";
 import useEventHandler from "@/hooks/useEventHandler";
+import { useDisclosure } from "@chakra-ui/react";
 
 interface UsersProviderProps {
   children: React.ReactNode;
@@ -23,6 +24,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const listen = useEventHandler(socket);
   const friendsListClient = new apiClient("/users/friends");
   const [friendsConversations, setFriendsConversations] = useState<User[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useQuery("friends", {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
@@ -30,10 +32,9 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       setFriendsList!(data.friends);
     },
     onError: (err) => {
-      console.log(err);
+      //console.log(err);
     },
   });
- 
 
   useQuery("users", {
     queryFn: () => allUsersClient.getData().then((res) => res.data),
@@ -41,19 +42,17 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       setUsers(data);
     },
     onError: (err) => {
-      console.log(err);
+      //console.log(err);
     },
   });
 
   useEffect(() => {
-    if (socket)
-    {
-
-    socket!.on("checkNotification", (message: checkNotification) => {
+    if (socket) {
+      socket!.on("checkNotification", (message: checkNotification) => {
         setChatNotifications!(message.data.chat);
         setInviteNotifications!(message.data.invites);
-        console.log("notifications ???????");
-        console.log(message);
+        //console.log("notifications ???????");
+        //console.log(message);
       });
     }
   }, [socket, chatNotifications, inviteNotifications]);
@@ -71,6 +70,9 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         setChatNotifications,
         inviteNotifications,
         setInviteNotifications,
+        onClose,
+        onOpen,
+        isOpen,
       }}
     >
       {children}

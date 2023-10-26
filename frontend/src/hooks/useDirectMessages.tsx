@@ -11,7 +11,7 @@ const useDirectMessages = (peerId:string) => {
         onSuccess: (data) => {
 
         },
-        onError: (error) => console.log(error)
+        onError: (error) => //console.log(error)
     })
     return ({data, isLoading, isError, error})
 }

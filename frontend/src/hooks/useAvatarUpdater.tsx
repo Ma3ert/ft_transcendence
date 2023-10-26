@@ -27,7 +27,7 @@ const useAvatarUpdater = () => {
         isClosable: true,
       });
     },
-    onError: (error) => console.log(error),
+    onError: (error) => {}
   });
 
   function updateAvatar(req: AvatarData) {

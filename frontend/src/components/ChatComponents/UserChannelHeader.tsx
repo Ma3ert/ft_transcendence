@@ -16,7 +16,7 @@ const UserChannelHeader: React.FC<UserChannelHeaderProps> = ({ status }) => {
   const { chatType } = useContext(ChatContext);
 
   useEffect(() => {
-    console.log("chat type " + chatType);
+    //console.log("chat type " + chatType);
   }, []);
   return chatType == PRIVATE ? (
     <UserStatusProvider>

@@ -3,7 +3,12 @@ import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 import { Socket, io } from "socket.io-client";
-import { ChannelsContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
+import {
+  ChannelsContext,
+  ChatContext,
+  GlobalContext,
+  UsersContext,
+} from "@/context/Contexts";
 import { PRIVATE, loggedIndUser } from "../../../contstants";
 import useMessageSender from "@/hooks/useMessageSender";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,30 +17,30 @@ interface ChatInputBoxProps {
 }
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   const [message, setMessage] = useState("");
-  const {
-    joinGameStatus,
-    setJoinGameStatus,
-    chatType,
-  } = useContext(ChatContext);
-  const {activePeer} = useContext (UsersContext)
-  const {currentUser} = useAuth ()
+  const { joinGameStatus, setJoinGameStatus, chatType } =
+    useContext(ChatContext);
+  const { activePeer } = useContext(UsersContext);
+  const { currentUser } = useAuth();
   const { socket } = useContext(GlobalContext);
-  const {activeChannel} = useContext (ChannelsContext)
-  const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
-  const handleSendMessage  = (e?:FormEvent)=>{
-    e && e!.preventDefault ()
-    if (chatType === PRIVATE)
-    SendMessage(message);
+  const { activeChannel } = useContext(ChannelsContext);
+  const SendMessage = useMessageSender(
+    socket,
+    activePeer!,
+    chatType!,
+    activeChannel!
+  );
+  const handleSendMessage = (e?: FormEvent) => {
+    e && e!.preventDefault();
+    if (chatType === PRIVATE) SendMessage(message);
     else {
       socket.emit("CM", {
-        senderId:currentUser!.use.id,
-        channelId:activeChannel!.id,
-        message:message
+        senderId: currentUser!.use.id,
+        channelId: activeChannel!.id,
+        message: message,
       });
-      
     }
-  setMessage("");
-  }
+    setMessage("");
+  };
   return (
     <HStack
       borderRadius={"29px"}
@@ -49,14 +54,13 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       <Button
         isDisabled={joinGameStatus}
         onClick={() => {
-
           socket!.emit("DM", {
-            senderId:currentUser!.id,
-            receiverId:activePeer!.id,
-            message:"",
-            game:true
+            senderId: currentUser!.user.id,
+            receiverId: activePeer!.id,
+            message: "",
+            game: true,
           });
-          console.log("sending game invitation");
+          //console.log("sending game invitation");
         }}
         bg="transparent"
         border="none"
@@ -67,26 +71,25 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         <Image src={"/LightSolidLogo.png"} alt={"envite"} w={6} h={"auto"} />
       </Button>
 
-      <FormControl flex={1} >
-       <form onSubmit={(e)=>handleSendMessage(e)}>
-       <Input
-          value={message}
-          isDisabled={joinGameStatus}
-          type="text"
-          bg={"transparent"}
-          color="white"
-          _active={{ outline: "none", border: "none", boxShadow: "none" }}
-          p={2}
-          _focus={{ outline: "none", border: "none", boxShadow: "none" }}
-          placeholder="Type a message ..."
-          outline="none"
-          border="none"
-          w="100%"
-          onChange={(e) => setMessage(e.target.value)}
-          
-          _placeholder={{ color: "#5B6171" }}
-        />
-       </form>
+      <FormControl flex={1}>
+        <form onSubmit={(e) => handleSendMessage(e)}>
+          <Input
+            value={message}
+            isDisabled={joinGameStatus}
+            type="text"
+            bg={"transparent"}
+            color="white"
+            _active={{ outline: "none", border: "none", boxShadow: "none" }}
+            p={2}
+            _focus={{ outline: "none", border: "none", boxShadow: "none" }}
+            placeholder="Type a message ..."
+            outline="none"
+            border="none"
+            w="100%"
+            onChange={(e) => setMessage(e.target.value)}
+            _placeholder={{ color: "#5B6171" }}
+          />
+        </form>
       </FormControl>
       <Button
         isDisabled={joinGameStatus}
@@ -98,7 +101,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         p={2}
         fontSize={"sm"}
         fontWeight={"bold"}
-        onClick={()=>handleSendMessage()}
+        onClick={() => handleSendMessage()}
       >
         <Icon as={TbArrowBigRightFilled} />
       </Button>

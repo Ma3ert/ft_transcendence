@@ -34,12 +34,7 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
   return (
     <>
       {Channels?.map((channel, index) => {
-        console.log(
-          `channel ${channel.name} has ${countOccurrences(
-            channel!.id!,
-            CmNotifications!
-          )} notifications`
-        );
+        
         return (
           <NotificationWrapper
             status={notification(channel) ? true : false}
@@ -91,7 +86,7 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
           </NotificationWrapper>
       ) : (
         friendsConversations?.map((friend, index) => {
-          console.log(`friend ${friend.username}  notifications`);
+          //console.log(`friend ${friend.username}  notifications`);
           return (
             <NotificationWrapper
               key={index}

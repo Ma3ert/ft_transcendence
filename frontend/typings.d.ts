@@ -247,6 +247,9 @@ type UsersContext = {
   setInviteNotifications?:React.Dispatch<React.SetStateAction<boolean>>;
   userStatus?: UserStatus;
   setUserStatus?:React.Dispatch<React.SetStateAction<UserStatus>>;
+  isOpen?:boolean
+  onClose?:() => void
+  onOpen?: () => void
 };
 // Chat Events Types
 

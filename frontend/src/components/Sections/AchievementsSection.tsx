@@ -20,8 +20,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
     queryKey: ["rank", "local"],
     queryFn: () =>
       client.getData("/local").then((res: AxiosResponse) => {
-        console.log("I get to the query");
-        console.log("the res from the local rank: ", res.data.current);
+        //console.log("I get to the query");
+        //console.log("the res from the local rank: ", res.data.current);
         const localRes: ReactNode[] = [];
         res.data.current.ranks.map((user: any) => {
           user.avatar.includes("http")
@@ -51,8 +51,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
     queryKey: ["rank", "global"],
     queryFn: () =>
       client.getData("/all").then((res: AxiosResponse) => {
-        console.log("I get to the query");
-        console.log("the res from the all rank ", res.data.current);
+        //console.log("I get to the query");
+        //console.log("the res from the all rank ", res.data.current);
         const allRes: ReactNode[] = [];
         res.data.current.ranks.map((user: any) => {
           user.avatar.includes("http")

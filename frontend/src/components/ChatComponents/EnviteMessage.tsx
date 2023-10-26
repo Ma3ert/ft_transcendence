@@ -7,10 +7,11 @@ interface EnviteMessageProps {
   gameInviteSender?: string;
 }
 const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
-  const { joinGameStatus, setJoinGameStatus, gameInviteSender } =
+  const { setJoinGameStatus, gameInviteSender } =
     useContext(ChatContext);
-  const { activePeer } = useContext(UsersContext);
+  const { activePeer , onClose, friendsList} = useContext(UsersContext);
   const {currentUser} = useAuth ()
+  const Peer:User = friendsList?.find (item => item.id === gameInviteSender) || null;
 
   useEffect(() => {
     // Create a setTimeout to change the message after 3 seconds
@@ -39,7 +40,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
         h="auto"
         spacing={5}
       >
-        <HStack spacing={5}>
+        <HStack spacing={5} justifyContent={'center'} alignItems={'center'}>
           <Image
             src={
               gameInviteSender !== currentUser!.user!.id
@@ -59,7 +60,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
               fontWeight={"bold"}
             >
               {gameInviteSender !== currentUser!.user!.id
-                ? activePeer!.username
+                ? (Peer!.username || 'a friend')
                 : "you"}{" "}
               Looking for a 1v1 ..
             </Text>
@@ -68,7 +69,8 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
               onClick={() => {
                 /// accept game invite
                 /// decline game inviate
-                setJoinGameStatus!(false);
+                // setJoinGameStatus!(false);
+                onClose! ();
               }}
               variant={
                 gameInviteSender !== currentUser!.user!.id ? "lightGray" : "darkGray"

@@ -125,6 +125,11 @@ const ModalStyle: ComponentStyleConfig = {
         margin: "0px",
         px: "0px",
         py: "10px",
+        w:'100%',
+        h:'100%',
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center'
       },
       closeButton: {
         fontStyle: "bold",
