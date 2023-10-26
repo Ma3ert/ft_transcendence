@@ -25,8 +25,8 @@ const MainLayout: React.FC<MainSectionProps> = ({children}) => {
       <GridItem
         w="100%"
         h="100%"
-        border="1px"
-        borderColor="red"
+        // border="1px"
+        // borderColor="red"
         // justifyContent={"center"}
         alignItems="center"
       >

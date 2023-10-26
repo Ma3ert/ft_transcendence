@@ -14,13 +14,14 @@ import {
 import { PRIVATE, CHANNEL } from "../../../contstants";
 import { NotificationWrapper } from "./NotificationBadge";
 import { setSyntheticTrailingComments } from "typescript";
-import apiClient from "@/services/requestProcessor";
+import { useToast } from "@chakra-ui/react";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
 
 const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { setCurrentChat, CmNotifications } = useContext(ChatContext);
+  
   const { activeChannel, setActiveChannel, Channels } =
     useContext(ChannelsContext);
   const notification = (channel: Channel) =>
@@ -41,7 +42,6 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
         );
         return (
           <NotificationWrapper
-            type="activeChat"
             status={notification(channel) ? true : false}
             key={index}
           >
@@ -63,20 +63,21 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { setCurrentChat, DmNotifications } = useContext(ChatContext);
-  const { setActivePeer, friendsConversations, activePeer } =
+  const toast = useToast ()
+  const { friendsConversations, activePeer, setFriendsConversations, friendsList, setActivePeer } =
     useContext(UsersContext);
   const notification = (friend: User) =>
     DmNotifications?.find((elm) => elm == friend.id);
   const countOccurrences = (friendid: string, ids: string[]) => {
     return ids.filter((item) => item === friendid).length;
   };
-  useEffect(() => {}, []);
+  
+  
   return (
     <>
       {activePeer && friendsConversations?.length == 0 ? (
        
           <NotificationWrapper
-            type="activeChat"
             status={notification(activePeer!) ? true : false}
           >
             <UserAvatar
@@ -94,7 +95,7 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
           return (
             <NotificationWrapper
               key={index}
-              type="activeChat"
+
               status={notification(friend!) ? true : false}
             >
              

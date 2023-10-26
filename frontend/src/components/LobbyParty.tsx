@@ -130,6 +130,7 @@ const LobbyParty = () => {
           return setMessage("Error connecting to the game server please refresh...");
       }
       setVisible(false);
+      setReadyness(true)
       socket.emit("gameJoinQueue");
   };
 

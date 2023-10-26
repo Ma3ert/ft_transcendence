@@ -22,7 +22,20 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   const { socket } = useContext(GlobalContext);
   const {activeChannel} = useContext (ChannelsContext)
   const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
-
+  const handleSendMessage  = ()=>{
+    e.preventDefault ()
+    if (chatType === PRIVATE)
+    SendMessage(message);
+    else {
+      socket.emit("CM", {
+        senderId:currentUser!.use.id,
+        channelId:activeChannel!.id,
+        message:message
+      });
+      
+    }
+  setMessage("");
+  }
   return (
     <HStack
       borderRadius={"29px"}
@@ -54,8 +67,9 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         <Image src={"/LightSolidLogo.png"} alt={"envite"} w={6} h={"auto"} />
       </Button>
 
-      <FormControl flex={1}>
-        <Input
+      <FormControl flex={1} >
+       <form onSubmit={()=>handleSendMessage()}>
+       <Input
           value={message}
           isDisabled={joinGameStatus}
           type="text"
@@ -69,8 +83,10 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
           border="none"
           w="100%"
           onChange={(e) => setMessage(e.target.value)}
+          
           _placeholder={{ color: "#5B6171" }}
         />
+       </form>
       </FormControl>
       <Button
         isDisabled={joinGameStatus}
@@ -82,19 +98,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         p={2}
         fontSize={"sm"}
         fontWeight={"bold"}
-        onClick={() => {
-          if (chatType === PRIVATE)
-            SendMessage(message);
-            else {
-              socket.emit("CM", {
-                senderId:currentUser!.use.id,
-                channelId:activeChannel!.id,
-                message:message
-              });
-              
-            }
-          setMessage("");
-        }}
+        onClick={()=>handleSendMessage()}
       >
         <Icon as={TbArrowBigRightFilled} />
       </Button>

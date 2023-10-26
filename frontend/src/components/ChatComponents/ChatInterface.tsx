@@ -9,7 +9,6 @@ import { CHANNEL, PRIVATE } from "../../../contstants";
 import PrivateChat from "./PrivateChat";
 import ChannelsChat from "./ChannelsChat";
 import { NotifyServer } from "../../../utils/eventEmitter";
-import useDirectConversations from "@/hooks/useDirectConversations";
 import NoFriendsPage from "./NoFriendsPage";
 import { useAuth } from "@/hooks/useAuth";
 const ChatInterface: React.FC = ({}) => {
