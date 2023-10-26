@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, FormEvent } from "react";
 import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
@@ -22,8 +22,8 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   const { socket } = useContext(GlobalContext);
   const {activeChannel} = useContext (ChannelsContext)
   const SendMessage = useMessageSender(socket, activePeer!, chatType!, activeChannel!);
-  const handleSendMessage  = ()=>{
-    e.preventDefault ()
+  const handleSendMessage  = (e?:FormEvent)=>{
+    e && e!.preventDefault ()
     if (chatType === PRIVATE)
     SendMessage(message);
     else {
@@ -68,7 +68,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       </Button>
 
       <FormControl flex={1} >
-       <form onSubmit={()=>handleSendMessage()}>
+       <form onSubmit={(e)=>handleSendMessage(e)}>
        <Input
           value={message}
           isDisabled={joinGameStatus}
