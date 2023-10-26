@@ -4,6 +4,7 @@ import apiClient from "../services/requestProcessor";
 import { useQuery } from "react-query";
 import { useEffect } from "react";
 import EventListener from "../../utils/EventListener";
+import DirectMessages from "@/components/ChatComponents/DirectMessages";
 interface DmProviderProps {
     children: React.ReactNode;
 }
@@ -47,8 +48,12 @@ const DmProvider: React.FC<DmProviderProps> = ({children}) => {
           message: data.message,
         }
         const dms = Array.from (messages)
-        dms!.push (dm)
-        setMessages (dms!)
+        if (activePeer?.id === dm.senderId)
+        {
+
+          dms!.push (dm)
+          setMessages (dms!)
+        }
       }
       })
   }, [messages])
