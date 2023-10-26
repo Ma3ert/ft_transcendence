@@ -21,12 +21,14 @@ const GlobalLayout:React.FC<GlobalLayoutProps> = ({children}) => {
           <Header />
         </GridItem>
         <GridItem
+          mx='auto'
           // border="1px"
           // borderColor="green"
-          w="100%"
+          w={{sm:'98%', lg:'95%', xl:'90%', vl:'66%'}}
           h="100%"
           justifyContent="center"
           alignItems="center"
+          display={'flex'}
         >
           {children}
         </GridItem>

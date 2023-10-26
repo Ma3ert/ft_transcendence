@@ -33,24 +33,22 @@ export class AuthController {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
     // res.status(200).json({status: 'success', message: "User authenticated successfully"})
-    res.redirect("http://localhost:3001/ChangeUserName")
+    res.redirect('http://e1r9p3.1337.ma:3001/ChangeUserName');
   }
 
   @Get('42/logout')
   @UseGuards(LoggedInGuard)
   async handleLogout(@Res() res: Response, @Req() req: any) {
     const user = await this.usersService.findById(req.user.id);
-    if (user.twoFactor && !user.pinValidated && !user.twoFactorStatus)
-      user.twoFactorStatus = true
+    if (user.twoFactor && !user.pinValidated && !user.twoFactorStatus) user.twoFactorStatus = true;
     await this.usersService.updateUserAuth(req.user.id, {
       pinValidated: false,
-      status: "OFFLINE",
-      twoFactor: user.twoFactorStatus
+      status: 'OFFLINE',
+      twoFactor: user.twoFactorStatus,
     });
     res.cookie('jwt', '');
     // res.status(200).json({ message: 'User logged out successfully' });
-    res.redirect("http://localhost:3001/")
-
+    res.redirect('http://e1r9p3.1337.ma:3001/');
   }
 
   @Post('local/login')
@@ -65,7 +63,11 @@ export class AuthController {
   @UseGuards(LoggedInGuard)
   async updateTwoFactorStatus(@Req() req: any, @Body('activate') status: boolean) {
     if (this.authService.alterTwoFactorStatus(status, req.user))
-      return { status: 'success', message: `two factor authentification ${status ? 'enabled' : 'disabled'}`, twoFactor: status };
+      return {
+        status: 'success',
+        message: `two factor authentification ${status ? 'enabled' : 'disabled'}`,
+        twoFactor: status,
+      };
   }
 
   @Get('/twoFactor')
@@ -74,7 +76,7 @@ export class AuthController {
     const pin = await this.authService.generateTwoFactorPin(request.user);
     if (!pin)
       throw new HttpException('Failed to generate two factor code, please retry.', HttpStatus.UNAUTHORIZED);
-    console.log("Your pin: ", pin);
+    console.log('Your pin: ', pin);
     // const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
     // if (email)
     //   return {

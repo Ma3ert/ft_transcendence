@@ -101,10 +101,12 @@ export default function Home() {
   
   return (
     <Stack
-    spacing={"10vh"}
-      align="center"
-      minH="70vh"
-      >
+    spacing={"20vh"}
+    direction="column"
+    align="center"
+    justify="center"
+    minH="70vh"
+    >
         <Modal closeOnOverlayClick={false} variant={"form"} isOpen={isOpen} onClose={onClose} size={"invite"}>
           <ModalOverlay />
           <ModalContent style={{ width: "480px", height: "280px" }}>

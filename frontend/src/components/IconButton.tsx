@@ -15,7 +15,7 @@ const IconButton = ({ onClick, icon, size}: Props) => {
     <Button variant={"icon"} onClick={action} maxW={size}>
       <Icon
         as={icon}
-        style={{ fontSize: size }}
+        fontSize={size}
       />
     </Button>
   );

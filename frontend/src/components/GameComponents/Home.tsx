@@ -108,7 +108,7 @@ const Home = () => {
         });
 
         axios
-            .get("http://127.0.0.1:3000/users/me", { withCredentials: true })
+            .get("http://e1r9p3.1337.ma:3000/users/me", { withCredentials: true })
             .then((res) => {
                 setUser(res.data.data);
             })

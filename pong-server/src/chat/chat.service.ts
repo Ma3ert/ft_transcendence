@@ -103,6 +103,7 @@ export class ChatService {
     }
 
     async createDirectMessage(sender: string, receiver: string, message: string) {
+        console.log(sender, receiver, message);
         const senderFriends = await this.usersService.getUserFriends(sender);
         for (const friend of senderFriends) {
             if (friend.id == receiver)

@@ -15,7 +15,7 @@ interface Props {
 }
 
 const SideBar: React.FC<Props> = ({ }) => {
-  const size = "25px";
+  const size = {base: "20px", lg: "25px", xl: "30px"};
   const links = new Map<Section, React.ElementType>();
   const routes = new Map<string, string>()
   const {inviteNotifications} = useContext(UsersContext)
