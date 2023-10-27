@@ -13,7 +13,7 @@ import apiClient from "@/services/requestProcessor";
 export default function LoginPage() {
   const router = useRouter();
   const { currentUser, updateUser } = useAuth();
-  // console.log("current user from the lobby: ", currentUser)
+  // //console.log("current user from the lobby: ", currentUser)
   if (
     currentUser &&
     currentUser.user.activated &&

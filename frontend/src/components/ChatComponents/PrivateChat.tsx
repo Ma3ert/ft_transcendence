@@ -39,7 +39,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
               }
           }
       },
-      onError: (error) => console.log(error)
+      onError: (error) => {}
   })
   useEffect(() => {}, [friendsConversations]);
   if (isLoading)

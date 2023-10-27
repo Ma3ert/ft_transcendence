@@ -78,7 +78,7 @@ const InviteToChannelField: React.FC<InviteProps> = ({
   const { channelSent } = useContext(InvitesContext);
 
   useEffect(() => {
-    console.log(Members);
+    //console.log(Members);
   }, [Members, channelSent]);
   return (
     <HStack

@@ -55,7 +55,7 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
       }
     },
     onError: (error) => {
-      // console.log(error);
+      // //console.log(error);
     },
   });
 
@@ -66,11 +66,10 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
         const newList: GlobalEnvite[] = getGlobalFriendsEnvites(response.data);
         // socket!.emit("readInviteNotification", {});
         setFriendSent(newList);
-
       }
     },
     onError: (error) => {
-      // console.log(error);
+      // //console.log(error);
     },
   });
 

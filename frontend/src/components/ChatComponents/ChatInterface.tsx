@@ -15,14 +15,13 @@ const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
   const { friendsList } = useContext(UsersContext);
 
-
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
-    console.log(type);
+    //console.log(type);
   }, []);
   return (
     <Stack h="100%" w="100%" justifyContent={"center"}>
-      {(friendsList && friendsList.length > 0) ? (
+      {friendsList && friendsList.length > 0 ? (
         chatType == PRIVATE ? (
           <PrivateChat />
         ) : (

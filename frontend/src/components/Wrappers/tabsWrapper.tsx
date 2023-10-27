@@ -153,7 +153,7 @@ const TabsWrapper: React.FC = () => {
     },
   ];
   const section = getCurrentSection(pathname);
-  console.log("section : ", section);
+  //console.log("section : ", section);
   return (
     <Wrap
       w="100%"
@@ -175,9 +175,11 @@ const TabsWrapper: React.FC = () => {
               <Toggler section={section} tabs={ChatLobbyTabs} type={true} />
             );
           case "friends":
-            return (<NotificationWrapper status={inviteNotifications!}>
-              <Toggler section={section} tabs={FriendsTabs} type={true} />;
-            </NotificationWrapper>);
+            return (
+              <NotificationWrapper status={inviteNotifications!}>
+                <Toggler section={section} tabs={FriendsTabs} type={true} />;
+              </NotificationWrapper>
+            );
           case "achievements":
             return (
               <Toggler section={section} tabs={AchievementsTabs} type={true} />

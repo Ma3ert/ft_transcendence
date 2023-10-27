@@ -28,19 +28,19 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
 
     const token = Cookies.get("jwt");
     socket.auth = { token: `Bearer ${token}` };
-    console.log(`jwt token : ${token}`);
+    //console.log(`jwt token : ${token}`);
     socket.connect();
     setSocket!(socket);
     socket.on("connect", () => {
-      console.log("client connected");
+      //console.log("client connected");
       NotifyServer(socket, "userLoggedIn", currentUser!.user!);
       socket.on("disconnect", () => {
-        console.log("client disconnected");
+        //console.log("client disconnected");
       });
     });
 
     socket.on("connect_error", (err) => {
-      console.log(`connect_error due to ${err.message}`);
+      //console.log(`connect_error due to ${err.message}`);
     });
 
     return () => {
