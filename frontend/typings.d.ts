@@ -250,6 +250,8 @@ type UsersContext = {
   isOpen?:boolean
   onClose?:() => void
   onOpen?: () => void
+  gameInviteSender?: string 
+  setGameInviteSender?:React.Dispatch<SetStateAction<string>>
 };
 // Chat Events Types
 
