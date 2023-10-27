@@ -20,7 +20,7 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
     queryFn: () => userChannelsClient.getData().then((res) => res.data),
     onSuccess: (data: Channel[]) => {
       setChannels(data);
-      if (data.length > 0) setActiveChannel(data[0]);
+      if (activeChannel === null) setActiveChannel(data[0]);
     },
     onError: (err) => {
       //console.log(err)

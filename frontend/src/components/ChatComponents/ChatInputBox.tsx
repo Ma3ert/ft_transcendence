@@ -35,7 +35,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     if (chatType === PRIVATE) SendMessage(message);
     else {
       socket.emit("CM", {
-        senderId: currentUser!.use.id,
+        senderId: currentUser!.user.id,
         channelId: activeChannel!.id,
         message: message,
       });
@@ -52,24 +52,26 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       px={4}
       py={2}
     >
-      <Button
-        isDisabled={joinGameStatus}
-        onClick={() => {
-          gameSocket!.emit("gameJoinQueue");
-          socket!.emit("GameInvite", {
-            senderId: currentUser!.user.id,
-            receiverId: activePeer!.id,
-          });
-          //console.log("sending game invitation");
-        }}
-        bg="transparent"
-        border="none"
-        outline={"none"}
-        _hover={{ opacity: 0.8 }}
-        _active={{ transform: "scale(1.1)" }}
-      >
-        <Image src={"/LightSolidLogo.png"} alt={"envite"} w={6} h={"auto"} />
-      </Button>
+     {chatType === PRIVATE && (
+       <Button
+       isDisabled={joinGameStatus}
+       onClick={() => {
+         gameSocket!.emit("gameJoinQueue");
+         socket!.emit("GameInvite", {
+           senderId: currentUser!.user.id,
+           receiverId: activePeer!.id,
+         });
+         //console.log("sending game invitation");
+       }}
+       bg="transparent"
+       border="none"
+       outline={"none"}
+       _hover={{ opacity: 0.8 }}
+       _active={{ transform: "scale(1.1)" }}
+     >
+       <Image src={"/LightSolidLogo.png"} alt={"envite"} w={6} h={"auto"} />
+     </Button>
+     )}
 
       <FormControl flex={1}>
         <form onSubmit={(e) => handleSendMessage(e)}>

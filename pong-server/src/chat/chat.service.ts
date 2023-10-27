@@ -197,7 +197,8 @@ export class ChatService {
     async kickUser(channel: string, user: string) {
         const isInChannel:ChannelUser = await this.prismaService.channelUser.findFirst({
             where: {
-                userId: user
+                userId: user,
+                channelId:channel,
             }
         })
 

@@ -346,6 +346,7 @@ type ModalWrapperContext = {
 
 type CmContext = {
   messages?: ChannelMessage[];
+  setChannelMessages?: React.Dispatch<SetStateAction<ChannelMessage[]>>
 };
 
 type DmContext = {

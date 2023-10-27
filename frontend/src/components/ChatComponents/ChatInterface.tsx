@@ -11,6 +11,7 @@ import ChannelsChat from "./ChannelsChat";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import NoFriendsPage from "./NoFriendsPage";
 import { useAuth } from "@/hooks/useAuth";
+import CmProvider from "@/providers/CmProvider";
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
   const { friendsList } = useContext(UsersContext);
@@ -25,7 +26,9 @@ const ChatInterface: React.FC = ({}) => {
         chatType == PRIVATE ? (
           <PrivateChat />
         ) : (
-          <ChannelsChat />
+          <CmProvider>
+            <ChannelsChat />
+          </CmProvider>
         )
       ) : (
         <NoFriendsPage />

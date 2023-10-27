@@ -18,7 +18,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   action,
   active,
 }) => {
-  channel && channel.avatar && console.log("chnnel: ", channel!.avatar)
+ 
   const avatar:string = isChannel ? `http://e1r9p3.1337.ma:3000/${channel!.avatar}` 
   :  (user?.avatar.includes("http") ? user!.avatar : "http://e1r9p3.1337.ma:3000/public/users/imgs/" + user!.avatar);
   return (

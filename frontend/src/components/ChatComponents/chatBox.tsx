@@ -5,7 +5,7 @@ import MessageStack from "./MessageStack";
 import ChatInputBox from "./ChatInputBox";
 import { Avatar } from "@chakra-ui/react";
 import FriendSettingsMenu from "./FriendSettingsMenu";
-import { ChatContext, UsersContext , DmContext, ChannelsContext} from "../../context/Contexts";
+import { ChatContext, UsersContext , DmContext, ChannelsContext, CmContext} from "../../context/Contexts";
 import { PRIVATE } from "../../../contstants";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import { GlobalContext } from "@/context/Contexts";
@@ -30,6 +30,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const listener = useEventHandler(socket);
   const gameEnviteHandler = useGameEnvite();
   const {activeChannel} = useContext (ChannelsContext)
+  const {messages, setChannelMessages} = useContext (CmContext)
+  const [counter, setCounter] = useState (0)
 
   const getReadChatNotification = () => {
     if (chatType == PRIVATE) {
@@ -43,10 +45,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
       id: activeChannel!.id,
     };
     }
-
-  useEffect(() => {
-    socket!.emit ('readChatNotification', getReadChatNotification())
-  }, [activePeer, activeChannel, chatType]);
+  socket!.emit ('readChatNotification', getReadChatNotification())
   return (
     <Stack
       borderRadius={"2xl"}
