@@ -8,7 +8,6 @@ import { NotifyServer } from "../../utils/eventEmitter";
 import useEventHandler from "@/hooks/useEventHandler";
 import { useDisclosure } from "@chakra-ui/react";
 
-
 interface UsersProviderProps {
   children: React.ReactNode;
 }
@@ -34,7 +33,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       setFriendsList!(data.friends);
     },
     onError: (err) => {
-      //console.log(err);
+      ////console.log(err);
     },
   });
 
@@ -44,7 +43,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       setUsers(data);
     },
     onError: (err) => {
-      //console.log(err);
+      ////console.log(err);
     },
   });
 
@@ -53,13 +52,13 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       socket!.on("checkNotification", (message: checkNotification) => {
         setChatNotifications!(message.data.chat);
         setInviteNotifications!(message.data.invites);
-        //console.log("notifications ???????");
-        //console.log(message);
+        ////console.log("notifications ???????");
+        ////console.log(message);
       });
-      socket!.on ("GameInvite", (response:any)=>{
+      socket!.on("GameInvite", (response: any) => {
         setGameInviteSender!(response.senderId);
         onOpen!();
-      })
+      });
     }
   }, [socket, chatNotifications, inviteNotifications]);
 
@@ -80,7 +79,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         onOpen,
         isOpen,
         gameInviteSender,
-        setGameInviteSender
+        setGameInviteSender,
       }}
     >
       {children}

@@ -16,8 +16,8 @@ const UserStatusProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     socket!.emit("checkStatus", { userId: activePeer!.id });
     socket!.on("checkStatus", (res: any) => {
-      //console.log("status");
-      console.table(res);
+      ////console.log("status");
+      // console.table(res);
       if (res && res.userId === activePeer!.id) setUserStatus!(res);
     });
   }, []);

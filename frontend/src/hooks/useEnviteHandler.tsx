@@ -25,7 +25,7 @@ const useEnviteHandler = () => {
   const acceptEnvitationMutation = useMutation({
     mutationFn: acceptEnvitation,
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("sentEnvites");
       queryClient.invalidateQueries("recievedEnvites");
       queryClient.invalidateQueries("friends");
@@ -39,7 +39,7 @@ const useEnviteHandler = () => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
       toast({
         title: "Error",
         description: "Something went wrong",
@@ -57,7 +57,7 @@ const useEnviteHandler = () => {
   const deleteEnvitationMutation = useMutation({
     mutationFn: deleteEnvitation,
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("sentEnvites");
       queryClient.invalidateQueries("recievedEnvites");
       toast({
@@ -69,7 +69,7 @@ const useEnviteHandler = () => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
       toast({
         title: "Error",
         description: "Something went wrong",

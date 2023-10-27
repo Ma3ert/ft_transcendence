@@ -76,7 +76,7 @@ export class AuthController {
     const pin = await this.authService.generateTwoFactorPin(request.user);
     if (!pin)
       throw new HttpException('Failed to generate two factor code, please retry.', HttpStatus.UNAUTHORIZED);
-    console.log('Your pin: ', pin);
+    //console.log('Your pin: ', pin);
     // const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
     // if (email)
     //   return {

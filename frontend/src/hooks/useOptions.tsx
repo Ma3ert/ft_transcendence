@@ -26,7 +26,7 @@ const useUserOptions = (channel?: Channel) => {
   const EnviteUserMutation = useMutation({
     mutationFn: enviteUser,
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("sentEnvites");
       toast({
         title: "Friend request sent.",
@@ -44,7 +44,7 @@ const useUserOptions = (channel?: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -52,7 +52,7 @@ const useUserOptions = (channel?: Channel) => {
     mutationFn: async (userid: string) =>
       blockUserClient.postData({ userId: userid }).then((response) => response),
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("friends");
       toast({
         title: "User blocked.",
@@ -63,7 +63,7 @@ const useUserOptions = (channel?: Channel) => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -73,7 +73,7 @@ const useUserOptions = (channel?: Channel) => {
         .postData({ userId: userid })
         .then((response) => response),
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("friends");
       toast({
         title: "User unblocked.",
@@ -84,7 +84,7 @@ const useUserOptions = (channel?: Channel) => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -94,9 +94,9 @@ const useUserOptions = (channel?: Channel) => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
-      //console.log(data);
-      //console.log ('channel id is', channel!.id)
-      //console.log ('active channel id', activeChannel!.id)
+      ////console.log(data);
+      ////console.log ('channel id is', channel!.id)
+      ////console.log ('active channel id', activeChannel!.id)
       queryClient.refetchQueries(["channelMembers", channel!.id]);
       toast({
         title: "User muted.",
@@ -107,7 +107,7 @@ const useUserOptions = (channel?: Channel) => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -127,7 +127,7 @@ const useUserOptions = (channel?: Channel) => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -137,7 +137,7 @@ const useUserOptions = (channel?: Channel) => {
         .deleteData()
         .then((response) => response),
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User unbanned.",
@@ -148,7 +148,7 @@ const useUserOptions = (channel?: Channel) => {
       });
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
     },
   });
 

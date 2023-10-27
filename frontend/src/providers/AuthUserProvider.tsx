@@ -17,7 +17,7 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
   const updateUser = async () => {
     const cookieValue = Cookies.get("jwt");
     if (cookieValue !== undefined) {
-      //console.log(cookieValue);
+      ////console.log(cookieValue);
       if (cookieValue !== "")
         useUpdateCurrentUser()
           .then((res) => {
@@ -28,7 +28,7 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
             setCurrentUser(res);
             setLoading(false);
           })
-          .catch((err) =>{});
+          .catch((err) => {});
       else setLoading(false);
     } else {
       setLoading(false);

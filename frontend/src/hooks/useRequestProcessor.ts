@@ -7,14 +7,14 @@ export function useRequestProcessor() {
   function useQueryWrapper(queryArgs: QueryArgs) {
     return useQuery(queryArgs.queryKey, queryArgs.queryFunction, {
       onSuccess: (data: responseData) => {
-        //console.log("success")
+        ////console.log("success")
         // queryClient.invalidateQueries(queryArgs.queryKey);
         // queryArgs.options?.onSuccess && queryArgs.options?.onSuccess(data);
       },
       onError: (error: any) => {
-        //console.log("error")
+        ////console.log("error")
         queryArgs.options?.onError && queryArgs.options?.onError(error);
-        //console.log (error)
+        ////console.log (error)
         // ** display error message in ui
       },
     });

@@ -25,16 +25,15 @@ const CmProvider: React.FC<CmProviderProps> = ({ children }) => {
       setChannelMessages(reversed);
     },
     onError: (err) => {
-      //console.log (err)
+      ////console.log (err)
     },
   });
 
-  
-  useEffect(() => {
-    
-  }, [channelMessages]);
+  useEffect(() => {}, [channelMessages]);
   return (
-    <CmContext.Provider value={{ messages: channelMessages, setChannelMessages}}>
+    <CmContext.Provider
+      value={{ messages: channelMessages, setChannelMessages }}
+    >
       {children}
     </CmContext.Provider>
   );

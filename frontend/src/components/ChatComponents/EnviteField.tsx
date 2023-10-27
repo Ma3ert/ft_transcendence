@@ -38,7 +38,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
     } else if (type == "received") {
       setPeer(Users!.find((user) => user.id == envite.senderId));
     }
-    //console.log (envite)
+    ////console.log (envite)
   }, [Users]);
   return (
     <Button minH="50px" variant={"field"} w={"100%"} h="auto" p={2}>

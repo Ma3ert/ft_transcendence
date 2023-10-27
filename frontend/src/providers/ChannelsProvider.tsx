@@ -23,7 +23,7 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
       if (activeChannel === null) setActiveChannel(data[0]);
     },
     onError: (err) => {
-      //console.log(err)
+      ////console.log(err)
     },
   });
 

@@ -18,7 +18,7 @@ const ChatInterface: React.FC = ({}) => {
 
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
-    //console.log(type);
+    ////console.log(type);
   }, []);
   return (
     <Stack h="100%" w="100%" justifyContent={"center"}>

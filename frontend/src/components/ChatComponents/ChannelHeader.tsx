@@ -21,7 +21,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
       setChannel(data);
     },
     onError: (err) => {
-      //console.log(err);
+      ////console.log(err);
     },
   });
   return (

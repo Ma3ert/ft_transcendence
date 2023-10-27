@@ -13,7 +13,7 @@ const TimerComponent: React.FC<TimerComponentProps> = ({ bg }) => {
   // Update the progress value at regular intervals
   const updateProgress = () => {
     setTimer(timer - 1);
-    //console.log(timer);
+    ////console.log(timer);
     setProgress((timer / maxProgressValue) * 100);
   };
 
