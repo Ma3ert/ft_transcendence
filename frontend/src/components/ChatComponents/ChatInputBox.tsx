@@ -49,7 +49,6 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       <Button
         isDisabled={joinGameStatus}
         onClick={() => {
-
           socket!.emit("DM", {
             senderId:currentUser!.id,
             receiverId:activePeer!.id,
