@@ -3,6 +3,7 @@ import { Button, FormControl, HStack, Input, Image } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 import { Socket, io } from "socket.io-client";
+import gameSocket from "../GameComponents/socket"
 import {
   ChannelsContext,
   ChatContext,
@@ -54,11 +55,10 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       <Button
         isDisabled={joinGameStatus}
         onClick={() => {
-          socket!.emit("DM", {
+          gameSocket!.emit("gameJoinQueue");
+          socket!.emit("GameInvite", {
             senderId: currentUser!.user.id,
             receiverId: activePeer!.id,
-            message: "",
-            game: true,
           });
           //console.log("sending game invitation");
         }}

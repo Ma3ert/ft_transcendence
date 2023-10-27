@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Ball from "./ball";
 import Player from "./player";
 import GameHeader from "./GameHeader";
@@ -21,6 +21,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import ButtonStack from "../ButtonStack";
+import { UsersContext } from "@/context/Contexts";
 
 export interface Game {
   playerOne: Player;
@@ -41,6 +42,7 @@ const Game = () => {
   const { gameSettings } = useGame();
   const [score, setScore] = useState({});
   const { currentUser, updateUser } = useAuth();
+  const {onClose:CloseHandler} = useContext (UsersContext)
   const [game] = useState<Game>({
     playerOne: new Player(0, 200, 20, 100, "transparent", 1),
     playerTwo: new Player(780, 200, 20, 100, "transparent", 2),
@@ -123,6 +125,7 @@ const Game = () => {
     });
 
     socket.on("startGameSession", () => {
+      CloseHandler! ();
       setMessage("");
       //console.log("i get here")
       var theme = { one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9" };

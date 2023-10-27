@@ -20,7 +20,7 @@ const GameHeader = ({ score, user, opponent, playerID }: GameHeaderProps) => {
             flexDir={playerID === 1 ? "row" : "row-reverse"}
         >
             <HStack justifyContent="flex-start">
-                {user.avatar && <Avatar src={user.avatar || ""} border="1px solid #D9D9D9" />}
+                <Avatar src={user.avatar} border="1px solid #D9D9D9"/>
                 <VStack alignItems="flex-start" gap={1} width="120px">
                     <Heading fontSize={18} color={playerID === 1 ? "#DC585B" : "#D9D9D9"}>
                         You
@@ -42,7 +42,7 @@ const GameHeader = ({ score, user, opponent, playerID }: GameHeaderProps) => {
                 <ThemeCircle left={"#5B6171"} right={"#252932"} size={"20px"} onClick={() => themeSetter({one: "#252932", two: "#5B6171", ball: "#DC585B"})}/>
             </HStack> */}
             <HStack>
-                {opponent.avatar && <Avatar src={opponent.avatar || ""} border="1px solid #D9D9D9" />}
+                <Avatar src={opponent.avatar.includes("http") ? opponent.avatar : "http://e1r9p3.1337.ma:3000/public/users/imgs/" + opponent.avatar} border="1px solid #D9D9D9" />
                 <VStack alignItems="flex-start" gap={1} width="120px">
                     <Heading fontSize={18} color={playerID === 2 ? "#DC585B" : "#D9D9D9"}>
                         {(opponent.username && opponent.username) || ""}
