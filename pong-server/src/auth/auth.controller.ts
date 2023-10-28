@@ -10,7 +10,7 @@ import {
   Res,
   Patch,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoggedInGuard } from './utils/LoggedIn.guard';
 import { UsersService } from 'src/users/users.service';
@@ -29,10 +29,9 @@ export class AuthController {
 
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
-  async handleRedirect(@Req() req: any, @Res() res: Response) {
+  async handleRedirect(@Req() req: Request, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
-    // res.status(200).json({status: 'success', message: "User authenticated successfully"})
     res.redirect('http://e1r9p3.1337.ma:3001/ChangeUserName');
   }
 
@@ -47,7 +46,6 @@ export class AuthController {
       twoFactor: user.twoFactorStatus,
     });
     res.cookie('jwt', '');
-    // res.status(200).json({ message: 'User logged out successfully' });
     res.redirect('http://e1r9p3.1337.ma:3001/');
   }
 
@@ -76,13 +74,12 @@ export class AuthController {
     const pin = await this.authService.generateTwoFactorPin(request.user);
     if (!pin)
       throw new HttpException('Failed to generate two factor code, please retry.', HttpStatus.UNAUTHORIZED);
-    //console.log('Your pin: ', pin);
-    // const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
-    // if (email)
-    //   return {
-    //     status: 'success',
-    //     message: 'Two factor code sent to your 42 intra email, please check your mailbox.',
-    //   };
+    const email = await this.authService.sendTwoFactorToken(pin.toString(), request.user);
+    if (email)
+      return {
+        status: 'success',
+        message: 'Two factor code sent to your 42 intra email, please check your mailbox.',
+      };
   }
 
   @Post('/twoFactor')

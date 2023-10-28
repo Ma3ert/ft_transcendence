@@ -365,8 +365,6 @@ export class GameService {
               : (gameSession.winner = 2);
             server.to(session).emit('endGame', this.createSessionData(session));
             this.endGameSession(session);
-            this.allPlayers.delete(gameSession.players[0].user);
-            this.allPlayers.delete(gameSession.players[1].user);
             clearInterval(gameSession.interval);
           }
         }
@@ -378,17 +376,16 @@ export class GameService {
 
   async endGameSession(gameSessionId: string) {
     const gameSession = this.gameSessions.get(gameSessionId);
-    const playerOne = gameSession.players[0];
-    const playerTwo = gameSession.players[1];
+    const playerOne = gameSession.players.find((player) => player.id === 1);
+    const playerTwo = gameSession.players.find((player) => player.id === 2);
     const playerOneUser = await this.usersService.findById(playerOne.user);
     const playerTwoUser = await this.usersService.findById(playerTwo.user);
     const levelOneXP = 100;
     const winnerReward = 50;
     const expFactor = 1.5;
-
     //Do the caluculation of how much the xp and laddel should increment by and save that for each user
     if (playerOne.score != playerTwo.score) {
-      const winner = playerOne.score > playerTwo.score ? playerOneUser : playerTwoUser;
+      const winner = gameSession.winner === 1 ? playerOneUser : playerTwoUser;
       const requiredNextLevelXP = levelOneXP * Math.floor(Math.pow(expFactor, winner.level));
       if (winner.xp + winnerReward >= requiredNextLevelXP)
         await this.usersService.updateUserAll(winner.id, { level: winner.level + 1 });

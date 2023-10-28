@@ -697,4 +697,12 @@ export class ChatService {
       },
     });
   }
+
+  async getPublicChannels(){
+    return await this.prismaService.channel.findMany({
+      where:{
+        type:Type.PUBLIC,
+      },
+    })
+  }
 }
