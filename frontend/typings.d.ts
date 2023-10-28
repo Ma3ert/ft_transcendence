@@ -116,6 +116,15 @@ interface AppNavigationContext {
   setStatsSection?: (value: StatsSection) => void;
 }
 
+type UserStatus = {
+  userId?: string;
+  status?: string;
+}
+
+type UserStatusContext = {
+  userStatus?: UserStatus | null;
+  setUserStatus?: React.Dispatch<React.SetStateAction<UserStatus | null>>;
+};
 interface ChatContext {
   chatType?: ChatType;
   setCurrentChat?: React.Dispatch<React.SetStateAction<ChatType>>;
@@ -234,10 +243,15 @@ type UsersContext = {
   setFriendsConversations?: React.Dispatch<React.SetStateAction<User[]>>;
   chatNotifications?: boolean;
   inviteNotifications?: boolean;
-  setChatNotifications:React.Dispatch<React.SetStateAction<boolean>>;
-  setInviteNotifications:React.Dispatch<React.SetStateAction<boolean>>;
-  userStatus?: string;
-  setUserStatus:React.Dispatch<React.SetStateAction<string>>;
+  setChatNotifications?:React.Dispatch<React.SetStateAction<boolean>>;
+  setInviteNotifications?:React.Dispatch<React.SetStateAction<boolean>>;
+  userStatus?: UserStatus;
+  setUserStatus?:React.Dispatch<React.SetStateAction<UserStatus>>;
+  isOpen?:boolean
+  onClose?:() => void
+  onOpen?: () => void
+  gameInviteSender?: string 
+  setGameInviteSender?:React.Dispatch<SetStateAction<string>>
 };
 // Chat Events Types
 
@@ -332,6 +346,7 @@ type ModalWrapperContext = {
 
 type CmContext = {
   messages?: ChannelMessage[];
+  setChannelMessages?: React.Dispatch<SetStateAction<ChannelMessage[]>>
 };
 
 type DmContext = {
@@ -356,3 +371,10 @@ type ChatNotification = { DM: string[]; CM: string[] };
 type checkStatus = {status:string} 
 type readChatNotification = {channel:boolean, Id:string}
 type StatsSection = 'stats' |  'history' 
+
+type InvitesContext = {
+  channelRecieved?:GlobalInvite []
+  channelSent?:GlobalInvite []
+  friendRecieved?:GlobalInvite []
+  friendSent?:GlobalInvite []
+}

@@ -1,9 +1,8 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Stack } from "@chakra-ui/react";
 import IconButton from "./IconButton";
 import { AiFillHome } from "react-icons/ai";
-import { BiSolidBell } from "react-icons/bi";
 import { FaMedal } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
@@ -16,7 +15,7 @@ interface Props {
 }
 
 const SideBar: React.FC<Props> = ({ }) => {
-  const size = "25px";
+  const size = {base: "20px", lg: "25px", xl: "30px"};
   const links = new Map<Section, React.ElementType>();
   const routes = new Map<string, string>()
   const {inviteNotifications} = useContext(UsersContext)
@@ -32,6 +31,7 @@ const SideBar: React.FC<Props> = ({ }) => {
   routes.set("friends", "/Friends");
   routes.set("settings", "/Settings");
 
+  
   return (
     <Stack
       spacing={{ sm: 8, md: 10, lg: 12, xl: 14 }}
@@ -44,11 +44,10 @@ const SideBar: React.FC<Props> = ({ }) => {
         if (section == "friends") {
           return (
            <Link key={section} href={routes.get (section)!}>
-             <NotificationWrapper  type='activeChat' status={inviteNotifications!}>
+             <NotificationWrapper status={inviteNotifications!}>
               <IconButton
                 icon={icon}
                 size={size}
-                // currentSection === section ? "#DC585B" :
  />
             </NotificationWrapper>
            </Link>
@@ -57,8 +56,6 @@ const SideBar: React.FC<Props> = ({ }) => {
         return (
         <Link key={section} href={routes.get (section)!}>
           <IconButton
-          // currentSection === section ? "#DC585B" :
-          // currentSection === section ? "35px" : 
             icon={icon}
             size={size}
           />

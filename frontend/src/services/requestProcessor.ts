@@ -1,39 +1,45 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "http://e1r9p3.1337.ma:3000/",
 });
 
 class apiClient<T> {
-  
   endPoint: string;
   constructor(endPoint: string) {
     this.endPoint = endPoint;
   }
 
   postData = (data: T | any, suffix = "") => {
-    return axiosInstance.post(this.endPoint + suffix, data, { withCredentials: true });
+    return axiosInstance.post(this.endPoint + suffix, data, {
+      withCredentials: true,
+    });
   };
 
   updateData = (data: T, headers: any | undefined) => {
     return axiosInstance.put(this.endPoint, data, {
       headers,
-      withCredentials: true
+      withCredentials: true,
     });
   };
 
   deleteData = (suffix = "") => {
     return axiosInstance.delete(this.endPoint + suffix, {
-      withCredentials: true
+      withCredentials: true,
     });
-  }
-
-  getData = (suffix = "", params?: any) => {
-    return axiosInstance.get<T>(this.endPoint + suffix, { withCredentials: true, params });
   };
 
-  patchData = (data: T, suffix= "") => {
-    return axiosInstance.patch<T>(this.endPoint + suffix, data, { withCredentials: true });
+  getData = (suffix = "", params?: any) => {
+    return axiosInstance.get<T>(this.endPoint + suffix, {
+      withCredentials: true,
+      params,
+    });
+  };
+
+  patchData = (data: T, suffix = "") => {
+    return axiosInstance.patch<T>(this.endPoint + suffix, data, {
+      withCredentials: true,
+    });
   };
 }
 

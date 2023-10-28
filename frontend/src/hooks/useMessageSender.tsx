@@ -19,7 +19,7 @@ const useMessageSender = (
           socket!,
           {
             message: message,
-            senderId: currentUser!.id,
+            senderId: currentUser!.user!.id,
             receiverId: activePeer!.id,
             game: false,
           },
@@ -31,7 +31,7 @@ const useMessageSender = (
           {
             message: message!,
             receiverId: activePeer!.id,
-            senderId: currentUser!.id,
+            senderId: currentUser!.user!.id,
             game: true,
           },
           "DM"
@@ -41,7 +41,7 @@ const useMessageSender = (
       const messageBody: ChannelMessage = {
         message: message!,
         channelId: activeChannel!.id!,
-        senderId: currentUser!.id,
+        senderId: currentUser!.user!.id,
       };
       SendMessage(socket!, messageBody, "CM");
     }

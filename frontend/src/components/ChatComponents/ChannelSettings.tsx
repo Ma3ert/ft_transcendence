@@ -8,75 +8,84 @@ import {
   Icon,
   Image,
   Wrap,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
-import { ProtectedChannelSettings, channelSettings, ChannelMemberSettings } from "../../../contstants";
+import {
+  ProtectedChannelSettings,
+  channelSettings,
+  ChannelMemberSettings,
+} from "../../../contstants";
 import CostumSwitcher from "./CostumSwitcher";
 import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
 import { ModalWrapper } from "@/components/Wrappers/ModalWrapper";
 import { SlArrowRight } from "react-icons/sl";
-import { ChannelsContext, MembersContext, UsersContext } from "@/context/Contexts";
+import {
+  ChannelsContext,
+  MembersContext,
+  UsersContext,
+} from "@/context/Contexts";
 import { useQuery } from "react-query";
 import apiClient from "@/services/requestProcessor";
 import useChannelManager from "@/hooks/useChannelManager";
 import { getUserRole } from "../../../utils/helpers";
-import EditeChannel, {VisibilityPopOver} from "./EditeChannel";
+import EditeChannel, { VisibilityPopOver } from "./EditeChannel";
 import ChannelsListSection from "../Sections/ChannelsListSection";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
-interface ChannelSettingsProps {
-}
+import InviteMultipleToChannel from "./InviteMultipleToChannel";
+interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   // eslint-disable-next-line react/jsx-key
   const { removeChannel, leaveChannel } = useChannelManager();
-  const [settingsList, setSettings] = useState<string[]> (channelSettings)
-  const {members} = useContext (MembersContext)
-  const {activeChannel} = useContext (ChannelsContext)
-  const {currentUser} = useAuth ()
+  const [settingsList, setSettings] = useState<string[]>(channelSettings);
+  const { members } = useContext(MembersContext);
+  const { activeChannel } = useContext(ChannelsContext);
+  const { currentUser } = useAuth();
 
   const settings = new Map([
     [
       "Members",
       // eslint-disable-next-line react/jsx-key
-       <MembersList  members={members!} />,
+      <MembersList members={members!} />,
     ],
     [
       "Set password",
       // eslint-disable-next-line react/jsx-key
-       <SetPassword />,
+      <SetPassword />,
     ],
     [
       "Edit Channel",
       // eslint-disable-next-line react/jsx-key
-       <EditeChannel channel={activeChannel!} />,
-    ]
-   
+      <EditeChannel channel={activeChannel!} />,
+    ],
   ]);
   const settingsActions = new Map([
     ["delete", () => removeChannel(activeChannel!.id!)],
     ["leave", () => leaveChannel(activeChannel!.id!)],
   ]);
 
-  const isPrivliged = () =>{
-    if (getUserRole (currentUser!, members!) === "OWNER" || getUserRole (currentUser!, members!)  === 'ADMIN')
-      return true
-    return false
-  }
-  useEffect (()=>{
-    console.log (`channel type : -----> ${activeChannel!.type}`)
-    console.log (`logged in user role : -----> ${getUserRole (currentUser!, members!)}`)
-    console.table (members)
-    if (isPrivliged ()) {
-      if (activeChannel!.type === 'PROTECTED')
-        setSettings (ProtectedChannelSettings)
-      else
-        setSettings (channelSettings)
+  const isPrivliged = () => {
+    if (
+      getUserRole(currentUser!.user!, members!) === "OWNER" ||
+      getUserRole(currentUser!.user!, members!) === "ADMIN"
+    )
+      return true;
+    return false;
+  };
+  useEffect(() => {
+    ////console.log (`channel type : -----> ${activeChannel!.type}`)
+    ////console.log (`logged in user role : -----> ${getUserRole (currentUser!.user!, members!)}`)
+    // console.table(members);
+    if (isPrivliged()) {
+      if (activeChannel!.type === "PROTECTED")
+        setSettings(ProtectedChannelSettings);
+      else setSettings(channelSettings);
     } else {
-        setSettings (ChannelMemberSettings)
-      }
-  }, [members])
+      setSettings(ChannelMemberSettings);
+    }
+  }, [members]);
   return (
     <Stack
       spacing={5}
@@ -108,7 +117,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
           minH={"45vh"}
           maxH="auto"
         >
-           {isPrivliged () && (<VisibilityPopOver />)}
+          {isPrivliged() && <VisibilityPopOver />}
           {settingsList.map((setting, index) => {
             return (
               <ModalWrapper
@@ -116,7 +125,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
                 type="regular"
                 key={index}
                 buttonVariant="largeGhost"
-                variant={setting === 'Members' ? 'largeModal' : 'default'}
+                variant={setting === "Members" ? "largeModal" : "default"}
                 buttonValue={
                   <HStack w="100%" h="100%" justifyContent="space-between">
                     <Text>{setting}</Text>
@@ -133,28 +142,28 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       <Stack spacing={3}>
         <ModalWrapper
           action={
-              getUserRole (currentUser!, members!) == "OWNER"
+            getUserRole(currentUser!.user!, members!) == "OWNER"
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
-          actionDescription={`${getUserRole (currentUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel`}
+          actionDescription={`${
+            getUserRole(currentUser!.user!, members!) == "OWNER"
+              ? "Delete"
+              : "Leave"
+          } Channel`}
           buttonValue={
             <Text>
-              {getUserRole (currentUser!, members!) == "OWNER" ? "Delete" : "Leave"} Channel
+              {getUserRole(currentUser!.user!, members!) == "OWNER"
+                ? "Delete"
+                : "Leave"}{" "}
+              Channel
             </Text>
           }
           buttonVariant="largePrimary"
           isOption={false}
         />
-        <Button
-          colorScheme="darkGhost"
-          color={"#5B6171"}
-          borderRadius={"2xl"}
-          _hover={{ opacity: 0.8 }}
-        >
-          Envite
-        </Button>
+        <InviteMultipleToChannel Members={members} channel={activeChannel!} />
       </Stack>
     </Stack>
   );

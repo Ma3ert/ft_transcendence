@@ -1,36 +1,19 @@
-import useOptionsManager from "@/hooks/useOptionsManager";
 import { ModalWrapper } from "../Wrappers/ModalWrapper";
-import { useContext } from "react";
-import {
-  UsersContext,
-  AppNavigationContext,
-  ChatContext,
-} from "@/context/Contexts";
 import { Text } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
+import useOptionModals  from "@/hooks/useOptionModals";
+import useActions from "@/hooks/useActions"
 interface OptionModalProps {
   user: User;
   setting: MenuOption;
-  userIsBlocked?: boolean;
 }
 
 const OptionModal: React.FC<OptionModalProps> = ({
   user,
   setting,
-  userIsBlocked,
 }) => {
-  const {friendsList } = useContext(UsersContext);
-  const {currentUser} = useAuth ()
-  const { currentSection } = useContext(AppNavigationContext);
-  const { chatType } = useContext(ChatContext);
-  const { getChecker, modals, actions } = useOptionsManager(
-    currentUser!,
-    user,
-    friendsList!,
-    currentSection!,
-    chatType!,
-    userIsBlocked!
-  );
+  const { modals, } = useOptionModals(user);
+  const {actions}= useActions (user!)
   return (
     <>
       {setting.type === "critical" ? (

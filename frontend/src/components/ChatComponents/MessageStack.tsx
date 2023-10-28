@@ -16,9 +16,6 @@ const MessageStack: React.FC<MessageStackProps> = () => {
   
 
   useEffect(() => {
-    console.log(
-      `scrollTop ${containerRef.current?.scrollTop} scrollHeight ${containerRef.current?.scrollHeight}}`
-    );
     scrollContainerToBottom();
   }, [dms, cms, joinGameStatus]);
 

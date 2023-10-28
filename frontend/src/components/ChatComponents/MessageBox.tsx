@@ -10,12 +10,12 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
   const { activePeer} = useContext(UsersContext);
   const {currentUser} = useAuth ()
   return (
-    <HStack justify={(Message.senderId != currentUser!.id) ? "end" : "start"} w="98%" mx="auto">
+    <HStack justify={(Message.senderId != currentUser!.user!.id) ? "end" : "start"} w="98%" mx="auto">
       <Stack
         borderRadius={"2xl"}
-        bg={(Message.senderId != currentUser!.id) ? "#252932" : "#5B6171"}
+        bg={(Message.senderId != currentUser!.user!.id) ? "#252932" : "#5B6171"}
         justify={"center"}
-        alignItems={(Message.senderId != currentUser!.id) ? "end" : "start"}
+        alignItems={(Message.senderId != currentUser!.user!.id) ? "end" : "start"}
         w="auto"
         px={2}
         py={2}
@@ -27,9 +27,9 @@ const MessageBox: React.FC<MessageBoxProps> = ({ Message }) => {
         }}
       >
         <Text color="#DC585B" fontSize={"md"} fontWeight={"bold"}>
-          {(Message.senderId != currentUser!.id) ?  activePeer?.username :  "You"}
+          {(Message.senderId != currentUser!.user!.id) ?  activePeer?.username :  "You"}
         </Text>
-        <Text color={(Message.senderId != currentUser!.id) ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
+        <Text color={(Message.senderId != currentUser!.user!.id) ? "#5B6171" : "#1D222C"} fontSize={"sm"}>
           {Message!.message}
         </Text>
       </Stack>

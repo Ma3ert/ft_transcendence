@@ -1,36 +1,39 @@
-import axios from 'axios'
-import { useMutation, useQueryClient } from 'react-query'
-import { useToast } from "@chakra-ui/react"    
+import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
+import { useToast } from "@chakra-ui/react";
 interface AvatarData {
-    avatar:string
-    channel:string
-  }
-
-const useAvatarUpdater = () => {
-
-    const toast  = useToast ()
-    const queryClient = useQueryClient ()
-    const updateAvatarMutation = useMutation ({
-        mutationFn: async (req:AvatarData) => await axios.patch(`http://localhost:3000/chat/channels/avatar`, {...req}, {
-        withCredentials:true
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries('channels')
-        toast ({
-          title: "Avatar updated successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        })
-      },
-      onError : (error) => console.log(error)
-    }
-    )
-
-    function updateAvatar (req:AvatarData) {
-        updateAvatarMutation.mutate(req)
-    }
-    return {updateAvatar}
+  avatar: string;
+  channel: string;
 }
 
-export default useAvatarUpdater
+const useAvatarUpdater = () => {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const updateAvatarMutation = useMutation({
+    mutationFn: async (req: AvatarData) =>
+      await axios.patch(
+        `http://e1r9p3.1337.ma:3000/chat/channels/avatar`,
+        { ...req },
+        {
+          withCredentials: true,
+        }
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries("channels");
+      toast({
+        title: "Avatar updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onError: (error) => {}
+  });
+
+  function updateAvatar(req: AvatarData) {
+    updateAvatarMutation.mutate(req);
+  }
+  return { updateAvatar };
+};
+
+export default useAvatarUpdater;

@@ -31,7 +31,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('who')
   getCurrentUser(client: AuthSocket) {
-    this.server.to(client.id).emit('currentUser', client.user)
+    this.server.to(client.id).emit('currentUser', client.user);
     // client.emit('currentUser', client.user);
   }
 
@@ -50,9 +50,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.gameService.createGameInvite(sendingUser, receivingUser, this.server);
   }
 
-  @SubscribeMessage("gameMovePlayer")
-  moveGamePlayer(client: AuthSocket, payload: any)
-  {
+  @SubscribeMessage('gameMovePlayer')
+  moveGamePlayer(client: AuthSocket, payload: any) {
     this.gameService.getGameInput(payload);
   }
 
@@ -72,7 +71,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   handleConnection(client: AuthSocket) {
-    console.log("New User");
+    //console.log("New User");
     if (!(this.socketUsers.size > 0 && this.socketUsers.has(client.user.id)))
       this.socketUsers.set(client.user.id, client);
   }

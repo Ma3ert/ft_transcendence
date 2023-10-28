@@ -21,7 +21,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
       setChannel(data);
     },
     onError: (err) => {
-      console.log(err);
+      ////console.log(err);
     },
   });
   return (
@@ -30,7 +30,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
         <>
           <Avatar
             borderRadius={"15px"}
-            src={`http://localhost:3000/${channel!.avatar}`}
+            src={`http://e1r9p3.1337.ma:3000/${channel!.avatar}`}
             name={channel?.name}
             size="sm"
           />

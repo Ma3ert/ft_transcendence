@@ -17,21 +17,16 @@ const NotificationBadge: React.FC = ({}) => {
 interface NotificationWrapperProps {
   children: React.ReactNode;
   status?: boolean;
-  type: notificationType;
 }
 export const NotificationWrapper: React.FC<NotificationWrapperProps> = ({
   children,
   status,
-  type,
 }) => {
-  const { chatNotification, requestNotification } = useContext(ChatContext);
 
   return (
     <Box position={"relative"}>
       {children}
-      {type === "unactiveChat" && chatNotification && <NotificationBadge />}
-      {type === "request" && requestNotification && <NotificationBadge />}
-      {type === "activeChat" && status && <NotificationBadge />}
+     {status && <NotificationBadge />}
     </Box>
   );
 };

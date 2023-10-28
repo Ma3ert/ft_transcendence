@@ -18,7 +18,7 @@ const InviteToChannel = ({users}: Props) => {
                 <ModalBody>
                     <Stack align={"center"} spacing={"28px"}>
                         <Input  p={0} variant={"default"} w={"315px"} h={"41px"} placeholder='Search for a friend'></Input>
-                        <ScrollableStack width={290} height={270} items={users} spacing='10px'/>
+                        <ScrollableStack  height={270} items={users} spacing='10px'/>
                     </Stack>
                 </ModalBody>
             </ModalContent>

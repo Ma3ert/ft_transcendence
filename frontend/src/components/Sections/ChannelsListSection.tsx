@@ -10,19 +10,9 @@ import { ModalWrapper } from "../Wrappers/ModalWrapper";
 import NewChannel from "../ChatComponents/NewChannel";
 interface ChannelsListProps {}
 
-
 const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
   const userChannelsClient = new apiClient("/chat/channels/");
-  const [channelsList, setChannels] = useState<Channel[]>([]);
-  useQuery("channels", {
-    queryFn: () => userChannelsClient.getData().then((res) => res.data),
-    onSuccess: (data: Channel[]) => {
-      setChannels(data);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  const {Channels} = useContext (ChannelsContext)
 
   return (
     <Stack
@@ -32,18 +22,23 @@ const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <FriendsListHeader type="channels" setChannelsList={setChannels} />
+      <FriendsListHeader type="channels"  />
       <ScrollableStack>
-        {channelsList.length ? (
-          channelsList!.map((channel, index) => (
+        {Channels!.length ? (
+          Channels!.map((channel, index) => (
             <ChannelField key={index} channel={channel} />
           ))
         ) : (
-          <Stack w="100%" h="100%" justifyContent="center" alignItems="center" spacing={5}>
+          <Stack
+            w="100%"
+            h="100%"
+            justifyContent="center"
+            alignItems="center"
+            spacing={5}
+          >
             <p style={{ color: "#5B6171" }}>
               You have no channels at the moment
             </p>
-           
           </Stack>
         )}
       </ScrollableStack>

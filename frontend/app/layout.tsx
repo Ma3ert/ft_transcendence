@@ -15,6 +15,7 @@ import ChatProvider from "@/providers/ChatProvider";
 import ChannelsProvider from "@/providers/ChannelsProvider";
 import AppNavigationProvider from "@/providers/AppNavigationProvider";
 import GameProvider from "@/providers/GameProvider";
+import InvitesProvider from "@/providers/InvitesProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,13 +43,15 @@ export default function RootLayout({
             <ChakraProvider theme={theme}>
               <GlobalProvider>
                 <GameProvider>
-                  <UsersProvider>
-                    <AppNavigationProvider>
-                      <ChatProvider>
-                        <ChannelsProvider>{children}</ChannelsProvider>
-                      </ChatProvider>
-                    </AppNavigationProvider>
-                  </UsersProvider>
+                  <InvitesProvider>
+                    <UsersProvider>
+                      <AppNavigationProvider>
+                        <ChatProvider>
+                          <ChannelsProvider>{children}</ChannelsProvider>
+                        </ChatProvider>
+                      </AppNavigationProvider>
+                    </UsersProvider>
+                  </InvitesProvider>
                 </GameProvider>
               </GlobalProvider>
             </ChakraProvider>

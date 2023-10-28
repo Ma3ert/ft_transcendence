@@ -1,11 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { Avatar, HStack, Text, Stack } from "@chakra-ui/react";
-import { ChannelsContext, ChatContext , UsersContext} from "@/context/Contexts";
+import { ChannelsContext, ChatContext, UsersContext } from "@/context/Contexts";
 import { PRIVATE, CHANNEL } from "@/../contstants";
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import apiClient from "@/services/requestProcessor";
 import PeerHeader from "./PeerHeader";
 import ChannelHeader from "./ChannelHeader";
+import UserStatusProvider from "@/providers/UserStatusProvider";
 
 interface UserChannelHeaderProps {
   status?: userStatus;
@@ -14,14 +15,16 @@ interface UserChannelHeaderProps {
 const UserChannelHeader: React.FC<UserChannelHeaderProps> = ({ status }) => {
   const { chatType } = useContext(ChatContext);
 
-
   useEffect(() => {
-    console.log ('chat type ' + chatType)
-  }, [])
-  return (
-    chatType == PRIVATE ? <PeerHeader  /> : <ChannelHeader />
+    ////console.log("chat type " + chatType);
+  }, []);
+  return chatType == PRIVATE ? (
+    <UserStatusProvider>
+      <PeerHeader />
+    </UserStatusProvider>
+  ) : (
+    <ChannelHeader />
   );
 };
-
 
 export default UserChannelHeader;

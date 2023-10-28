@@ -125,6 +125,43 @@ const ModalStyle: ComponentStyleConfig = {
         margin: "0px",
         px: "0px",
         py: "10px",
+        w:'auto',
+        h:'auto',
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center'
+      },
+      closeButton: {
+        fontStyle: "bold",
+        fontSize: "8px",
+        boxSize: "20px",
+        borderRadius: "full",
+        bg: "#DC585B",
+        color: "#252932",
+        _active: {
+          transform: "scale(1.1)",
+        },
+      },
+    },
+    invite: {
+      dialog: {
+        fontFamily: "visbyRound",
+        bg: "transparent",
+        borderRadius: "20px",
+        padding: "auto",
+        px: "30px",
+        py: "40px",
+      },
+      body: {
+        fontFamily: "visbyRound",
+        margin: "0px",
+        px: "0px",
+        py: "10px",
+        w:'auto',
+        h:'auto',
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center'
       },
       closeButton: {
         fontStyle: "bold",

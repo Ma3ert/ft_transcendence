@@ -149,22 +149,23 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     message:string,
     game:boolean
   })
-  { // need some refactoring
-    if (data.game === false)
-    {
-      await this.chatService.createDirectMessage(data.senderId, data.receiverId, data.message);
-      await this.notificationService.createDirectMessageNotification(data.senderId, data.receiverId);
-      //if user is logged in i will sent a checkNotificatoin event to all loggedIn users.
-      this.server.to(data.senderId).emit("DM", data);
-      this.server.to(data.receiverId).emit("DM", data);
-      this.checkUserNotification(data.receiverId);
-      this.chatNotification(data.receiverId);
-    }
-    else
-    {
-      this.server.to(data.senderId).emit("DM", data);
-      this.server.to(data.receiverId).emit("DM", data);
-    }
+  { 
+    await this.chatService.createDirectMessage(data.senderId, data.receiverId, data.message);
+    await this.notificationService.createDirectMessageNotification(data.senderId, data.receiverId);
+    this.server.to(data.senderId).emit("DM", data);
+    this.server.to(data.receiverId).emit("DM", data);
+    this.checkUserNotification(data.receiverId);
+    this.chatNotification(data.receiverId);
+  }
+
+  @SubscribeMessage('GameInvite')
+  async broadcastGameEnvite(client:AuthSocket, data:{
+    senderId:string
+    receiverId:string
+  })
+  {
+    this.server.to(data.senderId).emit("GameInvite",data);
+    this.server.to(data.receiverId).emit("GameInvite",data);
   }
 
   @SubscribeMessage('CM')
@@ -191,7 +192,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   @SubscribeMessage('readChatNotification')
   async readChatNotification(client: AuthSocket, data:{channel:boolean, Id:string})
   {
-    // check the notification table and change the read field from false to true.
     if (data.channel === true)
       await this.notificationService.readChannelNotification(client.user.id, data.Id);
     else
@@ -199,4 +199,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     await this.chatNotification(client.user.id);
   }
 
+  @SubscribeMessage('typing')
+  async typing(client: AuthSocket, data: { userId: string })
+  {
+    client.to(data.userId).emit("typing", { userId: client.user.id });
+  }
+
+  @SubscribeMessage('readInviteNotification')
+  async readInviteNotification(client: AuthSocket) {
+    await this.notificationService.readInviteNotification(client.user.id);
+    this.checkUserNotification(client.user.id);
+  }
 }

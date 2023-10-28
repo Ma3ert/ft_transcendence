@@ -1,21 +1,25 @@
 import React, { useContext, useEffect } from "react";
 import { ChatContext, UsersContext } from "@/context/Contexts";
-import { HStack, Stack, Text, Image, Button, Progress } from "@chakra-ui/react";
+import { HStack, Stack, Text, Image, Button, Progress, useToast } from "@chakra-ui/react";
 import TimerComponent from "./TimerComponent";
 import { useAuth } from "@/hooks/useAuth";
+import socket from "../GameComponents/socket";
 interface EnviteMessageProps {
   gameInviteSender?: string;
 }
 const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
-  const { joinGameStatus, setJoinGameStatus, gameInviteSender } =
+  const { setJoinGameStatus } =
     useContext(ChatContext);
-  const { activePeer } = useContext(UsersContext);
+  const {gameInviteSender} = useContext (UsersContext)
+  const { activePeer , onClose, friendsList} = useContext(UsersContext);
   const {currentUser} = useAuth ()
+  const Peer = friendsList?.find (item => item.id === gameInviteSender);
+  const toast  = useToast ()
 
   useEffect(() => {
     // Create a setTimeout to change the message after 3 seconds
     const timerId = setTimeout(() => {
-      setJoinGameStatus!(false);
+     onClose! ();
     }, 15000); // 3000 milliseconds (3 seconds)
 
     // Clean up the timer when the component unmounts or when needed
@@ -23,14 +27,14 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
   }, []);
   return (
     <HStack
-      justify={gameInviteSender !== currentUser!.id ? "end" : "start"}
+      justify={gameInviteSender !== currentUser!.user!.id ? "end" : "start"}
       w="98%"
       mx="auto"
       spacing={3}
     >
       <Stack
         borderRadius={"2xl"}
-        bg={gameInviteSender !== currentUser!.id ? "#252932" : "#5B6171"}
+        bg={gameInviteSender !== currentUser!.user!.id ? "#252932" : "#5B6171"}
         minW={"300px"}
         maxW="100%"
         px={2}
@@ -39,10 +43,10 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
         h="auto"
         spacing={5}
       >
-        <HStack spacing={5}>
+        <HStack spacing={5} justifyContent={'center'} alignItems={'center'}>
           <Image
             src={
-              gameInviteSender !== currentUser!.id
+              gameInviteSender !== currentUser!.user!.id
                 ? "/LightSolidLogo.png"
                 : "/DarkSolidLogo.png"
             }
@@ -53,32 +57,46 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
           <Stack justify={"center"} alignItems={"center"} p={2}>
             <Text
               color={
-                gameInviteSender !== currentUser!.id ? "#5B6171" : "#1D222C"
+                gameInviteSender !== currentUser!.user!.id ? "#5B6171" : "#1D222C"
               }
               fontSize={"sm"}
               fontWeight={"bold"}
             >
-              {gameInviteSender !== currentUser!.id
-                ? activePeer!.username
+              {gameInviteSender !== currentUser!.user!.id
+                ? (Peer!.username || 'a friend')
                 : "you"}{" "}
               Looking for a 1v1 ..
             </Text>
+            <HStack spacing={4}>
+              {gameInviteSender !== currentUser!.user!.id && (
+
             <Button
-              isDisabled={gameInviteSender === currentUser!.id}
               onClick={() => {
                 /// accept game invite
                 /// decline game inviate
-                setJoinGameStatus!(false);
+                // setJoinGameStatus!(false);
+                !toast.isActive("set") && toast ({
+                  id: "set",
+                  title: "setting up the game ...",
+                  status: "info"
+                })
+                onClose! ();
+                socket.emit("gameJoinQueue");
               }}
               variant={
-                gameInviteSender !== currentUser!.id ? "lightGray" : "darkGray"
+                gameInviteSender !== currentUser!.user!.id ? "lightGray" : "darkGray"
               }
             >
               {`let's go`}
             </Button>
+              )}
+              <Button color={"#DC585B"}  variant={'ghost'} 
+              onClick={()=> onClose! ()}
+              >decline</Button>
+            </HStack>
           </Stack>
         </HStack>
-      <TimerComponent bg={gameInviteSender !== currentUser!.id ? "#5B6171" : "#1D222C"}/>
+      <TimerComponent bg={gameInviteSender !== currentUser!.user!.id ? "#5B6171" : "#1D222C"}/>
       </Stack>
     </HStack>
   );

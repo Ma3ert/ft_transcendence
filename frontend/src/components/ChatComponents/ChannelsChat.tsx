@@ -5,12 +5,13 @@ import ChatNavigation from "../ChatComponents/ChatNavigation";
 import ChannelSettings from "../ChatComponents/ChannelSettings";
 import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, use } from "react";
 import {
   ChannelsContext,
   GlobalContext,
   UsersContext,
   DmContext,
+  CmContext,
 } from "@/context/Contexts";
 import { getUserRole } from "../../../utils/helpers";
 import CmProvider from "@/providers/CmProvider";
@@ -18,6 +19,24 @@ import MembersProvider from "@/providers/MemberProvider";
 import NoChannelsPage from "./NoChannelsPage";
 const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
+  const { socket } = useContext(GlobalContext);
+  const { messages, setChannelMessages } = useContext(CmContext);
+
+  useEffect(() => {
+    //console.log (`active channel id : ${activeChannel?.id}`)
+    socket!.on("CM", (message: any) => {
+      //console.log ('in channels', activeChannel)
+      if (activeChannel?.id === message.channelId) {
+        //console.log (` active channel : ${activeChannel?.id} channel : ${message.channelId}`)
+        const messagesList = [...messages!];
+        messagesList.push(message);
+        setChannelMessages!(messagesList);
+      }
+    });
+    return () => {
+      socket!.off("CM");
+    };
+  }, [activeChannel, messages]);
 
   return (
     <Stack w="100%" h="100%">
@@ -49,9 +68,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
                   w={"100%"}
                   h="100%"
                 >
-                  <CmProvider>
-                    <ChatBox />
-                  </CmProvider>
+                  <ChatBox />
                 </GridItem>
                 <GridItem
                   justifyContent="center"

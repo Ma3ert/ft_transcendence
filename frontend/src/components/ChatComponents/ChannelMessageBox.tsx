@@ -30,7 +30,7 @@ interface MessageBoxProps {
         >
           {sender && (
             <Text color="#DC585B" fontSize={"md"} fontWeight={"bold"}>
-            {(Message.senderId != currentUser!.id) ?  sender!.username :  "You"}
+            {(Message.senderId != currentUser!.user!.id) ?  sender!.username :  "You"}
           </Text>
           )}
           <Text color={"#5B6171"} fontSize={"sm"}>
