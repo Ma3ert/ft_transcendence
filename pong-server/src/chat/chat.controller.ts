@@ -438,4 +438,10 @@ export class ChatController {
     {
         await this.chatService.changeVisiblity(channelId, changeVisibility.type);
     }
+    
+    @Get('/channels/public')
+    @UseGuards(LoggedInGuard)
+    async public_channels(@Req() req:Request){
+        return await this.chatService.getPublicChannels();
+    }
 }
