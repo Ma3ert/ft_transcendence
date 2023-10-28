@@ -18,7 +18,9 @@ services:
       - '3000:3000'
     depends_on:
       - postgres
-
+    volumes:
+      - public:/usr/src/app/public
 
 volumes:
   pgdata:
+  public:

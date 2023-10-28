@@ -2,7 +2,7 @@ import { HStack, Icon, Text, Input, Button , Tooltip} from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import { TbArrowBackUp } from "react-icons/tb";
 import { ChannelsContext, UsersContext } from "@/context/Contexts";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { filterUsers, filterChannels } from "../../../utils/filterUsers";
 import { useQueryClient } from "react-query";
 import { ModalWrapper } from "../Wrappers/ModalWrapper";
@@ -12,15 +12,20 @@ interface FriendsListHeaderProps {
   type: "friends" | "channels";
   setUsersList?: React.Dispatch<React.SetStateAction<User[]>>;
   setChannelsList?: React.Dispatch<React.SetStateAction<Channel[]>>;
+  setPublicChannels?:React.Dispatch<React.SetStateAction<Channel[]>>
 }
 
 const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
   type,
   setUsersList,
   setChannelsList,
+  setPublicChannels,
 }) => {
+
+  const [input , setInput] = useState<string> ("")
   const { Users } = useContext(UsersContext);
-  const { Channels } = useContext(ChannelsContext);
+  const { Channels, PublicChannels } = useContext(ChannelsContext);
+  const {friendsList} = useContext (UsersContext)
   const queryClient = useQueryClient ()
   return (
    <HStack
@@ -41,6 +46,7 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
     >
       <Input
         flex={1}
+        value={input}
         outline={"none"}
         border={"none"}
         boxShadow={"none"}
@@ -55,9 +61,17 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
         fontSize={"sm"}
         py={2}
         onChange={(e) => {
+          setInput (e.target.value)
           if (type === "friends")
-            setUsersList!(filterUsers(e.target.value, Users!));
-          else setChannelsList!(filterChannels(e.target.value, Channels!));
+          {
+            setUsersList!(filterUsers(input, Users!));
+          }
+          else
+          {
+            setChannelsList!(filterChannels(input, Channels!));
+            setPublicChannels! (filterChannels(input, PublicChannels!))
+          } 
+            
         }}
       />
       <Button
@@ -69,8 +83,15 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
         py={2}
         onClick={()=>{
           if (type === "friends")
-            queryClient.invalidateQueries('friends')
-          else queryClient.invalidateQueries('channels');
+          {
+            setUsersList! (friendsList!)
+            setInput ("")
+              }
+          else 
+          {
+            setChannelsList! (Channels!)
+            setPublicChannels! (PublicChannels!)
+          };
         }}
       >
         <Icon as={TbArrowBackUp} fontSize={'23px'}/>

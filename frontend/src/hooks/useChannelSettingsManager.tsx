@@ -7,7 +7,7 @@ import { ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { AppNavigationContext } from "@/context/Contexts";
 
-const useChannelSettingsManager = () => {
+const useChannelSettingsManager = (User?:User) => {
   const upgradeUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/upgrade/${user.userid}/`);
   const sendChannelEnviteClient = (user: UserChannel) =>
@@ -31,7 +31,7 @@ const useChannelSettingsManager = () => {
       ////console.log(data);
       queryClient.invalidateQueries("channelSentEnvites");
       if (socket)
-        socket!.emit ("sendInvite");
+        socket!.emit ("sendInvite", {receiverId:User!.id});
       toast(Success("Envite to channel sent"));
     },
     onError: (error) => {

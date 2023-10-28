@@ -30,7 +30,7 @@ const MembersList: React.FC<MembersListProps> = ({ members, channel }) => {
       {members.length ? (
         <>
           {" "}
-          <FriendsListHeader />
+          {/* <FriendsListHeader /> */}
           <ScrollableStack h="50vh">
             {members!.map((member, index) => {
               return (

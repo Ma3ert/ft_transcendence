@@ -429,7 +429,7 @@ export class ChatController {
 
     @Get('/public')
     @UseGuards(LoggedInGuard)
-    async public_channels(){
+    async public_channels(@Req() req:Request){
         return await this.chatService.getPublicChannels();
     }
 
@@ -444,5 +444,4 @@ export class ChatController {
     {
         await this.chatService.changeVisiblity(channelId, changeVisibility.type);
     }
-    
 }
