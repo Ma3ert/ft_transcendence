@@ -292,6 +292,8 @@ type UserChannel = {
 type ChannelsContext = {
   Channels?: Channel[];
   setChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
+  PublicChannels?: Channel[];
+  setPublicChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
   activeChannel?: Channel | null;
   setActiveChannel?: React.Dispatch<React.SetStateAction<Channel | null>>;
   channelEnvites?: ChannelEnvite[];
@@ -333,7 +335,7 @@ type Member = {
   user: string;
   role: string;
   banned: boolean;
-  mutted: boolean;
+  muted: boolean;
 };
 
 type UserType = "FRIEND" | "USER" | "OWNER" | "MEMBER" | "ADMIN" | string;

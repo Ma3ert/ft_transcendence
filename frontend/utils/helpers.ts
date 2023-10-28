@@ -17,6 +17,6 @@ export const isUserBanned = (user:User, Members:Member[]) => {
     const res = Members.find(
       (member) => member.user === user!.id
     );
-    if (res) return res.mutted;
+    if (res) return res.muted;
     return false;
   }

@@ -77,7 +77,7 @@ const UserSetting = (props: Props) => {
       <Stack
         justifyContent={"center"}
         w={"100%"}
-        h={"60vh"}
+        h={"50vh"}
         bg={"#1D222C"}
         px={{ base: "25px", md: "45px" }}
         borderRadius={"20px"}

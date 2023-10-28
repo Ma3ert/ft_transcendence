@@ -41,7 +41,9 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     e && e!.preventDefault();
     if (chatType === PRIVATE) SendMessage(message);
     else {
-      if (currentMemeber?.banned || currentMemeber?.mutted) {
+      console.log (`current member : `)
+      console.log (currentMemeber)
+      if (!currentMemeber?.banned && !currentMemeber?.muted) {
         socket.emit("CM", {
           senderId: currentUser!.user.id,
           channelId: activeChannel!.id,
