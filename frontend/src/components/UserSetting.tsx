@@ -23,10 +23,12 @@ import { useUpdateCurrentUser } from "@/hooks/useUpdateCurrentUser";
 import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import CostumSwitcher from "./ChatComponents/CostumSwitcher";
+import {z} from 'zod'
 
 type Props = {};
 
 const client = new apiClient("/users");
+const inputScheme  = z.string ().min (4).max (14)
 const UserSetting = (props: Props) => {
   const { currentUser, updateUser } = useAuth();
   const toast = useToast();
@@ -44,11 +46,22 @@ const UserSetting = (props: Props) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const validation =  inputScheme.safeParse (inputValue)
+    if (!validation.success)
+    {
+      !toast.isActive("edit") &&
+        toast({
+          id: "edit",
+          title: "Unvalid Input",
+          status: "error",
+        });
+      return ;
+    }
     const formData = new FormData(event.target as HTMLFormElement);
     const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById("avatar") as HTMLInputElement)
       .files?.[0];
-    if (userName !== "" || imageFile) {
+    if (inputValue !== "" || imageFile) {
       client.patchData(formData).then(() => {
         updateUser && updateUser();
         !toast.isActive("edit") &&
@@ -57,6 +70,15 @@ const UserSetting = (props: Props) => {
             title: "Changed successfully",
             status: "success",
           });
+        setInputValue("");
+      })
+      .catch(() => {
+        !toast.isActive("edit") &&
+        toast({
+          id: "edit",
+          title: "Unvalid Input",
+          status: "error",
+        });
         setInputValue("");
       });
     }
@@ -122,7 +144,7 @@ const UserSetting = (props: Props) => {
             name="username"
             h={{ base: "40px", md: "50px" }}
             placeholder={currentUser && currentUser.user.username}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => {setInputValue(e.target.value)}}
             value={inputValue}
           ></Input>
           <Flex w={"full"} px={"10px"}>
