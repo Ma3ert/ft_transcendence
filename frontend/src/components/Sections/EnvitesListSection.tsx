@@ -16,6 +16,7 @@ import EnviteField from "../ChatComponents/EnviteField";
 import { useContext, useEffect } from "react";
 import { UsersContext, ChannelsContext, GlobalContext, InvitesContext } from "@/context/Contexts";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 
 
@@ -24,15 +25,21 @@ import { useAuth } from "@/hooks/useAuth";
 const EnvitesListSection: React.FC = () => {
   const {socket} = useContext (GlobalContext)
   const {currentUser} = useAuth ()
+  const router = useRouter ()
   const {friendRecieved, friendSent, channelRecieved, channelSent} = useContext (InvitesContext)
   const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]> ([...friendRecieved!, ...channelRecieved!]);
   const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]> ([...friendSent!, ...channelSent!]);
   
 
+  if (currentUser === undefined || !socket)
+      router.push ('/')
   useEffect(() => {
-    socket!.emit ("readInviteNotification", {
-      userId: currentUser!.user.id
-    })
+    if (socket)
+    {
+      socket!.emit ("readInviteNotification", {
+        userId: currentUser!.user.id
+      })
+    }
   }, [friendRecieved, friendSent, channelRecieved, channelSent]);
   return (
     <Stack

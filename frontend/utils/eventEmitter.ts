@@ -7,6 +7,7 @@ export function EventEmitter(
   eventName: EventName,
   message: EventMessage | ServerNotificationMessage | string
 ) {
+  if (socket)
   socket!.emit(eventName, message);
 }
 

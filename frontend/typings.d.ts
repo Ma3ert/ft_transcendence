@@ -226,6 +226,8 @@ type GlobalContext = {
   setSocket?: React.Dispatch<React.SetStateAction<Socket | null>>;
   authenticated?: boolean;
   setAuthenticated?: (value: boolean) => void;
+  counter?:number
+  setCounter?:React.Dispatch<React.SetStateAction<number>>;
 };
 
 type UsersContext = {

@@ -7,23 +7,31 @@ import { ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import { CHANNEL, PRIVATE } from "../../../contstants";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const Chat: React.FC<ChatProps> = ({}) => {
   const { chatType, setCmNotifications, setDmNotifications } =
     useContext(ChatContext);
   const { socket } = useContext(GlobalContext);
   const { currentUser } = useAuth();
+  const router = useRouter ()
 
+  
   useEffect(() => {
-    const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
-    ////console.log (type)
-    NotifyServer(socket!, "userIsActive", currentUser!.user!);
-    socket!.on("ChatNotification", (message: ChatNotification) => {
-      ////console.log ('chat notifications')
-      ////console.log (message)
-      setDmNotifications!(message.DM);
-      setCmNotifications!(message.CM);
-    });
+    if (currentUser == undefined)
+      router.push ("/")
+    else
+    {
+      const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
+      if (socket)
+      {
+        NotifyServer(socket!, "userIsActive", currentUser!.user!);
+        socket!.on("ChatNotification", (message: ChatNotification) => {
+          setDmNotifications!(message.DM);
+          setCmNotifications!(message.CM);
+      });
+      }
+    }
 
     //   NotifyServer (socket!, "userIsInChannel", currentUser!.user!)
     return () => {

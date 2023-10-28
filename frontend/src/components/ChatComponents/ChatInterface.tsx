@@ -15,9 +15,13 @@ import CmProvider from "@/providers/CmProvider";
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
   const { friendsList } = useContext(UsersContext);
+  const {socket, counter, setCounter} = useContext (GlobalContext)
+  
 
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
+    if (!socket)
+      setCounter! (counter!+1)
     ////console.log(type);
   }, []);
   return (

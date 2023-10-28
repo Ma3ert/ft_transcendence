@@ -14,6 +14,8 @@ import UserChannelHeader from "./UserChannelHeader";
 import useEventHandler from "@/hooks/useEventHandler";
 import useGameEnvite from "@/hooks/useGameEnvite";
 import OptionsMenu from "./FriendSettingsMenu";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
@@ -32,6 +34,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const {activeChannel} = useContext (ChannelsContext)
   const {messages, setChannelMessages} = useContext (CmContext)
   const [counter, setCounter] = useState (0)
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
+
+  if (currentUser  === undefined || !socket)
+    router.push ('/')
 
   const getReadChatNotification = () => {
     if (chatType == PRIVATE) {
@@ -45,7 +52,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
       id: activeChannel!.id,
     };
     }
-  socket!.emit ('readChatNotification', getReadChatNotification())
+    useEffect (()=>{
+
+      if (socket)
+        socket!.emit ('readChatNotification', getReadChatNotification())
+    }, [])
   return (
     <Stack
       borderRadius={"2xl"}

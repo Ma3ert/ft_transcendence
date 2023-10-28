@@ -12,9 +12,9 @@ interface ChannelsListProps {}
 
 const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
   const userChannelsClient = new apiClient("/chat/channels/");
-  const {Channels} = useContext (ChannelsContext)
+  const {Channels, PublicChannels} = useContext (ChannelsContext)
   const [userChannels, setUserChannels] = useState<Channel[]> (Channels!)
-  const [publicChannels, setPublicChannels] = useState<Channel[]> ([])
+  const [publicChannels, setPublicChannels] = useState<Channel[]> (PublicChannels!)
 
   return (
     <Stack

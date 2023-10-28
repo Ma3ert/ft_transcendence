@@ -15,7 +15,7 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
     []
   );
   const userChannelsClient = new apiClient("/chat/channels/");
-  const publicChannelsClient = new apiClient ("/chat/channels/public")
+  const publicChannelsClient = new apiClient ("/chat/public/")
   const [counter, setCounter] = useState<number>(0);
 
   useQuery("channels", {

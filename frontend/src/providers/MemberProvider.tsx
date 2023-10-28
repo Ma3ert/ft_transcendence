@@ -8,6 +8,8 @@ import {
   UsersContext,
 } from "@/context/Contexts";
 import { getUserRole } from "../../utils/helpers";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface MembersProviderProps {
   children: React.ReactNode;
@@ -24,6 +26,12 @@ const MembersProvider: React.FC<MembersProviderProps> = ({
   const [channelMembers, setChannelMembers] = useState<Member[]>([]);
   const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
   const id = channelId ? channelId : activeChannel?.id;
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
+
+  if (currentUser === undefined)
+    router.push ("/")
+
   useQuery({
     queryKey: ["channelMembers", id],
     queryFn: async () =>

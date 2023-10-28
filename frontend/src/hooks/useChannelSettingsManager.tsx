@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
 import { useQueryClient } from "react-query";
-import { ChannelsContext } from "@/context/Contexts";
+import { ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { AppNavigationContext } from "@/context/Contexts";
 
@@ -22,6 +22,7 @@ const useChannelSettingsManager = () => {
   const queryClient = useQueryClient();
   const { activeChannel } = useContext(ChannelsContext);
   const { setFriendsSection } = useContext(AppNavigationContext);
+  const {socket} = useContext (GlobalContext)
 
   const sendChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
@@ -29,6 +30,8 @@ const useChannelSettingsManager = () => {
     onSuccess: (data) => {
       ////console.log(data);
       queryClient.invalidateQueries("channelSentEnvites");
+      if (socket)
+        socket!.emit ("sendInvite");
       toast(Success("Envite to channel sent"));
     },
     onError: (error) => {
