@@ -86,12 +86,12 @@ const InviteToChannels: React.FC<InviteToChannelsProps> = ({ user }) => {
         userid: user.id,
       };
       sendChannelEnvite(envite);
-      //console.log(`enviting to ${channel.name}`);
+      ////console.log(`enviting to ${channel.name}`);
     });
   };
 
   useEffect(() => {
-    //console.log(selectedChannels);
+    ////console.log(selectedChannels);
   }, [selectedChannels]);
   return (
     <Stack

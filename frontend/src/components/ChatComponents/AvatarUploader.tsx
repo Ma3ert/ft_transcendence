@@ -37,7 +37,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
     setFile(file);
-    //console.log(file);
+    ////console.log(file);
   };
 
   const uploadAvatarMutation = useMutation({
@@ -60,7 +60,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
         isClosable: true,
       });
     },
-    onError: (error) =>{} //console.log(error),
+    onError: (error) => {}, ////console.log(error),
   });
 
   const handleUplaod = () => {

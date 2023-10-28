@@ -1,22 +1,25 @@
 import React, { useContext, useEffect } from "react";
 import { ChatContext, UsersContext } from "@/context/Contexts";
-import { HStack, Stack, Text, Image, Button, Progress } from "@chakra-ui/react";
+import { HStack, Stack, Text, Image, Button, Progress, useToast } from "@chakra-ui/react";
 import TimerComponent from "./TimerComponent";
 import { useAuth } from "@/hooks/useAuth";
+import socket from "../GameComponents/socket";
 interface EnviteMessageProps {
   gameInviteSender?: string;
 }
 const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
-  const { setJoinGameStatus, gameInviteSender } =
+  const { setJoinGameStatus } =
     useContext(ChatContext);
+  const {gameInviteSender} = useContext (UsersContext)
   const { activePeer , onClose, friendsList} = useContext(UsersContext);
   const {currentUser} = useAuth ()
-  const Peer:User = friendsList?.find (item => item.id === gameInviteSender) || null;
+  const Peer = friendsList?.find (item => item.id === gameInviteSender);
+  const toast  = useToast ()
 
   useEffect(() => {
     // Create a setTimeout to change the message after 3 seconds
     const timerId = setTimeout(() => {
-      setJoinGameStatus!(false);
+     onClose! ();
     }, 15000); // 3000 milliseconds (3 seconds)
 
     // Clean up the timer when the component unmounts or when needed
@@ -64,13 +67,21 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
                 : "you"}{" "}
               Looking for a 1v1 ..
             </Text>
+            <HStack spacing={4}>
+              {gameInviteSender !== currentUser!.user!.id && (
+
             <Button
-              isDisabled={gameInviteSender === currentUser!.user!.id}
               onClick={() => {
                 /// accept game invite
                 /// decline game inviate
                 // setJoinGameStatus!(false);
+                !toast.isActive("set") && toast ({
+                  id: "set",
+                  title: "setting up the game ...",
+                  status: "info"
+                })
                 onClose! ();
+                socket.emit("gameJoinQueue");
               }}
               variant={
                 gameInviteSender !== currentUser!.user!.id ? "lightGray" : "darkGray"
@@ -78,6 +89,11 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
             >
               {`let's go`}
             </Button>
+              )}
+              <Button color={"#DC585B"}  variant={'ghost'} 
+              onClick={()=> onClose! ()}
+              >decline</Button>
+            </HStack>
           </Stack>
         </HStack>
       <TimerComponent bg={gameInviteSender !== currentUser!.user!.id ? "#5B6171" : "#1D222C"}/>

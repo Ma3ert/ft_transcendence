@@ -41,7 +41,7 @@ export default function Home() {
   const client = new apiClient("/users");
   const twoFaClient = new apiClient("/auth/twoFactor");
   const { currentUser, updateUser } = useAuth();
-  //console.log("current User: ", currentUser);
+  ////console.log("current User: ", currentUser);
   const [newAvatar, setNewAvatar] = useState(
     currentUser ? currentUser.user.avatar : ""
   );
@@ -54,7 +54,7 @@ export default function Home() {
       twoFaClient
         .postData({ pin: pin }, "")
         .then((res) => {
-          //console.log("result: from pin validation: ", res);
+          ////console.log("result: from pin validation: ", res);
           router.push("/Lobby");
         })
         .catch((err) => {
@@ -73,7 +73,7 @@ export default function Home() {
       currentUser.user.twoFactor &&
       !currentUser.user.pinValidated
     ) {
-      //console.log("I sent it again");
+      ////console.log("I sent it again");
       twoFaClient.getData("").then(() => onOpen());
     }
   }, []);

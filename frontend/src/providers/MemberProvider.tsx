@@ -34,7 +34,7 @@ const MembersProvider: React.FC<MembersProviderProps> = ({
       setChannelMembers(data);
     },
     onError: (err) => {
-      //console.log(err);
+      ////console.log(err);
     },
   });
   return (

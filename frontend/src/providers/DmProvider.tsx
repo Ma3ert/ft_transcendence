@@ -19,7 +19,7 @@ const DmProvider: React.FC<DmProviderProps> = ({ children }) => {
   const { activePeer, setActivePeer, friendsList } = useContext(UsersContext);
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const { socket } = useContext(GlobalContext);
-  const { setJoinGameStatus, setGameInviteSender } = useContext(ChatContext);
+
   const { onOpen } = useContext(UsersContext);
   const dmClient = new apiClient(
     `chat/direct/${activePeer!.id}/messages?skip=0&take=500`
@@ -33,32 +33,24 @@ const DmProvider: React.FC<DmProviderProps> = ({ children }) => {
       setMessages(reversed);
     },
     onError: (err: any) => {
-      //console.log (err)
+      ////console.log (err)
     },
   });
 
   useEffect(() => {
     EventListener(socket!, "DM", (data) => {
-      console.table(data);
-      if (data.game) {
-        // setJoinGameStatus! (true);
-        setGameInviteSender!(data.senderId);
-        onOpen!();
-        console.log ('user has invited you to game')
-      } else {
-        const dm: DirectMessage = {
-          senderId: data.senderId,
-          receiverId: data.receiverId,
-          message: data.message,
-        };
-        const dms = Array.from(messages);
-        if (
-          activePeer?.id === dm.senderId ||
-          currentUser!.user!.id === dm.senderId
-        ) {
-          dms!.push(dm);
-          setMessages(dms!);
-        }
+      const dm: DirectMessage = {
+        senderId: data.senderId,
+        receiverId: data.receiverId,
+        message: data.message,
+      };
+      const dms = Array.from(messages);
+      if (
+        activePeer?.id === dm.senderId ||
+        currentUser!.user!.id === dm.senderId
+      ) {
+        dms!.push(dm);
+        setMessages(dms!);
       }
     });
   }, [messages]);

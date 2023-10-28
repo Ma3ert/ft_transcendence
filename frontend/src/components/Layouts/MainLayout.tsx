@@ -29,10 +29,9 @@ const MainLayout: React.FC<MainSectionProps> = ({children}) => {
       // border="1px"
       // borderColor="blue"
     >
-      <Modal variant={"form"} isOpen={isOpen!} onClose={onClose!} size={"invite"}>
+      <Modal variant={"invite"} isOpen={isOpen!} onClose={onClose!} size={"invite"}>
         <ModalOverlay />
-        <ModalContent style={{ width: "380px", height: "190px" }}>
-          <ModalCloseButton/>
+        <ModalContent style={{ width: "300px", height: "190px" }}>
           <ModalBody display={'flex'} justifyContent={'center'} alignItems={'center'}>
             <EnviteMessage />
           </ModalBody>

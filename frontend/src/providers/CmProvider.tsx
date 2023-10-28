@@ -2,6 +2,7 @@ import { CmContext, ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import apiClient from "../services/requestProcessor";
+import { act } from "react-dom/test-utils";
 
 interface CmProviderProps {
   children: React.ReactNode;
@@ -24,21 +25,15 @@ const CmProvider: React.FC<CmProviderProps> = ({ children }) => {
       setChannelMessages(reversed);
     },
     onError: (err) => {
-      //console.log (err)
+      ////console.log (err)
     },
   });
 
-  useEffect(() => {
-    socket!.on("CM", (message: any) => {
-      //console.log(`data from server `);
-      console.table(message);
-      const messagesList = [...channelMessages];
-      messagesList.push(message);
-      setChannelMessages(messagesList);
-    });
-  }, [channelMessages]);
+  useEffect(() => {}, [channelMessages]);
   return (
-    <CmContext.Provider value={{ messages: channelMessages }}>
+    <CmContext.Provider
+      value={{ messages: channelMessages, setChannelMessages }}
+    >
       {children}
     </CmContext.Provider>
   );

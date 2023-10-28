@@ -17,7 +17,7 @@ const useUserStatus = (user: User) => {
       setUserIsBlocked(data.blocked);
     },
     onError: (err) => {
-      //console.log (err)
+      ////console.log (err)
     },
   });
 

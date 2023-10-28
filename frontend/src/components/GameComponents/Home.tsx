@@ -94,7 +94,7 @@ const Home = () => {
   });
 
   socket.on("matchMade", ({ data }) => {
-    //console.log(data);
+    ////console.log(data);
     setMessage("");
     setMatch(data);
     setGameSettings({
@@ -122,7 +122,7 @@ const Home = () => {
         setUser(res.data.data);
       })
       .catch((e) => {
-        //console.log(e);
+        ////console.log(e);
       });
   }, []);
 

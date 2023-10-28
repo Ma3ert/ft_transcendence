@@ -28,7 +28,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const { friendsList } = useContext(UsersContext);
   const [DmNotifications, setDmNotifications] = useState<string[]>([]);
   const [CmNotifications, setCmNotifications] = useState<string[]>([]);
-  const [gameInviteSender, setGameInviteSender] = useState<string>("");
  
 
 
@@ -67,8 +66,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
         setDmNotifications,
         CmNotifications,
         setCmNotifications,
-        gameInviteSender,
-        setGameInviteSender,
       }}
     >
       {children}

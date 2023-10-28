@@ -16,18 +16,18 @@ const Chat: React.FC<ChatProps> = ({}) => {
 
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
-    //console.log (type)
+    ////console.log (type)
     NotifyServer(socket!, "userIsActive", currentUser!.user!);
     socket!.on("ChatNotification", (message: ChatNotification) => {
-      //console.log ('chat notifications')
-      //console.log (message)
+      ////console.log ('chat notifications')
+      ////console.log (message)
       setDmNotifications!(message.DM);
       setCmNotifications!(message.CM);
     });
 
     //   NotifyServer (socket!, "userIsInChannel", currentUser!.user!)
     return () => {
-      //console.log ('user in inactive')
+      ////console.log ('user in inactive')
       NotifyServer(socket!, "userIsNotActive", currentUser!.user!);
     };
   }, []);

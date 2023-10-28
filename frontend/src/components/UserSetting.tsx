@@ -66,7 +66,7 @@ const UserSetting = (props: Props) => {
     const patchClient = new apiClient("/auth/twoFactor");
     var toSend = { activate: faState ? false : true };
     patchClient.patchData(toSend, "").then((res: AxiosResponse) => {
-      //console.log("res data: ", res.data);
+      ////console.log("res data: ", res.data);
       faStateSetter(res.data.twoFactor);
       updateUser && updateUser();
     });

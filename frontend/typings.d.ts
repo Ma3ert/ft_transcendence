@@ -250,6 +250,8 @@ type UsersContext = {
   isOpen?:boolean
   onClose?:() => void
   onOpen?: () => void
+  gameInviteSender?: string 
+  setGameInviteSender?:React.Dispatch<SetStateAction<string>>
 };
 // Chat Events Types
 
@@ -344,6 +346,7 @@ type ModalWrapperContext = {
 
 type CmContext = {
   messages?: ChannelMessage[];
+  setChannelMessages?: React.Dispatch<SetStateAction<ChannelMessage[]>>
 };
 
 type DmContext = {
