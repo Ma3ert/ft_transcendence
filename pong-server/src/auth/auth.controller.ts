@@ -10,7 +10,7 @@ import {
   Res,
   Patch,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoggedInGuard } from './utils/LoggedIn.guard';
 import { UsersService } from 'src/users/users.service';
@@ -29,11 +29,11 @@ export class AuthController {
 
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
-  async handleRedirect(@Req() req: any, @Res() res: Response) {
+  async handleRedirect(@Req() req: Request, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
     // res.status(200).json({status: 'success', message: "User authenticated successfully"})
-    res.redirect("http://localhost:3001/ChangeUserName")
+    res.redirect(`${req.protocol}://${req.hostname}:3001/ChangeUserName`)
   }
 
   @Get('42/logout')
@@ -49,7 +49,7 @@ export class AuthController {
     });
     res.cookie('jwt', '');
     // res.status(200).json({ message: 'User logged out successfully' });
-    res.redirect("http://localhost:3001/")
+    res.redirect(`${req.protocol}://${req.hostname}:3001/`)
 
   }
 
