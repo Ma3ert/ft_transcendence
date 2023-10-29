@@ -427,6 +427,12 @@ export class ChatController {
         return { status: "success", message: "Channel Avatar updated Successfully" };
     }
 
+    @Get('/public')
+    @UseGuards(LoggedInGuard)
+    async public_channels(@Req() req:Request){
+        return await this.chatService.getPublicChannels();
+    }
+
     @Patch('/channels/:channelId/change-visibility')
     @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)

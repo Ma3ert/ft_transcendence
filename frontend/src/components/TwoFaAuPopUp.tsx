@@ -23,10 +23,10 @@ const TwoFaAuPopUp = (props: Props) => {
   const [pin, setPin] = useState("");
   useEffect(() => {
     if (pin.length === 6) {
-      //console.log("its time to sent the")
+      ////console.log("its time to sent the")
       onClose();
     }
-    //console.log("pin: ", pin)
+    ////console.log("pin: ", pin)
   }, [pin]);
   return (
     <>

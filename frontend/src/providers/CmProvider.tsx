@@ -2,6 +2,9 @@ import { CmContext, ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import apiClient from "../services/requestProcessor";
+import { act } from "react-dom/test-utils";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface CmProviderProps {
   children: React.ReactNode;
@@ -13,7 +16,10 @@ const CmProvider: React.FC<CmProviderProps> = ({ children }) => {
   const channelMessagesClient = new apiClient(
     `/chat/channels/${activeChannel!.id}/messages/?skip=0&take=300`
   );
-  const { socket } = useContext(GlobalContext);
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
+  if (currentUser === undefined)
+  router.push ("/")
 
   useQuery({
     queryKey: ["channelMessages", activeChannel?.id],
@@ -24,21 +30,15 @@ const CmProvider: React.FC<CmProviderProps> = ({ children }) => {
       setChannelMessages(reversed);
     },
     onError: (err) => {
-      //console.log (err)
+      ////console.log (err)
     },
   });
 
-  useEffect(() => {
-    socket!.on("CM", (message: any) => {
-      //console.log(`data from server `);
-      console.table(message);
-      const messagesList = [...channelMessages];
-      messagesList.push(message);
-      setChannelMessages(messagesList);
-    });
-  }, [channelMessages]);
+  useEffect(() => {}, [channelMessages]);
   return (
-    <CmContext.Provider value={{ messages: channelMessages }}>
+    <CmContext.Provider
+      value={{ messages: channelMessages, setChannelMessages }}
+    >
       {children}
     </CmContext.Provider>
   );

@@ -19,15 +19,9 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({}) => {
       alignItems={"center"}
     >
       {settingsSection == "userSettings" ? (
-        // <Stack maxW='60vw' justifyContent='center' alignItems='center'>
-          <UserSetting></UserSetting>
-        // </Stack>
+          <UserSetting/>
       ) : (
           <GameSetting/>
-        // <Stack maxW='60vw' justifyContent='center' alignItems='center'>
-        //   /// game settings 
-        //   <Text color='#5B6171'>Game Settings</Text>
-        //   </Stack>
       )}
     </Stack>
   );

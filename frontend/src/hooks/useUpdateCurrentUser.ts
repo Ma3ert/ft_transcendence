@@ -14,9 +14,9 @@ export async function useUpdateCurrentUser() {
   const client = new apiClient("/users");
 
   return client.getData("/me").then((res: AxiosResponse) => {
-    //console.log("all the data: ", res.data);
-    //console.log("query function is fired");
-    //console.log(res.data.current);
+    ////console.log("all the data: ", res.data);
+    ////console.log("query function is fired");
+    ////console.log(res.data.current);
     const avatar: string = res.data.current.user.avatar;
     if (!avatar.includes("http"))
       res.data.current.user.avatar =

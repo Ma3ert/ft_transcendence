@@ -28,14 +28,14 @@ const useChannelManager = () => {
   const newChannelMutation = useMutation({
     mutationFn: (channelBody: any) => channelClient.postData(channelBody),
     onSuccess: (data) => {
-      //console.log(data)
+      ////console.log(data)
       queryClient.invalidateQueries("channels");
       if (pathname === "/Friends") router.push("/Friends");
       setFriendsSection!("channels");
       toast(Success("Channel created successfully"));
     },
     onError: (error) => {
-      //console.log(error)
+      ////console.log(error)
       toast(Failure("Channel creation failed"));
     },
   });
@@ -43,14 +43,14 @@ const useChannelManager = () => {
   const deleteChannelMutation = useMutation({
     mutationFn: (channelId: string) => channelById(channelId).deleteData(),
     onSuccess: (data) => {
-      //console.log(data)
+      ////console.log(data)
       queryClient.invalidateQueries("channels");
       router.push("/Friends");
       setFriendsSection!("channels");
       toast(Success("Channel deleted successfully"));
     },
     onError: (error) => {
-      //console.log(error)
+      ////console.log(error)
       queryClient.invalidateQueries("channels");
       toast(Failure("Channel deletion failed"));
     },
@@ -62,12 +62,12 @@ const useChannelManager = () => {
         password: channel.password,
       }),
     onSuccess: (data) => {
-      //console.log(data)
+      ////console.log(data)
       queryClient.invalidateQueries("channels");
       toast(Success("you joined channel"));
     },
     onError: (error) => {
-      //console.log(error)
+      ////console.log(error)
       toast(Failure("Channel join failed"));
     },
   });
@@ -76,13 +76,13 @@ const useChannelManager = () => {
     mutationFn: (channelId: string) =>
       leaveChannelClient(channelId).deleteData(),
     onSuccess: (data) => {
-      //console.log(data)
+      ////console.log(data)
       queryClient.invalidateQueries("channels");
       router.push("/Friends");
       toast(Success("you left channel"));
     },
     onError: (error) => {
-      //console.log(error)
+      ////console.log(error)
       toast(Failure("Channel leave failed"));
     },
   });

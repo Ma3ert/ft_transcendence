@@ -3,11 +3,11 @@ import { useMutation } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
 import { useQueryClient } from "react-query";
-import { ChannelsContext } from "@/context/Contexts";
+import { ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { AppNavigationContext } from "@/context/Contexts";
 
-const useChannelSettingsManager = () => {
+const useChannelSettingsManager = (User?:User) => {
   const upgradeUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/upgrade/${user.userid}/`);
   const sendChannelEnviteClient = (user: UserChannel) =>
@@ -22,17 +22,20 @@ const useChannelSettingsManager = () => {
   const queryClient = useQueryClient();
   const { activeChannel } = useContext(ChannelsContext);
   const { setFriendsSection } = useContext(AppNavigationContext);
+  const {socket} = useContext (GlobalContext)
 
   const sendChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
       sendChannelEnviteClient(user).postData(null),
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("channelSentEnvites");
+      if (socket)
+        socket!.emit ("sendInvite", {receiverId:User!.id});
       toast(Success("Envite to channel sent"));
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
       toast(Failure("Envite to channel failed"));
     },
   });
@@ -40,14 +43,14 @@ const useChannelSettingsManager = () => {
     mutationFn: (user: UserChannel) =>
       acceptChannelEnviteClient(user).postData(null),
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("channels");
       queryClient.invalidateQueries("channelReceivedEnvites");
       setFriendsSection!("channels");
       toast(Success("Envite to channel accepted"));
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
       toast(Failure("Envite to channel failed"));
     },
   });
@@ -55,12 +58,12 @@ const useChannelSettingsManager = () => {
     mutationFn: (user: UserChannel) =>
       declineChannelEnviteClient(user).deleteData(),
     onSuccess: (data) => {
-      //console.log(data);
+      ////console.log(data);
       queryClient.invalidateQueries("channelReceivedEnvites");
       toast(Success("Envite to channel declined"));
     },
     onError: (error) => {
-      //console.log(error);
+      ////console.log(error);
       toast(Failure("Envite to channel failed"));
     },
   });

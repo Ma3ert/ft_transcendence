@@ -210,4 +210,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     await this.notificationService.readInviteNotification(client.user.id);
     this.checkUserNotification(client.user.id);
   }
+
+  @SubscribeMessage('sendInvite')
+  async sendInvite(client: AuthSocket, data:{receiverId:string}){
+    this.checkUserNotification(data.receiverId);
+  }
 }

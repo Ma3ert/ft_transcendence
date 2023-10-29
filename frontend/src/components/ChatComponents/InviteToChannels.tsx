@@ -68,7 +68,7 @@ const ChannelInviteField: React.FC<ChannelInviteFieldProps> = ({
 const InviteToChannels: React.FC<InviteToChannelsProps> = ({ user }) => {
   const { Channels } = useContext(ChannelsContext);
   const [selectedChannels, setSelectedChannels] = useState<Channel[]>([]);
-  const { sendChannelEnvite } = useChannelSettingsManager();
+  const { sendChannelEnvite } = useChannelSettingsManager(user);
   const { onClose } = useContext(ModalWrapperContext);
 
   const handleSelect = (channel: Channel) => {
@@ -86,12 +86,12 @@ const InviteToChannels: React.FC<InviteToChannelsProps> = ({ user }) => {
         userid: user.id,
       };
       sendChannelEnvite(envite);
-      //console.log(`enviting to ${channel.name}`);
+      ////console.log(`enviting to ${channel.name}`);
     });
   };
 
   useEffect(() => {
-    //console.log(selectedChannels);
+    ////console.log(selectedChannels);
   }, [selectedChannels]);
   return (
     <Stack

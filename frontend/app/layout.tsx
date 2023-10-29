@@ -41,7 +41,7 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <AuthUserProvider>
             <ChakraProvider theme={theme}>
-              <GlobalProvider>
+            <GlobalProvider>
                 <GameProvider>
                   <InvitesProvider>
                     <UsersProvider>

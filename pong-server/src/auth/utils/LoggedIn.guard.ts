@@ -16,7 +16,7 @@ export class LoggedInGuard implements CanActivate {
     if (!decoded) return false;
     const user = await this.userService.findById(decoded.sub);
     if (!user)
-      return false;
+    return false;
     req.user = user;
     if (!user.twoFactor) {
       return true;

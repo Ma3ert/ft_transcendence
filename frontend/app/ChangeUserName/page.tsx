@@ -21,6 +21,7 @@ import { PinInput, PinInputField } from "@chakra-ui/react";
 import { useUpdateCurrentUser } from "@/hooks/useUpdateCurrentUser";
 import Cookies from "js-cookie";
 import { useQuery, useQueryClient } from "react-query";
+import {z} from "zod"
 
 import {
   useDisclosure,
@@ -32,7 +33,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Cookie } from "next/font/google";
-
+const inputScheme  = z.string ().min (4).max (14)
 export default function Home() {
   const toast = useToast();
   const [pin, setPin] = useState("");
@@ -41,7 +42,7 @@ export default function Home() {
   const client = new apiClient("/users");
   const twoFaClient = new apiClient("/auth/twoFactor");
   const { currentUser, updateUser } = useAuth();
-  //console.log("current User: ", currentUser);
+  const [inputValue, setInputValue] = useState("");
   const [newAvatar, setNewAvatar] = useState(
     currentUser ? currentUser.user.avatar : ""
   );
@@ -54,7 +55,7 @@ export default function Home() {
       twoFaClient
         .postData({ pin: pin }, "")
         .then((res) => {
-          //console.log("result: from pin validation: ", res);
+          ////console.log("result: from pin validation: ", res);
           router.push("/Lobby");
         })
         .catch((err) => {
@@ -73,7 +74,7 @@ export default function Home() {
       currentUser.user.twoFactor &&
       !currentUser.user.pinValidated
     ) {
-      //console.log("I sent it again");
+      ////console.log("I sent it again");
       twoFaClient.getData("").then(() => onOpen());
     }
   }, []);
@@ -104,14 +105,34 @@ export default function Home() {
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const validation =  inputScheme.safeParse (inputValue)
+    if (!validation.success)
+    {
+      !toast.isActive("edit") &&
+        toast({
+          id: "edit",
+          title: "Unvalid Input",
+          status: "error",
+        });
+      return ;
+    }
     const formData = new FormData(event.target as HTMLFormElement);
     const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById("avatar") as HTMLInputElement)
-      .files?.[0];
+    .files?.[0];
     formData.append("activated", "true");
     if (userName !== "" || imageFile) {
       client.patchData(formData).then(() => {
         updateUser && updateUser();
+      })
+      .catch(() => {
+        !toast.isActive("edit") &&
+        toast({
+          id: "edit",
+          title: "Unvalid Input",
+          status: "error",
+        });
+        setInputValue("");
       });
     } else {
       handleSkip();
@@ -215,7 +236,7 @@ export default function Home() {
       </Modal>
       {currentUser && !currentUser.user.twoFactor && (
         <>
-          <Logo src="/logo.png" width="334px" height="179px"></Logo>
+          <Logo src="/logo.png"></Logo>
           <form onSubmit={handleOnSubmit}>
             <Stack align={"center"} spacing={"40px"}>
               <Stack align={"center"} spacing={{ base: "10px", lg: "20px" }}>
@@ -257,6 +278,7 @@ export default function Home() {
                   id="username"
                   name="username"
                   variant={"default"}
+                  onChange={(e) => {setInputValue(e.target.value)}}
                   w={{ base: "280px", lg: "340px" }}
                   h={{ base: "50px", lg: "66px" }}
                   placeholder={

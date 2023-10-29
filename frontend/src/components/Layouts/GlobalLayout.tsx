@@ -4,6 +4,15 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import Header from "../ChatComponents/Header";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import GlobalProvider from "@/providers/GlobalProvider";
+import { QueryClient, QueryClientProvider } from "react-query";
+import AuthUserProvider from "@/providers/AuthUserProvider";
+import UsersProvider from "@/providers/UsersProvider";
+import ChatProvider from "@/providers/ChatProvider";
+import ChannelsProvider from "@/providers/ChannelsProvider";
+import AppNavigationProvider from "@/providers/AppNavigationProvider";
+import GameProvider from "@/providers/GameProvider";
+import InvitesProvider from "@/providers/InvitesProvider";
 
 interface GlobalLayoutProps {
     children: React.ReactNode;
@@ -30,7 +39,7 @@ const GlobalLayout:React.FC<GlobalLayoutProps> = ({children}) => {
           alignItems="center"
           display={'flex'}
         >
-          {children}
+        {children}
         </GridItem>
       </Grid>
     )

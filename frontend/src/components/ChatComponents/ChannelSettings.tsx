@@ -75,9 +75,9 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
     return false;
   };
   useEffect(() => {
-    //console.log (`channel type : -----> ${activeChannel!.type}`)
-    //console.log (`logged in user role : -----> ${getUserRole (currentUser!.user!, members!)}`)
-    console.table(members);
+    ////console.log (`channel type : -----> ${activeChannel!.type}`)
+    ////console.log (`logged in user role : -----> ${getUserRole (currentUser!.user!, members!)}`)
+    // console.table(members);
     if (isPrivliged()) {
       if (activeChannel!.type === "PROTECTED")
         setSettings(ProtectedChannelSettings);

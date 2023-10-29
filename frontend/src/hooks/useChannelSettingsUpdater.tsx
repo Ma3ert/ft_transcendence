@@ -39,7 +39,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(data);
+      ////console.log(data);
     },
     onError: (error) => {
       toast({
@@ -49,7 +49,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -71,7 +71,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(data);
+      ////console.log(data);
     },
     onError: (error) => {
       toast({
@@ -81,7 +81,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -108,7 +108,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(data);
+      ////console.log(data);
     },
     onError: (error) => {
       toast({
@@ -118,7 +118,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -145,7 +145,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(data);
+      ////console.log(data);
     },
     onError: (error) => {
       toast({
@@ -155,7 +155,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -178,7 +178,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(data);
+      ////console.log(data);
     },
     onError: (error) => {
       toast({
@@ -188,7 +188,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 
@@ -218,7 +218,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(data);
+      ////console.log(data);
     },
     onError: (error) => {
       toast({
@@ -228,7 +228,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         duration: 9000,
         isClosable: true,
       });
-      //console.log(error);
+      ////console.log(error);
     },
   });
 

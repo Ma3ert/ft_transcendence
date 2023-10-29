@@ -41,8 +41,9 @@ const Game = () => {
   const [message, setMessage] = useState("Waiting for game to start");
   const { gameSettings } = useGame();
   const [score, setScore] = useState({});
+  const [finalScore, setFinalScore] = useState("");
   const { currentUser, updateUser } = useAuth();
-  const {onClose:CloseHandler} = useContext (UsersContext)
+  const { onClose: CloseHandler } = useContext(UsersContext);
   const [game] = useState<Game>({
     playerOne: new Player(0, 200, 20, 100, "transparent", 1),
     playerTwo: new Player(780, 200, 20, 100, "transparent", 2),
@@ -125,14 +126,14 @@ const Game = () => {
     });
 
     socket.on("startGameSession", () => {
-      CloseHandler! ();
+      CloseHandler!();
       setMessage("");
-      //console.log("i get here")
+      ////console.log("i get here")
       var theme = { one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9" };
 
       const cookieValue = Cookies.get("theme");
       if (cookieValue !== undefined) {
-        //console.log(cookieValue)
+        ////console.log(cookieValue)
         if (cookieValue !== "") {
           theme = JSON.parse(cookieValue);
         }
@@ -163,8 +164,11 @@ const Game = () => {
       paint(context);
     });
 
+    const itemCounter = (value: any, index: any) => {
+      return value.filter((x: any) => x == index).length;
+    };
     socket.on("endGame", (room) => {
-      //console.log(room);
+      ////console.log(room);
       clearCanvas(context);
       game.isGameStarted = false;
       updateUser && updateUser();
@@ -175,10 +179,15 @@ const Game = () => {
         setMessage("Bitch. You LOST this game");
         setWin(false);
       }
-      setTimeout(() => {
-        // degage();
-        router.push("/Lobby");
-      }, 30000);
+      // setTimeout(() => {
+      //   // degage();
+      //   router.push("/Lobby");
+      // }, 30000);
+      setFinalScore(
+        itemCounter(room.players[0].score, "W").toString() +
+          " - " +
+          itemCounter(room.players[1].score, "W").toString()
+      );
       onOpen();
     });
 
@@ -216,9 +225,12 @@ const Game = () => {
         <ModalOverlay />
         <ModalContent style={{ width: "480px", height: "280px" }}>
           <ModalBody>
-            <Stack align={"center"} spacing={"40px"} fontFamily={"visbyRound"}>
+            <Stack align={"center"} spacing={"25px"} fontFamily={"visbyRound"}>
               <Text color={"#d9d9d9"} fontSize={"25px"}>
                 {message}
+              </Text>
+              <Text color={"#d9d9d9"} fontSize={"25px"}>
+                {"Match Result: " + finalScore}
               </Text>
               <Button
                 variant={"primary"}

@@ -153,7 +153,7 @@ const TabsWrapper: React.FC = () => {
     },
   ];
   const section = getCurrentSection(pathname);
-  //console.log("section : ", section);
+  ////console.log("section : ", section);
   return (
     <Wrap
       w="100%"

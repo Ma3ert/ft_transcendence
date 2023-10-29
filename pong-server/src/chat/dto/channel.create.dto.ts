@@ -12,7 +12,6 @@ export class createChannelDto{
     @IsOptional()
     password:string
 
-    @IsNotEmpty()
     @IsOptional()
     avatar:string
 }

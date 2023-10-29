@@ -7,7 +7,8 @@ import { GlobalContext } from "@/context/Contexts";
 import { NotifyServer } from "../../utils/eventEmitter";
 import useEventHandler from "@/hooks/useEventHandler";
 import { useDisclosure } from "@chakra-ui/react";
-
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface UsersProviderProps {
   children: React.ReactNode;
@@ -27,14 +28,17 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [friendsConversations, setFriendsConversations] = useState<User[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [gameInviteSender, setGameInviteSender] = useState<string>("");
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
 
+  
   useQuery("friends", {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
     onSuccess: (data: any) => {
       setFriendsList!(data.friends);
     },
     onError: (err) => {
-      //console.log(err);
+      ////console.log(err);
     },
   });
 
@@ -44,22 +48,23 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       setUsers(data);
     },
     onError: (err) => {
-      //console.log(err);
+      ////console.log(err);
     },
   });
 
   useEffect(() => {
+    if (currentUser === undefined)
+    router.push ("/")
     if (socket) {
       socket!.on("checkNotification", (message: checkNotification) => {
+        console.table (message)
         setChatNotifications!(message.data.chat);
         setInviteNotifications!(message.data.invites);
-        //console.log("notifications ???????");
-        //console.log(message);
       });
-      socket!.on ("GameInvite", (response:any)=>{
+      socket!.on("GameInvite", (response: any) => {
         setGameInviteSender!(response.senderId);
         onOpen!();
-      })
+      });
     }
   }, [socket, chatNotifications, inviteNotifications]);
 
@@ -80,7 +85,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         onOpen,
         isOpen,
         gameInviteSender,
-        setGameInviteSender
+        setGameInviteSender,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import apiClient from "@/services/requestProcessor";
 import { useQueryClient, useQuery } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface InvitesProviderProps {
   children: React.ReactNode;
@@ -45,17 +46,20 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
   const sentClient = new apiClient("/invites/sent");
   const { socket } = useContext(GlobalContext);
 
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
+
+  if (currentUser === undefined)
+    router.push ("/")
   useQuery("recievedEnvites", {
     queryFn: async () => recievedClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {
       if (response.data && response.data.length) {
         const newList: GlobalEnvite[] = getGlobalFriendsEnvites(response.data);
-        // socket!.emit("readInviteNotification", {});
         setFriendRecieved(newList);
       }
     },
     onError: (error) => {
-      // //console.log(error);
     },
   });
 
@@ -64,12 +68,10 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
     onSuccess: (response: any) => {
       if (response.data && response.data.length) {
         const newList: GlobalEnvite[] = getGlobalFriendsEnvites(response.data);
-        // socket!.emit("readInviteNotification", {});
         setFriendSent(newList);
       }
     },
     onError: (error) => {
-      // //console.log(error);
     },
   });
 
@@ -79,7 +81,6 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
     onSuccess: (data: any) => {
       if (data! && data!.length) {
         const newList: GlobalEnvite[] = getGlobalChannelEnvites(data!);
-        // socket!.emit("readInviteNotification", {});
         setChannelRecieved(newList);
       }
     },
@@ -90,7 +91,6 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
     onSuccess: (data: any) => {
       if (data! && data!.length) {
         const newList: GlobalEnvite[] = getGlobalChannelEnvites(data!);
-        // socket!.emit("readInviteNotification", {});
         setChannelSent(newList);
       }
     },

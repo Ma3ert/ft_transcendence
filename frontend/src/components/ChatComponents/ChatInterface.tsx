@@ -11,13 +11,18 @@ import ChannelsChat from "./ChannelsChat";
 import { NotifyServer } from "../../../utils/eventEmitter";
 import NoFriendsPage from "./NoFriendsPage";
 import { useAuth } from "@/hooks/useAuth";
+import CmProvider from "@/providers/CmProvider";
 const ChatInterface: React.FC = ({}) => {
   const { chatType } = useContext(ChatContext);
   const { friendsList } = useContext(UsersContext);
+  const {socket, counter, setCounter} = useContext (GlobalContext)
+  
 
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
-    //console.log(type);
+    if (!socket)
+      setCounter! (counter!+1)
+    ////console.log(type);
   }, []);
   return (
     <Stack h="100%" w="100%" justifyContent={"center"}>
@@ -25,7 +30,9 @@ const ChatInterface: React.FC = ({}) => {
         chatType == PRIVATE ? (
           <PrivateChat />
         ) : (
-          <ChannelsChat />
+          <CmProvider>
+            <ChannelsChat />
+          </CmProvider>
         )
       ) : (
         <NoFriendsPage />

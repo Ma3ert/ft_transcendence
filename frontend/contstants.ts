@@ -130,3 +130,30 @@ export const options: MenuOption[] = [
     modalType: "default",
   },
 ];
+
+export const gameTheme = [
+  {
+    one: "#D9D9D9",
+    two: "#DC585B",
+    ball: "#D9D9D9",
+    border:false,
+  },
+  {
+    one: "#181D25",
+    two: "#5B6171",
+    ball: "#DC585B",
+    border:true,
+  },
+  {
+    one: "#4D4C7D",
+    two: "#F99417",
+    ball: "#F5F5F5",
+    border:false,
+  },
+  {
+    one: "#184e77",
+    two: "#d9ed92",
+    ball: "#52b69a",
+    border:false,
+  },
+];
