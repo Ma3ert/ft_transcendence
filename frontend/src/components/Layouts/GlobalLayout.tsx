@@ -26,40 +26,23 @@ const GlobalLayout:React.FC<GlobalLayoutProps> = ({children}) => {
   else
   {
     return (
-
-      <GlobalProvider>
-      <GameProvider>
-        <InvitesProvider>
-          <UsersProvider>
-            <AppNavigationProvider>
-              <ChatProvider>
-                <ChannelsProvider>
-
-                <Grid templateRows={"15vh 85vh"} w="100%" h="100%">
-                  <GridItem w="100%" h="100%" justifyContent="center" alignItems="center">
-                    <Header />
-                  </GridItem>
-                  <GridItem
-                    mx='auto'
-                    // border="1px"
-                    // borderColor="green"
-                    w={{sm:'98%', lg:'95%', xl:'90%', vl:'66%'}}
-                    h="100%"
-                    justifyContent="center"
-                    alignItems="center"
-                    display={'flex'}
-                    >
-                  {children}
-                  </GridItem>
-              </Grid>
-                </ChannelsProvider>
-              </ChatProvider>
-            </AppNavigationProvider>
-          </UsersProvider>
-        </InvitesProvider>
-      </GameProvider>
-    </GlobalProvider>
-      
+      <Grid templateRows={"15vh 85vh"} w="100%" h="100%">
+        <GridItem w="100%" h="100%" justifyContent="center" alignItems="center">
+          <Header />
+        </GridItem>
+        <GridItem
+          mx='auto'
+          // border="1px"
+          // borderColor="green"
+          w={{sm:'98%', lg:'95%', xl:'90%', vl:'66%'}}
+          h="100%"
+          justifyContent="center"
+          alignItems="center"
+          display={'flex'}
+          >
+        {children}
+        </GridItem>
+      </Grid>
       )
   }
 }

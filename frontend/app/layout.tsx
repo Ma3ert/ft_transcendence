@@ -42,7 +42,19 @@ export default function RootLayout({
           <AuthUserProvider>
             <GameProvider>
               <ChakraProvider theme={theme}>
-                {children}
+               <GlobalProvider>
+                   <GameProvider>
+                     <InvitesProvider>
+                       <UsersProvider>
+                         <AppNavigationProvider>
+                           <ChatProvider>
+                             <ChannelsProvider>{children}</ChannelsProvider>
+                           </ChatProvider>
+                         </AppNavigationProvider>
+                       </UsersProvider>
+                     </InvitesProvider>
+                   </GameProvider>
+                 </GlobalProvider>
               </ChakraProvider>
             </GameProvider>
           </AuthUserProvider>

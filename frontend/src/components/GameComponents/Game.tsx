@@ -92,7 +92,7 @@ const Game = () => {
   };
 
   useEffect(() => {
-    if (!game.playerID || !game.gameID)
+    if (!gameSettings.playerID || !gameSettings.gameID)
       router.push("/Lobby");
     const canvas: any = ref.current;
     const context = canvas.getContext("2d");

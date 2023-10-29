@@ -16,19 +16,7 @@ interface props {
 }
 
 const Layout: React.FC<props> = ({ children }) => {
-  return<GlobalProvider>
-          <InvitesProvider>
-            <UsersProvider>
-              <AppNavigationProvider>
-                <ChatProvider>
-                  <ChannelsProvider>
-                    {children}
-                </ChannelsProvider>
-              </ChatProvider>
-            </AppNavigationProvider>
-          </UsersProvider>
-        </InvitesProvider>
-    </GlobalProvider>
+  return children
 };
 
 export default Layout;
