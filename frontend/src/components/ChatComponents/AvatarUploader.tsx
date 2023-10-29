@@ -106,7 +106,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
       {file && (
         <Button variant="ghost" onClick={handleUplaod}>
           <HStack spacing={3}>
-            <Text>Upload </Text>
+            <Text fontFamily="visbyRound">Upload </Text>
             <Icon as={AiOutlineCloudUpload} />
           </HStack>
         </Button>

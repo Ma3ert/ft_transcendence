@@ -31,10 +31,9 @@ const GameStats: React.FC<Props> = ({}) => {
       minW={{ sm: "250px", md: "300px", lg: "350px", xl: "400px" }}
       spacing={5}
     >
-      <HStack spacing={3} justifyContent={"center"}
-      alignItems={"center"}>
+      <HStack spacing={3} justifyContent={"center"} alignItems={"center"}>
         <Icon as={IoStatsChart} fontSize="md" color={"#5B6171"} />
-        <Text fontSize={"md"} color={"#5B6171"}>
+        <Text fontFamily="visbyRound" fontSize={"md"} color={"#5B6171"}>
           Your game stats
         </Text>
       </HStack>

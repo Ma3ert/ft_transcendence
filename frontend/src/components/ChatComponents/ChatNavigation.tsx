@@ -15,6 +15,7 @@ import { PRIVATE, CHANNEL } from "../../../contstants";
 import { NotificationWrapper } from "./NotificationBadge";
 import { setSyntheticTrailingComments } from "typescript";
 import { useToast } from "@chakra-ui/react";
+import "../../theme/styles.css";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
@@ -121,7 +122,9 @@ const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
         size={"25px"}
       />
       <Stack
+        className="customScroll"
         w="auto"
+        overflowY={"auto"}
         borderRadius={"2xl"}
         h="100%"
         p={4}

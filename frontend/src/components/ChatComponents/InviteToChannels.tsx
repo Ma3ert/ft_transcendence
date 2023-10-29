@@ -49,7 +49,7 @@ const ChannelInviteField: React.FC<ChannelInviteFieldProps> = ({
       <HStack justifyContent={"space-between"} w={"100%"}>
         <HStack spacing={3}>
           <UserAvatar isChannel={true} channel={channel} />
-          <Text>{channel.name}</Text>
+          <Text fontFamily="visbyRound">{channel.name}</Text>
         </HStack>
 
         {checkIdMember(members!, user) ? (

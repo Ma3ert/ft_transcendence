@@ -23,23 +23,21 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
   const { socket } = useContext(GlobalContext);
   const { messages, setChannelMessages } = useContext(CmContext);
-  const {currentUser} = useAuth ()
-  const router = useRouter ()
-  
+  const { currentUser } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
-    if (currentUser == undefined)
-      router.push ("/")
-    
-  if (socket)
-  {
-    socket!.on("CM", (message: any) => {
-      if (activeChannel?.id === message.channelId) {
-        const messagesList = [...messages!];
-        messagesList.push(message);
-        setChannelMessages!(messagesList);
-      }
-    });
-  }
+    if (currentUser == undefined) router.push("/");
+
+    if (socket) {
+      socket!.on("CM", (message: any) => {
+        if (activeChannel?.id === message.channelId) {
+          const messagesList = [...messages!];
+          messagesList.push(message);
+          setChannelMessages!(messagesList);
+        }
+      });
+    }
     return () => {
       socket!.off("CM");
     };
@@ -88,7 +86,7 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
               </Grid>
             </MembersProvider>
           ) : (
-            <Text> No channels found </Text>
+            <Text fontFamily="visbyRound"> No channels found </Text>
           )}
         </Stack>
       ) : (

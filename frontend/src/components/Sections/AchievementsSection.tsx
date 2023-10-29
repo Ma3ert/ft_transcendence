@@ -23,7 +23,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
         ////console.log("I get to the query");
         ////console.log("the res from the local rank: ", res.data.current);
         const localRes: ReactNode[] = [];
-        res.data.current.ranks.map((user: any) => {
+        res.data.current.ranks.map((user: any, index:number) => {
           user.avatar.includes("http")
             ? user.avatar
             : "http://e1r9p3.1337.ma:3000/public/users/imgs/" + user.avatar;
@@ -31,6 +31,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             user.id === currentUser.user.id ? "secondField" : "field";
           localRes.push(
             <UserRankField
+              key={index}
               variant={variant}
               rank={user.order}
               userName={user.username}
@@ -54,7 +55,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
         ////console.log("I get to the query");
         ////console.log("the res from the all rank ", res.data.current);
         const allRes: ReactNode[] = [];
-        res.data.current.ranks.map((user: any) => {
+        res.data.current.ranks.map((user: any, index:number) => {
           user.avatar.includes("http")
             ? user.avatar
             : "http://e1r9p3.1337.ma:3000/public/users/imgs/" + user.avatar;
@@ -62,6 +63,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             user.id === currentUser.user.id ? "secondField" : "field";
           allRes.push(
             <UserRankField
+              key={index}
               variant={variant}
               rank={user.order}
               userName={user.username}

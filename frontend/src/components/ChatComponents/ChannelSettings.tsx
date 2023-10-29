@@ -128,7 +128,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
                 variant={setting === "Members" ? "largeModal" : "default"}
                 buttonValue={
                   <HStack w="100%" h="100%" justifyContent="space-between">
-                    <Text>{setting}</Text>
+                    <Text fontFamily="visbyRound">{setting}</Text>
                     <Icon as={SlArrowRight} />
                   </HStack>
                 }
@@ -153,7 +153,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
               : "Leave"
           } Channel`}
           buttonValue={
-            <Text>
+            <Text fontFamily="visbyRound">
               {getUserRole(currentUser!.user!, members!) == "OWNER"
                 ? "Delete"
                 : "Leave"}{" "}

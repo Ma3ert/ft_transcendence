@@ -30,25 +30,40 @@ import AvatarUploader from "./AvatarUploader";
 
 interface NewChannelProps {}
 
-
-
 const NewChannel: React.FC<NewChannelProps> = ({}) => {
   const [isProtected, setIsProtected] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [channelPassword, setChannelPassword] = useState("");
-  const channelNameSchema = z.string().min(3).max(20).refine((val) => val !== "");
-  const passwordSchema = z.string().min(7).max(20).refine((val) => val !== "");
+  const channelNameSchema = z
+    .string()
+    .min(3)
+    .max(20)
+    .refine((val) => val !== "");
+  const passwordSchema = z
+    .string()
+    .min(7)
+    .max(20)
+    .refine((val) => val !== "");
   const channelManager = useChannelManager();
-  const {onClose} = useContext (ModalWrapperContext)
+  const { onClose } = useContext(ModalWrapperContext);
   const [submitted, setSubmitted] = useState(false);
-  const [avatarPath, setAvatarPath] = useState<string>('');
+  const [avatarPath, setAvatarPath] = useState<string>("");
 
-
-  const createChannel = (channelName:string, channelType:string, channelPassword?:string, channelAvatar?:string) => {
-    channelManager.createChannel(channelName, channelType, channelPassword!, channelAvatar!)
-    onClose!()
-  }
+  const createChannel = (
+    channelName: string,
+    channelType: string,
+    channelPassword?: string,
+    channelAvatar?: string
+  ) => {
+    channelManager.createChannel(
+      channelName,
+      channelType,
+      channelPassword!,
+      channelAvatar!
+    );
+    onClose!();
+  };
   return (
     <Stack spacing={6} justify={"center"} alignItems={"center"}>
       <AvatarUploader setAvatarPath={setAvatarPath} avatarPath={avatarPath} />
@@ -68,9 +83,19 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
             submitted={submitted}
             setSubmitted={setSubmitted}
           />
-          <HStack w="85%" justifyContent="center" spacing={8} alignItems="center">
+          <HStack
+            w="85%"
+            justifyContent="center"
+            spacing={8}
+            alignItems="center"
+          >
             <HStack spacing={3}>
-              <Text color="#5B6171" fontSize="sm" fontWeight="bold">
+              <Text
+                fontFamily="visbyRound"
+                color="#5B6171"
+                fontSize="sm"
+                fontWeight="bold"
+              >
                 Private
               </Text>
               <CostumCheckBox
@@ -83,7 +108,12 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
               />
             </HStack>
             <HStack spacing={3}>
-              <Text color="#5B6171" fontSize="sm" fontWeight="bold">
+              <Text
+                fontFamily="visbyRound"
+                color="#5B6171"
+                fontSize="sm"
+                fontWeight="bold"
+              >
                 Protected
               </Text>
               <CostumCheckBox
@@ -98,33 +128,41 @@ const NewChannel: React.FC<NewChannelProps> = ({}) => {
           </HStack>
           {isProtected && (
             <InputWrapper
-            state={channelPassword}
-            setState={setChannelPassword}
-            scheme={passwordSchema}
-            submitted={submitted}
-            setSubmitted={setSubmitted}
-            placeholder="channel's password"
+              state={channelPassword}
+              setState={setChannelPassword}
+              scheme={passwordSchema}
+              submitted={submitted}
+              setSubmitted={setSubmitted}
+              placeholder="channel's password"
             />
           )}
         </Stack>
       </FormControl>
 
-      <Button variant="secondary" px={6} borderRadius={"xl"} fontSize="sm" onClick={()=>{
-        setSubmitted(true)
-        if (channelNameSchema.safeParse(channelName).success)
-        {
-          if (isPrivate) {
-            createChannel (channelName, "PRIVATE", avatarPath)
+      <Button
+        variant="secondary"
+        px={6}
+        borderRadius={"xl"}
+        fontSize="sm"
+        onClick={() => {
+          setSubmitted(true);
+          if (channelNameSchema.safeParse(channelName).success) {
+            if (isPrivate) {
+              createChannel(channelName, "PRIVATE", avatarPath);
+            } else if (isProtected) {
+              if (passwordSchema.safeParse(channelPassword).success)
+                createChannel(
+                  channelName,
+                  "PROTECTED",
+                  avatarPath,
+                  channelPassword
+                );
+            } else {
+              createChannel(channelName, "PUBLIC", avatarPath);
+            }
           }
-          else if (isProtected) {
-            if (passwordSchema.safeParse(channelPassword).success)
-              createChannel (channelName, "PROTECTED",avatarPath, channelPassword)
-          }
-          else {
-            createChannel (channelName, "PUBLIC", avatarPath)
-          }
-        }
-      }}>
+        }}
+      >
         done
       </Button>
     </Stack>

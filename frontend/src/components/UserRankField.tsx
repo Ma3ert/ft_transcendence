@@ -11,11 +11,12 @@ type Props = {
     userName: string;
     rank: number;
     variant: string;
+    key: number
 }
 
-const UserRankField = ({userName, userPic, rank, variant="field"}: Props) => {
+const UserRankField = ({key, userName, userPic, rank, variant="field"}: Props) => {
   return (
-    <Button variant={variant} w={"95%"} h={{sm: "40px", md: "50px", lg: "70px" }} p={"15px"}>
+    <Button key={key} variant={variant} w={"95%"} h={{sm: "40px", md: "50px", lg: "70px" }} p={"15px"}>
       <Flex alignItems={"center"} width={"full"}>
         <Wrap align={"center"} spacing={"15px"}>
           <Text fontSize={{base: "8px",md: "10px", lg: "15px"}}>{rank}</Text>

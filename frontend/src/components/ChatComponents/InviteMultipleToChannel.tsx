@@ -12,6 +12,7 @@ import {
   Avatar,
   Checkbox,
   Icon,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { UsersContext, InvitesContext } from "@/context/Contexts";
 import { ImUserPlus } from "react-icons/im";
@@ -25,10 +26,11 @@ interface Props {
 }
 const InviteMultipleToChannel: React.FC<Props> = ({ channel, Members }) => {
   const { friendsList } = useContext(UsersContext);
+  const {onClose, onOpen, isOpen} = useDisclosure ()
   return (
-    <Popover>
+    <Popover onClose={onClose} isOpen={isOpen}>
       <PopoverTrigger>
-        <Button variant="ghost">Invite</Button>
+        <Button variant="ghost" onClick={onOpen}>Invite</Button>
       </PopoverTrigger>
       <Portal>
         <PopoverContent bg={"#181D25"} border="none">
@@ -56,7 +58,7 @@ const InviteMultipleToChannel: React.FC<Props> = ({ channel, Members }) => {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <Button variant={"modalConfirm"}>done</Button>
+                <Button variant={"modalConfirm"} onClick={onClose}>done</Button>
               </HStack>
             </Stack>
           </PopoverBody>
@@ -89,7 +91,7 @@ const InviteToChannelField: React.FC<InviteProps> = ({
     >
       <HStack spacing={4}>
         <Avatar borderRadius="15px" src={user?.avatar} />
-        <Text fontSize={"md"} color="#5B6171">
+        <Text fontFamily="visbyRound" fontSize={"md"} color="#5B6171">
           {user?.username}
         </Text>
       </HStack>

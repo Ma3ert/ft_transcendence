@@ -50,7 +50,10 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
       >
         <HStack spacing={2}>
           <Avatar size="sm" src={peer?.avatar} name={peer?.username} />
-          <Text> {peer && getEnviteMessage(peer!, type, envite)}</Text>
+          <Text fontFamily="visbyRound">
+            {" "}
+            {peer && getEnviteMessage(peer!, type, envite)}
+          </Text>
         </HStack>
         {type == "received" ? (
           <HStack spacing={5}>
@@ -92,7 +95,7 @@ const EnviteField: React.FC<EnviteFieldProps> = ({ type, envite }) => {
             />
           </HStack>
         ) : (
-          <Text>pending</Text>
+          <Text fontFamily="visbyRound">pending</Text>
         )}
       </HStack>
     </Button>

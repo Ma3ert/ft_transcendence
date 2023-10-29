@@ -35,10 +35,15 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
             size="sm"
           />
           <Stack spacing={2}>
-            <Text fontWeight={"bold"} fontSize={"sm"} color="#5B6171">
+            <Text
+              fontFamily="visbyRound"
+              fontWeight={"bold"}
+              fontSize={"sm"}
+              color="#5B6171"
+            >
               {channel?.name}
             </Text>
-            <Text fontSize={"xs"} color="#5B6171">
+            <Text fontFamily="visbyRound" fontSize={"xs"} color="#5B6171">
               {channel?.members} members
             </Text>
           </Stack>

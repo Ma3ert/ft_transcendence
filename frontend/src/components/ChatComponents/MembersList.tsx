@@ -18,21 +18,12 @@ import { UsersContext } from "@/context/Contexts";
 interface MembersListProps {
   members: Member[];
 }
-const MembersList: React.FC<MembersListProps> = ({ members}) => {
- 
+const MembersList: React.FC<MembersListProps> = ({ members }) => {
+  const { Users } = useContext(UsersContext);
+  const userList = Users?.filter((user) => {
+    return members!.findIndex((member) => member.user == user.id) != -1;
+  });
 
-  const [users, setUsers] = useState<User[]>([]);
-  const {Users}= useContext (UsersContext)
-
-  useEffect(() => {
-    if (members) {
-      const userList = Users?.filter ((user) => {
-        return members!.findIndex ((member) => member.user == user.id) != -1;
-      }
-      );
-      setUsers (userList!)
-    }
-  }, [members]);
   return (
     <Stack
       spacing={4}
@@ -49,13 +40,18 @@ const MembersList: React.FC<MembersListProps> = ({ members}) => {
           <ScrollableStack h="50vh">
             {members!.map((member, index) => {
               return (
-                <MemberField user={users.find(user=> user.id === member.user)!} member={member} key={index} members={members} />
+                <MemberField
+                  user={userList![index]}
+                  member={member}
+                  key={index}
+                  members={members}
+                />
               );
             })}
           </ScrollableStack>
         </>
       ) : (
-        <Text color="#5B6171" fontSize="sm">
+        <Text fontFamily="visbyRound" color="#5B6171" fontSize="sm">
           this channel has no members
         </Text>
       )}

@@ -20,30 +20,33 @@ interface PrivateChatProps {}
 
 const PrivateChat: React.FC<PrivateChatProps> = () => {
   const { socket } = useContext(GlobalContext);
-  const { activePeer} = useContext(UsersContext);
+  const { activePeer } = useContext(UsersContext);
 
-  const directConversationsClient = new apiClient(`/chat/direct/`)
-  const { setActivePeer, setFriendsConversations, friendsConversations, friendsList} = useContext (UsersContext)
-  const {data, isLoading, isError, error} = useQuery({
-      queryKey: ['directConversations'],
-      queryFn: () => directConversationsClient.getData().then(res => res.data),
-      onSuccess: (data:String[]) => {
-          if (data && data.length)
-          {
-              const filteredData = friendsList!.filter((friend:User) => data.includes(friend.id))
-              if (filteredData.length)
-              {
-                  setFriendsConversations!(filteredData)
-                  if (activePeer == null)
-                    setActivePeer!(filteredData[0])
-              }
-          }
-      },
-      onError: (error) => {}
-  })
+  const directConversationsClient = new apiClient(`/chat/direct/`);
+  const {
+    setActivePeer,
+    setFriendsConversations,
+    friendsConversations,
+    friendsList,
+  } = useContext(UsersContext);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["directConversations"],
+    queryFn: () => directConversationsClient.getData().then((res) => res.data),
+    onSuccess: (data: String[]) => {
+      if (data && data.length) {
+        const filteredData = friendsList!.filter((friend: User) =>
+          data.includes(friend.id)
+        );
+        if (filteredData.length) {
+          setFriendsConversations!(filteredData);
+          if (activePeer == null) setActivePeer!(filteredData[0]);
+        }
+      }
+    },
+    onError: (error) => {},
+  });
   useEffect(() => {}, [friendsConversations]);
-  if (isLoading)
-    return <Loading />
+  if (isLoading) return <Loading />;
 
   return (
     <Stack
@@ -87,7 +90,9 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
               <ModalWrapper
                 type="regular"
                 buttonVariant="largeSecondary"
-                buttonValue={<Text>Create channel</Text>}
+                buttonValue={
+                  <Text fontFamily="visbyRound">Create channel</Text>
+                }
               >
                 <NewChannel />
               </ModalWrapper>

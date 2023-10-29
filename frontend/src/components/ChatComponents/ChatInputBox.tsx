@@ -71,6 +71,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
       w="98%"
       px={4}
       py={2}
+      fontFamily={"visbyRound"}
     >
       {chatType === PRIVATE && (
         <Button
@@ -103,7 +104,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
             isDisabled={joinGameStatus}
             type="text"
             bg={"transparent"}
-            color="white"
+            color="#5B6171"
             _active={{ outline: "none", border: "none", boxShadow: "none" }}
             p={2}
             _focus={{ outline: "none", border: "none", boxShadow: "none" }}
@@ -112,7 +113,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
             border="none"
             w="100%"
             onChange={(e) => setMessage(e.target.value)}
-            _placeholder={{ color: "#5B6171" }}
+            _placeholder={{ color: "#5B6171" , opacity:'0.4'}}
           />
         </form>
       </FormControl>
