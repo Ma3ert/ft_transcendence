@@ -19,7 +19,7 @@ import { UsersService } from 'src/users/users.service';
 @UseGuards(WsLoggedInGuard) 
 @WebSocketGateway({
   cors: {
-    origin: [process.env.SERVER_HOST + process.env.CLIENT],
+    origin: ['*'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Access-Control-Allow-Origin']
