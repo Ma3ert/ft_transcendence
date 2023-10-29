@@ -10,7 +10,7 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors({
-    origin: [process.env.SERVER_HOST + "3001", process.env.SERVER_HOST + '5173'],
+    origin: [process.env.SERVER_HOST + process.env.CLIENT, process.env.SERVER_HOST + process.env.MAIL_PORT],
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
