@@ -17,6 +17,10 @@ import ScrollableStack from "../ScrollableStack";
 import UserProfileHeader from "./UserProfileHeader";
 import { GoDash } from "react-icons/go";
 import { useAuth } from "@/hooks/useAuth";
+import apiClient from "@/services/requestProcessor";
+import { AxiosResponse } from "axios";
+import { ReactNode, useEffect, useState } from "react";
+import { set } from "zod";
 
 interface UserProfileModalProps {
   user: User;
@@ -144,11 +148,22 @@ export const GameField: React.FC<GameFieldProps> = ({
 
 const UserProfileModal: React.FC<UserProfileModalProps> = ({ user }) => {
   const { currentUser } = useAuth();
+  const client = new apiClient("/users/")
+  const [userProfile, setUserProfile] = useState<any>(undefined)
+  useEffect(() => {
+    client.getData(user.id).then((res: AxiosResponse) => {
+      console.log("res: ", res.data.member)
+      setUserProfile(res.data.member);
+    })
+  }, [])
+  if (userProfile === undefined)
+    return null;
+  console.log(userProfile.games)
   return (
     <Stack minH={"50vh"} w="100%" h="100%" spacing={4} p={4}>
       <Grid templateRows={"10vh 1fr"}>
         <GridItem>
-          <UserProfileHeader user={user} />
+          <UserProfileHeader user={userProfile.user} />
         </GridItem>
         <GridItem>
           <Grid templateColumns={"150px 1fr"}>
@@ -159,32 +174,28 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ user }) => {
                 justifyContent="center"
                 alignItems="start"
                 spacing={3}
-              >
-                <UserGameInfo title="Games" info="123" />
-                <UserGameInfo title="Wins" info="111" />
-                <UserGameInfo title="Losses" info="13" />
+                >
+                <UserGameInfo title="Games" info={userProfile.totalGames} />
+                <UserGameInfo title="Wins" info={userProfile.numberOfWon} />
+                <UserGameInfo title="Losses" info={userProfile.numberOfLost} />
               </Stack>
             </GridItem>
             <GridItem>
               <ScrollableStack yPadding={2} h="40vh">
-                <GameField
-                  firstUser={currentUser!.user!}
-                  secondUser={user}
-                  firstScore={1}
-                  secondScore={2}
-                />
-                <GameField
-                  firstUser={currentUser!.user!}
-                  secondUser={user}
-                  firstScore={1}
-                  secondScore={2}
-                />
-                <GameField
-                  firstUser={currentUser!.user!}
-                  secondUser={user}
-                  firstScore={1}
-                  secondScore={2}
-                />
+                {
+                  userProfile.games.toReversed().map((match: any) => {
+                    return (
+                        <GameField
+                        firstUser={userProfile.user}
+                        key={match.id}
+                        secondUser={match.opponent}
+                        firstScore={match.score}
+                        secondScore={match.opponentScore}
+                        won={match.won}
+                        />
+                      )
+                    })
+                }
               </ScrollableStack>
             </GridItem>
           </Grid>

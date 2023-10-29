@@ -20,9 +20,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
     queryKey: ["rank", "local"],
     queryFn: () =>
       client.getData("/local").then((res: AxiosResponse) => {
-        ////console.log("I get to the query");
-        ////console.log("the res from the local rank: ", res.data.current);
         const localRes: ReactNode[] = [];
+        console.log(res.data.current.ranks);
         res.data.current.ranks.map((user: any, index:number) => {
           user.avatar.includes("http")
             ? user.avatar
@@ -31,6 +30,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             user.id === currentUser.user.id ? "secondField" : "field";
           localRes.push(
             <UserRankField
+              lvl={user.level}
+              xp={user.xp}
               key={index}
               variant={variant}
               rank={user.order}
@@ -63,6 +64,8 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
             user.id === currentUser.user.id ? "secondField" : "field";
           allRes.push(
             <UserRankField
+              lvl={user.level}
+              xp={user.xp}
               key={index}
               variant={variant}
               rank={user.order}

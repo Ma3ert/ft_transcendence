@@ -57,6 +57,7 @@ type Tab = {
 };
 
 type User = {
+  games?: any;
   avatar: string;
   username: string;
   id: string;

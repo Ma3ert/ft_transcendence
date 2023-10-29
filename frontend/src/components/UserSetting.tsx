@@ -52,16 +52,17 @@ const UserSetting = (props: Props) => {
       !toast.isActive("edit") &&
         toast({
           id: "edit",
-          title: "Unvalid Input",
+          title: "Invalid Input",
           status: "error",
         });
       return ;
     }
     const formData = new FormData(event.target as HTMLFormElement);
     const userName: string = formData.get("username") as string;
-    const imageFile = (document.getElementById("avatar") as HTMLInputElement)
-      .files?.[0];
+    const imageFile = (document.getElementById("avatar") as HTMLInputElement).files?.[0];
     if (inputValue !== "" || imageFile) {
+      if (inputValue === "")
+        formData.append("username", currentUser.username)
       client.patchData(formData).then(() => {
         updateUser && updateUser();
         !toast.isActive("edit") &&

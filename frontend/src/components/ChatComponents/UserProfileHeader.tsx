@@ -3,7 +3,7 @@ import UserAvatar from "../UserAvatar";
 import UserProfileNavbar from "./UserProfileNavbar";
 
 interface UserProfileHeaderProps {
-  user: User;
+  user: any;
 }
 
 const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user }) => {
@@ -20,7 +20,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ user }) => {
             LEVEL
           </Heading>
           <Heading fontSize={"l"} fontWeight={"bold"} color={"#D9D9D9"}>
-            12
+            {user.level}
           </Heading>
         </HStack>
       </Stack>
