@@ -1,7 +1,7 @@
 import { AuthUser } from "@/context/Contexts";
 import { ReactNode, useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useUpdateCurrentUser } from "@/hooks/useUpdateCurrentUser";
+import { UpdateCurrentUser } from "@/hooks/UpdateCurrentUser";
 import { useRouter } from "next/navigation";
 import Loading from "../../app/loading";
 
@@ -18,19 +18,18 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
     const cookieValue = Cookies.get("jwt");
     if (cookieValue !== undefined) {
       ////console.log(cookieValue);
-      if (cookieValue !== ""){
-        useUpdateCurrentUser()
-        .then((res) => {
+      if (cookieValue !== "") {
+        UpdateCurrentUser()
+          .then((res) => {
             if (!res.user.avatar.includes("http"))
-            res.user.avatar =
-          "http://e1r9p3.1337.ma:3000/public/users/imgs/" +
-          res.user.avatar;
-          setCurrentUser(res);
-          setLoading(false);
+              res.user.avatar =
+                "http://e1r9p3.1337.ma:3000/public/users/imgs/" +
+                res.user.avatar;
+            setCurrentUser(res);
+            setLoading(false);
           })
-        .catch((err) => {});
-      }
-      else {
+          .catch((err) => {});
+      } else {
         setLoading(false);
         setCurrentUser(undefined);
         router.push("/");

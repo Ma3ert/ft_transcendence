@@ -1,7 +1,6 @@
 import { AppNavigationContext } from "@/context/Contexts";
 import { Stack, Text } from "@chakra-ui/react";
-import { useContext } from "react";
-import PasswordSetting from "../PasswordSetting";
+import { useContext } from "react"
 import UserSetting from "../UserSetting";
 import UserProfileModal from "../ChatComponents/UserProfileModal";
 import { useAuth } from "@/hooks/useAuth";

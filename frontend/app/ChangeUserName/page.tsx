@@ -18,10 +18,10 @@ import { FaPen } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { PinInput, PinInputField } from "@chakra-ui/react";
-import { useUpdateCurrentUser } from "@/hooks/useUpdateCurrentUser";
+import { UpdateCurrentUser } from "@/hooks/UpdateCurrentUser";
 import Cookies from "js-cookie";
 import { useQuery, useQueryClient } from "react-query";
-import {z} from "zod"
+import { z } from "zod";
 
 import {
   useDisclosure,
@@ -33,9 +33,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Cookie } from "next/font/google";
-const inputScheme  = z.string ().min (4).max (14)
+const inputScheme = z.string().min(4).max(14);
 export default function Home() {
-
   const toast = useToast();
   const [pin, setPin] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,10 +43,12 @@ export default function Home() {
   const twoFaClient = new apiClient("/auth/twoFactor");
   const { currentUser, updateUser } = useAuth();
   const [inputValue, setInputValue] = useState("");
-  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.user.avatar : "");
+  const [newAvatar, setNewAvatar] = useState(
+    currentUser ? currentUser.user.avatar : ""
+  );
   const [value, setValue] = useState("");
   const first = useRef<any>(null);
-  
+
   if (
     currentUser &&
     currentUser.user.activated &&
@@ -82,7 +83,6 @@ export default function Home() {
     }
   }, []);
 
-
   const handleSkip = () => {
     const formData = new FormData();
     formData.append("activated", "true");
@@ -101,35 +101,36 @@ export default function Home() {
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const validation =  inputScheme.safeParse (inputValue)
-    if (!validation.success)
-    {
+    const validation = inputScheme.safeParse(inputValue);
+    if (!validation.success) {
       !toast.isActive("edit") &&
         toast({
           id: "edit",
           title: "Unvalid Input",
           status: "error",
         });
-      return ;
+      return;
     }
     const formData = new FormData(event.target as HTMLFormElement);
     const userName: string = formData.get("username") as string;
     const imageFile = (document.getElementById("avatar") as HTMLInputElement)
-    .files?.[0];
+      .files?.[0];
     formData.append("activated", "true");
     if (userName !== "" || imageFile) {
-      client.patchData(formData).then(() => {
-        updateUser && updateUser();
-      })
-      .catch(() => {
-        !toast.isActive("edit") &&
-        toast({
-          id: "edit",
-          title: "Unvalid Input",
-          status: "error",
+      client
+        .patchData(formData)
+        .then(() => {
+          updateUser && updateUser();
+        })
+        .catch(() => {
+          !toast.isActive("edit") &&
+            toast({
+              id: "edit",
+              title: "Unvalid Input",
+              status: "error",
+            });
+          setInputValue("");
         });
-        setInputValue("");
-      });
     } else {
       handleSkip();
     }
@@ -274,7 +275,9 @@ export default function Home() {
                   id="username"
                   name="username"
                   variant={"default"}
-                  onChange={(e) => {setInputValue(e.target.value)}}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                  }}
                   w={{ base: "280px", lg: "340px" }}
                   h={{ base: "50px", lg: "66px" }}
                   placeholder={
