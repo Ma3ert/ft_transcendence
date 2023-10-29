@@ -18,21 +18,22 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
     const cookieValue = Cookies.get("jwt");
     if (cookieValue !== undefined) {
       ////console.log(cookieValue);
-      if (cookieValue !== "")
+      if (cookieValue !== ""){
         useUpdateCurrentUser()
-          .then((res) => {
+        .then((res) => {
             if (!res.user.avatar.includes("http"))
-              res.user.avatar =
-                "http://e1r9p3.1337.ma:3000/public/users/imgs/" +
-                res.user.avatar;
-            setCurrentUser(res);
-            setLoading(false);
+            res.user.avatar =
+          "http://e1r9p3.1337.ma:3000/public/users/imgs/" +
+          res.user.avatar;
+          setCurrentUser(res);
+          setLoading(false);
           })
-          .catch((err) => {});
+        .catch((err) => {});
+      }
       else {
         setLoading(false);
         setCurrentUser(undefined);
-        // router.push("/");
+        router.push("/");
       }
     } else {
       setLoading(false);

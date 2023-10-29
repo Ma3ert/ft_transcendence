@@ -32,7 +32,14 @@ export class AuthController {
   async handleRedirect(@Req() req: Request, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
-    res.redirect('http://e1r9p3.1337.ma:3001/ChangeUserName');
+    if (
+      req.user['activated'] &&
+      !req.user['twoFactor'] &&
+      !req.user['pinValidated']
+    )
+      res.redirect('http://e1r9p3.1337.ma:3001/Lobby');
+    else
+      res.redirect('http://e1r9p3.1337.ma:3001/ChangeUserName');
   }
 
   @Get('42/logout')
@@ -46,7 +53,7 @@ export class AuthController {
       twoFactor: user.twoFactorStatus,
     });
     res.cookie('jwt', '');
-    res.redirect('http://e1r9p3.1337.ma:3001/');
+    res.redirect(process.env.SERVER_HOST + '3001/');
   }
 
   @Post('local/login')

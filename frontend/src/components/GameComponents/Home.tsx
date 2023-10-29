@@ -59,7 +59,6 @@ export const MatchMade = ({ user, opponent }: MatchMadeInterface) => {
 };
 
 const Home = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<any>({});
   const [message, setMessage] = useState("");
   const [visible, setVisible] = useState(true);

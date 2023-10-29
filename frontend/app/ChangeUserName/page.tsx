@@ -35,6 +35,7 @@ import {
 import { Cookie } from "next/font/google";
 const inputScheme  = z.string ().min (4).max (14)
 export default function Home() {
+
   const toast = useToast();
   const [pin, setPin] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,26 +44,29 @@ export default function Home() {
   const twoFaClient = new apiClient("/auth/twoFactor");
   const { currentUser, updateUser } = useAuth();
   const [inputValue, setInputValue] = useState("");
-  const [newAvatar, setNewAvatar] = useState(
-    currentUser ? currentUser.user.avatar : ""
-  );
-  // const [retry, setRetry] = useState(5 - currentUser.user.twoFactorRetry);
+  const [newAvatar, setNewAvatar] = useState(currentUser ? currentUser.user.avatar : "");
   const [value, setValue] = useState("");
   const first = useRef<any>(null);
+  
+  if (
+    currentUser &&
+    currentUser.user.activated &&
+    !currentUser.user.twoFactor &&
+    !currentUser.user.pinValidated
+  )
+    router.push("/Lobby");
 
   useEffect(() => {
     if (pin.length === 6 && 5 - currentUser.user.twoFactorRetry) {
       twoFaClient
         .postData({ pin: pin }, "")
         .then((res) => {
-          ////console.log("result: from pin validation: ", res);
           router.push("/Lobby");
         })
         .catch((err) => {
           setPin("");
           setValue("");
           updateUser && updateUser();
-          // setRetry(5 - currentUser.user.twoFactorRetry)
           first.current && first.current.focus();
         });
     }
@@ -74,18 +78,10 @@ export default function Home() {
       currentUser.user.twoFactor &&
       !currentUser.user.pinValidated
     ) {
-      ////console.log("I sent it again");
       twoFaClient.getData("").then(() => onOpen());
     }
   }, []);
 
-  if (
-    currentUser &&
-    currentUser.user.activated &&
-    !currentUser.user.twoFactor &&
-    !currentUser.user.pinValidated
-  )
-    router.push("/Lobby");
 
   const handleSkip = () => {
     const formData = new FormData();

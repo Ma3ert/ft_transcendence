@@ -76,15 +76,22 @@ export class ChatService {
 
     if (userExist) throw new ForbiddenException('The User Already Joined the Channel.');
 
-    const userInvite = !!(await this.userhasInvitation(user, channel));
+    const channelType = await this.prismaService.channel.findUnique({
+      where:{
+        id:channel,
+      },
+    });
 
-    if (!userInvite) throw new InternalServerErrorException("User dosen't have invitation to this channel");
+    const userInvite = !!(await this.userhasInvitation(user, channel));
 
     const Channel = await this.prismaService.channel.findFirst({
       where: {
         id: channel,
       },
     });
+
+    if (!userInvite && Channel.type !== Type.PUBLIC)
+      throw new InternalServerErrorException("User dosen't have invitation to this channel");
 
     if (Channel.type === Type.PROTECTED && !password)
       throw new InternalServerErrorException('The channel required password');
