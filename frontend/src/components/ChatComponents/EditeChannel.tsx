@@ -18,6 +18,7 @@ import {
   MenuItem,
   MenuButton,
   useDisclosure,
+  Toast,
 } from "@chakra-ui/react";
 import { FaPen } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
@@ -30,6 +31,10 @@ import useChannelSettingsUpdater from "@/hooks/useChannelSettingsUpdater";
 import CostumSwitcher from "@/components/ChatComponents/CostumSwitcher";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import AvatarUploader from "./AvatarUploader";
+import {z} from "zod"
+import { useToast } from "@chakra-ui/react";
+import { useSuccess, useFailure } from "@/hooks/useAlerts";
+
 
 interface EditChannelProps {
   channel: Channel;
@@ -118,6 +123,11 @@ const EditChannel: React.FC<EditChannelProps> = ({ channel }) => {
   const [isPasswordEditable, SetPasswordEditable] = useState(false);
   const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
+  const channelNameSchema = z.string().min(3).max(20).refine((val) => val !== "");
+  const passwordSchema = z.string().min(7).max(20).refine((val) => val !== "");
+  const toast = useToast ()
+  const success = useSuccess ();
+  const failure = useFailure ();
 
   return (
     <Stack justifyContent={"center"} alignItems={"center"} spacing={6}>
@@ -200,6 +210,17 @@ const EditChannel: React.FC<EditChannelProps> = ({ channel }) => {
         <Button
           variant="modalConfirm"
           onClick={() => {
+
+            if (channelName !== channel.name && !channelNameSchema.safeParse(channelName).success)
+            {
+              toast (failure ("channel name must be between 3 and 20 characters"));
+              return;
+            } 
+            if (isPasswordEditable && !passwordSchema.safeParse(password).success)
+            {
+              toast (failure ("password must be between 7 and 20 characters"));
+              return;
+            }
             if (isPasswordEditable && password.length) {
               changeChannelPassword(currentPassword, password);
             }

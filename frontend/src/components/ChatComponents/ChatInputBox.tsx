@@ -41,6 +41,8 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
 
   const handleSendMessage = (e?: FormEvent) => {
     e && e!.preventDefault();
+
+    if (message === "") return;
     if (chatType === PRIVATE) SendMessage(message);
     else {
       console.log (`current member : `)
