@@ -14,7 +14,7 @@ export default function Home() {
     justify="center"
     minH="70vh"
     >
-    <Logo src="/logo.png" width="334px" height="179px"></Logo>
+    <Logo src="/logo.png"/>
     <Link href={"/ChangeUserName"}>
       <Button variant={"primary"} width="300px" height="80px" fontSize={"22px"}>
         <Wrap align={"center"} spacing={"20px"}>

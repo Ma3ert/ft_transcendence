@@ -28,9 +28,7 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
       // closeOnBeforeunload: true,
       // reconnection: false,
     });
-
-    if (currentUser === undefined)
-      router.push ("/")
+    // console.log("current User: ", currentUser)
     const token = Cookies.get("jwt");
     socket.auth = { token: `Bearer ${token}` };
     socket.connect();

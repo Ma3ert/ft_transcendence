@@ -49,8 +49,11 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
   const {currentUser} = useAuth ()
   const router = useRouter ()
 
-  if (currentUser === undefined)
-    router.push ("/")
+  // if (currentUser === undefined)
+  // {
+  //   console.log("route")
+  //   router.push ("/")
+  // }
   useQuery("recievedEnvites", {
     queryFn: async () => recievedClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {

@@ -19,31 +19,32 @@ interface GlobalLayoutProps {
 }
 
 const GlobalLayout:React.FC<GlobalLayoutProps> = ({children}) => {
-    const {currentUser, updateUser} = useAuth()
-    const router = useRouter()
+  const {currentUser, updateUser} = useAuth()
+  const router = useRouter()
 
-    if (!currentUser)
-      router.push("/")
+  if (currentUser === undefined) router.push("/")
+  else
+  {
     return (
-        <Grid templateRows={"15vh 85vh"} w="100%" h="100%">
-        <GridItem w="100%" h="100%" justifyContent="center" alignItems="center">
-          <Header />
-        </GridItem>
-        <GridItem
-          mx='auto'
-          // border="1px"
-          // borderColor="green"
-          w={{sm:'98%', lg:'95%', xl:'90%', vl:'66%'}}
-          h="100%"
-          justifyContent="center"
-          alignItems="center"
-          display={'flex'}
-        >
-        {children}
-        </GridItem>
-      </Grid>
-    )
-    }
-
+      <Grid templateRows={"15vh 85vh"} w="100%" h="100%">
+          <GridItem w="100%" h="100%" justifyContent="center" alignItems="center">
+            <Header />
+          </GridItem>
+          <GridItem
+            mx='auto'
+            // border="1px"
+            // borderColor="green"
+            w={{sm:'98%', lg:'95%', xl:'90%', vl:'66%'}}
+            h="100%"
+            justifyContent="center"
+            alignItems="center"
+            display={'flex'}
+            >
+          {children}
+          </GridItem>
+        </Grid>
+      )
+  }
+}
 
 export default GlobalLayout;

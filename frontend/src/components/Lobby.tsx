@@ -14,8 +14,8 @@ type Props = {};
 const Lobby = (props: Props) => {
   const {currentUser, updateUser} = useAuth();
   const router = useRouter()
-  if (!currentUser || !currentUser.user.activated)
-    router.push("/");
+  // if (!currentUser || !currentUser.user.activated)
+  //   router.push("/");
   const challenges = [
     <Challenge
       progress="5"
