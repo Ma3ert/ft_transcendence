@@ -40,6 +40,7 @@ const Game = () => {
   const router = useRouter();
   const [message, setMessage] = useState("Waiting for game to start");
   const { gameSettings } = useGame();
+  console.log("gameSetting: ", gameSettings)
   const [score, setScore] = useState({});
   const [finalScore, setFinalScore] = useState("");
   const { currentUser, updateUser } = useAuth();
@@ -64,7 +65,9 @@ const Game = () => {
         status: win ? "success" : "error",
         icon: <FaTrophy />,
       });
+      console.log("i get here1")
     router.push("/Lobby");
+    
   };
 
   const paint = (context: any) => {
@@ -89,7 +92,8 @@ const Game = () => {
   };
 
   useEffect(() => {
-    if (!gameSettings.playerID || !gameSettings.gameID) router.push("/Lobby");
+    if (!game.playerID || !game.gameID)
+      router.push("/Lobby");
     const canvas: any = ref.current;
     const context = canvas.getContext("2d");
 
@@ -103,6 +107,7 @@ const Game = () => {
           });
         setMessage("Error connecting to the server");
         router.push("/Lobby");
+
       }
     });
 
@@ -128,7 +133,6 @@ const Game = () => {
     socket.on("startGameSession", () => {
       CloseHandler!();
       setMessage("");
-      ////console.log("i get here")
       var theme = { one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9" };
 
       const cookieValue = Cookies.get("theme");
@@ -179,10 +183,6 @@ const Game = () => {
         setMessage("Bitch. You LOST this game");
         setWin(false);
       }
-      // setTimeout(() => {
-      //   // degage();
-      //   router.push("/Lobby");
-      // }, 30000);
       setFinalScore(
         itemCounter(room.players[0].score, "W").toString() +
           " - " +
