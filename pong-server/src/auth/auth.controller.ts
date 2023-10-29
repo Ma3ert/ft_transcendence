@@ -32,7 +32,14 @@ export class AuthController {
   async handleRedirect(@Req() req: Request, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
-    res.redirect(process.env.SERVER_HOST + process.env.CLIENT_PORT + '/ChangeUserName');
+    if (
+      req.user['activated'] &&
+      !req.user['twoFactor'] &&
+      !req.user['pinValidated']
+    )
+      res.redirect(process.env.SERVER_HOST + process.env.CLIENT_PORT + '/Lobby');
+    else
+      res.redirect(process.env.SERVER_HOST + process.env.CLIENT_PORT + '/ChangeUserName');
   }
 
   @Get('42/logout')

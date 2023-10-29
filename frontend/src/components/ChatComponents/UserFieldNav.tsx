@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 interface UserFieldNavProps {
   member?:Member
   user: User;
-  friendsList: User[];
 }
 
 
@@ -26,8 +25,6 @@ const GetMemberStatus = (member:Member) => {
 
   if (member!.banned) return <Text fontSize="sm"  color='#DC585B'>Banned</Text>
   if (member!.muted) return <Icon as={BsFillMicMuteFill} fontSize="22px" color='#DC585B' _hover={{ transform: "scale(1.1)" }}/>
-  if (checkIfMember(member.role)) return  <Text fontSize="sm">{member!.role}</Text>
-
 }
 
 const UserFieldNav:React.FC<UserFieldNavProps> = ({user, member}) => {

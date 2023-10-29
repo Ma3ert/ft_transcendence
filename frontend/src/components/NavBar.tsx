@@ -13,7 +13,7 @@ const NavBar = () => {
   const { currentUser, updateUser } = useAuth();
   const router = useRouter();
 
-  if (!currentUser) router.push("/");
+  // if (!currentUser) router.push("/");
 
   const handleLogout = () => {
     router.push("http://e1r9p3.1337.ma:3000/auth/42/logout");

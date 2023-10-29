@@ -21,6 +21,8 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
   const { setCurrentChat } = useContext(ChatContext);
   const { setActiveChannel } = useContext(ChannelsContext);
   const router = useRouter();
+  const {Channels} = useContext (ChannelsContext)
+  const isOwner = Channels!.find((ch) => ch.id === channel.id)
   const caseActions = new Map([
     ['PRIVATE', () => {
       return <Icon as={ViewOffIcon} fontSize='sm' />
@@ -39,9 +41,11 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
       h="auto"
       px={2}
       onClick={() => {
+        if (isOwner) {
         setCurrentChat!(false);
         setActiveChannel!(channel);
         router.push(`/Chat`);
+        }
       }}
     >
       <HStack w="100%" h="100%" justify="space-between" alignItems="center">

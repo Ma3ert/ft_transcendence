@@ -18,8 +18,6 @@ export default function Header() {
   const { socket } = useContext(GlobalContext);
   const { currentUser, updateUser } = useAuth();
 
-  if (!currentUser) router.push("/");
-
   const handleLogout = () => {
     router.push("http://e1r9p3.1337.ma:3000/auth/42/logout");
     socket.emit("userLoggedOut");

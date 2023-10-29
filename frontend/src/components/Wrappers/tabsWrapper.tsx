@@ -143,10 +143,10 @@ const TabsWrapper: React.FC = () => {
   ];
 
   const StatsTabs: Tab[] = [
-    {
-      value: <Icon as={IoStatsChart} style={{ fontSize: "23px" }} />,
-      action: () => setStatsSection && setStatsSection("stats"),
-    },
+    // {
+    //   value: <Icon as={IoStatsChart} style={{ fontSize: "23px" }} />,
+    //   action: () => setStatsSection && setStatsSection("stats"),
+    // },
     {
       value: <Icon as={AiOutlineHistory} style={{ fontSize: "23px" }} />,
       action: () => setStatsSection && setStatsSection("history"),

@@ -54,7 +54,6 @@ const {friendsList} = useContext(UsersContext);
             <UserFieldNav
               member={member!}
               user={user!}
-              friendsList={friendsList!}
             />
           )}
           {user.id != currentUser.user!.id && (

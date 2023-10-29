@@ -10,8 +10,7 @@ interface StatsSectionProps{
 const StatsSection:React.FC<StatsSectionProps> = ({})=>{
     const {statsSection} = useContext(AppNavigationContext)
     return (<Stack w={'100%'} h='100%' justifyContent={'center'} alignItems={'center'}>
-
-        {statsSection === 'stats' ? <GameStats /> : <GameHistory />}
+        {<GameHistory />}
     </Stack>)
 }
 
