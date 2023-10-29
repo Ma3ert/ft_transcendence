@@ -18,7 +18,7 @@ import { ONGOING_MATCH, USER_OFFLINE } from './utils/events';
 @WebSocketGateway({
   namespace: 'game',
   cors: {
-    origin: ['*'],
+    origin: [process.env.SERVER_HOST + process.env.CLIENT],
     credentials: true,
   },
 })

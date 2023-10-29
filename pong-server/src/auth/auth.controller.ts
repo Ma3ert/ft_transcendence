@@ -37,9 +37,9 @@ export class AuthController {
       !req.user['twoFactor'] &&
       !req.user['pinValidated']
     )
-      res.redirect('http://e1r9p3.1337.ma:3001/Lobby');
+      res.redirect(process.env.SERVER_HOST + process.env.CLIENT_PORT + '/Lobby');
     else
-      res.redirect('http://e1r9p3.1337.ma:3001/ChangeUserName');
+      res.redirect(process.env.SERVER_HOST + process.env.CLIENT_PORT + '/ChangeUserName');
   }
 
   @Get('42/logout')
@@ -53,7 +53,7 @@ export class AuthController {
       twoFactor: user.twoFactorStatus,
     });
     res.cookie('jwt', '');
-    res.redirect(process.env.SERVER_HOST + '3001/');
+    res.redirect(process.env.SERVER_HOST + process.env.CLIENT_PORT);
   }
 
   @Post('local/login')

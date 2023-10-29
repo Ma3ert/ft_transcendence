@@ -19,7 +19,7 @@ import { UsersService } from 'src/users/users.service';
 @UseGuards(WsLoggedInGuard) 
 @WebSocketGateway({
   cors: {
-    origin: ['*'],
+    origin: [process.env.SERVER_HOST + process.env.CLIENT],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Access-Control-Allow-Origin']
@@ -69,7 +69,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     const user:string = client.user.id;
     if (this.LoggedInUsers.has(user))
     {
-      // delete all logged and active socket from the map
       this.LoggedInUsers.delete(user);
       this.activeUsers.delete(user);
     }
@@ -78,7 +77,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     }
   }
 
-  // user join room contains the channel id of his channels
   async userJoinHisChannel(user:string, userSocket:AuthSocket)
   {
     const userChannels = await this.chatService.getUserChannels(user);
@@ -105,7 +103,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     await this.chatNotification(user);
   }
 
-  // check chat notification
   async chatNotification(room:string)
   {
     const data:{DM:string[], CM:string[]} = await this.notificationService.chatNotification(room);
@@ -128,7 +125,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     const user = client.user.id;
     if (this.activeUsers.has(user))
     {
-      // delete the user socket from the activeUsers sockets.
       const userSockets = this.activeUsers.get(user);
       const socketToDelete = userSockets.indexOf(client);
 

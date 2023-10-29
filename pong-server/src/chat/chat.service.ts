@@ -25,7 +25,6 @@ export class ChatService {
     private notificationService: NotificationService,
   ) {}
 
-  // Create Channel
   async createChannel(owner: string, createChannelDto: createChannelDto) {
     let hashedPassword = null;
 
