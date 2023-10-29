@@ -427,7 +427,7 @@ export class ChatController {
         return { status: "success", message: "Channel Avatar updated Successfully" };
     }
 
-    @Get('/channels/public')
+    @Get('/public')
     @UseGuards(LoggedInGuard)
     async public_channels(@Req() req:Request){
         return await this.chatService.getPublicChannels();

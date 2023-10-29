@@ -8,12 +8,14 @@ interface ChannelsProviderProps {
 }
 const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
   const [Channels, setChannels] = useState<Channel[]>([]);
+  const [PublicChannels, setPublicChannels] = useState <Channel[]>([])
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
   const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([]);
   const [channelConversations, setChannelConversations] = useState<string[]>(
     []
   );
   const userChannelsClient = new apiClient("/chat/channels/");
+  const publicChannelsClient = new apiClient ("/chat/public/")
   const [counter, setCounter] = useState<number>(0);
 
   useQuery("channels", {
@@ -27,6 +29,14 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
     },
   });
 
+  useQuery("publicChannels", {
+    queryFn: () => publicChannelsClient.getData ().then((res) => res.data),
+    onSuccess: (data: Channel[]) =>{
+      setPublicChannels (data)
+    },
+    onError : (err)=>{}
+  })
+
   useEffect(() => {
     // fetch channels
     // fetch active channel
@@ -35,7 +45,7 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
   }, []);
   return (
     <ChannelsContext.Provider
-      value={{ Channels, activeChannel, setActiveChannel }}
+      value={{ Channels, activeChannel, setActiveChannel, PublicChannels, setPublicChannels }}
     >
       {children}
     </ChannelsContext.Provider>

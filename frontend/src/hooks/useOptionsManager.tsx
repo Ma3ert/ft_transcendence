@@ -106,7 +106,7 @@ const useOptionsManager = (
     if (
       Member &&
       (currentUserRole! == "OWNER" || currentUserRole! == "ADMIN") &&
-      Member?.mutted
+      Member?.muted
     )
       return true;
     return false;

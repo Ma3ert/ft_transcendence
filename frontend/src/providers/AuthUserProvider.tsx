@@ -29,9 +29,14 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
             setLoading(false);
           })
           .catch((err) => {});
-      else setLoading(false);
+      else {
+        setLoading(false);
+        setCurrentUser(undefined);
+        // router.push("/");
+      }
     } else {
       setLoading(false);
+      setCurrentUser(undefined);
       router.push("/");
     }
   };

@@ -12,7 +12,9 @@ interface ChannelsListProps {}
 
 const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
   const userChannelsClient = new apiClient("/chat/channels/");
-  const {Channels} = useContext (ChannelsContext)
+  const {Channels, PublicChannels} = useContext (ChannelsContext)
+  const [userChannels, setUserChannels] = useState<Channel[]> (Channels!)
+  const [publicChannels, setPublicChannels] = useState<Channel[]> ([])
 
   return (
     <Stack
@@ -22,12 +24,28 @@ const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <FriendsListHeader type="channels"  />
+      <FriendsListHeader type="channels" setChannelsList={setUserChannels} setPublicChannels={setPublicChannels}  />
       <ScrollableStack>
-        {Channels!.length ? (
-          Channels!.map((channel, index) => (
+        {userChannels!.length ? (
+          <>
+          <Stack spacing={3} w='100%' h='auto'>
+            <Text p={5} color="#5B6171" >
+              Your channels
+            </Text>
+            {userChannels!.map((channel, index) => (
             <ChannelField key={index} channel={channel} />
-          ))
+          ))}
+          </Stack>
+          (
+            {publicChannels.length > 0 && <Stack spacing={3} w='100%' h='auto'>
+          <Text p={5} color="#5B6171" >
+            Public channels
+          </Text>
+          {publicChannels!.map((channel, index) => (
+          <ChannelField key={index} channel={channel} />
+          ))}
+        </Stack>})
+          </>
         ) : (
           <Stack
             w="100%"

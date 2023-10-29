@@ -212,7 +212,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   }
 
   @SubscribeMessage('sendInvite')
-  async sendInvite(client: AuthSocket){
-    this.checkUserNotification(client.user.id);
+  async sendInvite(client: AuthSocket, data:{receiverId:string}){
+    this.checkUserNotification(data.receiverId);
   }
 }

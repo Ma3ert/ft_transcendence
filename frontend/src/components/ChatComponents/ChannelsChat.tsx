@@ -17,22 +17,29 @@ import { getUserRole } from "../../../utils/helpers";
 import CmProvider from "@/providers/CmProvider";
 import MembersProvider from "@/providers/MemberProvider";
 import NoChannelsPage from "./NoChannelsPage";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
   const { socket } = useContext(GlobalContext);
   const { messages, setChannelMessages } = useContext(CmContext);
-
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
+  
   useEffect(() => {
-    //console.log (`active channel id : ${activeChannel?.id}`)
+    if (currentUser == undefined)
+      router.push ("/")
+    
+  if (socket)
+  {
     socket!.on("CM", (message: any) => {
-      //console.log ('in channels', activeChannel)
       if (activeChannel?.id === message.channelId) {
-        //console.log (` active channel : ${activeChannel?.id} channel : ${message.channelId}`)
         const messagesList = [...messages!];
         messagesList.push(message);
         setChannelMessages!(messagesList);
       }
     });
+  }
     return () => {
       socket!.off("CM");
     };

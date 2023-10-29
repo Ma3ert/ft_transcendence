@@ -14,6 +14,7 @@ import {
 import { CHANNEL, PRIVATE, loggedIndUser } from "../../../contstants";
 import useMessageSender from "@/hooks/useMessageSender";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 interface ChatInputBoxProps {
   // socket: Socket;
 }
@@ -22,7 +23,8 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   const { joinGameStatus, setJoinGameStatus, chatType } =
     useContext(ChatContext);
   const { activePeer } = useContext(UsersContext);
-  const { currentUser } = useAuth();
+  const {currentUser} = useAuth ()
+  const router = useRouter ()
   const { socket } = useContext(GlobalContext);
   const { activeChannel } = useContext(ChannelsContext);
 
@@ -41,7 +43,9 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     e && e!.preventDefault();
     if (chatType === PRIVATE) SendMessage(message);
     else {
-      if (currentMemeber?.banned || currentMemeber?.mutted) {
+      console.log (`current member : `)
+      console.log (currentMemeber)
+      if (!currentMemeber?.banned && !currentMemeber?.muted) {
         socket.emit("CM", {
           senderId: currentUser!.user.id,
           channelId: activeChannel!.id,
@@ -51,6 +55,11 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     }
     setMessage("");
   };
+
+ 
+
+  if (currentUser  === undefined || !socket)
+    router.push ('/')
   useEffect(() => {   
   }, [activeChannel, activePeer]);
   return (
@@ -67,11 +76,14 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         <Button
           isDisabled={joinGameStatus}
           onClick={() => {
-            gameSocket!.emit("gameJoinQueue");
-            socket!.emit("GameInvite", {
-              senderId: currentUser!.user.id,
-              receiverId: activePeer!.id,
-            });
+            if (gameSocket)
+            {
+              gameSocket!.emit("gameJoinQueue");
+              socket!.emit("GameInvite", {
+                senderId: currentUser!.user.id,
+                receiverId: activePeer!.id,
+              });
+            }
             ////console.log("sending game invitation");
           }}
           bg="transparent"

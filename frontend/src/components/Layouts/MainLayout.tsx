@@ -50,15 +50,18 @@ const MainLayout: React.FC<MainSectionProps> = ({children}) => {
         // justifyContent={"center"}
         alignItems="center"
       >
-        <Grid templateRows={"10vh 75vh"} w="100%" h="100%">
+        <Grid templateRows={"10vh 60vh"} w="100%" h="100%">
           <GridItem>
             <TabsWrapper />
           </GridItem>
           <GridItem
             w="100%"
             h="100%"
+            display={'flex'}
             justifyContent={"center"}
             alignItems="center"
+            // border={'1px'}
+            // borderColor={'red'}
           >
           {children}
           </GridItem>

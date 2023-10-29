@@ -2,9 +2,9 @@ import apiClient from "@/services/requestProcessor";
 import { useMutation, useQueryClient } from "react-query";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
-import { ChannelsContext } from "@/context/Contexts";
+import { ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext } from "react";
-const useUserOptions = (channel?: Channel) => {
+const useUserOptions = (channel?: Channel, User?: User) => {
   const enviteUserClient = new apiClient("/invites");
   const blockUserClient = new apiClient("/users/block");
   const unblockUserClient = new apiClient("/users/unblock");
@@ -23,11 +23,15 @@ const useUserOptions = (channel?: Channel) => {
     const response = await enviteUserClient.postData({ invitedUser: user.id });
     return response;
   };
+  const {socket} = useContext (GlobalContext)
   const EnviteUserMutation = useMutation({
     mutationFn: enviteUser,
     onSuccess: (data) => {
       ////console.log(data);
+      if (socket)
+        socket!.emit ("sendInvite", {receiverId:User!.id});
       queryClient.invalidateQueries("sentEnvites");
+
       toast({
         title: "Friend request sent.",
         description: "Your friend request has been sent successfully.",

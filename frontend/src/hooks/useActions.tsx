@@ -12,7 +12,7 @@ const useActions = (user: User) => {
     MuteUser,
     UnbanUser,
     KickUser,
-  } = useUserOptions(activeChannel!);
+  } = useUserOptions(activeChannel!, user);
   const { upgradeUser, downgradeUser } = useChannelSettingsUpdater(
     activeChannel!
   );

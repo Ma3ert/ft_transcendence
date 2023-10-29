@@ -74,7 +74,7 @@ const InviteToChannelField: React.FC<InviteProps> = ({
   Members,
   user,
 }) => {
-  const { sendChannelEnvite } = useChannelSettingsManager();
+  const { sendChannelEnvite } = useChannelSettingsManager(user);
   const { channelSent } = useContext(InvitesContext);
 
   useEffect(() => {

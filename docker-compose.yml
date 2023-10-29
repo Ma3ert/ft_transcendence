@@ -11,15 +11,15 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   
-  client:
-    container_name: client
-    build: ./frontend/
-    ports:
-      - "3001:3001"
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - server
+  # client:
+  #   container_name: client
+  #   build: ./frontend/
+  #   ports:
+  #     - "3001:3001"
+  #   env_file:
+  #     - ./frontend/.env
+  #   depends_on:
+  #     - server
 
   server:
     container_name: server
@@ -28,7 +28,9 @@ services:
       - '3000:3000'
     depends_on:
       - postgres
-
+    volumes:
+      - public:/usr/src/app/public
 
 volumes:
   pgdata:
+  public:
