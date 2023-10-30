@@ -66,6 +66,12 @@ export class UsersController {
     return { status: 'success', blocked: result };
   }
 
+  @Get("/block")
+  @UseGuards(LoggedInGuard)
+  async getBlockedUsers(@Req() req: any){
+    return await this.usersService.getBlockedUsers(req.user.id);
+  }
+
   @Get('me')
   @UseGuards(UserCheck)
   async getCurrentUser(@Req() req) {
