@@ -15,6 +15,7 @@ import { type } from 'os';
 import { changeChannelPasswordDto, setPasswordDto } from './dto/channelPassword.dto';
 import { UsersService } from '../users/users.service';
 import { NotificationService } from '../notification/notification.service';
+import { block } from 'sharp';
 
 @Injectable()
 export class ChatService {
@@ -180,13 +181,10 @@ export class ChatService {
       take: take,
     });
     const blockedUsers = await this.usersService.getBlockedUsers(userId);
-    return messages.filter((msg) => {
-      for (const usr in blockedUsers){
-        if (usr['id'] == msg.senderId)
-          return false;
-      }
-      return true;
-    });
+    const blockedUsersId = blockedUsers.map((user) =>  user.id);
+    console.log(blockedUsersId);
+
+    return messages.filter((msg) => !blockedUsersId.includes(msg.senderId));
   }
 
   async deleteChannelById(user: string, channel: string) {

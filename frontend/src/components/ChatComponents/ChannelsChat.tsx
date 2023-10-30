@@ -6,6 +6,7 @@ import ChannelSettings from "../ChatComponents/ChannelSettings";
 import apiClient from "@/services/requestProcessor";
 import { useQuery } from "react-query";
 import { useState, useContext, useEffect, use } from "react";
+import useUserStatus from "@/hooks/useUserStatus";
 import {
   ChannelsContext,
   GlobalContext,
@@ -23,14 +24,21 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
   const { socket } = useContext(GlobalContext);
   const { messages, setChannelMessages } = useContext(CmContext);
-
+  const {Users} = useContext (UsersContext)
+  
   useEffect(() => {
     if (socket) {
       socket!.on("CM", (message: any) => {
-        if (activeChannel?.id === message.channelId) {
-          const messagesList = [...messages!];
-          messagesList.push(message);
-          setChannelMessages!(messagesList);
+        const user = Users!.find (user=> user.id === message.senderId)
+        const { userIsBlocked } = useUserStatus(user!);
+        console.log (`use is blocked ${userIsBlocked}`)
+        if (!userIsBlocked)
+        {
+          if (activeChannel?.id === message.channelId) {
+            const messagesList = [...messages!];
+            messagesList.push(message);
+            setChannelMessages!(messagesList);
+          }
         }
       });
     }
