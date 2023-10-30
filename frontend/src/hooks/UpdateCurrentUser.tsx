@@ -10,7 +10,7 @@ interface updateCurrentUser {
   updateUser: (() => void) | undefined;
 }
 
-export async function useUpdateCurrentUser() {
+export async function UpdateCurrentUser() {
   const client = new apiClient("/users");
 
   return client.getData("/me").then((res: AxiosResponse) => {

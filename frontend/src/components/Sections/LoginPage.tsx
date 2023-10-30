@@ -1,7 +1,6 @@
 "use client";
 import Logo from "@/components/Logo";
 import { Button, Icon, Stack, Image, Wrap, Text } from "@chakra-ui/react";
-import ButtonStack from "@/components/ButtonStack";
 import { BsGoogle } from "react-icons/bs";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";

@@ -10,7 +10,7 @@ function useUsersHanlder() {
   const useGetAllUsers = () => {
     const allUsersClient = new apiClient(AllUsersRoute);
     const allUsersArgs: QueryArgs = {
-      queryKey: "AllUsers",
+      queryKey: ["AllUsers"],
       queryFunction: function (): void {
         throw new Error("Function not implemented.");
       },
@@ -25,7 +25,7 @@ function useUsersHanlder() {
       new apiClient(UserByIdRoute(userid));
 
     const userByIdArgs: QueryArgs = {
-      queryKey: "UserById",
+      queryKey: ["UserById"],
       queryFunction: function (): void {
         throw new Error("Function not implemented.");
       },

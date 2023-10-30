@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import apiClient from "@/services/requestProcessor";
 import { ChannelsContext } from "@/context/Contexts";
 import { HStack, Avatar, Text, Stack } from "@chakra-ui/react";
+import UserAvatar from "../UserAvatar";
 
 interface ChannelHeaderProps {}
 const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
@@ -28,11 +29,9 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
     <HStack spacing={4} alignItems="center">
       {channel && (
         <>
-          <Avatar
-            borderRadius={"15px"}
-            src={`http://e1r9p3.1337.ma:3000/${channel!.avatar}`}
-            name={channel?.name}
-            size="sm"
+          <UserAvatar
+          isChannel={true}
+          channel={activeChannel!}
           />
           <Stack spacing={2}>
             <Text

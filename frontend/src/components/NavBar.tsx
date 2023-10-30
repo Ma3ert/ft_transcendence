@@ -30,8 +30,6 @@ const NavBar = () => {
     >
       <Logo
         src="/logo.png"
-        width={{ base: "188px", lg: "246px" }}
-        height={{ base: "93px", lg: "121px" }}
       ></Logo>
       <Spacer />
       <Wrap align={"center"} spacing={{ base: "30px", lg: "40px" }}>

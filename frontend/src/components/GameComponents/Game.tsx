@@ -20,7 +20,6 @@ import {
   Button,
   Text,
 } from "@chakra-ui/react";
-import ButtonStack from "../ButtonStack";
 import { UsersContext } from "@/context/Contexts";
 
 export interface Game {

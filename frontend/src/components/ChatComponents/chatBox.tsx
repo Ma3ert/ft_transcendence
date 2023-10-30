@@ -32,13 +32,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const listener = useEventHandler(socket);
   const gameEnviteHandler = useGameEnvite();
   const {activeChannel} = useContext (ChannelsContext)
-  const {messages, setChannelMessages} = useContext (CmContext)
   const [counter, setCounter] = useState (0)
   const {currentUser} = useAuth ()
-  const router = useRouter ()
-
-  if (currentUser  === undefined || !socket)
-    router.push ('/')
+  const {messages, setMessages} = useContext (DmContext)
 
   const getReadChatNotification = () => {
     if (chatType == PRIVATE) {
@@ -53,9 +49,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
     };
     }
     useEffect (()=>{
-
       if (socket)
-        socket!.emit ('readChatNotification', getReadChatNotification())
+      socket!.emit ('readChatNotification', getReadChatNotification())
     }, [])
   return (
     <Stack

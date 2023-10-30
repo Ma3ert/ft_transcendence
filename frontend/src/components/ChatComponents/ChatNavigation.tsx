@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Avatar, Stack, HStack, Text, Button, Tooltip } from "@chakra-ui/react";
+import { Avatar, Stack, HStack, Text, Button, Tooltip, useClipboard } from "@chakra-ui/react";
 import UserAvatar from "../UserAvatar";
 import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
@@ -9,6 +9,8 @@ import { useQuery } from "react-query";
 import {
   ChannelsContext,
   ChatContext,
+  DmContext,
+  GlobalContext,
   UsersContext,
 } from "../../context/Contexts";
 import { PRIVATE, CHANNEL } from "../../../contstants";
@@ -16,6 +18,7 @@ import { NotificationWrapper } from "./NotificationBadge";
 import { setSyntheticTrailingComments } from "typescript";
 import { useToast } from "@chakra-ui/react";
 import "../../theme/styles.css";
+import { useAuth } from "@/hooks/useAuth";
 interface ChatNavigationProps {}
 
 interface ChannelsNavigationProps {}
@@ -58,6 +61,9 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { setCurrentChat, DmNotifications } = useContext(ChatContext);
+  const {messages, setMessages} = useContext (DmContext)
+  const {socket}= useContext (GlobalContext)
+  const {currentUser} = useAuth ()
   const toast = useToast();
   const {
     friendsConversations,

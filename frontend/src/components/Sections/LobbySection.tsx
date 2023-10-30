@@ -2,11 +2,8 @@
 import React from "react";
 import ScrollableStack from "@/components/ScrollableStack";
 import NavBar from "@/components/NavBar";
-import { Wrap, Stack, Text, HStack, Grid, GridItem } from "@chakra-ui/react";
-import PageBody from "@/components/PageBody";
 import ProgressLevel from "@/components/ProgressLevel";
 import LobbyParty from "@/components/LobbyParty";
-import Challenge from "../Challenge";
 import { useAuth } from "@/hooks/useAuth";
 
 type Props = {};

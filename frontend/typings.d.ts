@@ -57,6 +57,7 @@ type Tab = {
 };
 
 type User = {
+  games?: any;
   avatar: string;
   username: string;
   id: string;
@@ -355,6 +356,7 @@ type CmContext = {
 
 type DmContext = {
   messages?: DirectMessage[];
+  setMessages?: React.Dispatch<SetStateAction<DirectMessage[]>>
 };
 
 type MembersContext = {

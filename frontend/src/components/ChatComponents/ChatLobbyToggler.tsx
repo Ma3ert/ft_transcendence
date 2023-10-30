@@ -1,7 +1,6 @@
 'use client';                           
 import { Button, HStack } from "@chakra-ui/react";
 import  { useState } from "react";
-import {CHAT, LOBBY} from '../../../contstants';
 interface ChatLobbyTogglerProps {
     action?: (open:boolean) => void;
 }

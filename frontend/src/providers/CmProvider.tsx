@@ -34,7 +34,6 @@ const CmProvider: React.FC<CmProviderProps> = ({ children }) => {
     },
   });
 
-  useEffect(() => {}, [channelMessages]);
   return (
     <CmContext.Provider
       value={{ messages: channelMessages, setChannelMessages }}

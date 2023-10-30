@@ -1,7 +1,6 @@
 import { HStack, Heading, Avatar, VStack, Icon, Box } from "@chakra-ui/react";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 import IconButton from "../IconButton";
-import { ThemeCircle } from "../ThemeCircle";
 
 interface GameHeaderProps {
     score: any;

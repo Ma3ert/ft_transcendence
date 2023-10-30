@@ -6,6 +6,7 @@ import {
   GlobalContext,
   UserStatusContext,
 } from "@/context/Contexts";
+import UserAvatar from "../UserAvatar";
 
 interface PeerHeaderProps {}
 const PeerHeader: React.FC<PeerHeaderProps> = () => {
@@ -16,10 +17,8 @@ const PeerHeader: React.FC<PeerHeaderProps> = () => {
 
   return (
     <HStack spacing={4} alignItems="center">
-      <Avatar
-        borderRadius={"full"}
-        src={activePeer?.avatar!}
-        name={activePeer?.username}
+      <UserAvatar
+        user={activePeer!}
         size="sm"
       />
       <Stack spacing={2}>
