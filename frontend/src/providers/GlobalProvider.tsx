@@ -25,10 +25,7 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
     const socket = io("http://e1r9p3.1337.ma:3000/chat", {
       autoConnect: false,
       transports: ["websocket", "polling"],
-      // closeOnBeforeunload: true,
-      // reconnection: false,
     });
-    // console.log("current User: ", currentUser)
     const token = Cookies.get("jwt");
     socket.auth = { token: `Bearer ${token}` };
     socket.connect();
@@ -43,6 +40,8 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
 
     socket.on("connect_error", (err) => {
       console.log(`connect_error due to ${err.message}`);
+      if (currentUser)
+        setCounter (counter+1);
     });
 
     return () => {

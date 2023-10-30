@@ -5,6 +5,7 @@ import { ModalWrapper } from "../Wrappers/ModalWrapper";
 import NewChannel from "./NewChannel";
 import { useState, useEffect, useContext } from "react";
 import EventListener from "../../../utils/EventListener";
+import DmChatRoom from "./DmChatRoom";
 import {
   GlobalContext,
   DmContext,
@@ -16,19 +17,23 @@ import { useQuery } from "react-query";
 import DmProvider from "@/providers/DmProvider";
 import NoConversationsPage from "./NoConversationsPage";
 import Loading from "../../../app/loading";
+import { useAuth } from "@/hooks/useAuth";
 interface PrivateChatProps {}
 
 const PrivateChat: React.FC<PrivateChatProps> = () => {
   const { socket } = useContext(GlobalContext);
   const { activePeer } = useContext(UsersContext);
-
   const directConversationsClient = new apiClient(`/chat/direct/`);
+  
   const {
     setActivePeer,
     setFriendsConversations,
     friendsConversations,
     friendsList,
   } = useContext(UsersContext);
+  const {messages, setMessages} = useContext (DmContext)
+  const {currentUser} = useAuth ()
+  
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["directConversations"],
     queryFn: () => directConversationsClient.getData().then((res) => res.data),
@@ -45,7 +50,9 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
     },
     onError: (error) => {},
   });
-  useEffect(() => {}, [friendsConversations]);
+
+
+  
   if (isLoading) return <Loading />;
 
   return (
@@ -57,48 +64,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
       spacing={0}
     >
       {activePeer ? (
-        <Grid
-          templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}
-          w={{ base: "100%", lg: "100%", xl: "90%", vl: "85%" }}
-          // border="1px"
-          // borderColor="green"
-          h="100%"
-          mx="auto"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <GridItem justifyContent="center" alignItems="center" h="100%">
-            <ChatNavigation />
-          </GridItem>
-          <GridItem
-            justifyContent="center"
-            alignItems="center"
-            w={"100%"}
-            h="100%"
-          >
-            <DmProvider>
-              <ChatBox />
-            </DmProvider>
-          </GridItem>
-          <GridItem
-            justifyContent="center"
-            alignItems="center"
-            w={"100%"}
-            h="100%"
-          >
-            <Stack justify={"end"} alignItems={"center"} w="100%" h="90%">
-              <ModalWrapper
-                type="regular"
-                buttonVariant="largeSecondary"
-                buttonValue={
-                  <Text fontFamily="visbyRound">Create channel</Text>
-                }
-              >
-                <NewChannel />
-              </ModalWrapper>
-            </Stack>
-          </GridItem>
-        </Grid>
+       <DmChatRoom/>
       ) : (
         <NoConversationsPage />
       )}

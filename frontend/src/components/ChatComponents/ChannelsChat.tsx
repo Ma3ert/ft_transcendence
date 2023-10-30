@@ -23,12 +23,8 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
   const { socket } = useContext(GlobalContext);
   const { messages, setChannelMessages } = useContext(CmContext);
-  const { currentUser } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
-    if (currentUser == undefined) router.push("/");
-
     if (socket) {
       socket!.on("CM", (message: any) => {
         if (activeChannel?.id === message.channelId) {
