@@ -152,7 +152,7 @@ export class ChatController {
         @Param('channelId') channelId:string,
         @Req() req:Request){
             const userId = req.user['id'] as string;
-            return this.chatService.getChannelMessages(skip, take, channelId);
+            return this.chatService.getChannelMessages(userId, skip, take, channelId);
     }
 
     @Get('/direct/:friendId/messages/')

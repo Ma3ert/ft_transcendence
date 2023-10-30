@@ -168,8 +168,8 @@ export class ChatService {
     return false;
   }
 
-  async getChannelMessages(skip: number, take: number, channel: string) {
-    return await this.prismaService.channelMessage.findMany({
+  async getChannelMessages(userId:string, skip: number, take: number, channel: string) {
+    const messages = await this.prismaService.channelMessage.findMany({
       where: {
         channelId: channel,
       },
@@ -178,6 +178,14 @@ export class ChatService {
       },
       skip: skip,
       take: take,
+    });
+    const blockedUsers = await this.usersService.getBlockedUsers(userId);
+    return messages.filter((msg) => {
+      for (const usr in blockedUsers){
+        if (usr['id'] == msg.senderId)
+          return false;
+      }
+      return true;
     });
   }
 
