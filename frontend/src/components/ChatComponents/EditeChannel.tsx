@@ -191,12 +191,14 @@ const EditChannel: React.FC<EditChannelProps> = ({ channel }) => {
         <Stack spacing={3}>
           <Input
             variant={"default"}
+            type="password"
             _placeholder={{ color: "#5B6171", fontSize: "sm" }}
             placeholder={"set current password"}
             onChange={(e) => setCurrentPassword(e.target.value)}
           />
           <Input
             variant={"default"}
+            type="password"
             _placeholder={{ color: "#5B6171", fontSize: "sm" }}
             placeholder={"set new password"}
             onChange={(e) => setPassword(e.target.value)}

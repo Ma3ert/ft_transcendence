@@ -147,7 +147,6 @@ export const GameField: React.FC<GameFieldProps> = ({
 };
 
 const UserProfileModal: React.FC<UserProfileModalProps> = ({ user }) => {
-  const { currentUser } = useAuth();
   const client = new apiClient("/users/")
   const [userProfile, setUserProfile] = useState<any>(undefined)
   useEffect(() => {

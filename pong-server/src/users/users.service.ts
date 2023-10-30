@@ -132,7 +132,7 @@ export class UsersService {
     if (!user) {
       return null;
     }
-    return this.prismaService.user.update({
+    const updated =  this.prismaService.user.update({
       where: {
         id,
       },
@@ -149,6 +149,7 @@ export class UsersService {
         email: true,
       },
     });
+    if (!updated) return null; 
   }
 
   updateUserAuth(id: string, updateUserDto: AuthUserDto) {

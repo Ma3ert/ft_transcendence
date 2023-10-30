@@ -60,6 +60,7 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
+
   const { setCurrentChat, DmNotifications } = useContext(ChatContext);
   const {messages, setMessages} = useContext (DmContext)
   const {socket}= useContext (GlobalContext)
@@ -117,12 +118,14 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { chatType, setCurrentChat } = useContext(ChatContext);
+  const {Channels} = useContext (ChannelsContext)
 
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         onClick={() => {
-          setCurrentChat!(!chatType);
+          if (Channels && Channels?.length)
+            setCurrentChat!(!chatType);
         }}
         icon={chatType ? FaUserGroup : FaUserAlt}
         size={"25px"}

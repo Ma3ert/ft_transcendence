@@ -43,6 +43,7 @@ const SetPassword: React.FC<SetPasswordProps> = ({}) => {
        <Stack w="100%" spacing={6} justify={"center"} alignItems="center">
        <Input
           variant="default"
+          type="password"
           placeholder="your password"
           w="80%"
           fontSize="sm"
@@ -50,7 +51,7 @@ const SetPassword: React.FC<SetPasswordProps> = ({}) => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-       {passwordSchema.safeParse(password).success && (
+       {!passwordSchema.safeParse(password).success && (
        <Text fontFamily="visbyRound" color="#5B6171" fontSize="sm">
        Password must be at least 7 characters
      </Text>)  
@@ -66,8 +67,11 @@ const SetPassword: React.FC<SetPasswordProps> = ({}) => {
           px={6}
           py={3}
           onClick={() => {
-            setChannelPassword(password);
-            onClose!();
+            if (passwordSchema.safeParse(password).success)
+            {
+              setChannelPassword(password);
+              onClose!();
+            }
           }}
         >
           Set password

@@ -20,17 +20,19 @@ import MembersProvider from "@/providers/MemberProvider";
 import NoChannelsPage from "./NoChannelsPage";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import useBlockedUsers from "@/hooks/useBlockedUser";
 const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
   const { socket } = useContext(GlobalContext);
   const { messages, setChannelMessages } = useContext(CmContext);
   const {Users} = useContext (UsersContext)
+  const {blockedUsers} = useBlockedUsers ()
   
   useEffect(() => {
-    if (socket) {
+    console.log(activeChannel);
+    if (socket && activeChannel) {
       socket!.on("CM", (message: any) => {
-        const user = Users!.find (user=> user.id === message.senderId)
-        const { userIsBlocked } = useUserStatus(user!);
+       const userIsBlocked = blockedUsers.find (user=> user.id === message.senderId)
         console.log (`use is blocked ${userIsBlocked}`)
         if (!userIsBlocked)
         {
@@ -43,20 +45,21 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
       });
     }
     return () => {
-      socket!.off("CM");
+      if (socket && activeChannel!)
+        socket!.off("CM");
     };
-  }, [activeChannel, messages]);
+  }, [activeChannel, messages, Channels]);
 
   return (
     <Stack w="100%" h="100%">
-      {Channels && Channels.length ? (
+      {Channels && Channels!.length ? (
         <Stack
           w="100%"
           h="100%"
           justifyContent={"center"}
           alignItems={"center"}
         >
-          {activeChannel && Channels!.length > 0 ? (
+          {activeChannel! && Channels!.length > 0 ? (
             <MembersProvider>
               <Grid
                 templateColumns={{ sm: "10% 80%", lg: "20% 60% 20%" }}
