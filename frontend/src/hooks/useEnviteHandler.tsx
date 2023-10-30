@@ -1,5 +1,5 @@
 import apiClient from "@/services/requestProcessor";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 import { useContext } from "react";
 import { AppNavigationContext } from "@/context/Contexts";
@@ -26,9 +26,9 @@ const useEnviteHandler = () => {
     mutationFn: acceptEnvitation,
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("sentEnvites");
-      queryClient.invalidateQueries("recievedEnvites");
-      queryClient.invalidateQueries("friends");
+      queryClient.invalidateQueries(["sentEnvites"]);
+      queryClient.invalidateQueries(["recievedEnvites"]);
+      queryClient.invalidateQueries(["friends"]);
       setFriendsSection!("friends");
       toast({
         title: "Friend request accepted.",
@@ -58,8 +58,8 @@ const useEnviteHandler = () => {
     mutationFn: deleteEnvitation,
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("sentEnvites");
-      queryClient.invalidateQueries("recievedEnvites");
+      queryClient.invalidateQueries(["sentEnvites"]);
+      queryClient.invalidateQueries(["recievedEnvites"]);
       toast({
         title: "Friend request deleted.",
         description: "You have deleted a friend request.",

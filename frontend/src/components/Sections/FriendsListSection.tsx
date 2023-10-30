@@ -4,7 +4,7 @@ import ScrollableStack from "../ScrollableStack";
 import UserField from "../UserField";
 import { useState, useEffect, useContext } from "react";
 import { UsersContext } from "@/context/Contexts";
-import {useQuery, useQueryClient} from 'react-query'
+import {useQuery, useQueryClient} from "@tanstack/react-query"
 import apiClient from "@/services/requestProcessor";
 import { getUserRole } from "../../../utils/helpers";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,7 +19,7 @@ const FriendsListSection: React.FC<FriendsListProps> = ({}) => {
 
   useEffect(() => {
     // fetch friends list
-    queryClient.invalidateQueries  ('friends')
+    queryClient.invalidateQueries  (['friends'])
     setUsersList(friendsList!)
   }, [friendsList]);
   return (

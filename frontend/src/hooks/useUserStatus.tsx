@@ -1,6 +1,6 @@
 import apiClient from "@/services/requestProcessor";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const useUserStatus = (user: User) => {
   const [userIsBlocked, setUserIsBlocked] = useState(false);

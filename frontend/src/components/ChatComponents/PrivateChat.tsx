@@ -13,7 +13,7 @@ import {
   UsersContext,
 } from "@/context/Contexts";
 import apiClient from "@/services/requestProcessor";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import DmProvider from "@/providers/DmProvider";
 import NoConversationsPage from "./NoConversationsPage";
 import Loading from "../../../app/loading";
@@ -24,16 +24,16 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
   const { socket } = useContext(GlobalContext);
   const { activePeer } = useContext(UsersContext);
   const directConversationsClient = new apiClient(`/chat/direct/`);
-  
+
   const {
     setActivePeer,
     setFriendsConversations,
     friendsConversations,
     friendsList,
   } = useContext(UsersContext);
-  const {messages, setMessages} = useContext (DmContext)
-  const {currentUser} = useAuth ()
-  
+  const { messages, setMessages } = useContext(DmContext);
+  const { currentUser } = useAuth();
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["directConversations"],
     queryFn: () => directConversationsClient.getData().then((res) => res.data),
@@ -51,8 +51,6 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
     onError: (error) => {},
   });
 
-
-  
   if (isLoading) return <Loading />;
 
   return (
@@ -63,11 +61,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
       align={"center"}
       spacing={0}
     >
-      {activePeer ? (
-       <DmChatRoom/>
-      ) : (
-        <NoConversationsPage />
-      )}
+      {activePeer ? <DmChatRoom /> : <NoConversationsPage />}
     </Stack>
   );
 };

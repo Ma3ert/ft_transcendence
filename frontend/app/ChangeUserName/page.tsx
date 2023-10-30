@@ -20,7 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import { UpdateCurrentUser } from "@/hooks/UpdateCurrentUser";
 import Cookies from "js-cookie";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 
 import {

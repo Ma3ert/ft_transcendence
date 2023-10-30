@@ -49,8 +49,7 @@ export class ChatController {
     async CreateChannel(@Body() createChannelDto:createChannelDto, @Req() req:Request){
         try{
             const userId = req.user['id'] as string;
-            await this.chatService.createChannel(userId, createChannelDto);
-            return {status:"success", message:"create channel successfully"};
+            return await this.chatService.createChannel(userId, createChannelDto);
         } catch(error){
             return {status:"failure", message:`${error}`};
         }

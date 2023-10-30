@@ -1,13 +1,13 @@
 import apiClient from "@/services/requestProcessor";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext } from "react";
 import { AppNavigationContext } from "@/context/Contexts";
 
-const useChannelSettingsManager = (User?:User) => {
+const useChannelSettingsManager = (User?: User) => {
   const upgradeUserClient = (user: UserChannel) =>
     new apiClient(`/chat/channels/${user.channelid}/upgrade/${user.userid}/`);
   const sendChannelEnviteClient = (user: UserChannel) =>
@@ -22,7 +22,7 @@ const useChannelSettingsManager = (User?:User) => {
   const queryClient = useQueryClient();
   const { activeChannel } = useContext(ChannelsContext);
   const { setFriendsSection } = useContext(AppNavigationContext);
-  const {socket} = useContext (GlobalContext)
+  const { socket } = useContext(GlobalContext);
 
   const sendChannelEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
@@ -30,8 +30,7 @@ const useChannelSettingsManager = (User?:User) => {
     onSuccess: (data) => {
       ////console.log(data);
       queryClient.invalidateQueries("channelSentEnvites");
-      if (socket)
-        socket!.emit ("sendInvite", {receiverId:User!.id});
+      if (socket) socket!.emit("sendInvite", { receiverId: User!.id });
       toast(Success("Envite to channel sent"));
     },
     onError: (error) => {
@@ -70,25 +69,44 @@ const useChannelSettingsManager = (User?:User) => {
 
   const acceptProtectedEnviteMutation = useMutation({
     mutationFn: (user: UserChannel) =>
-      acceptChannelEnviteClient(user).postData({ password: user!.password }),
-    onSuccess: (data) => {
+      acceptChannelEnviteClient(user)
+        .postData({ password: user!.password })
+        .then((res) => res.data),
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries("channels");
-      toast({
-        title: "Success",
-        description: "Envite to channel accepted",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
+      console.log(data.status);
+      if (data.status === "failure") {
+        toast.isActive("pop") &&
+          toast({
+            id: "pop",
+            title: "Failure",
+            description: "Invalid password",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+      } else {
+        toast.isActive("pop") &&
+          toast({
+            id: "pop",
+            title: "Success",
+            description: "Envite to channel accepted",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+      }
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Envite to channel failed",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+      toast.isActive("pop") &&
+        toast({
+          id: "pop",
+          title: "Error",
+          description: "Envite to channel failed",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
     },
   });
 

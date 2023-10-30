@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
-import { AppNavigationContext, ChatContext, GlobalContext, UsersContext } from "@/context/Contexts";
-import {Channels, PRIVATE } from "../../contstants";
+import {
+  AppNavigationContext,
+  ChatContext,
+  GlobalContext,
+  UsersContext,
+} from "@/context/Contexts";
+import { Channels, PRIVATE } from "../../contstants";
 import { NotifyServer } from "../../utils/eventEmitter";
 import { messages } from "../../contstants";
 import apiClient from "../services/requestProcessor";
 import EventListener from "../../utils/EventListener";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 interface ChatProviderProps {
   children: React.ReactNode;
 }
@@ -13,31 +18,24 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [currentChat, setCurrentChat] = useState<ChatType>(PRIVATE);
   const [chatNotification, setChatNotification] = useState<boolean>(true);
   const [requestNotification, setRequestNotification] = useState<boolean>(true);
-  const [directMessages, setDirectMessages] =
-    useState<DirectMessage[]>([]);
+  const [directMessages, setDirectMessages] = useState<DirectMessage[]>([]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
-  const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([])
-  const [activePeerStatus, setActivePeerStatus] = useState<boolean>(false)
+  const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([]);
+  const [activePeerStatus, setActivePeerStatus] = useState<boolean>(false);
   const [GameEnvitation, setGameEnvitation] = useState<GameEnvitation | null>(
     null
   );
   const { socket } = useContext(GlobalContext);
-  const {setCurrentSection} = useContext (AppNavigationContext)
-  const [channelConversations, setChannelConversations] = useState<string[]>([])
+  const { setCurrentSection } = useContext(AppNavigationContext);
+  const [channelConversations, setChannelConversations] = useState<string[]>(
+    []
+  );
   const { setActivePeer } = useContext(UsersContext);
   const { friendsList } = useContext(UsersContext);
   const [DmNotifications, setDmNotifications] = useState<string[]>([]);
   const [CmNotifications, setCmNotifications] = useState<string[]>([]);
- 
 
-
-  
-  
-  
-  
   useEffect(() => {
-    
-
     return () => {
       // emit user is not active event
       // cleanup
@@ -45,8 +43,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     };
   }, []);
 
-
-  
   return (
     <ChatContext.Provider
       value={{

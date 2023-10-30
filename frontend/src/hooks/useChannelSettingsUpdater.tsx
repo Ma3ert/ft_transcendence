@@ -1,8 +1,8 @@
 import apiClient from "@/services/requestProcessor";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 const useChannelSettingsUpdater = (channel: Channel) => {
   const upgrageUserClient = (user: UserChannel) =>
     `chat/channels/${user.channelid}/upgrade/${user.userid}/`;

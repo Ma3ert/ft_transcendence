@@ -1,11 +1,19 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Avatar, Stack, HStack, Text, Button, Tooltip, useClipboard } from "@chakra-ui/react";
+import {
+  Avatar,
+  Stack,
+  HStack,
+  Text,
+  Button,
+  Tooltip,
+  useClipboard,
+} from "@chakra-ui/react";
 import UserAvatar from "../UserAvatar";
 import FilterBox from "./FilterBox";
 import { FaUserAlt } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import IconButton from "../IconButton";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   ChannelsContext,
   ChatContext,
@@ -60,11 +68,10 @@ const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 };
 
 const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
-
   const { setCurrentChat, DmNotifications } = useContext(ChatContext);
-  const {messages, setMessages} = useContext (DmContext)
-  const {socket}= useContext (GlobalContext)
-  const {currentUser} = useAuth ()
+  const { messages, setMessages } = useContext(DmContext);
+  const { socket } = useContext(GlobalContext);
+  const { currentUser } = useAuth();
   const toast = useToast();
   const {
     friendsConversations,
@@ -118,14 +125,13 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
 
 const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
   const { chatType, setCurrentChat } = useContext(ChatContext);
-  const {Channels} = useContext (ChannelsContext)
+  const { Channels } = useContext(ChannelsContext);
 
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         onClick={() => {
-          if (Channels && Channels?.length)
-            setCurrentChat!(!chatType);
+          if (Channels && Channels?.length) setCurrentChat!(!chatType);
         }}
         icon={chatType ? FaUserGroup : FaUserAlt}
         size={"25px"}

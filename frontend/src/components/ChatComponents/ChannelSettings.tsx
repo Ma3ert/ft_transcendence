@@ -25,7 +25,7 @@ import {
   MembersContext,
   UsersContext,
 } from "@/context/Contexts";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/services/requestProcessor";
 import useChannelManager from "@/hooks/useChannelManager";
 import { getUserRole } from "../../../utils/helpers";

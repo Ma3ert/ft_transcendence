@@ -11,34 +11,39 @@ import ScrollableStack from "../ScrollableStack";
 import "../../theme/styles.css";
 import { useState } from "react";
 import apiClient from "@/services/requestProcessor";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import EnviteField from "../ChatComponents/EnviteField";
 import { useContext, useEffect } from "react";
-import { UsersContext, ChannelsContext, GlobalContext, InvitesContext } from "@/context/Contexts";
+import {
+  UsersContext,
+  ChannelsContext,
+  GlobalContext,
+  InvitesContext,
+} from "@/context/Contexts";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
-
-
-
-
 const EnvitesListSection: React.FC = () => {
-  const {socket} = useContext (GlobalContext)
-  const {currentUser} = useAuth ()
-  const router = useRouter ()
-  const {friendRecieved, friendSent, channelRecieved, channelSent} = useContext (InvitesContext)
-  const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]> ([...friendRecieved!, ...channelRecieved!]);
-  const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]> ([...friendSent!, ...channelSent!]);
-  
+  const { socket } = useContext(GlobalContext);
+  const { currentUser } = useAuth();
+  const router = useRouter();
+  const { friendRecieved, friendSent, channelRecieved, channelSent } =
+    useContext(InvitesContext);
+  const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]>([
+    ...friendRecieved!,
+    ...channelRecieved!,
+  ]);
+  const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]>([
+    ...friendSent!,
+    ...channelSent!,
+  ]);
 
-  if (currentUser === undefined || !socket)
-      router.push ('/')
+  if (currentUser === undefined || !socket) router.push("/");
   useEffect(() => {
-    if (socket)
-    {
-      socket!.emit ("readInviteNotification", {
-        userId: currentUser!.user.id
-      })
+    if (socket) {
+      socket!.emit("readInviteNotification", {
+        userId: currentUser!.user.id,
+      });
     }
   }, [friendRecieved, friendSent, channelRecieved, channelSent]);
   return (

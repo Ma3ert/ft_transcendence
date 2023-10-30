@@ -1,8 +1,8 @@
 import apiClient from "@/services/requestProcessor";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 import { useSuccess, useFailure } from "./useAlerts";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AppNavigationContext } from "@/context/Contexts";
 import { useContext } from "react";
 import useAvatarUpdater from "./useAvatarUpdater";
@@ -28,8 +28,14 @@ const useChannelManager = () => {
   const newChannelMutation = useMutation({
     mutationFn: (channelBody: any) => channelClient.postData(channelBody),
     onSuccess: (data) => {
-      ////console.log(data)
-      queryClient.invalidateQueries("channels");
+      // queryClient.setQueriesData(["channels"], (channels: any) => {
+      //   const result = [...channels, data.data];
+      //   console.log("Result: ", result);
+      //   return result;
+      // });
+      queryClient.invalidateQueries(["channels"]);
+      const channels = queryClient.getQueryData(['channels']);
+      console.log(channels);
       if (pathname === "/Friends") router.push("/Friends");
       setFriendsSection!("channels");
       toast(Success("Channel created successfully"));
@@ -44,14 +50,14 @@ const useChannelManager = () => {
     mutationFn: (channelId: string) => channelById(channelId).deleteData(),
     onSuccess: (data) => {
       ////console.log(data)
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       router.push("/Friends");
       setFriendsSection!("channels");
       toast(Success("Channel deleted successfully"));
     },
     onError: (error) => {
       ////console.log(error)
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       toast(Failure("Channel deletion failed"));
     },
   });
@@ -63,7 +69,7 @@ const useChannelManager = () => {
       }),
     onSuccess: (data) => {
       ////console.log(data)
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       toast(Success("you joined channel"));
     },
     onError: (error) => {
@@ -77,7 +83,7 @@ const useChannelManager = () => {
       leaveChannelClient(channelId).deleteData(),
     onSuccess: (data) => {
       ////console.log(data)
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       router.push("/Friends");
       toast(Success("you left channel"));
     },

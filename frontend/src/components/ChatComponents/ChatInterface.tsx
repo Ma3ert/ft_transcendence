@@ -18,7 +18,7 @@ const ChatInterface: React.FC = ({}) => {
   const { friendsList } = useContext(UsersContext);
   const {socket, counter, setCounter} = useContext (GlobalContext)
   
-
+  
   useEffect(() => {
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
     if (!socket)

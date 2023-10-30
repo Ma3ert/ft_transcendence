@@ -1,8 +1,8 @@
-'use client'
-import Game from "@/components/GameComponents/Game"
-import MainLayout from "@/components/Layouts/MainLayout"
+"use client";
+import Game from "@/components/GameComponents/Game";
+import MainLayout from "@/components/Layouts/MainLayout";
 import GlobalProvider from "@/providers/GlobalProvider";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthUserProvider from "@/providers/AuthUserProvider";
 import UsersProvider from "@/providers/UsersProvider";
 import ChatProvider from "@/providers/ChatProvider";
@@ -16,7 +16,7 @@ interface props {
 }
 
 const Layout: React.FC<props> = ({ children }) => {
-  return children
+  return children;
 };
 
 export default Layout;

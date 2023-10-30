@@ -47,12 +47,16 @@ export class ChatService {
         },
       },
       select: {
+        created_at: true,
+        updated_at: true,
+        password: true,
         name: true,
         type: true,
         avatar: true,
         id: true,
       },
     });
+    return channel;
   }
 
   async userhasInvitation(user: string, channel: string) {

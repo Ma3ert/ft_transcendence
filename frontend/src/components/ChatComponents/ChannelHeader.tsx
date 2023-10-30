@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/services/requestProcessor";
 import { ChannelsContext } from "@/context/Contexts";
 import { HStack, Avatar, Text, Stack } from "@chakra-ui/react";
@@ -29,10 +29,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = () => {
     <HStack spacing={4} alignItems="center">
       {channel && (
         <>
-          <UserAvatar
-          isChannel={true}
-          channel={activeChannel!}
-          />
+          <UserAvatar isChannel={true} channel={activeChannel!} />
           <Stack spacing={2}>
             <Text
               fontFamily="visbyRound"

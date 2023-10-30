@@ -1,7 +1,7 @@
 import { UsersContext } from "@/context/Contexts";
 import { useEffect, useState } from "react";
 import apiClient from "@/services/requestProcessor";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import { GlobalContext } from "@/context/Contexts";
 import { NotifyServer } from "../../utils/eventEmitter";
@@ -28,11 +28,11 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [friendsConversations, setFriendsConversations] = useState<User[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [gameInviteSender, setGameInviteSender] = useState<string>("");
-  const {currentUser} = useAuth ()
-  const router = useRouter ()
+  const { currentUser } = useAuth();
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-  
-  useQuery("friends", {
+  useQuery(["friends"], {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
     onSuccess: (data: any) => {
       setFriendsList!(data.friends);
@@ -42,7 +42,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     },
   });
 
-  useQuery("users", {
+  useQuery(["users"], {
     queryFn: () => allUsersClient.getData().then((res) => res.data),
     onSuccess: (data: User[]) => {
       setUsers(data);
@@ -53,13 +53,13 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    if (currentUser === undefined)
-    router.push ("/")
+    if (currentUser === undefined) router.push("/");
     if (socket) {
-      socket!.on("checkNotification", (message: checkNotification) => {
-        console.table (message)
+      socket!.on("checkNotification", async (message: checkNotification) => {
+        console.table(message);
         setChatNotifications!(message.data.chat);
         setInviteNotifications!(message.data.invites);
+        await queryClient.refetchQueries({ stale: true });
       });
       socket!.on("GameInvite", (response: any) => {
         setGameInviteSender!(response.senderId);

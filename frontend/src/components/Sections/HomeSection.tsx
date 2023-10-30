@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
 import Header from "@/components/ChatComponents/Header";
 import AppNavigationProvider from "@/providers/AppNavigationProvider";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/services/requestProcessor";
 import { useContext, useEffect } from "react";
 import { GlobalContext, UsersContext } from "@/context/Contexts";
@@ -13,8 +13,7 @@ import GlobalLayout from "../Layouts/GlobalLayout";
 import MainLayout from "../Layouts/MainLayout";
 import LobbySection from "./LobbySection";
 
-interface HomeSectionProps {
-}
+interface HomeSectionProps {}
 
 const HomeSection: React.FC<HomeSectionProps> = ({}) => {
   const { socket } = useContext(GlobalContext);
@@ -23,10 +22,6 @@ const HomeSection: React.FC<HomeSectionProps> = ({}) => {
 
   const { authenticated, setSocket } = useContext(GlobalContext);
 
-  
-
-  return (
-    <LobbySection />
-  );
+  return <LobbySection />;
 };
 export default HomeSection;

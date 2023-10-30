@@ -1,10 +1,10 @@
-import { Grid, GridItem, Stack, Text } from "@chakra-ui/react";
+import { Grid, GridItem, Stack, Text, useToast } from "@chakra-ui/react";
 interface ChannelsChatProps {}
 import ChatBox from "../ChatComponents/chatBox";
 import ChatNavigation from "../ChatComponents/ChatNavigation";
 import ChannelSettings from "../ChatComponents/ChannelSettings";
 import apiClient from "@/services/requestProcessor";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState, useContext, useEffect, use } from "react";
 import useUserStatus from "@/hooks/useUserStatus";
 import {
@@ -13,6 +13,7 @@ import {
   UsersContext,
   DmContext,
   CmContext,
+  AppNavigationContext,
 } from "@/context/Contexts";
 import { getUserRole } from "../../../utils/helpers";
 import CmProvider from "@/providers/CmProvider";
@@ -25,17 +26,20 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
   const { activeChannel, Channels } = useContext(ChannelsContext);
   const { socket } = useContext(GlobalContext);
   const { messages, setChannelMessages } = useContext(CmContext);
-  const {Users} = useContext (UsersContext)
-  const {blockedUsers} = useBlockedUsers ()
-  
+  const { Users } = useContext(UsersContext);
+  const { blockedUsers } = useBlockedUsers();
+  const router = useRouter ()
+  const toast = useToast ()
+
   useEffect(() => {
     console.log(activeChannel);
     if (socket && activeChannel) {
       socket!.on("CM", (message: any) => {
-       const userIsBlocked = blockedUsers.find (user=> user.id === message.senderId)
-        console.log (`use is blocked ${userIsBlocked}`)
-        if (!userIsBlocked)
-        {
+        const userIsBlocked = blockedUsers.find(
+          (user) => user.id === message.senderId
+        );
+        console.log(`use is blocked ${userIsBlocked}`);
+        if (!userIsBlocked) {
           if (activeChannel?.id === message.channelId) {
             const messagesList = [...messages!];
             messagesList.push(message);
@@ -43,10 +47,22 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({}) => {
           }
         }
       });
+      socket.on ("UserKick", (data:any)=>{
+        if (data.channelId === activeChannel.id)
+        {
+          router.push ("/")
+          toast.isActive("kick") && toast ({
+            id: "kick",
+            title: "you have been kick from this channel",
+            status: "info",
+            isClosable:true,
+            duration:9000
+          })
+        }
+      })
     }
     return () => {
-      if (socket && activeChannel!)
-        socket!.off("CM");
+      if (socket && activeChannel!) socket!.off("CM");
     };
   }, [activeChannel, messages, Channels]);
 

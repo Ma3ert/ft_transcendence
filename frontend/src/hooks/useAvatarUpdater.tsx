@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 interface AvatarData {
   avatar: string;
@@ -27,7 +27,7 @@ const useAvatarUpdater = () => {
         isClosable: true,
       });
     },
-    onError: (error) => {}
+    onError: (error) => {},
   });
 
   function updateAvatar(req: AvatarData) {

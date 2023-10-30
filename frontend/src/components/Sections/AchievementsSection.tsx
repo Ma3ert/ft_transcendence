@@ -4,7 +4,7 @@ import { AppNavigationContext } from "@/context/Contexts";
 import { Stack } from "@chakra-ui/react";
 import ScrollableStack from "../ScrollableStack";
 import UserRankField from "../UserRankField";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/services/requestProcessor";
 import { AxiosResponse } from "axios";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,7 +22,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
       client.getData("/local").then((res: AxiosResponse) => {
         const localRes: ReactNode[] = [];
         console.log(res.data.current.ranks);
-        res.data.current.ranks.map((user: any, index:number) => {
+        res.data.current.ranks.map((user: any, index: number) => {
           user.avatar.includes("http")
             ? user.avatar
             : "http://e1r9p3.1337.ma:3000/public/users/imgs/" + user.avatar;
@@ -56,7 +56,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
         ////console.log("I get to the query");
         ////console.log("the res from the all rank ", res.data.current);
         const allRes: ReactNode[] = [];
-        res.data.current.ranks.map((user: any, index:number) => {
+        res.data.current.ranks.map((user: any, index: number) => {
           user.avatar.includes("http")
             ? user.avatar
             : "http://e1r9p3.1337.ma:3000/public/users/imgs/" + user.avatar;

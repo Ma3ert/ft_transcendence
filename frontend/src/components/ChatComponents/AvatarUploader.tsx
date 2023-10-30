@@ -4,7 +4,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { Input, Button } from "@chakra-ui/react";
 import { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/services/requestProcessor";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";

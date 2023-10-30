@@ -8,7 +8,7 @@ import { FaArrowCircleRight } from "react-icons/fa";
 import IconButton from "@/components/IconButton";
 import localFont from "@next/font/local";
 import GlobalProvider from "@/providers/GlobalProvider";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthUserProvider from "@/providers/AuthUserProvider";
 import UsersProvider from "@/providers/UsersProvider";
 import ChatProvider from "@/providers/ChatProvider";
@@ -16,6 +16,7 @@ import ChannelsProvider from "@/providers/ChannelsProvider";
 import AppNavigationProvider from "@/providers/AppNavigationProvider";
 import GameProvider from "@/providers/GameProvider";
 import InvitesProvider from "@/providers/InvitesProvider";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,7 +41,6 @@ export default function RootLayout({
       <body>
         <QueryClientProvider client={queryClient}>
           <AuthUserProvider>
-            <GameProvider>
               <ChakraProvider theme={theme}>
                <GlobalProvider>
                    <GameProvider>
@@ -56,8 +56,8 @@ export default function RootLayout({
                    </GameProvider>
                  </GlobalProvider>
               </ChakraProvider>
-            </GameProvider>
           </AuthUserProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>
     </html>

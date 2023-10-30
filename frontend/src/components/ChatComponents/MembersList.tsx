@@ -10,7 +10,7 @@ import layoutStyles from "../../Styles/modules/layout.module.scss";
 import UserAvatar from "../UserAvatar";
 import { useState, useEffect, useContext } from "react";
 import apiClient from "@/services/requestProcessor";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import MemberField from "./Memberfield";
 import ScrollableStack from "../ScrollableStack";
 import FriendsListHeader from "./FriendsListHeader";
@@ -20,6 +20,8 @@ interface MembersListProps {
 }
 const MembersList: React.FC<MembersListProps> = ({ members }) => {
   const { Users } = useContext(UsersContext);
+  console.log (`members `)
+  console.table (members)
   const userList = Users?.filter((user) => {
     return members!.findIndex((member) => member.user == user.id) != -1;
   });
@@ -39,9 +41,10 @@ const MembersList: React.FC<MembersListProps> = ({ members }) => {
           {/* <FriendsListHeader /> */}
           <ScrollableStack h="50vh">
             {members!.map((member, index) => {
+              const user = Users!.find (user => user.id === member.user);
               return (
                 <MemberField
-                  user={userList![index]}
+                  user={user!}
                   member={member}
                   key={index}
                   members={members}

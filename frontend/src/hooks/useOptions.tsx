@@ -1,5 +1,5 @@
 import apiClient from "@/services/requestProcessor";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { ChannelsContext, GlobalContext } from "@/context/Contexts";
@@ -23,14 +23,13 @@ const useUserOptions = (channel?: Channel, User?: User) => {
     const response = await enviteUserClient.postData({ invitedUser: user.id });
     return response;
   };
-  const {socket} = useContext (GlobalContext)
+  const { socket } = useContext(GlobalContext);
   const EnviteUserMutation = useMutation({
     mutationFn: enviteUser,
     onSuccess: (data) => {
       ////console.log(data);
-      if (socket)
-        socket!.emit ("sendInvite", {receiverId:User!.id});
-      queryClient.invalidateQueries("sentEnvites");
+      if (socket) socket!.emit("sendInvite", { receiverId: User!.id });
+      queryClient.invalidateQueries(["sentEnvites"]);
 
       toast({
         title: "Friend request sent.",
@@ -57,7 +56,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
       blockUserClient.postData({ userId: userid }).then((response) => response),
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("friends");
+      queryClient.invalidateQueries(["friends"]);
       toast({
         title: "User blocked.",
         description: "The user has been blocked successfully.",
@@ -78,7 +77,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .then((response) => response),
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("friends");
+      queryClient.invalidateQueries(["friends"]);
       toast({
         title: "User unblocked.",
         description: "The user has been unblocked successfully.",
@@ -199,6 +198,10 @@ const useUserOptions = (channel?: Channel, User?: User) => {
   }
 
   function KickUser(user: UserChannel) {
+    socket!.emit ("UserKick", {
+      userId:user.userid,
+      channelId:user.channelid
+    })
     KickUserMutation.mutate(user);
   }
   return {

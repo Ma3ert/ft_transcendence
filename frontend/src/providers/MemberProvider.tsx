@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import apiClient from "../services/requestProcessor";
 import {
   GlobalContext,
@@ -26,11 +26,10 @@ const MembersProvider: React.FC<MembersProviderProps> = ({
   const [channelMembers, setChannelMembers] = useState<Member[]>([]);
   const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
   const id = channelId ? channelId : activeChannel?.id;
-  const {currentUser} = useAuth ()
-  const router = useRouter ()
+  const { currentUser } = useAuth();
+  const router = useRouter();
 
-  if (currentUser === undefined)
-    router.push ("/")
+  if (currentUser === undefined) router.push("/");
 
   useQuery({
     queryKey: ["channelMembers", id],

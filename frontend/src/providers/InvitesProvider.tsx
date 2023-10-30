@@ -1,7 +1,7 @@
 import { GlobalContext, InvitesContext } from "@/context/Contexts";
 import { useAuth } from "@/hooks/useAuth";
 import apiClient from "@/services/requestProcessor";
-import { useQueryClient, useQuery } from "react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -54,7 +54,7 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
   //   console.log("route")
   //   router.push ("/")
   // }
-  useQuery("recievedEnvites", {
+  useQuery(["recievedEnvites"], {
     queryFn: async () => recievedClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {
       if (response.data && response.data.length) {
@@ -66,7 +66,7 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
     },
   });
 
-  useQuery("sentEnvites", {
+  useQuery(["sentEnvites"], {
     queryFn: async () => sentClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {
       if (response.data && response.data.length) {
@@ -78,7 +78,7 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
     },
   });
 
-  useQuery("channelReceivedEnvites", {
+  useQuery(["channelReceivedEnvites"], {
     queryFn: () =>
       channelReceivedEnvitesClient.getData().then((res) => res.data),
     onSuccess: (data: any) => {
@@ -89,7 +89,7 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
     },
     onError: (err) => {},
   });
-  useQuery("channelSentEnvites", {
+  useQuery(["channelSentEnvites"], {
     queryFn: () => channelSentEnvitesClient.getData().then((res) => res.data),
     onSuccess: (data: any) => {
       if (data! && data!.length) {

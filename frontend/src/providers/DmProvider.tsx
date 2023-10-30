@@ -6,7 +6,7 @@ import {
 } from "@/context/Contexts";
 import { useContext, useState } from "react";
 import apiClient from "../services/requestProcessor";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import EventListener from "../../utils/EventListener";
 import DirectMessages from "@/components/ChatComponents/DirectMessages";
@@ -22,13 +22,13 @@ const DmProvider: React.FC<DmProviderProps> = ({ children }) => {
   const { socket } = useContext(GlobalContext);
 
   const { onOpen } = useContext(UsersContext);
- 
-  const { currentUser } = useAuth();
-  
 
+  const { currentUser } = useAuth();
 
   return (
-    <DmContext.Provider value={{ messages, setMessages }}>{children}</DmContext.Provider>
+    <DmContext.Provider value={{ messages, setMessages }}>
+      {children}
+    </DmContext.Provider>
   );
 };
 
