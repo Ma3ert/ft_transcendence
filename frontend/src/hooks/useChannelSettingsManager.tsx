@@ -73,9 +73,9 @@ const useChannelSettingsManager = (User?: User) => {
         .then((res) => res.data),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries(["channels"]);
-      console.log(data.status);
+      queryClient.invalidateQueries(["channelReceivedEnvites"]);
+      console.log(data);
       if (data.status === "failure") {
-        toast.isActive("pop") &&
           toast({
             id: "pop",
             title: "Failure",

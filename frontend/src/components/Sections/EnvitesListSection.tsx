@@ -38,14 +38,13 @@ const EnvitesListSection: React.FC = () => {
     ...channelSent!,
   ]);
 
-  if (currentUser === undefined || !socket) router.push("/");
   useEffect(() => {
     if (socket) {
       socket!.emit("readInviteNotification", {
         userId: currentUser!.user.id,
       });
     }
-  }, [friendRecieved, friendSent, channelRecieved, channelSent]);
+  }, []);
   return (
     <Stack
       fontFamily={"visbyRound"}

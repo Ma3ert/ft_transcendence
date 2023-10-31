@@ -101,6 +101,11 @@ export default function Home() {
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.target as HTMLFormElement);
+    const userName: string = formData.get("username") as string;
+    const imageFile = (document.getElementById("avatar") as HTMLInputElement)
+    .files?.[0];
+    console.log("user name: ", userName);
     const validation = inputScheme.safeParse(inputValue);
     if (!validation.success) {
       !toast.isActive("edit") &&
@@ -111,10 +116,6 @@ export default function Home() {
         });
       return;
     }
-    const formData = new FormData(event.target as HTMLFormElement);
-    const userName: string = formData.get("username") as string;
-    const imageFile = (document.getElementById("avatar") as HTMLInputElement)
-      .files?.[0];
     formData.append("activated", "true");
     if (userName !== "" || imageFile) {
       client

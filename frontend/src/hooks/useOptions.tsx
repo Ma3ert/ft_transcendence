@@ -56,6 +56,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
     onSuccess: (data) => {
       ////console.log(data);
       queryClient.invalidateQueries(["friends"]);
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
         title: "User blocked.",
         description: "The user has been blocked successfully.",
@@ -77,6 +78,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
     onSuccess: (data) => {
       ////console.log(data);
       queryClient.invalidateQueries(["friends"]);
+      queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
         title: "User unblocked.",
         description: "The user has been unblocked successfully.",

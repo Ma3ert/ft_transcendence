@@ -18,12 +18,7 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
   const [counter, setCounter] = useState<number>(0);
   
 
-  useEffect(() => {
-    // fetch channels
-    // fetch active channel
-    // fetch active channel members
-    // fetch channel conversations
-  }, [Channels, activeChannel]);
+  
   return (
     <ChannelsContext.Provider
       value={{

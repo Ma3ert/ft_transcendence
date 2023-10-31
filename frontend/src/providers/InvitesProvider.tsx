@@ -44,16 +44,8 @@ const InvitesProvider: React.FC<InvitesProviderProps> = ({ children }) => {
   const [friendSent, setFriendSent] = useState<GlobalEnvite[]>([]);
   const recievedClient = new apiClient("/invites/received");
   const sentClient = new apiClient("/invites/sent");
-  const { socket } = useContext(GlobalContext);
 
-  const {currentUser} = useAuth ()
-  const router = useRouter ()
 
-  // if (currentUser === undefined)
-  // {
-  //   console.log("route")
-  //   router.push ("/")
-  // }
   useQuery(["recievedEnvites"], {
     queryFn: async () => recievedClient.getData().then((data) => data.data),
     onSuccess: (response: any) => {

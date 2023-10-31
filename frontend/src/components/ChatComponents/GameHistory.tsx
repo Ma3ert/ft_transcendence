@@ -24,8 +24,8 @@ const GameHistory: React.FC<Props> = ({}) => {
         </Text>
       </HStack>
       <HStack>
-        <LargeGameInfo title="Wins" info={currentUser.numberOfLost} />
-        <LargeGameInfo title="Losses" info={currentUser.numberOfWon} />
+        <LargeGameInfo title="Wins" info={currentUser.numberOfWon} />
+        <LargeGameInfo title="Losses" info={currentUser.numberOfLost} />
         <LargeGameInfo title="Total Games" info={currentUser.totalGames} />
       </HStack>
       <ScrollableStack h="50vh" yPadding={2}>

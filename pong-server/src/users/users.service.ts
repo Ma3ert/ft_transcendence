@@ -132,25 +132,30 @@ export class UsersService {
     if (!user) {
       return null;
     }
-    const updated =  this.prismaService.user.update({
-      where: {
-        id,
-      },
-      data: {
-        username: updateUserDto.username,
-        avatar: updateUserDto.avatar,
-        activated: updateUserDto.activated,
-      },
-      select: {
-        id: true,
-        username: true,
-        avatar: true,
-        activated: true,
-        email: true,
-      },
-    });
-    if (!updated) return null;
-    return updated;
+    try {
+      const updated = await this.prismaService.user.update({
+        where: {
+          id,
+        },
+        data: {
+          username: updateUserDto.username,
+          avatar: updateUserDto.avatar,
+          activated: updateUserDto.activated,
+        },
+        select: {
+          id: true,
+          username: true,
+          avatar: true,
+          activated: true,
+          email: true,
+        },
+      });
+      if (!updated) return null;
+      return updated;
+    }catch(e)
+    {
+      return null;
+    }
   }
 
   updateUserAuth(id: string, updateUserDto: AuthUserDto) {
