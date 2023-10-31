@@ -11,7 +11,7 @@ interface CmProviderProps {
 }
 
 const CmProvider: React.FC<CmProviderProps> = ({ children }) => {
-  const { activeChannel, Channels } = useContext(ChannelsContext);
+  const { activeChannel} = useContext(ChannelsContext);
   const [channelMessages, setChannelMessages] = useState<ChannelMessage[]>([]);
   const channelMessagesClient = new apiClient(
     `/chat/channels/${activeChannel!.id}/messages/?skip=0&take=300`

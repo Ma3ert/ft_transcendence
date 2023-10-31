@@ -20,7 +20,6 @@ const useChannelSettingsManager = (User?: User) => {
   const Success = useSuccess();
   const Failure = useFailure();
   const queryClient = useQueryClient();
-  const { activeChannel } = useContext(ChannelsContext);
   const { setFriendsSection } = useContext(AppNavigationContext);
   const { socket } = useContext(GlobalContext);
 

@@ -11,7 +11,7 @@ const Login = () => {
       alignItems="center"
     >
       <Link
-        href="http://e1r9p3.1337.ma:3000/auth/42/login"
+        href="http://e1r8p2.1337.ma:3000/auth/42/login"
         _hover={{ textStyle: "none" }}
         borderRadius={12}
         padding="10px 20px"

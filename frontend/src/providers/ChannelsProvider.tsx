@@ -15,25 +15,15 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
     []
   );
   const userChannelsClient = new apiClient("/chat/channels/");
-  const publicChannelsClient = new apiClient("/chat/public/");
   const [counter, setCounter] = useState<number>(0);
-
-
-
-  useQuery(["publicChannels"], {
-    queryFn: () => publicChannelsClient.getData().then((res) => res.data),
-    onSuccess: (data: Channel[]) => {
-      setPublicChannels(data);
-    },
-    onError: (err) => {},
-  });
+  
 
   useEffect(() => {
     // fetch channels
     // fetch active channel
     // fetch active channel members
     // fetch channel conversations
-  }, []);
+  }, [Channels, activeChannel]);
   return (
     <ChannelsContext.Provider
       value={{

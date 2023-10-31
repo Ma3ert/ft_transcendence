@@ -149,7 +149,8 @@ export class UsersService {
         email: true,
       },
     });
-    if (!updated) return null; 
+    if (!updated) return null;
+    return updated;
   }
 
   updateUserAuth(id: string, updateUserDto: AuthUserDto) {

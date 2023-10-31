@@ -1,15 +1,18 @@
 import { HStack, Icon, Text, Input, Button, Tooltip } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import { TbArrowBackUp } from "react-icons/tb";
-import { ChannelsContext, UsersContext } from "@/context/Contexts";
+import { ChannelsContext, UserChannelsContext, UsersContext } from "@/context/Contexts";
 import { useContext, useState } from "react";
 import { filterUsers, filterChannels } from "../../../utils/filterUsers";
 import { useQueryClient } from "@tanstack/react-query";
 import { ModalWrapper } from "../Wrappers/ModalWrapper";
 import NewChannel from "../ChatComponents/NewChannel";
 import { FaPlus } from "react-icons/fa";
+import useChannels from "@/hooks/useChannels";
 interface FriendsListHeaderProps {
   type: "friends" | "channels";
+  Channels?:Channel []
+  publicChannels?:Channel []
   setUsersList?: React.Dispatch<React.SetStateAction<User[]>>;
   setChannelsList?: React.Dispatch<React.SetStateAction<Channel[]>>;
   setPublicChannels?: React.Dispatch<React.SetStateAction<Channel[]>>;
@@ -17,13 +20,14 @@ interface FriendsListHeaderProps {
 
 const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
   type,
+
   setUsersList,
   setChannelsList,
   setPublicChannels,
 }) => {
   const [input, setInput] = useState<string>("");
+  const {Channels, PublicChannels} = useContext (UserChannelsContext)
   const { Users } = useContext(UsersContext);
-  const { Channels, PublicChannels } = useContext(ChannelsContext);
   const { friendsList } = useContext(UsersContext);
   const queryClient = useQueryClient();
   return (
@@ -86,6 +90,7 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
             } else {
               setChannelsList!(Channels!);
               setPublicChannels!(PublicChannels!);
+              setInput("")
             }
           }}
         >

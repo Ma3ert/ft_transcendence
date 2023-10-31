@@ -24,14 +24,7 @@ const useOptionsManager = (
     ? getUserRole(currentUser!.user!, MembersList!)
     : undefined;
 
-  ////console.log ('current user role : ', currentUserRole)
-  ////console.log ('member : ', Member)
-  ////console.log ('members list : ', MembersList)
-  ////console.log ('user : ', user)
-  ////console.log ('user is blocked : ', userIsBlocked)
-  ////console.log ('current section : ', currentSection)
-  ////console.log ('chat type : ', chatType)
-  ////console.log ('friends list : ', friendsList)
+
 
   function isUserFriend() {
     if (userIsBlocked) return false;

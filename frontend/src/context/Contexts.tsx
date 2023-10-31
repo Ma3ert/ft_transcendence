@@ -28,3 +28,4 @@ export const MembersContext = createContext<MembersContext>({});
 export const GameContext = createContext<GameContextType>({} as GameContextType);
 export const InvitesContext = createContext<InvitesContext>({});
 export const UserStatusContext = createContext<UserStatusContext>({});
+export const UserChannelsContext = createContext <UsersChannelsContext> ({})

@@ -43,20 +43,20 @@ export const AvailableUserRoute = `${process.env.REACT_APP_API_URL}/invites/user
 // game route
 
 export const options: MenuOption[] = [
-  {
-    description: "Invite to join game",
-    type: "normal",
-    modal: true,
-    channelSettings: false,
-    modalType: "default",
-  },
-  {
-    description: "Invite to join channel",
-    type: "normal",
-    modal: true,
-    channelSettings: false,
-    modalType: "default",
-  },
+  // {
+  //   description: "Invite to join game",
+  //   type: "normal",
+  //   modal: true,
+  //   channelSettings: false,
+  //   modalType: "default",
+  // },
+  // {
+  //   description: "Invite to join channel",
+  //   type: "normal",
+  //   modal: true,
+  //   channelSettings: false,
+  //   modalType: "default",
+  // },
   {
     description: "Send friend request",
     type: "normal",

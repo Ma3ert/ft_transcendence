@@ -20,16 +20,14 @@ const MembersProvider: React.FC<MembersProviderProps> = ({
   children,
   channelId,
 }) => {
-  const { activeChannel, Channels } = useContext(ChannelsContext);
+  const { activeChannel} = useContext(ChannelsContext);
   const channelMembersClient = (channelId: string) =>
     new apiClient(`/chat/channels/${channelId}/members`);
   const [channelMembers, setChannelMembers] = useState<Member[]>([]);
   const [loggedInUserRole, setLoggedInUserRole] = useState<string>("");
   const id = channelId ? channelId : activeChannel?.id;
-  const { currentUser } = useAuth();
-  const router = useRouter();
 
-  if (currentUser === undefined) router.push("/");
+ 
 
   useQuery({
     queryKey: ["channelMembers", id],
@@ -41,7 +39,6 @@ const MembersProvider: React.FC<MembersProviderProps> = ({
       setChannelMembers(data);
     },
     onError: (err) => {
-      ////console.log(err);
     },
   });
   return (

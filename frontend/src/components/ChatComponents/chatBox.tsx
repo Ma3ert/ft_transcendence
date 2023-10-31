@@ -20,21 +20,13 @@ import { useRouter } from "next/navigation";
 interface ChatBoxProps {}
 const ChatBox: React.FC<ChatBoxProps> = ({}) => {
   const {
-    Friends,
     chatType,
-    setJoinGameStatus,
-    setDirectMessages,
-    GameEnvitation,
-    setGameEnvitation,
   } = useContext(ChatContext);
   const {activePeer, setActivePeer} = useContext (UsersContext)
   const { socket } = useContext(GlobalContext);
-  const listener = useEventHandler(socket);
-  const gameEnviteHandler = useGameEnvite();
   const {activeChannel} = useContext (ChannelsContext)
-  const [counter, setCounter] = useState (0)
-  const {currentUser} = useAuth ()
-  const {messages, setMessages} = useContext (DmContext)
+
+  console.log ('active channel : ', activeChannel)
 
   const getReadChatNotification = () => {
     if (chatType == PRIVATE) {

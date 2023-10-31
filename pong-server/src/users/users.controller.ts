@@ -151,7 +151,9 @@ export class UsersController {
         ? (updateUserDto.activated = true)
         : (updateUserDto.activated = false);
     }
+    console.log(updateUserDto);
     const user = await this.usersService.updateUser(req.user.id, updateUserDto);
+    console.log(user);
     if (!user) throw new BadRequestException('Could not update user');
     return { status: 'success', user };
   }

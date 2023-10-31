@@ -10,8 +10,12 @@ import apiClient from "@/services/requestProcessor";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-interface props {}
-const DmChatRoom: React.FC<props> = ({}) => {
+interface props {
+  channels?:Channel []
+}
+const DmChatRoom: React.FC<props> = ({
+  channels
+}) => {
   const { activePeer } = useContext(UsersContext);
   const { messages, setMessages } = useContext(DmContext);
   const { socket } = useContext(GlobalContext);
@@ -69,7 +73,7 @@ const DmChatRoom: React.FC<props> = ({}) => {
       alignItems="center"
     >
       <GridItem justifyContent="center" alignItems="center" h="100%">
-        <ChatNavigation />
+        <ChatNavigation channels={channels} />
       </GridItem>
       <GridItem justifyContent="center" alignItems="center" w={"100%"} h="100%">
         <ChatBox />

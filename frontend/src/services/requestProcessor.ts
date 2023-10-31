@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://e1r9p3.1337.ma:3000/",
+  baseURL: "http://e1r8p2.1337.ma:3000/",
 });
 
 class apiClient<T> {

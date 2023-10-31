@@ -28,7 +28,7 @@ export default function LoginPage() {
         minH="70vh"
       >
         <Logo src="/logo.png"></Logo>
-        <Link href={"http://e1r9p3.1337.ma:3000/auth/42/login"}>
+        <Link href={"http://e1r8p2.1337.ma:3000/auth/42/login"}>
           <Button
             variant={"primary"}
             width={{ base: "200px", lg: "250px", xl: "300px" }}

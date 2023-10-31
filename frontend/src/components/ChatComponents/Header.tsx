@@ -19,7 +19,7 @@ export default function Header() {
   const { currentUser, updateUser } = useAuth();
 
   const handleLogout = () => {
-    router.push("http://e1r9p3.1337.ma:3000/auth/42/logout");
+    router.push("http://e1r8p2.1337.ma:3000/auth/42/logout");
     socket.emit("userLoggedOut");
   };
 

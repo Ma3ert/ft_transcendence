@@ -22,7 +22,7 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
   const [counter, setCounter] = useState <number>(0)
 
   useEffect(() => {
-    const socket = io("http://e1r9p3.1337.ma:3000/chat", {
+    const socket = io("http://e1r8p2.1337.ma:3000/chat", {
       autoConnect: false,
       transports: ["websocket", "polling"],
     });

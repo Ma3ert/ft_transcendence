@@ -384,3 +384,8 @@ type InvitesContext = {
   friendRecieved?:GlobalInvite []
   friendSent?:GlobalInvite []
 }
+
+type UsersChannelsContext = {
+  Channels?: Channel[]
+  PublicChannels?:Channel[]
+}

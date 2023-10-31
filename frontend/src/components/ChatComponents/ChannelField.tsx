@@ -4,10 +4,9 @@ import { FaEllipsis } from "react-icons/fa6";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 import {
-  AppNavigationContext,
   ChatContext,
-  UsersContext,
   ChannelsContext,
+  UserChannelsContext,
 } from "@/context/Contexts";
 import { PRIVATE } from "@/../contstants";
 import UserAvatar from "../UserAvatar";
@@ -27,14 +26,14 @@ import { useFailure, useSuccess } from "@/hooks/useAlerts";
 interface ChannelFieldProps {
   channel: Channel;
 }
-const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
+const ChannelField: React.FC<ChannelFieldProps> = ({ channel}) => {
   const { setCurrentChat } = useContext(ChatContext);
   const { setActiveChannel } = useContext(ChannelsContext);
+  const {Channels} = useContext (ChannelsContext)
   const router = useRouter();
   const toast = useToast();
   const success = useSuccess();
   const failure = useFailure();
-  const { Channels } = useContext(ChannelsContext);
   const isOwner = Channels!.find((ch) => ch.id === channel.id);
   const joinChannelClient = new apiClient(`chat/channels/${channel!.id}/join/`);
   const queryClient = useQueryClient();

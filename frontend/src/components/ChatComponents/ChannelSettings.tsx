@@ -37,7 +37,6 @@ import InviteMultipleToChannel from "./InviteMultipleToChannel";
 interface ChannelSettingsProps {}
 
 const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
-  // eslint-disable-next-line react/jsx-key
   const { removeChannel, leaveChannel } = useChannelManager();
   const [settingsList, setSettings] = useState<string[]>(channelSettings);
   const { members } = useContext(MembersContext);
@@ -47,18 +46,15 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   const settings = new Map([
     [
       "Members",
-      // eslint-disable-next-line react/jsx-key
-      <MembersList members={members!} />,
+      <MembersList members={members!} key={''}/>,
     ],
     [
       "Set password",
-      // eslint-disable-next-line react/jsx-key
-      <SetPassword />,
+      <SetPassword key={''} />,
     ],
     [
       "Edit Channel",
-      // eslint-disable-next-line react/jsx-key
-      <EditeChannel channel={activeChannel!} />,
+      <EditeChannel channel={activeChannel!} key={''}/>,
     ],
   ]);
   const settingsActions = new Map([
@@ -75,9 +71,6 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
     return false;
   };
   useEffect(() => {
-    ////console.log (`channel type : -----> ${activeChannel!.type}`)
-    ////console.log (`logged in user role : -----> ${getUserRole (currentUser!.user!, members!)}`)
-    // console.table(members);
     if (isPrivliged()) {
       if (activeChannel!.type === "PROTECTED")
         setSettings(ProtectedChannelSettings);

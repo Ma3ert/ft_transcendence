@@ -18,9 +18,13 @@ import DmProvider from "@/providers/DmProvider";
 import NoConversationsPage from "./NoConversationsPage";
 import Loading from "../../../app/loading";
 import { useAuth } from "@/hooks/useAuth";
-interface PrivateChatProps {}
+interface PrivateChatProps {
+  channels?:Channel[]
+}
 
-const PrivateChat: React.FC<PrivateChatProps> = () => {
+const PrivateChat: React.FC<PrivateChatProps> = ({
+  channels
+}) => {
   const { socket } = useContext(GlobalContext);
   const { activePeer } = useContext(UsersContext);
   const directConversationsClient = new apiClient(`/chat/direct/`);
@@ -61,7 +65,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
       align={"center"}
       spacing={0}
     >
-      {activePeer ? <DmChatRoom /> : <NoConversationsPage />}
+      {activePeer ? <DmChatRoom channels={channels}/> : <NoConversationsPage />}
     </Stack>
   );
 };

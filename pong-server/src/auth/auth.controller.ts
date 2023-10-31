@@ -32,7 +32,8 @@ export class AuthController {
   async handleRedirect(@Req() req: Request, @Res() res: Response) {
     const token = await this.authService.generateAccessToken(req.user);
     res.cookie('jwt', token);
-    if (
+    console.log(req.user);
+        if (
       req.user['activated'] &&
       !req.user['twoFactor'] &&
       !req.user['pinValidated']

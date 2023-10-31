@@ -27,25 +27,29 @@ import { setSyntheticTrailingComments } from "typescript";
 import { useToast } from "@chakra-ui/react";
 import "../../theme/styles.css";
 import { useAuth } from "@/hooks/useAuth";
-interface ChatNavigationProps {}
+import useChannels from "@/hooks/useChannels";
+import { channel } from "diagnostics_channel";
+interface ChatNavigationProps {
+  channels?: Channel[]
+}
 
-interface ChannelsNavigationProps {}
+interface ChannelsNavigationProps 
+{
+  channels?:Channel[]
+}
 
-const ChannelsNavigation: React.FC<ChatNavigationProps> = ({}) => {
+const ChannelsNavigation: React.FC<ChatNavigationProps> = ({
+  channels
+}) => {
   const { setCurrentChat, CmNotifications } = useContext(ChatContext);
-
-  const { activeChannel, setActiveChannel, Channels } =
+  const { activeChannel, setActiveChannel} =
     useContext(ChannelsContext);
   const notification = (channel: Channel) =>
     CmNotifications?.find((elm) => elm == channel.id);
-  function countOccurrences(channelid: string, ids: string[]) {
-    return ids.filter((item) => item === channelid).length;
-  }
-
-  useEffect(() => {}, []);
+  
   return (
     <>
-      {Channels?.map((channel, index) => {
+      {channels?.map((channel, index) => {
         return (
           <NotificationWrapper
             status={notification(channel) ? true : false}
@@ -123,15 +127,18 @@ const FriendsNavigation: React.FC<ChatNavigationProps> = ({}) => {
   );
 };
 
-const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
+const ChatNavigation: React.FC<ChatNavigationProps> = ({
+  channels
+}) => {
   const { chatType, setCurrentChat } = useContext(ChatContext);
-  const { Channels } = useContext(ChannelsContext);
 
+ 
   return (
     <Stack justify={"center"} alignItems={"center"} spacing={2} h={"100%"}>
       <IconButton
         onClick={() => {
-          if (Channels && Channels?.length) setCurrentChat!(!chatType);
+            console.log (`Channels : here `, channels)
+           channels && channels.length > 0 && setCurrentChat!(!chatType);
         }}
         icon={chatType ? FaUserGroup : FaUserAlt}
         size={"25px"}
@@ -147,7 +154,7 @@ const ChatNavigation: React.FC<ChatNavigationProps> = ({}) => {
         spacing={2}
         maxH={"60vh"}
       >
-        {chatType ? <FriendsNavigation /> : <ChannelsNavigation />}
+        {chatType ? <FriendsNavigation /> : <ChannelsNavigation channels={channels}/>}
       </Stack>
     </Stack>
   );

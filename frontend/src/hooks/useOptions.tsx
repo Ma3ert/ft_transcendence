@@ -10,7 +10,6 @@ const useUserOptions = (channel?: Channel, User?: User) => {
   const unblockUserClient = new apiClient("/users/unblock");
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { activeChannel } = useContext(ChannelsContext);
   const muteUserClient = (request: UserChannel) =>
     new apiClient(`chat/channels/${request.channelid}/mute/${request.userid}`);
   const banUserClient = (request: UserChannel) =>

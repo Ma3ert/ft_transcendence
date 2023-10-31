@@ -28,20 +28,15 @@ const useChannelManager = () => {
   const newChannelMutation = useMutation({
     mutationFn: (channelBody: any) => channelClient.postData(channelBody),
     onSuccess: (data) => {
-      // queryClient.setQueriesData(["channels"], (channels: any) => {
-      //   const result = [...channels, data.data];
-      //   console.log("Result: ", result);
-      //   return result;
-      // });
+   
       queryClient.invalidateQueries(["channels"]);
       const channels = queryClient.getQueryData(['channels']);
       console.log(channels);
-      if (pathname === "/Friends") router.push("/Friends");
+      if (pathname !== "/Friends") router.push("/Friends");
       setFriendsSection!("channels");
       toast(Success("Channel created successfully"));
     },
     onError: (error) => {
-      ////console.log(error)
       toast(Failure("Channel creation failed"));
     },
   });
@@ -49,14 +44,12 @@ const useChannelManager = () => {
   const deleteChannelMutation = useMutation({
     mutationFn: (channelId: string) => channelById(channelId).deleteData(),
     onSuccess: (data) => {
-      ////console.log(data)
       queryClient.invalidateQueries(["channels"]);
       router.push("/Friends");
       setFriendsSection!("channels");
       toast(Success("Channel deleted successfully"));
     },
     onError: (error) => {
-      ////console.log(error)
       queryClient.invalidateQueries(["channels"]);
       toast(Failure("Channel deletion failed"));
     },
@@ -68,12 +61,10 @@ const useChannelManager = () => {
         password: channel.password,
       }),
     onSuccess: (data) => {
-      ////console.log(data)
       queryClient.invalidateQueries(["channels"]);
       toast(Success("you joined channel"));
     },
     onError: (error) => {
-      ////console.log(error)
       toast(Failure("Channel join failed"));
     },
   });
