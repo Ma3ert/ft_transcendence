@@ -29,7 +29,7 @@ const useChannelSettingsManager = (User?: User) => {
       sendChannelEnviteClient(user).postData(null),
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("channelSentEnvites");
+      queryClient.invalidateQueries(["channelSentEnvites"]);
       if (socket) socket!.emit("sendInvite", { receiverId: User!.id });
       toast(Success("Envite to channel sent"));
     },
@@ -43,8 +43,8 @@ const useChannelSettingsManager = (User?: User) => {
       acceptChannelEnviteClient(user).postData(null),
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("channels");
-      queryClient.invalidateQueries("channelReceivedEnvites");
+      queryClient.invalidateQueries(["channels"]);
+      queryClient.invalidateQueries(["channelReceivedEnvites"]);
       setFriendsSection!("channels");
       toast(Success("Envite to channel accepted"));
     },
@@ -58,7 +58,7 @@ const useChannelSettingsManager = (User?: User) => {
       declineChannelEnviteClient(user).deleteData(),
     onSuccess: (data) => {
       ////console.log(data);
-      queryClient.invalidateQueries("channelReceivedEnvites");
+      queryClient.invalidateQueries(["channelReceivedEnvites"]);
       toast(Success("Envite to channel declined"));
     },
     onError: (error) => {
@@ -73,7 +73,7 @@ const useChannelSettingsManager = (User?: User) => {
         .postData({ password: user!.password })
         .then((res) => res.data),
     onSuccess: (data: any) => {
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       console.log(data.status);
       if (data.status === "failure") {
         toast.isActive("pop") &&

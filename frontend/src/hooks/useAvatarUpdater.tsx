@@ -19,7 +19,7 @@ const useAvatarUpdater = () => {
         }
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       toast({
         title: "Avatar updated successfully",
         status: "success",

@@ -18,16 +18,7 @@ const ChannelsProvider: React.FC<ChannelsProviderProps> = ({ children }) => {
   const publicChannelsClient = new apiClient("/chat/public/");
   const [counter, setCounter] = useState<number>(0);
 
-  useQuery(["channels"], {
-    queryFn: () => userChannelsClient.getData().then((res) => res.data),
-    onSuccess: (data: Channel[]) => {
-      setChannels(data);
-      if (activeChannel === null) setActiveChannel(data[0]);
-    },
-    onError: (err) => {
-      ////console.log(err)
-    },
-  });
+
 
   useQuery(["publicChannels"], {
     queryFn: () => publicChannelsClient.getData().then((res) => res.data),

@@ -13,14 +13,17 @@ interface ChannelsListProps {}
 
 const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
   const userChannelsClient = new apiClient("/chat/channels/");
-  const { Channels, PublicChannels } = useContext(ChannelsContext);
-  const [userChannels, setUserChannels] = useState<Channel[]>(Channels!);
+  const { Channels, PublicChannels ,setChannels, setPublicChannels:publicChannelsSetter, setActiveChannel, activeChannel } = useContext(ChannelsContext);
   const [publicChannels, setPublicChannels] = useState<Channel[]>([]);
-
+  const [userChannels, setUserChannels] = useState<Channel[]>([]);
   const queryClient = useQueryClient();
   // useEffect(() => {}, [Channels]);
-  const channels = queryClient.getQueryData<Channel[]>(['channels']);
 
+  
+  
+  useEffect(() => {
+    setUserChannels(queryClient.getQueryData(['channels'])!);
+  },[])
   console.log ("from channel list: ", userChannels);
   return (
     <Stack
@@ -36,13 +39,13 @@ const ChannelsListSection: React.FC<ChannelsListProps> = ({}) => {
         setPublicChannels={setPublicChannels}
       />
       <ScrollableStack>
-        {channels && channels!.length > 0 ? (
+        {userChannels && userChannels!.length > 0 ? (
           <>
             <Stack spacing={3} w="100%" h="auto">
               <Text p={5} color="#5B6171">
-                Your channels
+                Your userChannels
               </Text>
-              {channels!.map((channel, index) => (
+              {userChannels!.map((channel, index) => (
                 <ChannelField key={index} channel={channel} />
               ))}
             </Stack>

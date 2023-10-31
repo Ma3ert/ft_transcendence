@@ -42,7 +42,7 @@ const ChannelField: React.FC<ChannelFieldProps> = ({ channel }) => {
     mutationFn: () => joinChannelClient.postData({}).then((res) => res.data),
     onSuccess: (res: any) => {
       toast(success("You joined channel successfully"));
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
     },
     onError: (err: any) => {
       toast(failure("failed to join channel"));

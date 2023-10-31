@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import { AxiosResponse } from "axios";
 import apiClient from "../services/requestProcessor";
-import { useRequestProcessor } from "./useRequestProcessor";
 import { useAuth } from "./useAuth";
 import { Dispatch } from "react";
 

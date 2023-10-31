@@ -99,7 +99,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       queryClient.invalidateQueries(["channel", channel.id]);
       toast({
         title: "Channel password set.",
@@ -136,7 +136,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       queryClient.invalidateQueries(["channel", channel.id]);
       toast({
         title: "Channel name changed.",
@@ -169,7 +169,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         }
       ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       queryClient.invalidateQueries(["channel", channel.id]);
       toast({
         title: "Channel password removed.",
@@ -246,7 +246,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         }
       ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries("channels");
+      queryClient.invalidateQueries(["channels"]);
       toast({
         title: "Channel visibility changed.",
         description: "You can now share it with your friends.",
