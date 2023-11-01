@@ -91,7 +91,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
                         status: "info",
                       });
                     onClose!();
-                    socket.emit("gameJoinQueue");
+                    socket && socket.emit("gameJoinQueue");
                   }}
                   variant={
                     gameInviteSender !== currentUser!.user!.id

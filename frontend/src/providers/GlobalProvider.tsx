@@ -22,30 +22,33 @@ const GlobalProvider: React.FC<GlobalContextProps> = ({ children }) => {
   const [counter, setCounter] = useState <number>(0)
 
   useEffect(() => {
-    const socket = io("http://e1r8p2.1337.ma:3000/chat", {
+    const socket = Cookies.get('jwt') && io("http://e1r8p2.1337.ma:3000/chat", {
       autoConnect: false,
       transports: ["websocket", "polling"],
     });
     const token = Cookies.get("jwt");
-    socket.auth = { token: `Bearer ${token}` };
-    socket.connect();
+    if (socket && token)
+    {
+      socket.auth =  { token: `Bearer ${token}` };
+     socket.connect();
     setSocket!(socket);
-    socket.on("connect", () => {
+     socket.on("connect", () => {
       console.log ('client connected')
       NotifyServer(socket, "userLoggedIn", currentUser!.user!);
       socket.on("disconnect", () => {
         console.log ('client disconnected')
       });
     });
+    }
 
-    socket.on("connect_error", (err) => {
+    socket && socket.on("connect_error", (err) => {
       console.log(`connect_error due to ${err.message}`);
       if (currentUser)
         setCounter (counter+1);
     });
 
     return () => {
-      socket.disconnect();
+      socket && socket.disconnect();
     };
   }, [counter]);
   return (

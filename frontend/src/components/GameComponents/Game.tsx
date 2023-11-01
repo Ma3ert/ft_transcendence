@@ -95,109 +95,113 @@ const Game = () => {
       router.push("/Lobby");
     const canvas: any = ref.current;
     const context = canvas.getContext("2d");
-
-    socket.on("connect", () => {
-      if (!socket.connected) {
+    
+    if (socket)
+    {
+      socket.on("connect", () => {
+        if (!(socket && socket.connected)) {
+          !toast.isActive("pop") &&
+            toast({
+              id: "pop",
+              title: "Error connecting to the server",
+              status: "error",
+            });
+          setMessage("Error connecting to the server");
+          router.push("/Lobby");
+  
+        }
+      });
+  
+      socket.on("userLeftGame", () => {
+        game.isGameStarted = false;
+        clearCanvas(context);
         !toast.isActive("pop") &&
           toast({
             id: "pop",
-            title: "Error connecting to the server",
+            title: "other player has left the game",
             status: "error",
           });
-        setMessage("Error connecting to the server");
-        router.push("/Lobby");
-
-      }
-    });
-
-    socket.on("userLeftGame", () => {
-      game.isGameStarted = false;
-      clearCanvas(context);
-      !toast.isActive("pop") &&
-        toast({
-          id: "pop",
-          title: "other player has left the game",
-          status: "error",
-        });
-      setMessage("Other player has left the game");
-      setTimeout(() => {
-        router.push("/Lobby");
-      }, 5000);
-    });
-
-    socket.on("score", (data) => {
-      setScore(data);
-    });
-
-    socket.on("startGameSession", () => {
-      CloseHandler!();
-      setMessage("");
-      var theme = { one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9" };
-
-      const cookieValue = Cookies.get("theme");
-      if (cookieValue !== undefined) {
-        ////console.log(cookieValue)
-        if (cookieValue !== "") {
-          theme = JSON.parse(cookieValue);
-        }
-      }
-      game.playerOne = new Player(0, 200, 20, 100, theme.one, 1);
-      game.playerTwo = new Player(780, 200, 20, 100, theme.two, 2);
-      game.ball = new Ball(400, 245, 10, theme.ball);
-
-      game.isGameStarted = true;
-
-      window.addEventListener("keydown", (e) => {
-        if (game.isGameStarted) {
-          if (e.key === "ArrowUp") {
-            socket.emit("gameMovePlayer", {
-              gameSession: game.gameID,
-              player: game.playerID,
-              key: "up",
-            });
-          } else if (e.key === "ArrowDown") {
-            socket.emit("gameMovePlayer", {
-              gameSession: game.gameID,
-              player: game.playerID,
-              key: "down",
-            });
+        setMessage("Other player has left the game");
+        setTimeout(() => {
+          router.push("/Lobby");
+        }, 5000);
+      });
+  
+      socket.on("score", (data) => {
+        setScore(data);
+      });
+  
+      socket.on("startGameSession", () => {
+        CloseHandler!();
+        setMessage("");
+        var theme = { one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9" };
+  
+        const cookieValue = Cookies.get("theme");
+        if (cookieValue !== undefined) {
+          ////console.log(cookieValue)
+          if (cookieValue !== "") {
+            theme = JSON.parse(cookieValue);
           }
         }
+        game.playerOne = new Player(0, 200, 20, 100, theme.one, 1);
+        game.playerTwo = new Player(780, 200, 20, 100, theme.two, 2);
+        game.ball = new Ball(400, 245, 10, theme.ball);
+  
+        game.isGameStarted = true;
+  
+        window.addEventListener("keydown", (e) => {
+          if (game.isGameStarted) {
+            if (e.key === "ArrowUp") {
+              socket && socket.emit("gameMovePlayer", {
+                gameSession: game.gameID,
+                player: game.playerID,
+                key: "up",
+              });
+            } else if (e.key === "ArrowDown") {
+              socket && socket.emit("gameMovePlayer", {
+                gameSession: game.gameID,
+                player: game.playerID,
+                key: "down",
+              });
+            }
+          }
+        });
+        paint(context);
       });
-      paint(context);
-    });
+  
+      const itemCounter = (value: any, index: any) => {
+        return value.filter((x: any) => x == index).length;
+      };
+      socket.on("endGame", (room) => {
+        ////console.log(room);
+        clearCanvas(context);
+        game.isGameStarted = false;
+        updateUser && updateUser();
+        if (game.playerID === room.winner) {
+          setMessage("Congrats. You WON this game");
+          setWin(true);
+        } else {
+          setMessage("Bitch. You LOST this game");
+          setWin(false);
+        }
+        setFinalScore(
+          itemCounter(room.players[0].score, "W").toString() +
+            " - " +
+            itemCounter(room.players[1].score, "W").toString()
+        );
+        onOpen();
+      });
+  
+      socket.on("updateGame", (room) => {
+        game.playerOne.y = room.players[0].y;
+        game.playerTwo.y = room.players[1].y;
+  
+        game.ball.x = room.ball.x;
+        game.ball.y = room.ball.y;
+        paint(context);
+      });
+    }
 
-    const itemCounter = (value: any, index: any) => {
-      return value.filter((x: any) => x == index).length;
-    };
-    socket.on("endGame", (room) => {
-      ////console.log(room);
-      clearCanvas(context);
-      game.isGameStarted = false;
-      updateUser && updateUser();
-      if (game.playerID === room.winner) {
-        setMessage("Congrats. You WON this game");
-        setWin(true);
-      } else {
-        setMessage("Bitch. You LOST this game");
-        setWin(false);
-      }
-      setFinalScore(
-        itemCounter(room.players[0].score, "W").toString() +
-          " - " +
-          itemCounter(room.players[1].score, "W").toString()
-      );
-      onOpen();
-    });
-
-    socket.on("updateGame", (room) => {
-      game.playerOne.y = room.players[0].y;
-      game.playerTwo.y = room.players[1].y;
-
-      game.ball.x = room.ball.x;
-      game.ball.y = room.ball.y;
-      paint(context);
-    });
   }, []);
 
   return (

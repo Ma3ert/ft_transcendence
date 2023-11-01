@@ -19,7 +19,9 @@ export const SocketAuthMiddlware = (): SocketIOMiddlware => {
           id: payload.sub as string,
         },
       });
-      if (user) client.user = user;
+      if (!user)
+          throw Error("User does not exists.");
+      client.user = user;
       next();
     } catch (e) {
       next(e);
