@@ -21,7 +21,11 @@ const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   const { currentUser, updateUser } = useAuth();
   const router = useRouter();
 
-  if (currentUser === undefined) router.push("/");
+  if (currentUser === undefined || !currentUser.user.activated || 
+    (currentUser.user.twoFactor && !currentUser.user.pinValidated)) 
+  {
+    router.push("/");
+  }
   else {
     return (
       <Grid templateRows={"15vh 85vh"} w="100%" h="100%">

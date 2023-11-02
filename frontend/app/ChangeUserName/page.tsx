@@ -48,12 +48,12 @@ export default function Home() {
   );
   const [value, setValue] = useState("");
   const first = useRef<any>(null);
-
+    console.log("user: ", currentUser.user);
   if (
     currentUser &&
     currentUser.user.activated &&
-    !currentUser.user.twoFactor &&
-    !currentUser.user.pinValidated
+    (!currentUser.user.twoFactor ||
+    (currentUser.user.twoFactor && currentUser.user.pinValidated))
   )
     router.push("/Lobby");
 
@@ -62,6 +62,7 @@ export default function Home() {
       twoFaClient
         .postData({ pin: pin }, "")
         .then((res) => {
+          updateUser && updateUser();
           router.push("/Lobby");
         })
         .catch((err) => {
@@ -127,7 +128,7 @@ export default function Home() {
           title: "Changed successfully",
           status: "success",
         });
-      router.push("/")
+      router.push("/Lobby")
     })
     .catch(() => {
       !toast.isActive("edit") &&

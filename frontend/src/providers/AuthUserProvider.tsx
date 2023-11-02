@@ -14,6 +14,11 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const handleUnAuth = () => {
+    setLoading(false);
+    setCurrentUser(undefined);
+    router.push("/");
+  }
   const updateUser = async () => {
     const cookieValue = Cookies.get("jwt");
     if (cookieValue !== undefined) {
@@ -28,16 +33,14 @@ const AuthUserProvider = ({ children }: UserAuthProps) => {
             setCurrentUser(res);
             setLoading(false);
           })
-          .catch((err) => {});
-      } else {
-        setLoading(false);
-        setCurrentUser(undefined);
-        router.push("/");
-      }
+          .catch((err) => {
+            handleUnAuth()
+          });
+        } else {
+          handleUnAuth()
+        }
     } else {
-      setLoading(false);
-      setCurrentUser(undefined);
-      router.push("/");
+      handleUnAuth()
     }
   };
 
