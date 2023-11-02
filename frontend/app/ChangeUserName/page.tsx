@@ -88,6 +88,7 @@ export default function Home() {
     const formData = new FormData();
     formData.append("activated", "true");
     client.patchData(formData).then(() => {
+      updateUser && updateUser();
       router.push("/Lobby");
     });
   };
