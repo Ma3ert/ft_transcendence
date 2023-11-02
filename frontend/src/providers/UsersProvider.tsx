@@ -93,6 +93,59 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       router.push("/Game");
     })
 
+    gameSocket?.on ("userDeniedInvite", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "User did not accept your game invite.",
+        status: "info",
+      });
+      setInviteStatus(false);
+    });
+
+    gameSocket?.on ("userOffline", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "The user you're trying to invite is offline.",
+        status: "error",
+      });
+    })
+
+    gameSocket?.on ("onGoingMatch", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "You already have an ongoing game session.",
+        status: "error",
+      });
+    })
+    gameSocket?.on ("userInMatch", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "User you're trying to invite is already in game.",
+        status: "error",
+      });
+    })
+
+    gameSocket?.on ("unavailableForInvite", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "User is unavailable for invite.",
+        status: "error",
+      });
+    })
+
+    gameSocket?.on("noSuchInvite", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "The you're trying to accept is expried or invalid.",
+        status: "error",
+      });
+    })
       setInviteStatus (true);
       // setGameInviteSender!(response.senderId);
       // onOpen!();

@@ -105,6 +105,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
                 variant={"ghost"}
                 onClick={() =>{
                   setInviteStatus! (false);
+                  socket?.emit("gameDenyInvite", { invite: inviteTogameId })
                   onClose!()}}
                 fontSize="16px"
                 padding="6px 12px"
