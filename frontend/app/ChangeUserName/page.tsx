@@ -101,40 +101,43 @@ export default function Home() {
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    const userName: string = formData.get("username") as string;
-    const imageFile = (document.getElementById("avatar") as HTMLInputElement)
-    .files?.[0];
-    console.log("user name: ", userName);
     const validation = inputScheme.safeParse(inputValue);
-    if (!validation.success) {
+    const imageFile = (document.getElementById("avatar") as HTMLInputElement).files?.[0];
+    const formData = new FormData();
+
+    if ((!validation.success && inputValue !== "") || (!imageFile && inputValue === "")) {
+      !toast.isActive("edit") &&
+        toast({
+          id: "edit",
+          title: "Invalid Input",
+          status: "error",
+        });
+      return;
+    }
+    if (inputValue !== "") formData.append("username", inputValue);
+    if (imageFile) formData.append("avatar", imageFile);
+    formData.append("activated", "true");
+    client
+    .patchData(formData)
+    .then(() => {
+      updateUser && updateUser();
+      !toast.isActive("edit") &&
+        toast({
+          id: "edit",
+          title: "Changed successfully",
+          status: "success",
+        });
+      router.push("/")
+    })
+    .catch(() => {
       !toast.isActive("edit") &&
         toast({
           id: "edit",
           title: "Unvalid Input",
           status: "error",
         });
-      return;
-    }
-    formData.append("activated", "true");
-    if (userName !== "" || imageFile) {
-      client
-        .patchData(formData)
-        .then(() => {
-          updateUser && updateUser();
-        })
-        .catch(() => {
-          !toast.isActive("edit") &&
-            toast({
-              id: "edit",
-              title: "Unvalid Input",
-              status: "error",
-            });
-          setInputValue("");
-        });
-    } else {
-      handleSkip();
-    }
+      setInputValue("");
+    });
   };
 
   return (

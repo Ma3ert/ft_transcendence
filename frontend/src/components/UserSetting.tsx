@@ -46,7 +46,8 @@ const UserSetting = (props: Props) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validation = inputScheme.safeParse(inputValue);
-    if (!validation.success) {
+    const imageFile = (document.getElementById("avatar") as HTMLInputElement).files?.[0];
+    if ((!validation.success && inputValue !== "") || (!imageFile && inputValue === "")) {
       !toast.isActive("edit") &&
         toast({
           id: "edit",
@@ -55,34 +56,30 @@ const UserSetting = (props: Props) => {
         });
       return;
     }
-    const formData = new FormData(event.target as HTMLFormElement);
-    const userName: string = formData.get("username") as string;
-    const imageFile = (document.getElementById("avatar") as HTMLInputElement)
-      .files?.[0];
-    if (inputValue !== "" || imageFile) {
-      if (inputValue === "") formData.append("username", currentUser.username);
-      client
-        .patchData(formData)
-        .then(() => {
-          updateUser && updateUser();
-          !toast.isActive("edit") &&
-            toast({
-              id: "edit",
-              title: "Changed successfully",
-              status: "success",
-            });
-          setInputValue("");
-        })
-        .catch(() => {
-          !toast.isActive("edit") &&
-            toast({
-              id: "edit",
-              title: "Unvalid Input",
-              status: "error",
-            });
-          setInputValue("");
-        });
-    }
+    const formData = new FormData();
+    if (inputValue !== "") formData.append("username", inputValue);
+    if (imageFile) formData.append("avatar", imageFile);
+    client
+      .patchData(formData)
+      .then(() => {
+        updateUser && updateUser();
+        !toast.isActive("edit") &&
+          toast({
+            id: "edit",
+            title: "Changed successfully",
+            status: "success",
+          });
+        setInputValue("");
+      })
+      .catch(() => {
+        !toast.isActive("edit") &&
+          toast({
+            id: "edit",
+            title: "Unvalid Input",
+            status: "error",
+          });
+        setInputValue("");
+      });
   };
 
   const activateFa = () => {
