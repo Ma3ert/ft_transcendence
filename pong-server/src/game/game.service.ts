@@ -18,6 +18,8 @@ import {
   INVITE_CANCELED,
   UNAUTHORIZED_INVITE_ACTION,
   JOINED_GAME_QUEUE,
+  INVITE_PENDING,
+  UNAVAILABLE_FOR_INVITE,
 } from './utils/events';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -136,6 +138,7 @@ export class GameService {
   }
 
   createGameInvite(sendingPlayer: AuthSocket, receivingPlayer: AuthSocket, server: Server) {
+    let status = 0;
     if (this.allPlayers.size > 0 && this.allPlayers.has(sendingPlayer.user.id))
       return server.to(sendingPlayer.id).emit(ONGOING_MATCH); // User who's sent the invite is in match
     if (this.allPlayers.size > 0 && this.allPlayers.has(receivingPlayer.user.id))
@@ -144,12 +147,33 @@ export class GameService {
     const sessionInvite = randomUUID();
     const playerOne = this.createPlayer(sendingPlayer, 1);
     const playerTwo = this.createPlayer(receivingPlayer, 2);
-    this.gameInvites.set(sessionInvite, { players: [playerOne], staggedPlayer: playerTwo });
-    // Add the player for the in match check
-    this.allPlayers.set(sendingPlayer.user.id, sendingPlayer.user);
+    
+    // Check if you've already invited the user
+    this.gameInvites.forEach((invite) => {
+      if (invite.players[0].user === playerOne.user && invite.staggedPlayer.user === playerTwo.user){
+        status = 1;
+      }
+    })
+    
+    // Check if the user is available for invite
+    this.gameInvites.forEach((invite) => {
+      if (status === 0 && invite.staggedPlayer.user === receivingPlayer.user.id){
+        status = 2;
+      }
+    })
 
+    if (status === 1) {
+      return server.to(sendingPlayer.id).emit(INVITE_PENDING)
+    }
+    else if (status === 2) {
+      return server.to(sendingPlayer.id).emit(UNAVAILABLE_FOR_INVITE);
+    }
+
+    this.gameInvites.set(sessionInvite, { players: [playerOne], staggedPlayer: playerTwo });
+    
     server.to(receivingPlayer.id).emit(NEW_INVITE, { invite: sessionInvite, user: sendingPlayer.user });
     server.to(sendingPlayer.id).emit(INVITE_SENT, { invite: sessionInvite });
+
     setTimeout(() => {
       if (this.gameInvites.has(sessionInvite) && this.gameInvites.get(sessionInvite).players.length == 1) {
         this.gameInvites.delete(sessionInvite);

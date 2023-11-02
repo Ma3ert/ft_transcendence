@@ -1,12 +1,17 @@
 import Cookies from "js-cookie";
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 
-const socket = Cookies.get("jwt") && io("http://e1r8p2.1337.ma:3000/game", {
-  transports: ["websocket"],
-  auth: {
-    token: "Bearer " + Cookies.get("jwt"),
-  },
-});
+let socket: Socket | undefined = undefined;
+
+if (Cookies.get("jwt"))
+{
+    socket = io("http://e1r8p2.1337.ma:3000/game", {
+    transports: ["websocket"],
+    auth: {
+      token: "Bearer " + Cookies.get("jwt"),
+    },
+  });
+}
 
 
 socket && socket.on("connect_error", (err) => {

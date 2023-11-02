@@ -66,7 +66,6 @@ const Game = () => {
       });
       console.log("i get here1")
     router.push("/Lobby");
-    
   };
 
   const paint = (context: any) => {
@@ -108,7 +107,6 @@ const Game = () => {
             });
           setMessage("Error connecting to the server");
           router.push("/Lobby");
-  
         }
       });
   
@@ -124,7 +122,7 @@ const Game = () => {
         setMessage("Other player has left the game");
         setTimeout(() => {
           router.push("/Lobby");
-        }, 5000);
+        }, 2000);
       });
   
       socket.on("score", (data) => {

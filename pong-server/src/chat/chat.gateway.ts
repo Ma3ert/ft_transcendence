@@ -154,15 +154,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.chatNotification(data.receiverId);
   }
 
-  @SubscribeMessage('GameInvite')
-  async broadcastGameEnvite(client:AuthSocket, data:{
-    senderId:string
-    receiverId:string
-  })
-  {
-    this.server.to(data.senderId).emit("GameInvite",data);
-    this.server.to(data.receiverId).emit("GameInvite",data);
-  }
+  // @SubscribeMessage('GameInvite')
+  // async broadcastGameEnvite(client:AuthSocket, data:{
+  //   senderId:string
+  //   receiverId:string
+  // })
+  // {
+  //   this.server.to(data.senderId).emit("GameInvite",data);
+  //   this.server.to(data.receiverId).emit("GameInvite",data);
+  // }
 
   @SubscribeMessage('CM')
   async sendCM(client:AuthSocket, data:{

@@ -20,7 +20,8 @@ interface ChatInputBoxProps {
 }
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   const [message, setMessage] = useState("");
-  const { joinGameStatus, setJoinGameStatus, chatType } =
+  const {inviteStatus, setInviteStatus} = useContext (UsersContext)
+  const { chatType } =
     useContext(ChatContext);
   const { activePeer } = useContext(UsersContext);
   const {currentUser} = useAuth ()
@@ -77,15 +78,11 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     >
       {chatType === PRIVATE && (
         <Button
-          isDisabled={joinGameStatus}
+          isDisabled={inviteStatus}
           onClick={() => {
             if (gameSocket)
             {
-              gameSocket!.emit("gameJoinQueue");
-              socket!.emit("GameInvite", {
-                senderId: currentUser!.user.id,
-                receiverId: activePeer!.id,
-              });
+              gameSocket!.emit ("gameSendInvite", { user: activePeer!.id})
             }
             ////console.log("sending game invitation");
           }}
@@ -103,7 +100,6 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         <form onSubmit={(e) => handleSendMessage(e)}>
           <Input
             value={message}
-            isDisabled={joinGameStatus}
             type="text"
             bg={"transparent"}
             color="#5B6171"
@@ -120,7 +116,6 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
         </form>
       </FormControl>
       <Button
-        isDisabled={joinGameStatus}
         bg="#5B6171"
         color="#1D222C"
         borderRadius={"50%"}

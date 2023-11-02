@@ -7,6 +7,8 @@ export const START_GAME_SESSION = "startGameSession";
 export const GAME_SESSION_STARTING = "startingGameSession";
 export const NO_PLAYERS_AVAILABLE = "noPlayersAvailable";
 
+export const UNAVAILABLE_FOR_INVITE = "unavailableForInvite";
+export const INVITE_PENDING = "invitePending";
 export const INVITE_SENT = "inviteSent"
 export const NEW_INVITE = "newInvite";
 export const INVALID_INVITE = "invalidInvite";

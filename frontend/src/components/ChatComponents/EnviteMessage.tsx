@@ -12,21 +12,25 @@ import {
 import TimerComponent from "./TimerComponent";
 import { useAuth } from "@/hooks/useAuth";
 import socket from "../GameComponents/socket";
+import UserAvatar from "../UserAvatar";
+import { useRouter } from "next/navigation";
 interface EnviteMessageProps {
   gameInviteSender?: string;
 }
 const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
-  const { setJoinGameStatus } = useContext(ChatContext);
   const { gameInviteSender } = useContext(UsersContext);
   const { activePeer, onClose, friendsList } = useContext(UsersContext);
   const { currentUser } = useAuth();
+  const router = useRouter();
   const Peer = friendsList?.find((item) => item.id === gameInviteSender);
   const toast = useToast();
+  const {setInviteStatus, inviteTogameId} = useContext (UsersContext)
 
   useEffect(() => {
     // Create a setTimeout to change the message after 3 seconds
     const timerId = setTimeout(() => {
       onClose!();
+      setInviteStatus! (false);
     }, 15000); // 3000 milliseconds (3 seconds)
 
     // Clean up the timer when the component unmounts or when needed
@@ -42,25 +46,16 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
       <Stack
         borderRadius={"2xl"}
         bg={gameInviteSender !== currentUser!.user!.id ? "#252932" : "#5B6171"}
-        minW={"300px"}
+        minW={"360px"}
         maxW="100%"
-        px={2}
-        py={2}
+        px={5}
+        py={5}
         w="auto"
         h="auto"
         spacing={5}
       >
         <HStack spacing={5} justifyContent={"center"} alignItems={"center"}>
-          <Image
-            src={
-              gameInviteSender !== currentUser!.user!.id
-                ? "/LightSolidLogo.png"
-                : "/DarkSolidLogo.png"
-            }
-            alt={"envite"}
-            w={8}
-            h={"auto"}
-          />
+         <UserAvatar user={Peer} size="lg"/>
           <Stack justify={"center"} alignItems={"center"} p={2}>
             <Text
               fontFamily="visbyRound"
@@ -69,7 +64,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
                   ? "#5B6171"
                   : "#1D222C"
               }
-              fontSize={"sm"}
+              fontSize={"md"}
               fontWeight={"bold"}
             >
               {gameInviteSender !== currentUser!.user!.id
@@ -84,20 +79,23 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
                     /// accept game invite
                     /// decline game inviate
                     // setJoinGameStatus!(false);
+                    socket?.emit('gameAcceptInvite', { invite: inviteTogameId})
                     !toast.isActive("set") &&
                       toast({
                         id: "set",
-                        title: "setting up the game ...",
+                        title: "Setting up the game...",
                         status: "info",
                       });
+                      router.push("/Game");
                     onClose!();
-                    socket && socket.emit("gameJoinQueue");
+                    setInviteStatus! (false);
                   }}
                   variant={
                     gameInviteSender !== currentUser!.user!.id
                       ? "lightGray"
                       : "darkGray"
                   }
+                  fontSize="16px"
                 >
                   {`let's go`}
                 </Button>
@@ -105,7 +103,11 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
               <Button
                 color={"#DC585B"}
                 variant={"ghost"}
-                onClick={() => onClose!()}
+                onClick={() =>{
+                  setInviteStatus! (false);
+                  onClose!()}}
+                fontSize="16px"
+                padding="6px 12px"
               >
                 decline
               </Button>

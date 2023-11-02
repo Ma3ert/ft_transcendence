@@ -42,8 +42,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('gameSendInvite')
   sendGameInvite(client: AuthSocket, payload: any) {
+    console.log(payload);
     if (!this.socketUsers.has(payload.user)) {
-      this.server.to(client.id).emit(USER_OFFLINE);
+      return this.server.to(client.id).emit(USER_OFFLINE);
     }
     const sendingUser = client;
     const receivingUser = this.socketUsers.get(payload.user);

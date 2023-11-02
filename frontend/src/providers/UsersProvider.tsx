@@ -1,4 +1,4 @@
-import { UsersContext } from "@/context/Contexts";
+import { ChatContext, UsersContext } from "@/context/Contexts";
 import { useEffect, useState } from "react";
 import apiClient from "@/services/requestProcessor";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -6,9 +6,11 @@ import { useContext } from "react";
 import { GlobalContext } from "@/context/Contexts";
 import { NotifyServer } from "../../utils/eventEmitter";
 import useEventHandler from "@/hooks/useEventHandler";
-import { useDisclosure } from "@chakra-ui/react";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import  gameSocket from "@/components/GameComponents/socket";
+
 
 interface UsersProviderProps {
   children: React.ReactNode;
@@ -22,8 +24,8 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const [inviteNotifications, setInviteNotifications] =
     useState<boolean>(false);
   const allUsersClient = new apiClient("/users");
-  const { socket } = useContext(GlobalContext);
-  const listen = useEventHandler(socket);
+  const { socket: chatSocket } = useContext(GlobalContext);
+  const listen = useEventHandler(chatSocket);
   const friendsListClient = new apiClient("/users/friends");
   const [friendsConversations, setFriendsConversations] = useState<User[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,6 +33,9 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const { currentUser } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const toast = useToast ()
+  const [inviteStatus, setInviteStatus] = useState <boolean> (false);
+  const [inviteTogameId, setInviteTogameId] = useState <string> ("");
 
   useQuery(["friends"], {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
@@ -54,19 +59,45 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (currentUser === undefined) router.push("/");
-    if (socket) {
-      socket!.on("checkNotification", async (message: checkNotification) => {
+    if (chatSocket) {
+      chatSocket!.on("checkNotification", async (message: checkNotification) => {
         console.table(message);
         setChatNotifications!(message.data.chat);
         setInviteNotifications!(message.data.invites);
         await queryClient.refetchQueries({ stale: true });
       });
-      socket!.on("GameInvite", (response: any) => {
-        setGameInviteSender!(response.senderId);
-        onOpen!();
-      });
     }
-  }, [socket, chatNotifications, inviteNotifications]);
+
+    gameSocket?.on("newInvite", (data: any) => {
+      setGameInviteSender!(data.user.id);
+      setInviteTogameId (data.invite)
+      onOpen!();
+      setInviteStatus (true);
+    });
+
+
+    gameSocket?.on("inviteSent", (data: any) => {
+      toast.isActive("invite") && toast ({
+          title:'Success',
+          id: "invite",
+          description:'Invite sent successfully',
+      })
+
+    gameSocket?.on ("userAcceptedInvite", () => {
+      !toast.isActive("set") &&
+      toast({
+        id: "set",
+        title: "Setting up the game...",
+        status: "info",
+      });
+      router.push("/Game");
+    })
+
+      setInviteStatus (true);
+      // setGameInviteSender!(response.senderId);
+      // onOpen!();
+    });
+  }, [chatSocket, chatNotifications, inviteNotifications]);
 
   return (
     <UsersContext.Provider
@@ -86,6 +117,10 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         isOpen,
         gameInviteSender,
         setGameInviteSender,
+        inviteStatus,
+        setInviteStatus,
+        inviteTogameId ,
+        setInviteTogameId
       }}
     >
       {children}

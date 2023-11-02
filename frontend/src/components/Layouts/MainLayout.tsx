@@ -29,7 +29,7 @@ const MainLayout: React.FC<MainSectionProps> = ({children}) => {
       // border="1px"
       // borderColor="blue"
     >
-      <Modal variant={"invite"} isOpen={isOpen!} onClose={onClose!} size={"invite"}>
+      <Modal closeOnOverlayClick={false} variant={"invite"} isOpen={isOpen!} onClose={onClose!} size={"invite"}>
         <ModalOverlay />
         <ModalContent style={{ width: "300px", height: "190px" }}>
           <ModalBody display={'flex'} justifyContent={'center'} alignItems={'center'}>

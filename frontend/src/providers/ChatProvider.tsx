@@ -20,8 +20,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [requestNotification, setRequestNotification] = useState<boolean>(true);
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>([]);
   const [joinGameStatus, setJoinGameStatus] = useState<boolean>(false);
-  const [activeChannelMembers, setActiveChannelMembers] = useState<User[]>([]);
-  const [activePeerStatus, setActivePeerStatus] = useState<boolean>(false);
   const [GameEnvitation, setGameEnvitation] = useState<GameEnvitation | null>(
     null
   );
