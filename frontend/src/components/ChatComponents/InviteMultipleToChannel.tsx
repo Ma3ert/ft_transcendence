@@ -22,7 +22,7 @@ import useChannelSettingsManager from "@/hooks/useChannelSettingsManager";
 import { BiLoader } from "react-icons/bi";
 interface Props {
   channel?: Channel;
-  Members?: Member[];
+  Members: Member[];
 }
 const InviteMultipleToChannel: React.FC<Props> = ({ channel, Members }) => {
   const { friendsList } = useContext(UsersContext);

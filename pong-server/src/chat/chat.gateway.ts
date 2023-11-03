@@ -15,6 +15,8 @@ import { UseGuards } from '@nestjs/common';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { NotificationService } from 'src/notification/notification.service';
 import { UsersService } from 'src/users/users.service';
+import { CHANNEL_EVENT_TYPE } from './entities/channelEventType.enum';
+
 
 @UseGuards(WsLoggedInGuard) 
 @WebSocketGateway({
@@ -212,8 +214,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.checkUserNotification(data.receiverId);
   }
 
-  @SubscribeMessage('UserKick')
-  async userKick(client: AuthSocket, data:{userId:string, channelId:string}){
-    client.to(data.userId).emit("UserKick", {userId: data.userId, channelId: data.channelId});
+  @SubscribeMessage('channelEvent')
+  async userKick(client: AuthSocket, data:{userId:string, channelId:string, type:CHANNEL_EVENT_TYPE}){
+    client.to(data.channelId).emit("channelEvent", {userId: data.userId, channelId: data.channelId, type:data.type});
   }
 }

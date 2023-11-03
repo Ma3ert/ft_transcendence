@@ -1,0 +1,9 @@
+export enum CHANNEL_EVENT_TYPE {
+    BAN = "BANNED",
+    UNBAN = "UNBANED",
+    MUTE = "MUTED",
+    KICK = "KICKED",
+    UPGRADE = "UPGRADED",
+    DOWNGRADE = "DOWNGRADED",
+    CHANNEL_EDIT = "CHANNEL EDITED"
+}

@@ -17,8 +17,10 @@ import OptionsMenu from "./FriendSettingsMenu";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
-interface ChatBoxProps {}
-const ChatBox: React.FC<ChatBoxProps> = ({}) => {
+interface ChatBoxProps {
+  members:Member []
+}
+const ChatBox: React.FC<ChatBoxProps> = ({members}) => {
   const {
     chatType,
   } = useContext(ChatContext);
@@ -43,7 +45,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
     useEffect (()=>{
       if (socket)
       socket!.emit ('readChatNotification', getReadChatNotification())
-    }, [])
+    }, [members])
   return (
     <Stack
       borderRadius={"2xl"}
@@ -71,7 +73,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({}) => {
       </HStack>
       <MessageStack />
       <Stack w={"100%"} alignItems={"center"}>
-        <ChatInputBox />
+        <ChatInputBox members={members}/>
       </Stack>
     </Stack>
   );
