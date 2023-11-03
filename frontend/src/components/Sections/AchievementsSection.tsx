@@ -25,7 +25,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
         res.data.current.ranks.map((user: any, index: number) => {
           user.avatar.includes("http")
             ? user.avatar
-            : "http://e1r8p2.1337.ma:3000/public/users/imgs/" + user.avatar;
+            : "http://e1r9p5.1337.ma:3000/public/users/imgs/" + user.avatar;
           const variant =
             user.id === currentUser.user.id ? "secondField" : "field";
           localRes.push(
@@ -39,7 +39,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
               userPic={
                 user.avatar.includes("http")
                   ? user.avatar
-                  : "http://e1r8p2.1337.ma:3000/public/users/imgs/" +
+                  : "http://e1r9p5.1337.ma:3000/public/users/imgs/" +
                     user.avatar
               }
             />
@@ -59,7 +59,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
         res.data.current.ranks.map((user: any, index: number) => {
           user.avatar.includes("http")
             ? user.avatar
-            : "http://e1r8p2.1337.ma:3000/public/users/imgs/" + user.avatar;
+            : "http://e1r9p5.1337.ma:3000/public/users/imgs/" + user.avatar;
           const variant =
             user.id === currentUser.user.id ? "secondField" : "field";
           allRes.push(
@@ -73,7 +73,7 @@ const AchievementsSection: React.FC<AchievementsSectionsProps> = ({}) => {
               userPic={
                 user.avatar.includes("http")
                   ? user.avatar
-                  : "http://e1r8p2.1337.ma:3000/public/users/imgs/" +
+                  : "http://e1r9p5.1337.ma:3000/public/users/imgs/" +
                     user.avatar
               }
             />
