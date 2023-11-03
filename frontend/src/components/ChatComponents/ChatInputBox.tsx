@@ -17,7 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 interface ChatInputBoxProps {
   // socket: Socket;
-  members:Member[]
+  members?:Member[]
 }
 const ChatInputBox: React.FC<ChatInputBoxProps> = ({
   members

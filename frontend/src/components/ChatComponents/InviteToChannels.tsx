@@ -14,8 +14,8 @@ import useChannelSettingsManager from "@/hooks/useChannelSettingsManager";
 import { ModalWrapperContext, MembersContext } from "@/context/Contexts";
 import UserAvatar from "../UserAvatar";
 import { CheckIcon } from "@chakra-ui/icons";
-import MembersProvider from "@/providers/MemberProvider";
 interface InviteToChannelsProps {
+  members?:Member[]
   user: User;
 }
 
@@ -23,6 +23,7 @@ interface ChannelInviteFieldProps {
   channel: Channel;
   user: User;
   handleSelect: (channel: Channel) => void;
+  members?:Member []
 }
 
 const checkIdMember = (members: Member[], user: User) => {
@@ -41,8 +42,8 @@ const ChannelInviteField: React.FC<ChannelInviteFieldProps> = ({
   channel,
   user,
   handleSelect,
+  members
 }) => {
-  const { members } = useContext(MembersContext);
 
   return (
     <Button w="100%" px={4} py={4} minH={"60px"} variant={"field"}>
@@ -65,7 +66,7 @@ const ChannelInviteField: React.FC<ChannelInviteFieldProps> = ({
   );
 };
 
-const InviteToChannels: React.FC<InviteToChannelsProps> = ({ user }) => {
+const InviteToChannels: React.FC<InviteToChannelsProps> = ({ user, members }) => {
   const { Channels } = useContext(ChannelsContext);
   const [selectedChannels, setSelectedChannels] = useState<Channel[]>([]);
   const { sendChannelEnvite } = useChannelSettingsManager(user);
@@ -109,14 +110,13 @@ const InviteToChannels: React.FC<InviteToChannelsProps> = ({ user }) => {
         maxH={"50vh"}
       >
         {Channels!.map((channel, index) => (
-          <MembersProvider key={index} channelId={channel.id}>
             <ChannelInviteField
               channel={channel}
               user={user}
               handleSelect={handleSelect}
               key={index}
+              members={members!}
             />
-          </MembersProvider>
         ))}
       </Stack>
 

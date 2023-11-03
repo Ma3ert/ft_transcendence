@@ -18,7 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
 interface ChatBoxProps {
-  members:Member []
+  members?:Member []
 }
 const ChatBox: React.FC<ChatBoxProps> = ({members}) => {
   const {
@@ -73,7 +73,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({members}) => {
       </HStack>
       <MessageStack />
       <Stack w={"100%"} alignItems={"center"}>
-        <ChatInputBox members={members}/>
+        <ChatInputBox />
       </Stack>
     </Stack>
   );
