@@ -226,12 +226,12 @@ export class GameService {
   denyGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
     // Check if the invite exists
     if (!this.gameInvites.has(gameInviteId)) {
-      server.to(player.id).emit(NO_SUCH_INVITE);
+      return server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const sessionInvite = this.gameInvites.get(gameInviteId);
     // Check that player matches stagged player as proof of invite ownership
     if (player.user.id !== sessionInvite.staggedPlayer.user)
-      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION);
+      return server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION);
     // Emit to sending player that the game invite is denied
     server.to(sessionInvite.players[0].socket.id).emit(USER_DENIED_INVITE);
     // Remove players from the allPlayers map

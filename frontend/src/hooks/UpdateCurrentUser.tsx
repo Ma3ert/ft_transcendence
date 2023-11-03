@@ -16,7 +16,7 @@ export async function UpdateCurrentUser() {
     const avatar: string = res.data.current.user.avatar;
     if (!avatar.includes("http"))
       res.data.current.user.avatar =
-        "http://e1r8p2.1337.ma:3000/public/users/imgs/" + avatar;
+        "http://e1r9p5.1337.ma:3000/public/users/imgs/" + avatar;
     return res.data.current;
   });
 }

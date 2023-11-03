@@ -16,7 +16,7 @@ const NavBar = () => {
   // if (!currentUser) router.push("/");
 
   const handleLogout = () => {
-    router.push("http://e1r8p2.1337.ma:3000/auth/42/logout");
+    router.push("http://e1r9p5.1337.ma:3000/auth/42/logout");
     // Cookies.remove('jwt');
   };
 

@@ -21,6 +21,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { UsersContext } from "@/context/Contexts";
+import Loader from './Loader';
 
 export interface Game {
   playerOne: Player;
@@ -37,9 +38,9 @@ const Game = () => {
   const toast = useToast();
   const ref = useRef(null);
   const router = useRouter();
+  const [loader, setLoader] = useState(true);
   const [message, setMessage] = useState("Waiting for game to start");
   const { gameSettings } = useGame();
-  console.log("gameSetting: ", gameSettings)
   const [score, setScore] = useState({});
   const [finalScore, setFinalScore] = useState("");
   const { currentUser, updateUser } = useAuth();
@@ -133,6 +134,7 @@ const Game = () => {
         CloseHandler!();
         setMessage("");
         var theme = { one: "#DC585B", two: "#D9D9D9", ball: "#D9D9D9" };
+        setLoader(false);
   
         const cookieValue = Cookies.get("theme");
         if (cookieValue !== undefined) {
@@ -207,6 +209,7 @@ const Game = () => {
       {/* <p id="messageArea">{message}</p> */}
       <div id="body">
         <Box backgroundColor="#1D222C" padding="2rem" borderRadius={12}>
+          <Loader visibility={loader} />
           <GameHeader
             score={score}
             playerID={gameSettings.playerID}
