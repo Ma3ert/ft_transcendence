@@ -45,27 +45,7 @@ const LobbyParty = () => {
   const [readyness, setReadyness] = useState(false);
   var interval: NodeJS.Timeout;
 
-  socket && socket.on("matchMade", ({ data }) => {
-    // ////console.log(data);
-    // setMessage("");
-    setOppenent({ username: data.username, ready: true });
-    setReadyness(true);
-    setPartyState(false);
-    setMatch(data);
-    setGameSettings({
-      gameID: data.session,
-      playerID: data.playerID,
-      me: {
-        username: currentUser.user.username,
-        avatar: currentUser.user.avatar,
-      },
-      opponent: { username: data.username, avatar: data.avatar },
-    });
-    setTimeout(() => {
-      clearInterval(interval);
-      router.push("/Game");
-    }, 3000);
-  });
+
 
   useEffect(() => {
     if (socket)
@@ -92,6 +72,28 @@ const LobbyParty = () => {
         // interval = setInterval(() => {party ? setPartyState(false) : setPartyState(true)}, 800)
       });
   
+      socket && socket.on("matchMade", ({ data }) => {
+        // ////console.log(data);
+        // setMessage("");
+        setOppenent({ username: data.username, ready: true });
+        setReadyness(true);
+        setPartyState(false);
+        setMatch(data);
+        setGameSettings({
+          gameID: data.session,
+          playerID: data.playerID,
+          me: {
+            username: currentUser.user.username,
+            avatar: currentUser.user.avatar,
+          },
+          opponent: { username: data.username, avatar: data.avatar },
+        });
+        setTimeout(() => {
+          clearInterval(interval);
+          router.push("/Game");
+        }, 3000);
+      });
+
       socket.on("noPlayersAvailable", () => {
         clearInterval(interval);
         setReady(false);

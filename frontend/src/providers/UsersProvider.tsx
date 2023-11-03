@@ -10,6 +10,7 @@ import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import  gameSocket from "@/components/GameComponents/socket";
+import useGame from "@/hooks/useGame";
 
 
 interface UsersProviderProps {
@@ -36,6 +37,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const toast = useToast ()
   const [inviteStatus, setInviteStatus] = useState <boolean> (false);
   const [inviteTogameId, setInviteTogameId] = useState <string> ("");
+  const { setGameSettings } = useGame();
 
   useQuery(["friends"], {
     queryFn: () => friendsListClient.getData().then((res) => res.data),
@@ -67,6 +69,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         await queryClient.refetchQueries({ stale: true });
       });
     }
+    console.log("Calling user provider", gameSocket);
 
     gameSocket?.on("newInvite", (data: any) => {
       setGameInviteSender!(data.user.id);
@@ -138,6 +141,25 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
         status: "error",
       });
     })
+
+    console.log("Subscribing events");
+    gameSocket?.on("matchMade", ({ data }) => {
+      // ////console.log(data);
+      // setMessage("");
+      console.log("Event subscribed");
+      setGameSettings({
+        gameID: data.session,
+        playerID: data.playerID,
+        me: {
+          username: currentUser.user.username,
+          avatar: currentUser.user.avatar,
+        },
+        opponent: { username: data.username, avatar: data.avatar },
+      });
+      setTimeout(() => {
+        router.push("/Game");
+      }, 3000);
+    });
 
     gameSocket?.on("noSuchInvite", () => {
       !toast.isActive("set") &&
