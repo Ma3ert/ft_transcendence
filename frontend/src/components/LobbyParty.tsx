@@ -20,9 +20,11 @@ import ProgressLevel from "./ProgressLevel";
 
 type Props = {
   username: string;
+  avatar: string;
   ready: boolean;
   other: string;
   otherReady: boolean;
+  otherAvatar: string;
   alone: boolean;
 };
 
@@ -34,6 +36,7 @@ const LobbyParty = () => {
   const [party, setPartyState] = useState(true);
   const router = useRouter();
   const [opponent, setOppenent] = useState({
+    avatar: "",
     username: "no player",
     ready: false,
   });
@@ -75,7 +78,7 @@ const LobbyParty = () => {
       socket && socket.on("matchMade", ({ data }) => {
         // ////console.log(data);
         // setMessage("");
-        setOppenent({ username: data.username, ready: true });
+        setOppenent({ avatar:data.avatar, username: data.username, ready: true });
         setReadyness(true);
         setPartyState(false);
         setMatch(data);
@@ -173,7 +176,9 @@ const LobbyParty = () => {
       <GridItem colSpan={{ base: 8, lg: 4 }} justifyContent={"center"}>
         <Stack spacing={{ base: "40px", xl: "52px" }} align={"center"}>
           <MultiLobbyParty
+            avatar={currentUser.user.avatar}
             username={currentUser.user.username}
+            otherAvatar={opponent.avatar}
             ready={readyness}
             other={opponent.username}
             otherReady={opponent.ready}

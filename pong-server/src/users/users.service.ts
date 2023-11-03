@@ -315,7 +315,7 @@ export class UsersService {
       },
     });
 
-    return user && user.blocked ? user.blocked : [];
+    return user && user.blockedBy ? user.blockedBy : [];
   }
 
   async checkBlocked(userId: string, friendId: string) {
