@@ -5,10 +5,10 @@ interface TimerComponentProps {
   bg?: string;
 }
 const TimerComponent: React.FC<TimerComponentProps> = ({ bg }) => {
-  const [timer, setTimer] = useState(15);
+  const [timer, setTimer] = useState(20);
   const [progress, setProgress] = useState(100);
   const progressBarInterval = 1000; // 1000ms = 1 second
-  const maxProgressValue = 15; // 100% progress
+  const maxProgressValue = 20; // 100% progress
 
   // Update the progress value at regular intervals
   const updateProgress = () => {

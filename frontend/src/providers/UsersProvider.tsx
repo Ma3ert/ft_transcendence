@@ -104,6 +104,7 @@ const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     });
 
     gameSocket?.on ("userOffline", () => {
+      console.log("The user is offline");
       !toast.isActive("set") &&
       toast({
         id: "set",

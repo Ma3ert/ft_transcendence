@@ -157,7 +157,7 @@ export class GameService {
     
     // Check if the user is available for invite
     this.gameInvites.forEach((invite) => {
-      if (status === 0 && invite.staggedPlayer.user === receivingPlayer.user.id){
+      if (status === 0 && (invite.staggedPlayer.user === receivingPlayer.user.id || invite.players[0].user === receivingPlayer.user.id)){
         status = 2;
       }
     })
@@ -181,7 +181,7 @@ export class GameService {
         server.to(sendingPlayer.id).emit(USER_DENIED_INVITE);
         server.to(receivingPlayer.id).emit(INVITE_CANCELED);
       }
-    }, 30000);
+    }, 23000);
   }
 
   cancelGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
@@ -200,12 +200,12 @@ export class GameService {
   acceptGameInvite(player: AuthSocket, gameInviteId: string, server: Server) {
     // Check if the session still exists in the gameInvites
     if (!this.gameInvites.has(gameInviteId)) {
-      server.to(player.id).emit(NO_SUCH_INVITE);
+      return server.to(player.id).emit(NO_SUCH_INVITE);
     }
     const sessionInvite = this.gameInvites.get(gameInviteId);
     // Check the invite authorization
     if (player.user.id !== sessionInvite.staggedPlayer.user)
-      server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION);
+      return server.to(player.id).emit(UNAUTHORIZED_INVITE_ACTION);
     // Move player from stagging to players array
     if (sessionInvite.players.length == 1) {
       this.gameInvites.set(gameInviteId, {

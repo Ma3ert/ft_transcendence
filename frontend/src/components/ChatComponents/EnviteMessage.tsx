@@ -31,7 +31,7 @@ const EnviteMessage: React.FC<EnviteMessageProps> = ({}) => {
     const timerId = setTimeout(() => {
       onClose!();
       setInviteStatus! (false);
-    }, 15000); // 3000 milliseconds (3 seconds)
+    }, 20000); // 3000 milliseconds (3 seconds)
 
     // Clean up the timer when the component unmounts or when needed
     return () => clearTimeout(timerId);

@@ -108,6 +108,7 @@ const LobbyParty = () => {
       socket.on("matchMade", ({ data }) => {
         // ////console.log(data);
         // setMessage("");
+        console.log("Setting the game state.", data);
         setOppenent({ username: data.username, ready: true });
         setReadyness(true);
         setPartyState(false);
