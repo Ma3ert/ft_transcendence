@@ -12,7 +12,7 @@ const useAvatarUpdater = () => {
   const updateAvatarMutation = useMutation({
     mutationFn: async (req: AvatarData) =>
       await axios.patch(
-        `http://e1r9p5.1337.ma:3000/chat/channels/avatar`,
+        `http://e1r8p2.1337.ma:3000/chat/channels/avatar`,
         { ...req },
         {
           withCredentials: true,

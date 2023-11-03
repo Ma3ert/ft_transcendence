@@ -17,8 +17,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 interface ChatInputBoxProps {
   // socket: Socket;
+  members?:Member[]
 }
-const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
+const ChatInputBox: React.FC<ChatInputBoxProps> = ({
+  members
+}) => {
   const [message, setMessage] = useState("");
   const {inviteStatus, setInviteStatus} = useContext (UsersContext)
   const { chatType } =
@@ -35,7 +38,6 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
     chatType!,
     activeChannel!
   );
-  const { members } = useContext(MembersContext);
   const currentMemeber = members?.find(
     (item) => item.user === currentUser!.user.id
   );
@@ -64,7 +66,7 @@ const ChatInputBox: React.FC<ChatInputBoxProps> = ({}) => {
   if (currentUser  === undefined || !socket)
     router.push ('/')
   useEffect(() => {   
-  }, [activeChannel, activePeer]);
+  }, [activeChannel, activePeer, members]);
   return (
     <HStack
       borderRadius={"29px"}

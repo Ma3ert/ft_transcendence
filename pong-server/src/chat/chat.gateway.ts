@@ -15,6 +15,8 @@ import { UseGuards } from '@nestjs/common';
 import { SocketAuthMiddlware } from 'src/auth/utils/WsMiddlware';
 import { NotificationService } from 'src/notification/notification.service';
 import { UsersService } from 'src/users/users.service';
+import { CHANNEL_EVENT_TYPE } from './entities/channelEventType.enum';
+
 
 @UseGuards(WsLoggedInGuard) 
 @WebSocketGateway({
@@ -145,7 +147,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     message:string,
     game:boolean
   })
-  { 
+  {
+    
     await this.chatService.createDirectMessage(data.senderId, data.receiverId, data.message);
     await this.notificationService.createDirectMessageNotification(data.senderId, data.receiverId);
     this.server.to(data.senderId).emit("DM", data);
@@ -154,16 +157,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.chatNotification(data.receiverId);
   }
 
-  // @SubscribeMessage('GameInvite')
-  // async broadcastGameEnvite(client:AuthSocket, data:{
-  //   senderId:string
-  //   receiverId:string
-  // })
-  // {
-  //   this.server.to(data.senderId).emit("GameInvite",data);
-  //   this.server.to(data.receiverId).emit("GameInvite",data);
-  // }
-
   @SubscribeMessage('CM')
   async sendCM(client:AuthSocket, data:{
     senderId:string,
@@ -171,16 +164,21 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     message:string
   })
   {
-    await this.chatService.createChannelMessage(data.senderId, data.channelId, data.message);
-    await this.notificationService.createChannelMessageNotification(data.senderId, data.channelId);
-    const channelMembers = await this.chatService.getChannelMembersIds(data.channelId, data.senderId);
-    this.server.to(data.channelId).emit("CM", data);
-    for (const user of channelMembers)
-    {
-      if (user.userId != data.senderId)
+    const channelMembers = await this.chatService.channelMembers(data.channelId, data.senderId);
+    const userIndex = channelMembers.findIndex((user) => user.id === data.senderId);
+    const user = channelMembers[userIndex];
+    if (user && !user['banned'] && !user['muted']){
+      await this.chatService.createChannelMessage(data.senderId, data.channelId, data.message);
+      await this.notificationService.createChannelMessageNotification(data.senderId, data.channelId);
+      const channelMembersIds = await this.chatService.getChannelMembersIds(data.channelId, data.senderId);
+      this.server.to(data.channelId).emit("CM", data);
+      for (const user of channelMembersIds)
       {
-        await this.checkUserNotification(user.userId);
-        await this.chatNotification(user.userId);
+        if (user.userId != data.senderId)
+        {
+          await this.checkUserNotification(user.userId);
+          await this.chatNotification(user.userId);
+        }
       }
     }
   }
@@ -212,8 +210,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     this.checkUserNotification(data.receiverId);
   }
 
-  @SubscribeMessage('UserKick')
-  async userKick(client: AuthSocket, data:{userId:string, channelId:string}){
-    client.to(data.userId).emit("UserKick", {userId: data.userId, channelId: data.channelId});
+  @SubscribeMessage('channelEvent')
+  async userKick(client: AuthSocket, data:{userId:string, channelId:string, type:CHANNEL_EVENT_TYPE}){
+    client.to(data.channelId).emit("channelEvent", {userId: data.userId, channelId: data.channelId, type:data.type});
   }
 }

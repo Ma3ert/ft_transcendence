@@ -6,25 +6,27 @@ import {
   Button,
   Text,
 } from "@chakra-ui/react";
-import layoutStyles from "../../Styles/modules/layout.module.scss";
-import UserAvatar from "../UserAvatar";
 import { useState, useEffect, useContext } from "react";
-import apiClient from "@/services/requestProcessor";
-import { useQuery } from "@tanstack/react-query";
 import MemberField from "./Memberfield";
 import ScrollableStack from "../ScrollableStack";
-import FriendsListHeader from "./FriendsListHeader";
-import { UsersContext } from "@/context/Contexts";
+import { MembersContext, UsersContext } from "@/context/Contexts";
+import useMembers from "@/hooks/useMembers";
 interface MembersListProps {
-  members: Member[];
+  members:Member[]
 }
 const MembersList: React.FC<MembersListProps> = ({ members }) => {
   const { Users } = useContext(UsersContext);
-  console.log (`members `)
-  console.table (members)
-  const userList = Users?.filter((user) => {
-    return members!.findIndex((member) => member.user == user.id) != -1;
-  });
+  const [usersList, setUsersList] = useState <User[]> ([]);
+
+
+
+  useEffect (()=>{
+    
+    // const userList = Users?.filter((user) => {
+    //   return members!.findIndex((member) => member.user == user.id) != -1;
+    // });
+    // setUsersList (userList!);
+  }, [members])
 
   return (
     <Stack
@@ -35,10 +37,9 @@ const MembersList: React.FC<MembersListProps> = ({ members }) => {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      {members.length ? (
+      {members!.length ? (
         <>
           {" "}
-          {/* <FriendsListHeader /> */}
           <ScrollableStack h="50vh">
             {members!.map((member, index) => {
               const user = Users!.find (user => user.id === member.user);
@@ -47,7 +48,7 @@ const MembersList: React.FC<MembersListProps> = ({ members }) => {
                   user={user!}
                   member={member}
                   key={index}
-                  members={members}
+                  members={members!}
                 />
               );
             })}

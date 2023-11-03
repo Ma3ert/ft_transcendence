@@ -6,7 +6,6 @@ import { useState, useEffect, useContext } from "react";
 import { UsersContext } from "@/context/Contexts";
 import {useQuery, useQueryClient} from "@tanstack/react-query"
 import apiClient from "@/services/requestProcessor";
-import { getUserRole } from "../../../utils/helpers";
 import { useAuth } from "@/hooks/useAuth";
 
 interface FriendsListProps {}

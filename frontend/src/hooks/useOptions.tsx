@@ -55,6 +55,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
       blockUserClient.postData({ userId: userid }).then((response) => response),
     onSuccess: (data) => {
       ////console.log(data);
+      queryClient.invalidateQueries (["blockedUser"]);
       queryClient.invalidateQueries(["friends"]);
       queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
@@ -78,6 +79,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
     onSuccess: (data) => {
       ////console.log(data);
       queryClient.invalidateQueries(["friends"]);
+      queryClient.invalidateQueries (["blockedUser"]);
       queryClient.invalidateQueries(["channelMembers", channel!.id])
       toast({
         title: "User unblocked.",
@@ -98,10 +100,8 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
-      ////console.log(data);
-      ////console.log ('channel id is', channel!.id)
-      ////console.log ('active channel id', activeChannel!.id)
-      queryClient.refetchQueries(["channelMembers", channel!.id]);
+      socket.emit ("channelEvent");
+      queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User muted.",
         description: "The user has been muted successfully.",
@@ -121,6 +121,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
+      socket.emit ("channelEvent");
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User banned.",
@@ -141,7 +142,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .deleteData()
         .then((response) => response),
     onSuccess: (data) => {
-      ////console.log(data);
+      socket.emit ("channelEvent");
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User unbanned.",
@@ -159,6 +160,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
   const KickUserMutation = useMutation({
     mutationFn: (user: UserChannel) => kickUserClient(user).deleteData(),
     onSuccess: (data) => {
+      socket.emit ("channelEvent");
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User kicked.",

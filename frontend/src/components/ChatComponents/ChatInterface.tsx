@@ -21,42 +21,43 @@ const ChatInterface: React.FC = ({ }) => {
   const { chatType } = useContext(ChatContext);
   const { friendsList } = useContext(UsersContext);
   const { socket, counter, setCounter } = useContext(GlobalContext)
-  const {data:Channels, isError, isLoading} = useChannels ()
-  const [userChannels, setUsersChannels] = useState<Channel[]> ([])
-  const {activeChannel, setActiveChannel} = useContext (ChannelsContext)
+  const { data: Channels, isError, isLoading } = useChannels()
+  const [userChannels, setUsersChannels] = useState<Channel[]>([])
+  const { activeChannel, setActiveChannel } = useContext(ChannelsContext)
+
 
 
 
 
   useEffect(() => {
-    console.log ('here channels')
-    console.table (Channels)
-    setUsersChannels (Channels!)
+    console.log('here channels')
+    console.table(Channels)
+    setUsersChannels(Channels!)
     if (activeChannel === null && Channels && Channels.length)
-      setActiveChannel! (Channels![0])
+      setActiveChannel!(Channels![0])
 
-    console.log ("channels in chat interfacae : ")
+    console.log("channels in chat interfacae : ")
     const type = chatType == CHANNEL ? "channelMessage" : "directMessage";
     if (!socket)
       setCounter!(counter! + 1)
   }, [Channels, userChannels]);
 
   if (isError)
-    console.log ('something went wrong')
+    console.log('something went wrong')
   else if (isLoading)
-    console.log ('is loading')
+    console.log('is loading')
   return (
     <Stack h="100%" w="100%" justifyContent={"center"}>
       {(
         chatType == PRIVATE ? (
           <DmProvider>
-            {friendsList && friendsList.length > 0 ? 
-            <PrivateChat channels={userChannels}/> :
+            {friendsList && friendsList.length > 0 ?
+              <PrivateChat channels={userChannels} /> :
               <NoFriendsPage />}
           </DmProvider>
         ) : (
           <CmProvider>
-                {<ChannelsChat channels={userChannels} />}
+              {<ChannelsChat channels={userChannels} />}
           </CmProvider>
         )
       )}

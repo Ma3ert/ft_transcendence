@@ -20,6 +20,7 @@ import MembersList from "./MembersList";
 import SetPassword from "./SetPassword";
 import { ModalWrapper } from "@/components/Wrappers/ModalWrapper";
 import { SlArrowRight } from "react-icons/sl";
+import useMembers from "@/hooks/useMembers";
 import {
   ChannelsContext,
   MembersContext,
@@ -34,19 +35,20 @@ import ChannelsListSection from "../Sections/ChannelsListSection";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import InviteMultipleToChannel from "./InviteMultipleToChannel";
-interface ChannelSettingsProps {}
+interface ChannelSettingsProps {
+  members:Member[]
+}
 
-const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
+const ChannelSettings: React.FC<ChannelSettingsProps> = ({members}) => {
   const { removeChannel, leaveChannel } = useChannelManager();
   const [settingsList, setSettings] = useState<string[]>(channelSettings);
-  const { members } = useContext(MembersContext);
   const { activeChannel } = useContext(ChannelsContext);
   const { currentUser } = useAuth();
 
   const settings = new Map([
     [
       "Members",
-      <MembersList members={members!} key={''}/>,
+      <MembersList members={members} key={''}/>,
     ],
     [
       "Set password",
@@ -63,7 +65,7 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
   ]);
 
   const isPrivliged = () => {
-    if (
+    if ((members && members.length) &&
       getUserRole(currentUser!.user!, members!) === "OWNER" ||
       getUserRole(currentUser!.user!, members!) === "ADMIN"
     )
@@ -135,19 +137,19 @@ const ChannelSettings: React.FC<ChannelSettingsProps> = ({}) => {
       <Stack spacing={3}>
         <ModalWrapper
           action={
-            getUserRole(currentUser!.user!, members!) == "OWNER"
+            ((members && members.length ) && getUserRole(currentUser!.user!, members!) == "OWNER")
               ? settingsActions.get("delete")
               : settingsActions.get("leave")
           }
           type="confirmation"
           actionDescription={`${
-            getUserRole(currentUser!.user!, members!) == "OWNER"
+            ((members && members.length) && getUserRole(currentUser!.user!, members!) == "OWNER")
               ? "Delete"
               : "Leave"
           } Channel`}
           buttonValue={
             <Text fontFamily="visbyRound">
-              {getUserRole(currentUser!.user!, members!) == "OWNER"
+              {((members && members.length) && getUserRole(currentUser!.user!, members!) == "OWNER")
                 ? "Delete"
                 : "Leave"}{" "}
               Channel

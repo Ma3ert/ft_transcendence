@@ -22,29 +22,66 @@ import {
 } from "@/context/Contexts";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import useInvites from "@/hooks/useInvites";
 
 const EnvitesListSection: React.FC = () => {
   const { socket } = useContext(GlobalContext);
   const { currentUser } = useAuth();
   const router = useRouter();
-  const { friendRecieved, friendSent, channelRecieved, channelSent } =
-    useContext(InvitesContext);
-  const [recievedEnvites, setRecievedEnvites] = useState<GlobalEnvite[]>([
-    ...friendRecieved!,
-    ...channelRecieved!,
-  ]);
-  const [sentEnvites, setSentEnvites] = useState<GlobalEnvite[]>([
-    ...friendSent!,
-    ...channelSent!,
-  ]);
+  const { recievedEnvites, sentEnvites, channelReceivedEnvites, channelSentEnvites } = useInvites();
+  const [recievedEnvitesList, setRecievedEnvitesList] = useState<GlobalEnvite[]>([]);
+  const [sentEnvitesList, setSentEnvites] = useState<GlobalEnvite[]>([]);
+
+
+  const getGlobalChannelEnvites = (envites: ChannelEnvite[]) => {
+    const response: GlobalEnvite[] = envites.map((envite) => ({
+      isChannelEnvite: true,
+      enviteId: envite.id,
+      senderId: envite.sender,
+      receiverId: envite.receiver, // Add receiverId property
+      createdAt: envite.created_at,
+      channel: envite.channel,
+    }));
+
+    return response;
+  };
+
+  const getGlobalFriendsEnvites = (envites: Envite[]) => {
+    const response: GlobalEnvite[] = envites.map((envite) => ({
+      isChannelEnvite: false,
+      enviteId: envite.id,
+      senderId: envite.inviteOwnerId,
+      receiverId: envite.inviteUserId, // Add receiverId property
+      createdAt: envite.createdAt,
+    }));
+    return response;
+  };
 
   useEffect(() => {
+
+    if (recievedEnvites && recievedEnvites.data && recievedEnvites.data.length) {
+      const newList: GlobalEnvite[] = getGlobalFriendsEnvites(recievedEnvites.data);
+      setRecievedEnvitesList(newList);
+    }
+    if (sentEnvites && sentEnvites.data && sentEnvites.data.length) {
+      const newList: GlobalEnvite[] = getGlobalFriendsEnvites(sentEnvites.data);
+      setSentEnvites(newList);
+    }
+    if (channelReceivedEnvites! && channelReceivedEnvites!.length) {
+      const newList: GlobalEnvite[] = getGlobalChannelEnvites(channelReceivedEnvites!);
+      setRecievedEnvitesList(newList);
+    }
+
+    if (channelSentEnvites! && channelSentEnvites!.length) {
+      const newList: GlobalEnvite[] = getGlobalChannelEnvites(channelSentEnvites!);
+      setSentEnvites (newList);
+    }
     if (socket) {
       socket!.emit("readInviteNotification", {
         userId: currentUser!.user.id,
       });
     }
-  }, []);
+  }, [recievedEnvites, sentEnvites, channelReceivedEnvites, channelSentEnvites]);
   return (
     <Stack
       fontFamily={"visbyRound"}
@@ -60,6 +97,8 @@ const EnvitesListSection: React.FC = () => {
       spacing={2}
       px={4}
       py={6}
+      overflowY={'auto'}
+      className="customScroll"
     >
       <Tabs isFitted variant="enclosed" w="100%">
         <TabList mb="1em" w="100%" border="none">
@@ -89,8 +128,8 @@ const EnvitesListSection: React.FC = () => {
               overflowY="auto"
               className="customScroll"
             >
-              {recievedEnvites!.length ? (
-                recievedEnvites!.map((envite, index) => (
+              {recievedEnvitesList!.length ? (
+                recievedEnvitesList!.map((envite, index) => (
                   <EnviteField key={index} type="received" envite={envite} />
                 ))
               ) : (
@@ -113,8 +152,8 @@ const EnvitesListSection: React.FC = () => {
               overflowY="auto"
               className="customScroll"
             >
-              {sentEnvites!.length ? (
-                sentEnvites!.map((envite, index) => (
+              {sentEnvitesList!.length ? (
+                sentEnvitesList!.map((envite, index) => (
                   <EnviteField key={index} type="sent" envite={envite} />
                 ))
               ) : (
