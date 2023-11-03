@@ -5,7 +5,8 @@ import { useToast } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import { GlobalContext } from "@/context/Contexts";
-const useChannelSettingsUpdater = (channel: Channel) => {
+import { CHANNEL_EVENT_TYPE } from "../../contstants";
+const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
   const upgrageUserClient = (user: UserChannel) =>
     `chat/channels/${user.channelid}/upgrade/${user.userid}/`;
   const downgradeUserClient = (user: UserChannel) =>
@@ -34,7 +35,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.UPGRADE});
       queryClient.invalidateQueries(["channelMembers", channel.id]);
       toast({
         title: "User upgraded.",
@@ -67,7 +68,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.DOWNGRADE});
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User downgraded.",
@@ -104,7 +105,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.CHANNEL_EDIT});
       queryClient.invalidateQueries(["channels"]);
       queryClient.invalidateQueries(["channel", channel.id]);
       toast({
@@ -142,7 +143,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.CHANNEL_EDIT});
       queryClient.invalidateQueries(["channels"]);
       queryClient.invalidateQueries(["channel", channel.id]);
       toast({
@@ -176,7 +177,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         }
       ),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.CHANNEL_EDIT});
       queryClient.invalidateQueries(["channels"]);
       queryClient.invalidateQueries(["channel", channel.id]);
       toast({
@@ -219,7 +220,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         )
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.CHANNEL_EDIT});
       toast({
         title: "Channel password changed.",
         description: "You can now share it with your friends.",
@@ -255,7 +256,7 @@ const useChannelSettingsUpdater = (channel: Channel) => {
         }
       ),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:user?.id, channelId:channel.id, type:CHANNEL_EVENT_TYPE.CHANNEL_EDIT});
       queryClient.invalidateQueries(["channels"]);
       toast({
         title: "Channel visibility changed.",

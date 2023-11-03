@@ -117,13 +117,6 @@ export const options: MenuOption[] = [
     modalType: "default",
   },
   {
-    description: "Unmute",
-    type: "critical",
-    modal: true,
-    channelSettings: true,
-    modalType: "default",
-  },
-  {
     description: "Unblock",
     type: "critical",
     modal: true,
@@ -157,3 +150,16 @@ export const gameTheme = [
     border:false,
   },
 ];
+
+export enum CHANNEL_EVENT_TYPE {
+  BAN = "BANNED",
+  UNBAN = "UNBANED",
+  MUTE = "MUTED",
+  UNMUTE = "UNMUTE",
+  KICK = "KICKED",
+  UPGRADE = "UPGRADED",
+  DOWNGRADE = "DOWNGRADED",
+  CHANNEL_EDIT = "CHANNEL EDITED",
+  BLOCKED = "BLOCKED",
+  UNBLOCKED = "UNBLOCKED"
+}

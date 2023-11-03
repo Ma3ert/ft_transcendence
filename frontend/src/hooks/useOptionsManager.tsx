@@ -5,10 +5,11 @@ import {
   ChannelsContext,
 } from "@/context/Contexts";
 import { useContext } from "react";
-import { CHANNEL } from "../../contstants";
+import { CHANNEL, PRIVATE } from "../../contstants";
 import useUserStatus from "./useUserStatus";
 import { useAuth } from "./useAuth";
 import { getUserRole } from "../../utils/helpers";
+import { usePathname } from "next/navigation";
 
 const useOptionsManager = (
   user: User,
@@ -20,15 +21,18 @@ const useOptionsManager = (
   const { currentSection } = useContext(AppNavigationContext);
   const { chatType } = useContext(ChatContext);
   const { currentUser } = useAuth();
+  const path = usePathname ();
+
   const currentUserRole = MembersList!
     ? getUserRole(currentUser!.user!, MembersList!)
     : undefined;
 
 
+ 
 
   function isUserFriend() {
     if (userIsBlocked) return false;
-    if (friendsList!.find((friend) => friend.id === user.id)) return true;
+    if (friendsList &&  friendsList?.length > 0 && friendsList!.find((friend) => friend.id === user.id)) return true;
     return false;
   }
 
@@ -84,6 +88,7 @@ const useOptionsManager = (
     // check if user is muted == false
 
     if (
+      
       Member &&
       (Member?.role == "MEMBER" || Member?.role == "ADMIN") &&
       currentUserRole! == "OWNER"
@@ -107,7 +112,7 @@ const useOptionsManager = (
 
   function checkKickFromChannel() {
     if (
-      Member &&
+      
       (Member?.role == "MEMBER" || Member?.role == "ADMIN") &&
       currentUserRole! == "OWNER"
     )
@@ -118,6 +123,7 @@ const useOptionsManager = (
   }
 
   function checkBlock() {
+    if (path === '/Chat' && chatType == PRIVATE) return false ;
     if (userIsBlocked) return false;
     return true;
   }

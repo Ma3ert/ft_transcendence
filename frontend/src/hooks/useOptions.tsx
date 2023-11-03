@@ -4,6 +4,7 @@ import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { ChannelsContext, GlobalContext } from "@/context/Contexts";
 import { useContext } from "react";
+import { CHANNEL_EVENT_TYPE } from "../../contstants";
 const useUserOptions = (channel?: Channel, User?: User) => {
   const enviteUserClient = new apiClient("/invites");
   const blockUserClient = new apiClient("/users/block");
@@ -55,6 +56,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
       blockUserClient.postData({ userId: userid }).then((response) => response),
     onSuccess: (data) => {
       ////console.log(data);
+      socket.emit ("channelEvent", {userId:User?.id, channelId:channel!.id, type:CHANNEL_EVENT_TYPE.BLOCKED});
       queryClient.invalidateQueries (["blockedUser"]);
       queryClient.invalidateQueries(["friends"]);
       queryClient.invalidateQueries(["channelMembers", channel!.id])
@@ -77,7 +79,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .postData({ userId: userid })
         .then((response) => response),
     onSuccess: (data) => {
-      ////console.log(data);
+      socket.emit ("channelEvent", {userId:User?.id, channelId:channel?.id, type:CHANNEL_EVENT_TYPE.UNBLOCKED});
       queryClient.invalidateQueries(["friends"]);
       queryClient.invalidateQueries (["blockedUser"]);
       queryClient.invalidateQueries(["channelMembers", channel!.id])
@@ -100,7 +102,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:User?.id, channelId:channel!.id, type:CHANNEL_EVENT_TYPE.MUTE});
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User muted.",
@@ -121,7 +123,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .postData(null)
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:User?.id, channelId:channel?.id, type:CHANNEL_EVENT_TYPE.BAN});
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User banned.",
@@ -142,7 +144,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
         .deleteData()
         .then((response) => response),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:User?.id, channelId:channel?.id, type:CHANNEL_EVENT_TYPE.UNBAN});
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User unbanned.",
@@ -160,7 +162,7 @@ const useUserOptions = (channel?: Channel, User?: User) => {
   const KickUserMutation = useMutation({
     mutationFn: (user: UserChannel) => kickUserClient(user).deleteData(),
     onSuccess: (data) => {
-      socket.emit ("channelEvent");
+      socket.emit ("channelEvent", {userId:User?.id, channelId:channel?.id, type:CHANNEL_EVENT_TYPE.KICK});
       queryClient.invalidateQueries(["channelMembers", channel!.id]);
       toast({
         title: "User kicked.",

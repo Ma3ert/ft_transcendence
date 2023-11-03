@@ -26,6 +26,7 @@ services:
       - '3000:3000'
     depends_on:
       - postgres
+    restart: always
     volumes:
       - public:/usr/src/app/public
 

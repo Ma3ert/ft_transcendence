@@ -65,7 +65,8 @@ const ChannelsChat: React.FC<ChannelsChatProps> = ({
         }
       });
       socket.on("channelEvent", (data: any) => {
-        if (data.type ==   CHANNEL_EVENT_TYPE.KICK && data.userId === currentUser.id)
+        console.log ('')
+        if (data.type ==   CHANNEL_EVENT_TYPE.KICK && data.userId === currentUser.id )
         {
           if (data.channelId === activeChannel.id) {
             toast.isActive("kick") && toast({

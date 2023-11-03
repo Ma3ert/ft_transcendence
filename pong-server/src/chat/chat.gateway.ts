@@ -148,13 +148,18 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
     game:boolean
   })
   {
-    
-    await this.chatService.createDirectMessage(data.senderId, data.receiverId, data.message);
-    await this.notificationService.createDirectMessageNotification(data.senderId, data.receiverId);
-    this.server.to(data.senderId).emit("DM", data);
-    this.server.to(data.receiverId).emit("DM", data);
-    this.checkUserNotification(data.receiverId);
-    this.chatNotification(data.receiverId);
+    const blockedUsers = await this.usersService.getBlockedUsers(data.senderId);
+    const blockingUsers = await this.usersService.getBlockingUsers(data.senderId);
+    if (blockedUsers.findIndex((user) => {user.id === data.receiverId}) === -1
+      && blockingUsers.findIndex((user) => {user.id === data.receiverId}) === -1)
+    {
+      await this.chatService.createDirectMessage(data.senderId, data.receiverId, data.message);
+      await this.notificationService.createDirectMessageNotification(data.senderId, data.receiverId);
+      this.server.to(data.senderId).emit("DM", data);
+      this.server.to(data.receiverId).emit("DM", data);
+      this.checkUserNotification(data.receiverId);
+      this.chatNotification(data.receiverId);
+    }
   }
 
   @SubscribeMessage('CM')
@@ -165,7 +170,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   })
   {
     const channelMembers = await this.chatService.channelMembers(data.channelId, data.senderId);
-    const userIndex = channelMembers.findIndex((user) => user.id === data.senderId);
+    const userIndex = channelMembers.findIndex((usr) => usr.user === data.senderId);
     const user = channelMembers[userIndex];
     if (user && !user['banned'] && !user['muted']){
       await this.chatService.createChannelMessage(data.senderId, data.channelId, data.message);
@@ -192,13 +197,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
       await this.notificationService.readDirectNotification(client.user.id, data.Id);
     await this.chatNotification(client.user.id);
   }
-
-  @SubscribeMessage('typing')
-  async typing(client: AuthSocket, data: { userId: string })
-  {
-    client.to(data.userId).emit("typing", { userId: client.user.id });
-  }
-
+  
   @SubscribeMessage('readInviteNotification')
   async readInviteNotification(client: AuthSocket) {
     await this.notificationService.readInviteNotification(client.user.id);
@@ -211,7 +210,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayDisconnect{
   }
 
   @SubscribeMessage('channelEvent')
-  async userKick(client: AuthSocket, data:{userId:string, channelId:string, type:CHANNEL_EVENT_TYPE}){
-    client.to(data.channelId).emit("channelEvent", {userId: data.userId, channelId: data.channelId, type:data.type});
+  async channelEvent(client: AuthSocket, data:{userId:string, channelId:string, type:CHANNEL_EVENT_TYPE}){
+    this.server.to(data.channelId).emit("channelEvent", {userId: data.userId, channelId: data.channelId, type:data.type});
   }
 }

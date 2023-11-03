@@ -29,7 +29,6 @@ const FriendsListHeader: React.FC<FriendsListHeaderProps> = ({
   const {Channels, PublicChannels} = useContext (UserChannelsContext)
   const { Users } = useContext(UsersContext);
   const { friendsList } = useContext(UsersContext);
-  const queryClient = useQueryClient();
   return (
     <HStack
       spacing={5}

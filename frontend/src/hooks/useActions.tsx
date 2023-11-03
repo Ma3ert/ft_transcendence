@@ -14,7 +14,8 @@ const useActions = (user: User) => {
     KickUser,
   } = useUserOptions(activeChannel!, user);
   const { upgradeUser, downgradeUser } = useChannelSettingsUpdater(
-    activeChannel!
+    activeChannel!,
+    user
   );
   const actions = new Map([
     ["Send friend request", () => EnviteUser(user)],
