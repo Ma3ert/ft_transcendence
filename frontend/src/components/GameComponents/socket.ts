@@ -5,13 +5,18 @@ let socket: Socket | undefined = undefined;
 
 if (Cookies.get("jwt"))
 {
-    socket = io("http://e1r8p2.1337.ma:3000/game", {
+    socket = io("http://e1r9p5.1337.ma:3000/game", {
     transports: ["websocket"],
     auth: {
       token: "Bearer " + Cookies.get("jwt"),
     },
   });
 }
+
+
+socket && socket.on("connect", () => {
+  console.log("Connection is successfull");
+})
 
 
 socket && socket.on("connect_error", (err) => {

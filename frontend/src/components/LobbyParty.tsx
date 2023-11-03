@@ -45,13 +45,34 @@ const LobbyParty = () => {
   const [readyness, setReadyness] = useState(false);
   var interval: NodeJS.Timeout;
 
+  socket && socket.on("matchMade", ({ data }) => {
+    // ////console.log(data);
+    // setMessage("");
+    setOppenent({ username: data.username, ready: true });
+    setReadyness(true);
+    setPartyState(false);
+    setMatch(data);
+    setGameSettings({
+      gameID: data.session,
+      playerID: data.playerID,
+      me: {
+        username: currentUser.user.username,
+        avatar: currentUser.user.avatar,
+      },
+      opponent: { username: data.username, avatar: data.avatar },
+    });
+    setTimeout(() => {
+      clearInterval(interval);
+      router.push("/Game");
+    }, 3000);
+  });
+
   useEffect(() => {
     if (socket)
     {
       socket.on("connect_error", (err) => {
         console.log(`connect_error due to ${err.message}`);
       });
-  
       socket.on("onGoingMatch", () => {
         !toast.isActive("pop") &&
           toast({
@@ -103,29 +124,6 @@ const LobbyParty = () => {
         //     setMessage("");
         //     setVisible(true);
         // }, 3000);
-      });
-  
-      socket.on("matchMade", ({ data }) => {
-        // ////console.log(data);
-        // setMessage("");
-        console.log("Setting the game state.", data);
-        setOppenent({ username: data.username, ready: true });
-        setReadyness(true);
-        setPartyState(false);
-        setMatch(data);
-        setGameSettings({
-          gameID: data.session,
-          playerID: data.playerID,
-          me: {
-            username: currentUser.user.username,
-            avatar: currentUser.user.avatar,
-          },
-          opponent: { username: data.username, avatar: data.avatar },
-        });
-        setTimeout(() => {
-          clearInterval(interval);
-          router.push("/Game");
-        }, 3000);
       });
   
       socket.on("connect", () => {
