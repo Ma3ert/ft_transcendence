@@ -418,7 +418,7 @@ export class ChatController {
     }
 
     @Patch('/channels/avatar')
-    @Roles(Role.OWNER)
+    @Roles(Role.OWNER, Role.ADMIN)
     @UseGuards(RoleGuard)    
     @UseGuards(LoggedInGuard)
     async updateChannelAvatar(@Req() req: Request, @Body() avatarDto: updateChannelAvatar) {

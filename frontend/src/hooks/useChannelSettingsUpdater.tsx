@@ -29,7 +29,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
     mutationFn: async (user: UserChannel) =>
       await axios
         .patch(
-          `http://e1r9p5.1337.ma:3000/${upgrageUserClient(user)}`,
+          `http://e1r8p2.1337.ma:3000/${upgrageUserClient(user)}`,
           {},
           { withCredentials: true }
         )
@@ -62,7 +62,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
     mutationFn: async (user: UserChannel) =>
       await axios
         .patch(
-          `http://e1r9p5.1337.ma:3000/${downgradeUserClient(user)}`,
+          `http://e1r8p2.1337.ma:3000/${downgradeUserClient(user)}`,
           {},
           { withCredentials: true }
         )
@@ -95,7 +95,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
     mutationFn: async (password: string) =>
       await axios
         .patch(
-          `http://e1r9p5.1337.ma:3000/${setChannelPasswordClient(channel)}`,
+          `http://e1r8p2.1337.ma:3000/${setChannelPasswordClient(channel)}`,
           {
             password: password,
           },
@@ -133,7 +133,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
     mutationFn: async (channelName: string) =>
       await axios
         .patch(
-          `http://e1r9p5.1337.ma:3000/${changeChannelNameClient(channel)}`,
+          `http://e1r8p2.1337.ma:3000/${changeChannelNameClient(channel)}`,
           {
             name: channelName,
           },
@@ -170,7 +170,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
   const removeChannelPasswordMutation = useMutation({
     mutationFn: async () =>
       await axios.patch(
-        `http://e1r9p5.1337.ma:3000/${removeChannelPasswordClient(channel)}`,
+        `http://e1r8p2.1337.ma:3000/${removeChannelPasswordClient(channel)}`,
         {},
         {
           withCredentials: true,
@@ -209,7 +209,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
     mutationFn: async (req: PasswordObject) =>
       await axios
         .patch(
-          `http://e1r9p5.1337.ma:3000/${changeChannelPasswordClient(channel)}`,
+          `http://e1r8p2.1337.ma:3000/${changeChannelPasswordClient(channel)}`,
           {
             currentPassword: req.currentPassword,
             newPassword: req.newPassword,
@@ -249,7 +249,7 @@ const useChannelSettingsUpdater = (channel: Channel, user?:User) => {
   const changeVisibilityMutation = useMutation({
     mutationFn: async (req: ChannelType) =>
       await axios.patch(
-        `http://e1r9p5.1337.ma:3000/${visibilityClient(req.channelId)}`,
+        `http://e1r8p2.1337.ma:3000/${visibilityClient(req.channelId)}`,
         { type: req.type },
         {
           withCredentials: true,
